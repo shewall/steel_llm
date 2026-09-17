@@ -1,0 +1,2268 @@
+{
+  "doi": "10.1007/s42461-026-01522-2",
+  "title": "Simulation of the Filtered-Tailings Stacking Operation",
+  "abstract": "Abstract This study addresses the filtered-tailings stacking (FTS) operation in the mining industry. The significant increase in tailings generation at an industrial scale poses a challenge to applying this operation as a safer alternative to tailings dams. To address this, we developed a discrete-event simulation model to identify bottlenecks and improve the operation’s productivity. This model, developed in Arena, showed strong agreement with field observations and indicated that the current operation’s bottleneck is the tailings-drying process, which is intensified during the rainy season. We evaluated three strategies to improve FTS operation: sector subdivision, area expansion, and increasing the daily moisture loss rate. These strategies increased the compacted mass of filtered tailings stacked by up to 12%, 50.8%, and 29.2%, respectively, compared with the current FTS operation. Considering feasibility and cost, sector subdivision emerged as the most practical solution. The proposed model is a pioneering application that has proven to be a flexible and effective decision-support tool for planning FTS operations.",
+  "journal": "Mining, Metallurgy & Exploration",
+  "year": "2026",
+  "sections": [
+    {
+      "heading": "Introduction",
+      "paragraphs": [
+        "The tailings dam disasters at the iron ore mines in Brumadinho and Mariana, Brazil, profoundly impacted and resulted in significant changes to Brazilian dam safety legislation [ 1 ]. The enactment of new, more restrictive regulations for dam operation, coupled with increased tailings generation from the exploitation of ore with lower metal content, highlighted the need for safe alternatives for the final disposal of mining tailings [ 2 ]. In this context, the filtered-tailings stacking (FTS) operation has emerged as a viable solution, minimizing the environmental and operational risks associated with traditional dams [ 3 ,  4 ].",
+        "The FTS operation is a disposal technique in which tailings are dewatered to a point where they become compactable solids, enabling stable storage and reduced environmental impact [ 5 ]. Implementing the FTS operation in mining operations offers several advantages, including eliminating the risk of catastrophic dam failures. In addition, this operation enables disposal at higher elevations and progressive environmental rehabilitation, thereby mitigating overall environmental disturbance and spreading costs throughout the mine’s life cycle [ 6 ]. For the tailings piles to grow and present conditions of stability in their final geometry, it is necessary for the stacking process to be carried out in a controlled manner, i.e., for each layer of embankment to be compacted in conditions of moisture where greater density is obtained, increasing resistance to shear and the risk of structural failure. Thus, the FTS operation for raising a new layer consists essentially of the tailings transport cycle for layer formation, followed by processes that ensure compaction control during stacking. This stacking cycle is shown in Fig.  1 . Fig. 1 Operational cycle of filtered-tailings stacking for raising a new layer",
+        "According to Fig.  1 , the generation of tailings slurry in the concentration plant is filtered in batches at the filtration plant. A conveyor belt transports the tailings to form a temporary material pile. The pile is then reclaimed using loaders, which load the material onto dump trucks. The trucks transport the filtered tailings to their final destination in designated areas known as sectors. These sectors are responsible for forming dry-stacked tailings piles, as they are delimited areas intended for filling and treating layers. Figure  2  shows the allocation of seven sectors in the area designated for creating a tailings pile. Fig. 2 Example of subdivision of stacking areas for the formation of the piles into sectors",
+        "The dry stacking operation involves a progressive layering process in which tailings are spread by a bulldozer and left to dry under solar exposure. The drying process can take several days and is significantly affected during the rainy season. Once the layer is dry and the tailings reach the optimal moisture content for compaction, the layer is compacted using a roller compactor. Finally, the laboratory team conducts tests on the tailings to ensure that the new layer is adequately compacted in accordance with the pile design specifications before approving the layer and releasing the sector to form an additional overlying layer.",
+        "The productivity of the stacking operation is directly related to the time required to raise a new layer on the tailings pile. Extending this time significantly impacts operating costs and resource utilization. However, the main operational risk associated with the tailings pile is the potential to cause a stoppage across the mining company’s entire production chain. The processing operations at the ore concentration plant run continuously, resulting in a constant generation of tailings. Therefore, the volumetric stacking capacity must be equal to or greater than the amount of filtering-generated tailings to avoid interruptions.",
+        "FTS operations still require ongoing efforts to identify new technologies and best practices to improve. Given the growing importance of sustainable and safe solutions in tailings management, the industry must invest in innovations and technologies that can improve these operations [ 7 ]. One of these technologies is discrete-event simulation (DES). The application of DES models in the mining industry has proven essential for improving operational performance. It is a dynamic technique capable of predicting bottlenecks in mining production. Moreover, the DES technique enables a detailed analysis of various operational scenarios, accounting for complex variables such as truckload capacity and equipment efficiency. This approach provides crucial data for proper fleet sizing and identifies bottlenecks and opportunities for process improvement, thereby maximizing productivity and reducing operating costs [ 8 ]. Research, such as that conducted during the planning of a new mine, demonstrates the effectiveness of simulation in predicting development rates and reveals the need for strategic changes in operating practices to achieve viable results [ 9 ].",
+        "Simulation software has become widely used for this purpose, providing advanced modeling and analysis capabilities that enable managers to make more accurate and effective decisions during operations. By predicting scenarios and simulating different production strategies, these tools significantly reduce costs, increase operational efficiency, and minimize unplanned downtime [ 10 ]. By modeling the variability of equipment and labor availability, these models provide valuable insights into the relationships among available resources, the impacts of external conditions, and operational efficiency, contributing to continuous improvement in mining units [ 11 ].",
+        "Thus, simulation is a crucial tool for improving mining performance, enabling practical improvements in tailing management and operations. In this context, using the DES technique, this study evaluates the FTS operation at a mining company located in the Iron Quadrangle of Minas Gerais, Brazil. It aims to identify critical bottlenecks and assess the impact of process improvements on operational efficiency in various scenarios. In our literature review, we did not find any studies that have simulated FTS operation using discrete-event simulation. Therefore, our work is pioneering in modeling an FTP operation using this technique.",
+        "This work focuses primarily on the dynamic simulation of the FTS operation, which is considered safer for disposal than traditional tailings-dam methods. Furthermore, our study includes simulations of scenarios involving a mine in a tropical country, where a prolonged rainy season poses additional challenges for this operation.",
+        "The proposed simulation model does not apply to the co-disposal of waste rock with filtered tailings, a practice adopted by some mining companies. Furthermore, it requires calibration of parameter values, particularly those related to climate, including rainfall levels, which must be specified for each mine location.",
+        "The remainder of this study is structured as follows. Section  2  presents a literature review. Section  3  describes the proposed method to model the FTS operation. Section  4  details the simulation experiments applied to a Brazilian iron ore mine. Finally, Section  5  concludes this study and points to perspectives for future work."
+      ]
+    },
+    {
+      "heading": "Literature Review",
+      "paragraphs": [
+        "This section addresses two fields of study: the first focuses on filtered-tailings stacking approaches, and the second examines the application of discrete event simulation in mining operations."
+      ]
+    },
+    {
+      "heading": "Studies on Filtered-Tailings Stacking Approaches",
+      "paragraphs": [
+        "Davies [ 5 ] outlined the fundamentals and practical guidelines for filtered dry stack tailings facilities, including guidance on water management. The catchment and routing of precipitation on the stack must be appropriately designed, using ditches, binds, or under-stack flow through drains, maintaining surface and groundwater control systems. Furthermore, tarps can provide short-term erosion protection in areas of intense rainfall.",
+        "Gomes et al. [ 12 ] proposed criteria to evaluate the implementation of methodologies for alternative tailing disposal. The authors present a practical study on dry tailings stacking for Brazil’s Cuiabá gold mine. Given the constraints on tailings disposal at this mine, they needed to develop an alternative disposal method by analyzing parameters related to the dewatering and tailings plants. They concluded that the compaction of the disposed material is essential and that moisture content is a critical parameter.",
+        "Franks et al. [ 13 ] compiled a database containing information from 1,743 tailings facilities, obtained through a survey requested by institutional investors, addressing construction methods, stability, stored volumes, and alternative technologies. The results show that 10% of facilities experienced stability issues, with the highest incidence in upstream dams (18.3%), even under high-governance scenarios. Facilities such as dry stacking and in-pit disposal showed fewer problems, but all methodologies recorded instability rates above 2%. The data reinforce the need for rigorous management and provide insights into global governance of risks associated with tailing facilities.",
+        "Cacciuttolo and Atencio [ 7 ] examined tailings management for industrial production exceeding 100,000 metric tons per day. Their study outlines the use of thickening and filtering equipment, conveyor belts, and Industry 4.0 technologies to automate the process.",
+        "Wagner et al. [ 14 ] studied the behavior of the tailing particle breakage under the process of compaction by drum rollers. They subjected tailing samples to three laboratory tests to simulate the effects of compaction and vibration on tailings particles. The study concluded that, at typical pressures, load frequency and cycle count were not significant factors for particle breakage.",
+        "In another study by Valenta et al. [ 3 ], the exponential growth in tailings generated by mining essential metals for the energy transition, such as copper, lithium, manganese, and nickel, was projected, and six innovations to reduce these impacts were analyzed. Proposed solutions include reprocessing tailings, environmental desulfurization, dry stacking, pre-concentration, co-production of sand from ore, and in-situ recovery. The results highlight that although no single approach is sufficient, combining these techniques can reduce waste volumes, toxicity, and risks of dam failures, offering more sustainable alternatives for future mining.",
+        "Another study reinforcing the growing demand for new solutions to optimize the final disposal of mining tailings was developed by Vilaça et al. [ 15 ], which investigated the generation of iron ore tailings, as well as the consumption of water and electricity in mining operations in the Quadrilátero Ferrífero, in Minas Gerais state, Brazil, between 2010 and 2018. A significant increase in tailings generation (65%) and resource consumption (70% increase in water and 90% in electricity) was observed."
+      ]
+    },
+    {
+      "heading": "Studies on Discrete Event Simulation in Mining Operations",
+      "paragraphs": [
+        "Filtered-tailings stacking is a widely studied technique, given the growing demand for efficient and sustainable alternatives to final tailings disposal. However, further investigation is needed to identify alternatives that improve its productivity and make it more feasible for large-scale operations. In this context, Discrete Event Simulation (DES) is a valuable tool for evaluating operations and scenarios to optimize productivity. This methodology, already successfully applied in other mining contexts, can provide important insights for process improvement.",
+        "Simulation has been used in the mining industry since the 1960s, when Rist [ 16 ] published the first study addressing a transportation problem involving ore in an underground molybdenum mine. The DES technique has been used primarily to evaluate the performance of loading and haulage equipment, as it enables the prediction of bottlenecks and lost productive time in queues. These studies can be divided into two categories: the first focuses on the optimal number of equipment, while the second examines the efficiency of dispatching decisions [ 16 ].",
+        "Recently, DES models have been combined with other techniques. Park et al. [ 17 ] developed a hybrid model that combines Machine Learning (ML) and Discrete Event Simulation (DES) to predict ore production and optimize transportation productivity in mining. The model developed accurately predicted truck cycle times using data from an underground mine. The integration with the DES model enabled effective simulation of ore production, providing a tool to optimize equipment selection and improve transportation efficiency.",
+        "Peña-Graf et al. [ 18 ] presented a study that focused on integrating Machine Learning and Discrete Event Simulation to address challenges associated with gold deposits in the Alhué region of Chile, which are characterized by geological complexity and uncertainty. The research proposes a digital twin approach that integrates DES and ML to account for geological variability in operational decisions, including adjustments to operational modes. Simulations indicated that this method could reduce risks related to gold-processing performance, helping assess and mitigate impacts from mineralogical variation in processing operations.",
+        "Quelopana et al. [ 19 ] presented a six-step quantitative methodology for techno-economic and operational evaluation of new digital technologies in the mining sector. The methodology combines a mine-planning optimization algorithm with a DES model to maximize plant production. A case study on a porphyry copper deposit in the Maricunga Belt, Chile, demonstrated the benefits of including intelligent ore classification technology, resulting in a cumulative net present value increase of USD 37.5 million. The analysis also revealed that reducing rejected material does not always result in higher profits, underscoring the importance of holistic evaluation in technological decision-making.",
+        "Smith et al. [ 20 ] developed and evaluated two approaches for truck dispatching in open-pit mines. The first used a nonlinear optimization model to define average flow rates between mine locations. The second was based on a mixed-integer programming (MIP) model with temporal discretization, complemented by a heuristic for fast solutions. Both approaches were tested through a DES simulation of the mine. The results showed that the MIP approach outperformed the average flow rate policy across various operational configurations, highlighting its effectiveness in truck dispatch optimization.",
+        "Savolainen and Urbani [ 21 ] proposed optimizing time-based maintenance policies in the mining industry using a virtual model similar to a digital twin (DT). DES was used to replicate the effect of maintenance decisions, while system dynamics (SD) was employed to model the mine’s financial operability. The combination of DES and SD enabled accurate environmental replication and minimized operational and maintenance costs. The case study demonstrated the feasibility of the proposed approach and identified challenges related to using high-dimensional simulation data for managerial decision-making.",
+        "The DES technique has recently been integrated with optimization models to evaluate mining plans. Martins et al. [ 22 ] applied this integration to analyze how prioritizing the delivery of ore to one concentration plant over another affects the feed rate of the first plant. In addition, they examined the impact of reordering the prioritization of ore-grade and particle-size targets for the plants. In another study, Martins et al. [ 23 ] analyzed the impact of homogenized ore pile size on the plants’ feed rate. They demonstrated that smaller ore piles form more quickly, reducing the time required for the concentration plant to reclaim ore. However, ore-grade variability increases as pile size decreases."
+      ]
+    },
+    {
+      "heading": "The Proposed DES Technique for the FTS Operation",
+      "paragraphs": [
+        "This study applies the DES technique to model FTS operation, incorporating seasonality, as drying time in the open air is longer during rainy periods, which significantly impacts the process. The method involves a detailed simulation of iron ore tailings handling and stacking operations using Arena ®  and real data from a mining company to assess the productivity of the filtered tailings storage capacity across different process stages. The flow of the FTS operation can be divided into two macro-processes, as shown in Fig.  3 . Fig. 3 Macro-processes of the filtered-tailings stacking operation",
+        "According to Fig.  3 , the first macro-process is Sector Filling, which includes the transport of the tailings from the filtration process to their final destination to fill a layer sector. The second is the Layer Treatment, which encompasses the spreading, drying, and compaction of tailings at their final destination.",
+        "The conceptual model was drawn up through the Activity Cycle Diagrams (ACD) shown in Fig.  4 . As Pereira et al. [ 24 ] pointed out, ACDs are an effective tool for gaining an in-depth understanding of the behavior of real systems and for modeling and simulating discrete events. Fig. 4 Activity cycle diagram of the filtered-tailing stacking operation",
+        "This diagram details the cycle of equipment involved in the filtered tailings stacking process. The model implemented in the Arena ®  was drawn up based on the diagram shown in Fig.  4 . In this ACD flow, the two macro-processes are represented. Sections  3.1  and  3.2  describe the flow of these macro-processes."
+      ]
+    },
+    {
+      "heading": "Section Filling Macro-process",
+      "paragraphs": [
+        "According to the ACD flow, the Sector Filling flow begins with the creation of two entities: the first is the filtered tailings, which represents the generation of tailings parcels at specified intervals based on the filtration plant’s production rate. The second entity corresponds to the trucks. For each interval in which a tailings parcel is generated, a control variable is incremented, representing the accumulated mass in the temporary tailings pile. The loaders then fill the trucks. The next step involves a decision-making process based on the availability of sectors to receive the filtered tailings. Suppose sectors are available to form new layers. In this case, trucks transport and unload the tailings in these sectors. After unloading, the trucks return to collect new loads. However, suppose all sectors are occupied with layer treatment. In this case, the trucks will direct the tailings to intermediate sectors, which are areas designated for temporary material storage, from where they will later be returned to the layers for stacking. These intermediate sectors play a crucial role in ensuring operational continuity, as any interruption in the filtration process could halt the entire upstream production chain, resulting in a complete shutdown of the mining operation. Mining companies have operating procedures that limit the thickness of the raised layers. Thus, the volume of material required to fill each sector varies with its area. In this logic, the filling of each layer is monitored by tracking the number of truck trips required to meet the volume for each sector."
+      ]
+    },
+    {
+      "heading": "Layer Treatment Macro-process",
+      "paragraphs": [
+        "Once the amount of tailings disposed of in a sector reaches the maximum layer capacity, the truck entity is duplicated, and its copy initializes the subsequent macro-process, known as Layer Treatment. The first step in this macro-process is spreading the tailings, which is performed using bulldozers. Next, the layer undergoes a drying stage. Even after filtration, the tailings have a moisture content above the optimal compaction threshold, necessitating drying. The initial moisture content of the layer is set to the moisture level of the tailings filtered at the plant, estimated using a probability distribution derived from historical monitoring data. The drying process continues until the tailings reach the ideal moisture level, which in this study was defined as 15%, based on compaction tests. This value marks the point at which the material reaches maximum density and strength during compaction, making drying essential. During this stage, the daily moisture content is monitored until it reaches a safe level for compaction. The duration of the drying process depends on two main factors: the daily moisture loss rate (DMLR) and the probability of rainfall, including its intensity and frequency. The rainfall logic is explained in Section  3.3 . After the drying stage, the layer is compacted using roller compactors. Finally, the laboratory team evaluates the compacted tailings’ parameters to ensure compliance with project specifications before approving the sector to fill a new layer."
+      ]
+    },
+    {
+      "heading": "Rainfall Logic",
+      "paragraphs": [
+        "Tailings drying operations at mines in tropical regions are significantly affected by rainfall. Therefore, a logical model was developed to represent this delay in the simulation. Three vectors indexed by the months of the year were created. The first vector indicates the probability of rain for each month. The second and third vectors represent, respectively, the monthly probabilities of rainfall intensity ranges and the probability of two or more consecutive days of rain within a five-day period.",
+        "Figure  5  shows the rain dynamics in the simulation model. Fig. 5 Flowchart of rain dynamics in the simulation model",
+        "As shown in Fig.  5 , after the drying process, a check is made regarding the possibility of precipitation in the next five days. If no rain is expected, the compaction process begins. If rain is forecast, precipitation intensity is classified in millimeters to determine its impact, which may add days to the drying stage, depending on the rainfall intensity range. If two or more occurrences of rain are detected within the five-day period, the impact of the rain is reprocessed. The analysis is repeated to check for new occurrences of consecutive rainfall. This process can be iterative, continuing until the absence of further precipitation is confirmed, at which point compaction is initiated.",
+        "Once the layer is compacted, a team from the technology control laboratory is called in to collect field samples to measure the degree of compaction and verify the deviation from the optimum moisture content. If the results are approved, the layer is released for further elevation; otherwise, the layer is reopened to continue drying and subsequent compaction. The technological control laboratory operates during administrative hours, so a process that checks the layer moisture content limit from 7 am to 5 pm was modeled."
+      ]
+    },
+    {
+      "heading": "Simulation Experiments",
+      "paragraphs": [
+        "The DES model was implemented using Arena ®  software, version 20. The modules and flowchart for the simulation model of filtered tailings stacking operations, implemented using Arena software, are publicly available at  https://github.com/aldringm/FTSOperation/ . Twelve scenarios were simulated. The first scenario represents the current operation, while the others consider subdividing existing areas, variations in the daily rate of moisture loss during drying, and the acquisition or expansion of stacking areas. For all scenarios, 30 replications of the one-year operation simulation were performed. The rest of this section is organized as follows. Section  4.1  describes the equipment and the probability distributions of the processes, as well as the initial moisture of the tailings. Section  4.2  details the current scenario and their simulation results, and Section  4.3  presents the simulation results of the scenarios."
+      ]
+    },
+    {
+      "heading": "Equipment and Probability Distributions",
+      "paragraphs": [
+        "Table  1  shows the number of equipment used for the simulation and the failure parameters. The first column lists the equipment type. The second and third columns present the number and capacity of each equipment type. The fourth column shows the process in which the equipment is used. Finally, the fifth and sixth columns present the mean time between failures (MTBF) and the mean time to repair (MTTR). Table 1 Equipment parameters and failure values Equipment Number Capacity Process MTBF MTTR type # (min.) (min.) Truck 20 60 t Transportation 3060 1140 Bulldozer 8 415 m \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$^3$$\\end{document} /h Spreading 1860 960 Roller compactor 3 12,780 m \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$^2$$\\end{document} /h Compaction 3810 960 Front loader 2 600 t/h Loading 2628 998",
+        "The databases for all processes were submitted to the Input Analyzer ® , a tool in the Arena ®  software that enables data analysis and parameter value extraction for use in the simulation model. This tool enables compilation of summary information about the data, statistical results from the adherence test, a graph of the best-fit distribution superimposed on a histogram, and the expressions and parameters of the best-fit distribution [ 28 ]. The parameters and expressions were used as input to the Arena modules, as shown in Table  2 . Table 2 Probability distribution functions for each process Process Unit Expression Manuever hour LOGN (0.0166, 0.00738) Loading hour LOGN (0.0351, 0.0128) Unloading hour LOGN (0.0232, 0.0115) Loaded velocity km/h NORM (12.7, 3.82) Empty velocity km/h 9 + 12 * BETA (1.35, 1.33) Moisture* % 13 + 14 * BETA (8.4, 8.61) * Initial moisture in the tailings after being generated by the filtration plant",
+        "Table  3  shows the monthly probability distributions for rain events, their intensity, and occurrences. The first column indicates the month. Columns 2 and 3 indicate the probabilities of rain and no rain, respectively. The months with the highest rainfall probability are from October to March, which characterizes the rainfall season. Columns 4-7 show the four rainfall probability ranges in millimeters. Finally, columns 8-9 present the probability of rain occurring on two or more consecutive days. Table 3 Probabilities of rain occurrence and intensity levels Month Rain Event Intensity (mm) \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\ge $$\\end{document}  2 occurrences Rain No rain [5, 10[ [10, 15[ [15, 20[ [20, 60] Rain No rain Jan. 0.52 0.48 0.36 0.52 0.06 0.06 0.66 0.34 Feb. 0.29 0.71 0.18 0.38 0.39 0.05 0.43 0.57 Mar. 0.11 0.89 0.63 0.00 0.08 0.29 0.30 0.70 Apr. 0.22 0.78 0.43 0.25 0.00 0.33 0.15 0.85 May 0.05 0.95 0.67 0.33 0.00 0.00 0.00 1.00 Jun. 0.00 1.00 0.00 0.00 0.00 0.00 0.00 1.00 Jul. 0.00 1.00 0.00 0.00 0.00 0.00 0.00 1.00 Aug. 0.00 1.00 0.00 0.00 1.00 1.00 0.00 1.00 Sep. 0.10 0.90 0.75 0.25 0.00 0.00 0.07 0.93 Oct. 0.24 0.76 0.44 0.33 0.06 0.18 0.29 0.71 Nov. 0.32 0.68 0.42 0.25 0.25 0.08 0.30 0.70 Dec. 0.37 0.63 0.37 0.31 0.14 0.18 0.42 0.58",
+        "The impact of rainfall up to 5 mm was disregarded, as it is minimal. For the other distributions, it was established that rainfall of 5-10 mm increases drying time by 2 days, 10-15 mm by 3 days, 15-20 mm by 4 days, and rainfall greater than 20 mm by 5 days.",
+        "Once the occurrence and impact of a rain event are defined, the module responsible for the drying process uses the statistical distribution of moisture in tailings generated by filtration. It then calculates the drying time based on the daily moisture loss rate. This way, the stage is complete when the tailings reach a target moisture content of 15%. In addition, the product of the two rain probability vectors is used to determine whether precipitation will occur and, if so, its impact on the drying process."
+      ]
+    },
+    {
+      "heading": "Current Operation Scenario",
+      "paragraphs": [
+        "The mining company’s current FTS operation was simulated to validate the model, serving as the baseline scenario.",
+        "From the simulation of the baseline scenario, the relationship between the mass stacked in the controlled pile sectors and the mass destined for the intermediate sectors can be obtained. These intermediate sectors are mine regions designated for the temporary storage of material, allowing the tailings-filtering buffer pile to discharge tailings and preventing a possible stoppage of the operation. Therefore, the smaller the volume destined for the intermediate sectors at the end of the simulation, the more efficient and productive the stacking process was. However, materials will inevitably be sent to these intermediate sectors because, for a significant part of the year, rain paralyzes operations, preventing the layers of the sectors from reaching the optimal moisture content for compaction.",
+        "The simulation result of the total mass compacted in the sector for the baseline scenario was 4.2 million tons, representing 51% of the annual tailings generation. In turn, the remainder was destined for the intermediate sectors. This result highlights the need to optimize the stacking process to increase efficiency and reduce dependence on temporary storage areas.",
+        "Figure  6  shows the tons of filtered tailings stacked in the layers by month. As expected, the tons of filtered tailings stacked were lower during the months with the highest rainfall frequency and intensity (October to March) than during the dry months (usually April to September). Fig. 6 Total mass of compacted filtered tailings per month",
+        "An analysis of the average execution times for each operational process was conducted to identify the main factors influencing them, as shown in Table  4 . Reducing the time required to lift a new layer is directly associated with increased stacking productivity. The average times of the macro-processes were also measured, including the time taken to fill a sector completely and the average time to treat the layer, covering all the activities from spreading the material to releasing the layer. Table 4 Average execution time of FTS operation processes in hours Macro-processes  Sector filling’ processes Hours Layer treatment’ processes Hours Loading 0.05 Spreading 9.82 Loaded haulage 0.27 Drying 155.03 Unloading 0.02 Compaction 2.39 Full haulage 0.27 Lab testing 3.00 Total time 16.44 Total time 170.24",
+        "According to Table  4 , the drying process accounts for 155.03 hours, i.e., 83% of the total time of the single-layer lifting cycle. This result highlights the need to enhance this process to improve overall operational efficiency.",
+        "In the FTS operation, productivity losses can occur due to queues or waiting for resources already allocated elsewhere or unavailable. Using the simulation results, we quantified the average waiting times for each process, in hours, as shown in Fig.  7 . Fig. 7 Waiting time, in hours, for the start of FTS operation processes",
+        "The material spreading process in the sector had an average waiting time of 6.18 hours for tracked tractors to start their work. This data indicates that increasing the fleet of crawler tractors could be a viable solution for reducing these waiting times. In addition, the laboratory’s limited availability, restricted to administrative hours, was another significant factor contributing to delays, particularly in compacting layers outside these hours. This result highlights the need for operational changes to reduce delays and optimize the overall process."
+      ]
+    },
+    {
+      "heading": "Sensitivity Analysis",
+      "paragraphs": [
+        "To investigate strategies for maximizing the total volume of compacted mass of filtered tailings over a one-year simulation, a sensitivity analysis was conducted. This analysis aimed to determine whether changes to the system’s operational configurations enable optimization of the pile’s disposal capacity, subject to existing constraints.",
+        "The analysis was structured into three distinct strategies. The first evaluates the intensification of sector subdivision while maintaining the total disposal area unchanged (see Section  4.3.1 ). The second evaluates the impact of increasing the total available stacking area, simulating acquisition or expansion of the pile (see Section  4.3.2 , and the third evaluates the effect of increasing the daily moisture loss rate (see Section  4.3.3 ).",
+        "Table  5  describes the simulated scenarios for the three strategies. Table 5 Characteristics of the scenarios ID Description Sectors Total Area *DMLR (#) (ha) ( \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\frac{\\%}{day}$$\\end{document} ) Baseline (BL) Current operation 12 12.70 1.30 S_Sub1 BL Subdivision +50% 18 12.70 1.30 S_Sub2 BL Subdivision +100% 24 12.70 1.30 S_Sub3 BL Subdivision +200% 36 12.70 1.30 S_Exp1 BL Expansion +20% 15 15.22 1.30 S_Exp2 BL Expansion +40% 18 17.75 1.30 S_Exp3 BL Expansion +60% 21 20.29 1.30 S_Dry1 BL DMLR +50% 12 12.70 1.95 S_Dry2 BL DMLR +75% 12 12.70 2.28 S_Dry3 BL DMLR +100% 12 12.70 2.60 S_Dry4 BL DMLR +125% 12 12.70 2.93 S_Dry5 BL DMLR +150% 12 12.70 3.25 *DMLR: Daily Moisture Loss Rate",
+        "The first column lists each scenario, and the second column provides its description. The third column indicates the number of sectors, and the fourth and fifth columns show the total area in hectares and the DMLR, respectively, compared to the baseline scenario.",
+        "The first scenario reflects the current operation, and it is considered the baseline scenario. In the sector subdivision strategy, there are three scenarios: S_Sub1, S_Sub2, and S_Sub3. For the sector expansion strategy, there are also three scenarios: S_Exp1, S_Exp2, and S_Exp3. Additionally, five scenarios focus on increasing in the rate of daily moisture loss: S_Dry1, S_Dry2, S_Dry3, S_Dry4, and S_Dry5."
+      ]
+    },
+    {
+      "heading": "Scenarios with the Sector Subdivision Strategy",
+      "paragraphs": [
+        "This first strategy tests the hypothesis that greater fragmentation of the disposal area could optimize the operational cycle, enabling more dynamic management of spreading and compaction.",
+        "The first four rows of Table  5  show the description of the baseline configuration and the three sector subdivision scenarios.",
+        "Starting from the Baseline Scenario, which consists of 12 disposal sectors, three incremental subdivision scenarios were simulated: a 50% increase in the number of sectors, totaling 18 sectors; a 100% increase, resulting in 24 sectors; and a 200% increase, reaching a total of 36 sectors. The methodology for creating these new sectors followed an area prioritization criterion, such that subdivision was applied primarily to the sectors with the largest disposal areas in the Baseline Scenario."
+      ]
+    },
+    {
+      "heading": "Scenarios with the Area Expansion Strategy",
+      "paragraphs": [
+        "The second strategy of the sensitivity analysis focused on increasing the total available area, simulating a physical expansion of the pile by enlarging the disposal footprint. Percentage increments over the Baseline Scenario’s total area were evaluated, simulating expansions of 20%, 40%, and 60% of the total available area.",
+        "Rows 5-7 of the Table present these scenarios.",
+        "This strategy tests three area expansions on the baseline scenario. The new sectors of these new areas were modeled with equal size and, to ensure consistency with the current operation, they were assigned a haulage distance equivalent to the weighted average of the haulage distances between all existing sectors in the Baseline Scenario."
+      ]
+    },
+    {
+      "heading": "Scenarios with the DMLR Strategy",
+      "paragraphs": [
+        "The third strategy tests the increase in the rate of daily moisture loss.",
+        "An alternative to increasing the productive capacity of tailings stacking is to expand the areas available for this purpose. However, releasing new areas entails a series of complex, time-consuming requirements. These include negotiating land with landowners and complying with regulatory steps, such as environmental licensing. This process includes preparing environmental impact studies, which can take years to complete. After obtaining the Operating License, infrastructure work is required, including vegetation clearance and installation of bottom drains, to prepare the area for tailings stacking. Therefore, expanding the stacking areas requires a longer timeline and comprehensive planning that accounts for environmental, legal, and engineering issues.",
+        "In this context, the short- and medium-term solution to absorb the increase in production is to optimize the operation. In this study, the Pareto Principle, also known as the 80/20 rule, was applied to support this strategy, which posits that a small proportion of causes accounts for most of the results [ 25 ]. Figure  8  shows that the drying process, which accounts for more than 80% of the total cycle time, is the primary indicator of process efficiency in the FTS operation. Therefore, the focus for improving the FTS operation should be on reducing the drying time. Fig. 8 Contribution of each process to the total time of the FTS operation",
+        "There are promising alternatives to optimize the drying of filtered tailings, such as the use of additives. A study by Rissoli et al. [ 26 ] found that using quicklime improves the efficiency of drying iron ore tailings. In addition, other materials can be investigated to improve the efficiency of dry stacking. According to Machado [ 27 ], incorporating small amounts of waste rock into the tailings increases the mixture’s optimum moisture content, thereby reducing drying time. Five scenarios were simulated to test the efficiency of this critical process. They are shown in rows 8-12 of Table  5 .",
+        "S_Dry1 scenario simulated a 50% increase in the DMLR during drying compared to the baseline scenario. S_Dry2 scenario simulated an increase of 75%, S_Dry3 scenario an increase of 100%, S_Dry4 scenario an increase of 125%, and S_Dry5 scenario an increase of 150%."
+      ]
+    },
+    {
+      "heading": "Results and Analysis of the Scenarios",
+      "paragraphs": [
+        "In this section, the results of the simulated scenarios are presented for the strategies adopted in Sections  4.3.1 ,  4.3.2 , and  4.3.3 . Firstly, a summary of the results is shown in Table  6 . Then, each strategy result is detailed in Sections  4.4.1 ,  4.4.2 , and  4.4.3 . Table 6 Results of the scenarios according to the adopted strategies Strategy ID Compacted mass Gain (Kt) (%) Current Baseline (BL) \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$4,221.1\\pm 166.4$$\\end{document} − S_Sub1 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$4,575.7\\pm 182.6$$\\end{document} 8.4 Sector Subdivision S_Sub2 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$4,686.3\\pm 139.2$$\\end{document} 11.0 S_Sub3 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$4,727.2\\pm 182.6$$\\end{document} 12.0 S_Exp1 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$4,929.7\\pm 192.6$$\\end{document} 16.8 Area Expansion S_Exp2 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$5,822.0\\pm 202.9$$\\end{document} 37.9 S_Exp3 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$6,363.8\\pm 194.0$$\\end{document} 50.8 S_Dry1 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$5,068.3\\pm 158.5$$\\end{document} 20.1 S_Dry2 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$5,195.0\\pm 167.8$$\\end{document} 23.1 DMLR S_Dry3 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$5,342.5\\pm 141,7$$\\end{document} 26.6 S_Dry4 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$5,466.0\\pm 215.5$$\\end{document} 29.5 S_Dry5 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$5,451.6\\pm 169.2$$\\end{document} 29.2",
+        "The first two columns of Table  6  identify the strategy and the ID of this strategy’s scenario. The third column shows the average compacted mass of filtered tailings with the associated margin of error, and the fourth column shows the gain in compacted mass relative to the baseline scenario. The scenarios with the lowest gains are associated with the sector subdivision strategy. In contrast, the highest gains are associated with the area-expansion strategy."
+      ]
+    },
+    {
+      "heading": "Impact of Sector Subdivision",
+      "paragraphs": [
+        "The results for the sector subdivision scenarios are shown in Fig.  9 . Fig. 9 Compacted mass of filtered-tailings per sector subdivision scenario",
+        "The results indicate that increasing the fragmentation of the disposal area increases the system’s productivity. In the most aggressive subdivision scenario (S_Sub3), where the number of sectors was tripled (36 sectors), a 12% increase in total compacted mass was observed compared to the baseline scenario. This performance improvement can be attributed to the change in operational dynamics. In the baseline scenario, larger sectors require a longer filling time before the spreading and subsequent drying processes can commence. During this accumulation period, the earliest-deposited material remains idle in a moist state. By subdividing these areas into smaller sectors, the system enables faster turnover. This reduction in cycle initialization latency optimizes the use of the available evaporation window, decreasing the overall time tailings spend in the drying queue. Crucially, this 12% gain is achieved solely through operational reconfiguration. It represents a significant efficiency opportunity that can be implemented with minimal capital expenditure, as it does not require new equipment or civil works, but rather a modification in the deposition planning and fleet management."
+      ]
+    },
+    {
+      "heading": "Impact of Area Expansion",
+      "paragraphs": [
+        "The results for the area expansion scenarios are shown in Fig.  10 . Fig. 10 Compacted mass of filtered-tailings per area expansion scenario",
+        "As expected, the expansion scenario S_Exp3 presented the highest absolute gain in relation to the total compacted mass. The 60% increase in available area resulted in a 51% increment in compacted mass. By increasing the total surface area available for spreading, the system can process larger volumes of tailings simultaneously, significantly reducing the bottleneck caused by the slow drying rates during wet periods.",
+        "However, unlike the sector-subdivision strategy, implementing these expansion scenarios is highly complex and costly. Increasing the area occupied by the piles requires rigorous engineering studies, geotechnical stability assessments, and potentially the acquisition of new land from third parties. Furthermore, expanding the disposal area necessitates a new environmental licensing process, which is often lengthy and bureaucratic. Therefore, while expansion offers the highest potential capacity, it is a long-term strategic decision that entails significant CAPEX and an extended implementation lead time."
+      ]
+    },
+    {
+      "heading": "Impact of the Daily Moisture Loss Rate of Tailings",
+      "paragraphs": [
+        "Figure  11  shows the compacted-to-uncompacted mass ratio for scenarios involving the DMLR strategy. Fig. 11 Evaluation of different scenarios for optimizing the average DMLR",
+        "According to Fig.  11 , increasing the DMLR can improve process efficiency. In fact, this figure shows that in scenarios S_Dry4 and S_Dry5 there was an increase in compacted mass of 14 percentage points compared to the current operation. After a certain point, increasing the drying rate does not yield significant additional gains, as weather conditions, particularly in the rainiest months, limit gains. During these periods, a significant portion of the year’s tailings cannot be stacked, regardless of the drying process’s efficiency. Increasing the stacked mass reduces operating costs, as this portion is transported directly to the final disposal sectors. At the same time, materials sent to intermediate sectors must be transported again later and undergo loading and unloading, often over longer distances."
+      ]
+    },
+    {
+      "heading": "Conclusions",
+      "paragraphs": [
+        "This study evaluated the bottlenecks of the filtered-tailings stacking (FTS) operation at an open-pit mining company. According to the literature review, this work is a pioneer in applying discrete-event simulation to address this issue. The relevance of this study lies in the use of stochastic events and dynamic processes, which allow for an approximation of the reality of the analyzed operation.",
+        "The FTS operation is a complex process influenced by internal and external factors, making it challenging to build a simulation model that accurately reflects reality. We implemented a simulation of the current operation in Arena ® , and the results closely matched field observations, particularly in the impact of weather conditions, such as rain, on operational efficiency. Thus, we consider this simulation as the baseline scenario.",
+        "The baseline scenario results indicated that the bottleneck in this operation is the tailings-drying process. This bottleneck is intensified during the rainy season, significantly affecting the FTS operation. Furthermore, the baseline scenario results revealed an imbalance between the compacted mass and the mass destined for the intermediate sectors, indicating the need for optimization strategies in this operation.",
+        "We simulated three strategies for improving this operation. The first involved subdividing the current area into additional sectors. The second simulated expanding the current area, while the third tested an increase in the DMLR. According to the simulation results, compared with the baseline scenario, the first strategy increased the compacted mass of filtered tailings stacked by up to 12%. In turn, the second and the third strategies increased compacted mass by up to 50.8% and 29.2%, respectively. However, the latter two strategies require additional investment, land purchase negotiations, and the obtaining of an environmental permit. The most feasible strategy to implement, requiring minimal additional cost, is the first.",
+        "The proposed model proved to be a valuable, flexible tool, enabling evaluation of multiple scenarios. This issue enables more robust, assertive planning for the FTS operation.",
+        "The results of this study highlight the importance of the three strategies for improving FTS operation by reducing drying time, particularly for the sector subdivision. Although it results in the smallest gain, it can be implemented immediately. In future research, we plan to incorporate the dynamics of the reclaiming of the filtered tailings stored in intermediate sectors, which could add greater realism to the model and identify new opportunities for operational improvement."
+      ]
+    }
+  ],
+  "tables": [
+    {
+      "caption": "Equipment parameters and failure values",
+      "headers": [
+        "type",
+        "#",
+        "",
+        "",
+        "(min.)",
+        "(min.)"
+      ],
+      "rows": [
+        [
+          "Truck",
+          "20",
+          "60 t",
+          "Transportation",
+          "3060",
+          "1140"
+        ],
+        [
+          "Bulldozer",
+          "8",
+          "415 m \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$^3$$\\end{document} /h",
+          "Spreading",
+          "1860",
+          "960"
+        ],
+        [
+          "Roller compactor",
+          "3",
+          "12,780 m \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$^2$$\\end{document} /h",
+          "Compaction",
+          "3810",
+          "960"
+        ],
+        [
+          "Front loader",
+          "2",
+          "600 t/h",
+          "Loading",
+          "2628",
+          "998"
+        ]
+      ],
+      "header_groups": [
+        {
+          "label": "Equipment",
+          "start_col": 1,
+          "end_col": 1
+        },
+        {
+          "label": "Number",
+          "start_col": 2,
+          "end_col": 2
+        },
+        {
+          "label": "Capacity",
+          "start_col": 3,
+          "end_col": 3
+        },
+        {
+          "label": "Process",
+          "start_col": 4,
+          "end_col": 4
+        },
+        {
+          "label": "MTBF",
+          "start_col": 5,
+          "end_col": 5
+        },
+        {
+          "label": "MTTR",
+          "start_col": 6,
+          "end_col": 6
+        }
+      ],
+      "table_alignment_status": "resolved",
+      "row_provenance": [
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 6
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 6
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 6
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 6
+          }
+        ]
+      ],
+      "tbody_alignment_status": "resolved"
+    },
+    {
+      "caption": "Probability distribution functions for each process",
+      "headers": [
+        "Process",
+        "Unit",
+        "Expression"
+      ],
+      "rows": [
+        [
+          "Manuever",
+          "hour",
+          "LOGN (0.0166, 0.00738)"
+        ],
+        [
+          "Loading",
+          "hour",
+          "LOGN (0.0351, 0.0128)"
+        ],
+        [
+          "Unloading",
+          "hour",
+          "LOGN (0.0232, 0.0115)"
+        ],
+        [
+          "Loaded velocity",
+          "km/h",
+          "NORM (12.7, 3.82)"
+        ],
+        [
+          "Empty velocity",
+          "km/h",
+          "9 + 12 * BETA (1.35, 1.33)"
+        ],
+        [
+          "Moisture*",
+          "%",
+          "13 + 14 * BETA (8.4, 8.61)"
+        ]
+      ],
+      "header_groups": [],
+      "table_alignment_status": "resolved",
+      "row_provenance": [
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 3
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 3
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 3
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 3
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 3
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 3
+          }
+        ]
+      ],
+      "tbody_alignment_status": "resolved"
+    },
+    {
+      "caption": "Probabilities of rain occurrence and intensity levels",
+      "headers": [
+        "",
+        "Rain",
+        "No rain",
+        "[5, 10[",
+        "[10, 15[",
+        "[15, 20[",
+        "[20, 60]",
+        "Rain",
+        "No rain"
+      ],
+      "rows": [
+        [
+          "Jan.",
+          "0.52",
+          "0.48",
+          "0.36",
+          "0.52",
+          "0.06",
+          "0.06",
+          "0.66",
+          "0.34"
+        ],
+        [
+          "Feb.",
+          "0.29",
+          "0.71",
+          "0.18",
+          "0.38",
+          "0.39",
+          "0.05",
+          "0.43",
+          "0.57"
+        ],
+        [
+          "Mar.",
+          "0.11",
+          "0.89",
+          "0.63",
+          "0.00",
+          "0.08",
+          "0.29",
+          "0.30",
+          "0.70"
+        ],
+        [
+          "Apr.",
+          "0.22",
+          "0.78",
+          "0.43",
+          "0.25",
+          "0.00",
+          "0.33",
+          "0.15",
+          "0.85"
+        ],
+        [
+          "May",
+          "0.05",
+          "0.95",
+          "0.67",
+          "0.33",
+          "0.00",
+          "0.00",
+          "0.00",
+          "1.00"
+        ],
+        [
+          "Jun.",
+          "0.00",
+          "1.00",
+          "0.00",
+          "0.00",
+          "0.00",
+          "0.00",
+          "0.00",
+          "1.00"
+        ],
+        [
+          "Jul.",
+          "0.00",
+          "1.00",
+          "0.00",
+          "0.00",
+          "0.00",
+          "0.00",
+          "0.00",
+          "1.00"
+        ],
+        [
+          "Aug.",
+          "0.00",
+          "1.00",
+          "0.00",
+          "0.00",
+          "1.00",
+          "1.00",
+          "0.00",
+          "1.00"
+        ],
+        [
+          "Sep.",
+          "0.10",
+          "0.90",
+          "0.75",
+          "0.25",
+          "0.00",
+          "0.00",
+          "0.07",
+          "0.93"
+        ],
+        [
+          "Oct.",
+          "0.24",
+          "0.76",
+          "0.44",
+          "0.33",
+          "0.06",
+          "0.18",
+          "0.29",
+          "0.71"
+        ],
+        [
+          "Nov.",
+          "0.32",
+          "0.68",
+          "0.42",
+          "0.25",
+          "0.25",
+          "0.08",
+          "0.30",
+          "0.70"
+        ],
+        [
+          "Dec.",
+          "0.37",
+          "0.63",
+          "0.37",
+          "0.31",
+          "0.14",
+          "0.18",
+          "0.42",
+          "0.58"
+        ]
+      ],
+      "header_groups": [
+        {
+          "label": "Rain Event",
+          "start_col": 2,
+          "end_col": 3
+        },
+        {
+          "label": "Intensity (mm)",
+          "start_col": 4,
+          "end_col": 7
+        },
+        {
+          "label": "\\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\ge $$\\end{document}  2 occurrences",
+          "start_col": 8,
+          "end_col": 9
+        }
+      ],
+      "table_alignment_status": "resolved",
+      "row_provenance": [
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 7
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 8
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 9
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 7
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 8
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 9
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 7
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 8
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 9
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 7
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 8
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 9
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 7
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 8
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 9
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 7
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 8
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 9
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 7
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 8
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 9
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 7
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 8
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 9
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 8,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 8,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 8,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 8,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 8,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 8,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 8,
+            "source_col": 7
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 8,
+            "source_col": 8
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 8,
+            "source_col": 9
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 9,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 9,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 9,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 9,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 9,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 9,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 9,
+            "source_col": 7
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 9,
+            "source_col": 8
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 9,
+            "source_col": 9
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 10,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 10,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 10,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 10,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 10,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 10,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 10,
+            "source_col": 7
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 10,
+            "source_col": 8
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 10,
+            "source_col": 9
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 11,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 11,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 11,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 11,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 11,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 11,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 11,
+            "source_col": 7
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 11,
+            "source_col": 8
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 11,
+            "source_col": 9
+          }
+        ]
+      ],
+      "tbody_alignment_status": "resolved"
+    },
+    {
+      "caption": "Average execution time of FTS operation processes in hours",
+      "headers": [
+        "Sector filling’ processes",
+        "Hours",
+        "Layer treatment’ processes",
+        "Hours"
+      ],
+      "rows": [
+        [
+          "Loading",
+          "0.05",
+          "Spreading",
+          "9.82"
+        ],
+        [
+          "Loaded haulage",
+          "0.27",
+          "Drying",
+          "155.03"
+        ],
+        [
+          "Unloading",
+          "0.02",
+          "Compaction",
+          "2.39"
+        ],
+        [
+          "Full haulage",
+          "0.27",
+          "Lab testing",
+          "3.00"
+        ],
+        [
+          "Total time",
+          "16.44",
+          "Total time",
+          "170.24"
+        ]
+      ],
+      "header_groups": [
+        {
+          "label": "Macro-processes",
+          "start_col": 1,
+          "end_col": 4
+        }
+      ],
+      "table_alignment_status": "resolved",
+      "row_provenance": [
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 4
+          }
+        ]
+      ],
+      "tbody_alignment_status": "resolved"
+    },
+    {
+      "caption": "Characteristics of the scenarios",
+      "headers": [
+        "",
+        "",
+        "(#)",
+        "(ha)",
+        "( \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\frac{\\%}{day}$$\\end{document} )"
+      ],
+      "rows": [
+        [
+          "Baseline (BL)",
+          "Current operation",
+          "12",
+          "12.70",
+          "1.30"
+        ],
+        [
+          "S_Sub1",
+          "BL Subdivision +50%",
+          "18",
+          "12.70",
+          "1.30"
+        ],
+        [
+          "S_Sub2",
+          "BL Subdivision +100%",
+          "24",
+          "12.70",
+          "1.30"
+        ],
+        [
+          "S_Sub3",
+          "BL Subdivision +200%",
+          "36",
+          "12.70",
+          "1.30"
+        ],
+        [
+          "S_Exp1",
+          "BL Expansion +20%",
+          "15",
+          "15.22",
+          "1.30"
+        ],
+        [
+          "S_Exp2",
+          "BL Expansion +40%",
+          "18",
+          "17.75",
+          "1.30"
+        ],
+        [
+          "S_Exp3",
+          "BL Expansion +60%",
+          "21",
+          "20.29",
+          "1.30"
+        ],
+        [
+          "S_Dry1",
+          "BL DMLR +50%",
+          "12",
+          "12.70",
+          "1.95"
+        ],
+        [
+          "S_Dry2",
+          "BL DMLR +75%",
+          "12",
+          "12.70",
+          "2.28"
+        ],
+        [
+          "S_Dry3",
+          "BL DMLR +100%",
+          "12",
+          "12.70",
+          "2.60"
+        ],
+        [
+          "S_Dry4",
+          "BL DMLR +125%",
+          "12",
+          "12.70",
+          "2.93"
+        ],
+        [
+          "S_Dry5",
+          "BL DMLR +150%",
+          "12",
+          "12.70",
+          "3.25"
+        ]
+      ],
+      "header_groups": [
+        {
+          "label": "ID",
+          "start_col": 1,
+          "end_col": 1
+        },
+        {
+          "label": "Description",
+          "start_col": 2,
+          "end_col": 2
+        },
+        {
+          "label": "Sectors",
+          "start_col": 3,
+          "end_col": 3
+        },
+        {
+          "label": "Total Area",
+          "start_col": 4,
+          "end_col": 4
+        },
+        {
+          "label": "*DMLR",
+          "start_col": 5,
+          "end_col": 5
+        }
+      ],
+      "table_alignment_status": "resolved",
+      "row_provenance": [
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 5
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 5
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 5
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 5
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 5
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 5
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 5
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 5
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 8,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 8,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 8,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 8,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 8,
+            "source_col": 5
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 9,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 9,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 9,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 9,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 9,
+            "source_col": 5
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 10,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 10,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 10,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 10,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 10,
+            "source_col": 5
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 11,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 11,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 11,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 11,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 11,
+            "source_col": 5
+          }
+        ]
+      ],
+      "tbody_alignment_status": "resolved"
+    },
+    {
+      "caption": "Results of the scenarios according to the adopted strategies",
+      "headers": [
+        "",
+        "",
+        "(Kt)",
+        "(%)"
+      ],
+      "rows": [
+        [
+          "Current",
+          "Baseline (BL)",
+          "\\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$4,221.1\\pm 166.4$$\\end{document}",
+          "−"
+        ],
+        [
+          "",
+          "S_Sub1",
+          "\\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$4,575.7\\pm 182.6$$\\end{document}",
+          "8.4"
+        ],
+        [
+          "Sector Subdivision",
+          "S_Sub2",
+          "\\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$4,686.3\\pm 139.2$$\\end{document}",
+          "11.0"
+        ],
+        [
+          "",
+          "S_Sub3",
+          "\\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$4,727.2\\pm 182.6$$\\end{document}",
+          "12.0"
+        ],
+        [
+          "",
+          "S_Exp1",
+          "\\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$4,929.7\\pm 192.6$$\\end{document}",
+          "16.8"
+        ],
+        [
+          "Area Expansion",
+          "S_Exp2",
+          "\\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$5,822.0\\pm 202.9$$\\end{document}",
+          "37.9"
+        ],
+        [
+          "",
+          "S_Exp3",
+          "\\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$6,363.8\\pm 194.0$$\\end{document}",
+          "50.8"
+        ],
+        [
+          "",
+          "S_Dry1",
+          "\\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$5,068.3\\pm 158.5$$\\end{document}",
+          "20.1"
+        ],
+        [
+          "",
+          "S_Dry2",
+          "\\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$5,195.0\\pm 167.8$$\\end{document}",
+          "23.1"
+        ],
+        [
+          "DMLR",
+          "S_Dry3",
+          "\\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$5,342.5\\pm 141,7$$\\end{document}",
+          "26.6"
+        ],
+        [
+          "",
+          "S_Dry4",
+          "\\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$5,466.0\\pm 215.5$$\\end{document}",
+          "29.5"
+        ],
+        [
+          "",
+          "S_Dry5",
+          "\\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$5,451.6\\pm 169.2$$\\end{document}",
+          "29.2"
+        ]
+      ],
+      "header_groups": [
+        {
+          "label": "Strategy",
+          "start_col": 1,
+          "end_col": 1
+        },
+        {
+          "label": "ID",
+          "start_col": 2,
+          "end_col": 2
+        },
+        {
+          "label": "Compacted mass",
+          "start_col": 3,
+          "end_col": 3
+        },
+        {
+          "label": "Gain",
+          "start_col": 4,
+          "end_col": 4
+        }
+      ],
+      "table_alignment_status": "resolved",
+      "row_provenance": [
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 8,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 8,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 8,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 8,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 9,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 9,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 9,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 9,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 10,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 10,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 10,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 10,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 11,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 11,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 11,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 11,
+            "source_col": 4
+          }
+        ]
+      ],
+      "tbody_alignment_status": "resolved"
+    }
+  ]
+}

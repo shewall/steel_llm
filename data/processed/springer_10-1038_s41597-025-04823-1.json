@@ -1,0 +1,1311 @@
+{
+  "doi": "10.1038/s41597-025-04823-1",
+  "title": "Comprehensive Toughness Dataset of Nuclear Reactor Structural Materials using Charpy V-Notch Impact Testing",
+  "abstract": "Abstract Reactor pressure vessel (RPV) steels are critical for maintaining the structural integrity and safety of nuclear reactors, designed to endure extreme conditions over prolonged operational lifetimes. Evaluating the mechanical properties of RPV steels frequently involves tests with sub-sized specimens, due to size constraints associated with irradiated materials. However, the reduced specimen dimensions introduce a size effect that alters material behavior and requires correlating the test results to full-sized specimens. Although numerous correlation methods have been previously proposed, they are typically applicable to specific test conditions. To address these challenges, this study introduces a public dataset of 4,961 Charpy impact test records for RPV steels. The dataset was compiled through a comprehensive literature review and incorporates data from 109 peer-reviewed publications. It provides detailed information on material composition, manufacturing treatments, specimen dimensions, testing conditions, and test results. The primary objective of the dataset is to advance the understanding of specimen size effect in Charpy impact testing, and support studies for validating existing methods and developing data-driven approaches for test results correlation.",
+  "journal": "Scientific Data",
+  "year": "2025",
+  "sections": [
+    {
+      "heading": "Background & Summary",
+      "paragraphs": [
+        "Nuclear power remains one of the most significant contributors to global energy production in the 21st century. The continued safe operation and advancement of nuclear power plants rely significantly on the research and development of reactor pressure vessel (RPV) materials 1 , 2 . Current research efforts in the nuclear sector are increasingly directed toward designing advanced high-efficiency reactors with extended operational lifespans 3 ,  4 – 5 . The next-generation reactors are being engineered to operate at significantly higher temperatures and radiation flux levels than their predecessors, which necessitates the development of novel materials with superior performance under extreme environments.",
+        "One of the main challenges in materials research for advancing the nuclear sector is the constrained volume and geometrical limitations of test reactors, which preclude the use of standard-sized specimens for conducting mechanical tests 5 , 6 . Furthermore, the expanding complexity of material development and testing has led to significant increases in the associated costs and time requirements for producing testing materials. To address these challenges, reducing the size of test specimens has emerged as a practical mitigation strategy, enabling to perform greater number of tests with limited material resources, thereby accelerating the pace of research and development 7 ,  8 ,  9 ,  10 ,  11 ,  12 ,  13 ,  14 ,  15 ,  16 – 17 .",
+        "Sub-sized specimens have been extensively employed to characterize material performance over the last four decades. Despite the advantages, testing with sub-sized specimens presents unique challenges, including the need for test instrumentation with higher resolution and precision to ensure accurate measurements, and increased variability in mechanical properties caused by microstructural heterogeneity at smaller scales 18 ,  19 – 20 . One of the most significant challenges associated with sub-sized specimen testing is the phenomenon of specimen size effect, referring to altered material behavior due to scaling or geometrical changes in the test samples 8 , 21 . Failure to account for the size effect can result in inaccurate reporting of material properties, posing potential premature material fracture and safety risks.",
+        "For structural integrity assessment, the Charpy V-Notch (CVN) impact test is one of the simplest and most cost-effective methods to determine key material properties, such as upper shelf energy (USE), and ductile-to-brittle transition temperature (DBTT). Sub-sized Charpy specimens have been increasingly adopted to address the limited availability of irradiated material samples and extend current surveillance programs (e.g., by manufacturing specimens with reduced size from broken halves of previously tested full-sized specimens 22 ). On the other hand, testing with sub-sized Charpy specimens causes a shift in characteristic parameters like USE and DBTT compared to full-sized specimens. Consequently, multiple analytical methods have been developed to correlate test parameters between sub-sized and full-sized Charpy specimens. These analytical methods were employed by application standards such as ASTM A370 23 , BS7910 24 , and API57 25  to provide guidelines for converting experimental data from sub-sized Charpy specimens to correspond to full-size specimen results. However, current conversion methods typically rely on applying simple scaling factors or power-law relations to the experimentally obtained results, and struggle to accurately correlate the effect of reduced specimen dimensions across the entire ductile-to-brittle transition range. For example, sub-sized specimens tend to produce higher impact energies in the lower shelf region and proportionally lower energies in the upper shelf region 20 . Additionally, conversion methods that employ empirical relations require determining correlation parameters, which are dependent on the used material and test conditions; hence, the correlation parameters need to be determined based on empirical results for each new material and test condition 26 . The development of advanced methods for correlating Charpy impact test results between sub-sized and full-sized specimens that reliably model the complex interaction between ductile and brittle fracture mechanisms remains an open research question.",
+        "Recent advances in machine learning (ML) have the potential to address the complexities associated with specimen size effect in material testing. Specifically, ML-based approaches excel in pattern recognition and can account for the non-linear relationships among high-dimensional features in sub-sized specimen testing 27 ,  28 – 29 . For instance, ML methods can integrate categorical features into model training (such as specimen orientation, manufacturing treatment, and microstructural characteristics), which are difficult to incorporate into conventional analytical correlation models, but can otherwise significantly impact test outcomes 30 ,  31 ,  32 ,  33 ,  34 – 35 . Furthermore, explainable ML techniques allow researchers to interpret the contributions of individual variables (such as composition and testing temperature) to the test results and can provide valuable insights for associating experimental observations with the specimen size effect.",
+        "This paper aims to lay the groundwork for future studies that explore the size effect on Charpy specimens. Toward this goal, we created a public dataset of Charpy impact test properties for RPV steels and nuclear structural materials, including SA533B, SA508, 20MnMoNi55, A302B, and SS316 alloys. The chemical compositions of these alloys are shown in Table  1 . The dataset consists of 4,961 Charpy test records and provides detailed information on material composition, manufacturing treatments, irradiation conditions, specimen dimensions, testing conditions, and Charpy impact test results. The dataset was compiled through a comprehensive literature review and incorporates data from 109 peer-reviewed publications. The search inclusion criteria targeted peer-reviewed studies on Charpy-impact testing of sub-sized and full-sized specimens, providing quantitative data on material properties relative to specimen size. Material science experts performed technical validation to verify the accuracy and consistency of collected data. The dataset of Charpy impact tests can be leveraged to validate existing analytical methods or develop ML predictive models for establishing correlations between sub-sized and full-sized specimen properties. Such models can contribute to extending the safe operational lifespans of nuclear reactors and ensuring the reliability of structural materials under extreme conditions. Table 1 Chemical compositions of the studied alloys, weight %. C Si Mn P S Ni Cr Mo V Cu Fe SA533B min 0 0.15 0.80 0 0 0.37 — 0.35 — — Balance max 0.25 0.60 1.80 0.035 0.035 0.85 — 0.65 — — Balance SA508 min 0.15 0.15 0.66 0.006 0 0.37 0.31 0.37 — 0.03 Balance max 0.21 0.30 1.59 0.012 — 0.85 0.45 0.68 0.01 0.10 Balance 20MnMoNi55 min 0.17 0 1.00 0 0 0.40 — 0.45 — — Balance max 0.23 0.35 1.50 0.020 0.020 0.80 0.30 0.60 — 0.18 Balance A302B min 0 0.13 1.07 0 0 — 0.41 — — Balance max 0.25 0.45 1.62 0.035 0.035 — — 0.64 — — Balance SS316 min 0 0 0 0 0 10.0 16.0 2.00 — — Balance max 0.08 0.75 2.00 0.045 0.030 14.0 18.0 3.00 — — Balance"
+      ]
+    },
+    {
+      "heading": "Methods",
+      "paragraphs": []
+    },
+    {
+      "heading": "Charpy V-notch Impact Test",
+      "paragraphs": [
+        "The Charpy impact test is a standardized method for evaluating the impact toughness of materials under dynamic loading conditions. Developed by Georges Augustin Albert Charpy in the early 1900s 36 , the test enables high strain rate mechanical assessments across a range of temperatures, offering important insights into material toughness and fracture behavior.",
+        "In the Charpy test, a notched specimen is placed horizontally on two supports, and a pendulum hammer set at a fixed height is released to strike the specimen opposite the notch and fracture it (see Fig.  1a ). The energy absorbed by the material during fracture is determined by measuring the height to which the pendulum swings after breaking the specimen. The absorbed energy reflects the material’s ability to resist impact and deformation. Fig. 1 ( a ) Illustration of Charpy impact test setup 166 ; ( b ) Ductile-to-brittle transition curve 167 .",
+        "The most common testing approach standardized by ASTM E23 37  involves conducting Charpy V-notch tests at various temperatures. The measured values of impact energy plotted versus temperature are used to establish a pattern of energy absorption, referred to as the ductile-to-brittle transition (DBT) curves. A typical DBT curve is depicted in Fig.  1b  and consists of three regions: an upper shelf region with high, nearly constant impact energy, a transition region characterized by a steep decrease in energy absorption, and a lower shelf region with low, nearly constant impact energy. The upper shelf region corresponds to ductile fracture behavior, whereas the lower shelf region corresponds to brittle fracture behavior. Due to inherent experimental variations, a model from the family of logistic sigmoid functions is typically fitted to the collected data of impact energies at various temperatures to obtain the DBT curve. E.g., a curve fitting with a hyperbolic tangent function is commonly adopted in many related studies.",
+        "Two key material features extracted from DBT curves are the upper shelf energy (USE) and the ductile-to-brittle transition temperature (DBTT) (shown in Fig.  1b ). USE represents the energy absorbed in the ductile region, while DBTT is the temperature that marks the transition from high energy absorption to low energy absorption. These properties are essential for assessing material performance under varying conditions and identifying the material’s suitability for specific operating conditions. Although the V-notch test is the most commonly used variation of the Charpy impact test, other variants with different notch shapes (e.g., U-notch) or without a notch are also employed for some applications."
+      ]
+    },
+    {
+      "heading": "Specimen size effect",
+      "paragraphs": [
+        "Standards for Charpy impact testing have been developed by various organizations, and include ASTM E23 37 , ISO 148-2 38 , GB/T 229 39 , and EN 10045-1 40 . These standards typically follow a full-sized Charpy specimen with length, thickness, and width dimensions of 55 × 10 × 10 mm, a notch depth of 2 mm, a notch angle of 45°, and a notch root radius of 0.25 mm (ASTM E23). Sub-sized specimens with reduced thickness, such as 6.67 mm (2/3-size), 5 mm (1/2-size), and 2.5 mm (1/4-size), have been used for cases where specimens with full-size thickness cannot be extracted. Related studies have also used specimens that have reduced thickness, width, length, and notch dimensions, and are commonly referred to as miniature specimens. Historically, early Charpy standards did not account for sub-sized specimens. However, contemporary standards are being increasingly developed to standardize the use of sub-sized specimens for future testing.",
+        "As with most mechanical testing methods, specimen size has a significant influence on the measured mechanical properties of materials. In tensile testing, for instance, it is well-documented that reducing specimen dimensions often results in decreased ductility and increased strength 41 ,  42 – 43 . Similar size effects are observed in Charpy V-notch tests, where changes in specimen dimensions impact USE and DBTT, with smaller specimens tending to exhibit lower USE and DBTT values 43 , 44 . Additionally, prior studies reported that while USE is primarily influenced by specimen thickness and ligament size, it shows minimal sensitivity to notch geometry. Conversely, DBTT is strongly affected by notch geometry, particularly by variations in notch depth and root radius 11 , 12 .",
+        "Significant research efforts on understanding the specimen size effect have been dedicated in recent decades. Numerous studies have proposed methods to correlate the results of sub-sized Charpy V-notch specimens and full-sized specimens. These approaches aim to address the inherent difficulties in comparing mechanical property data across varying specimen sizes. The following sections present an overview of methods for correlation of USE and DBTT for sub-sized specimens."
+      ]
+    },
+    {
+      "heading": "Correlation of Upper Shelf Energy",
+      "paragraphs": [
+        "Analytical methods for correlation of USE between sub-sized and full-sized Charpy specimens aim to establish relationships that account for the differences in specimen dimensions and geometry to achieve comparability of test results. Common correlation methods for USE are summarized in Table  2 . Table 2 Analytical methods for correlation of USE between sub-sized and full-sized Charpy specimens. Authors Methodology Explanation Lucas  et al . 46 USE / B W − A 2 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${USE}/{B\\left(W-A\\right)}^{2}$$\\end{document} Normalization Corwin  et al . 47 USE / ( B W − A ) 3 / 2 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${USE}/{(B\\left(W-A\\right))}^{3/2}$$\\end{document} Normalization Louden  et al . 48 USE · L K t / B W − A 2 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${USE}\\cdot {L{K}_{t}/B\\left(W-A\\right)}^{2}$$\\end{document} Normalization with stress concentration factor Kayano  et al . 49 USE · K t ′ / ( B W − A ) 3 / 2 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${USE}\\cdot {K}_{t}^{{\\prime} }/{(B\\left(W-A\\right))}^{3/2}$$\\end{document} Normalization with modified stress concentration factor Kumar  et al . 51 Δ USE + USE p \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\Delta {USE}+{{USE}}_{p}$$\\end{document} Sum of crack initiation and crack propagation energy Sokolov  et al . 52 USE ( NF brittle 1 − S + NF ductile S ) \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${USE}({{NF}}_{{brittle}}\\left(1-S\\right)+{{NF}}_{{ductile}}S)$$\\end{document} Empirical sum of ductile fracture and brittle fracture Uehira  et al . 53 USE / m Bb n \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${USE}/{m\\left({Bb}\\right)}^{n}$$\\end{document} Empirical power-law correlation Wallin 54 USE B 10 1 − 0.5 e x p 0.11 U f B − 4.9 / 1 + e x p 0.11 U f B − 4.9 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${USE}\\frac{B}{10}\\left[1-\\left(0.5{e}{x}{p}\\left(0.11\\frac{{U}_{f}}{B}-4.9\\right)\\right)/\\left(1+{e}{x}{p}\\left(0.11\\frac{{U}_{f}}{B}-4.9\\right)\\right)\\right]$$\\end{document} Empirical exponential correlation",
+        "Several works introduced normalization factors that scale the USE of sub-sized specimens to approximate the USE of corresponding full-sized specimens manufactured from the same material and tested under the same conditions. Lucas  et al . 45 , 46  proposed a normalization factor based on the fracture volume of the Charpy V-Noth specimen  B W − A 2 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${B\\left(W-A\\right)}^{2}$$\\end{document} , where  B \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$B$$\\end{document}  denotes the specimen thickness,  W \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$W$$\\end{document}  is the width, and  A \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$A$$\\end{document}  denotes the notch depth. The difference  W − A \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$W-A$$\\end{document}  is the ligament size located under the notch. A modification of this method was proposed by Corwin  et al . 13 , 47 , where the fracture volume is calculated using  B W − A 3 / 2 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${\\left(B\\left(W-A\\right)\\right)}^{3/2}$$\\end{document} . The authors reported an adequate match of this method for ductile materials with USE greater than 150 [J].",
+        "The shortcoming of these methods is that they do not account for important factors such as the notch geometry or length of the specimen, which causes inconsistencies in the correlated values. Louden  et al . 48  introduced a normalization factor  L K t / B W − A 2 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${L{K}_{t}/B\\left(W-A\\right)}^{2}$$\\end{document} , which incorporates the specimen span  L \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$L$$\\end{document}  and the stress concentration factor  K t \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${K}_{t}$$\\end{document}  at the notch root. This approach produced an improved correlation for brittle materials with USE less than 100 [J]. Kayano  et al . 49  further expanded this method by introducing a modified stress concentration factor  K t ′ \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${K}_{t}^{{\\prime} }$$\\end{document}  calculated based on the notch angle.",
+        "Rosinski  et al . 50  reported that the above methods are inappropriate for correlating Charpy test results for irradiated materials with USE above 200 [J] before irradiation. Consequently, Kumar  et al . 44 , 51  proposed a method that divides USE into two components: the energy required to initiate a crack ( Δ USE \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\Delta {USE}$$\\end{document} ), and the energy required to propagate the crack ( USE p \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${{USE}}_{p}$$\\end{document} ). To calculate the correlated USE, the authors performed testing with both notched and precracked specimens to determine  Δ USE \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\Delta {USE}$$\\end{document}  and  USE p \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${{USE}}_{p}$$\\end{document} .",
+        "Sokolov  et al . 52  developed a correlation method that considers the contributions of both brittle and ductile fractures to the change in impact energy. The proposed method employs normalization factors  NF brittle \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${{NF}}_{{brittle}}$$\\end{document}  and  NF ductile \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${{NF}}_{{ductile}}$$\\end{document}  that are empirically calculated based on the ratio of fracture surface for full-sized and sub-sized specimens, and  S \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$S$$\\end{document}  is the percent of shear fracture on the fracture surface.",
+        "Another empirical correlation method was proposed by Uehira  et al . 53 , which employs a power-law relationship for the size effect defined as  USE / m Bb n \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${USE}/{m\\left({Bb}\\right)}^{n}$$\\end{document} , where the coefficients  m \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$m$$\\end{document}  and  n \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$n$$\\end{document}  and determined empirically using USE values for corresponding full-size specimens. Wallin  et al . 21 , 54 , 55  developed the correlation method shown in Table  2 , based on empirical observation that the fracture energy for 100% shear fracture is about half the energy for normal ductile tearing. The proposed method applies normalization of the USE by the thickness  B \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$B$$\\end{document}  and fits a hyperbolic tangent function that starts at 1 and ends at 0.5.",
+        "While each of the proposed correlation approaches has unique strengths, they also have inherent limitations. The methods based on normalization by scaling factors are generally simplistic and unsuitable for general application across specimen geometries and materials. Conversely, other methods are excessively complex, relying on test-specific variables or assumptions, which compromise their reliability. Furthermore, some methods require additional experiments with precracked specimens or rely on empirical data to determine constants or parameters in the proposed models. Conclusively, the development of robust correlation methods that simultaneously account for material properties, specimen treatment, or testing parameters is still an open research problem."
+      ]
+    },
+    {
+      "heading": "Correlation of Ductile-to-Brittle Transition Temperature",
+      "paragraphs": [
+        "Analogously, studies in the published literature have proposed methods for the correlation of DBTT between sub-sized and full-sized test samples. Table  3  lists common DBTT correlation methods. Table 3 Analytical methods for correlation of DBTT between sub-sized and full-sized Charpy specimens. Authors Methodology Explanation Towers 165 DBTT + 0.7 10 − B 2 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${DBTT}+0.7{\\left(10-B\\right)}^{2}$$\\end{document} Temperature shift of a constant Wallin  et al . 54 DBTT − 51.4 · ln ( 2 B / 10 0.25 − 1 ) \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${DBTT}-51.4\\cdot \\mathrm{ln}(2{B/10}^{0.25}-1)$$\\end{document} Temperature shift of a constant Lucon  et al . 43 DBTT + 92.7 − 14.34 · ln ( B · W − A 2 ) \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${DBTT}+92.7-14.34\\cdot \\mathrm{ln}(B\\cdot {\\left(W-A\\right)}^{2})$$\\end{document} Temperature shift of a constant Louden  et al . 48 DBTT · ( 2 B ( W − A ) 2 ) / K t 3 P m L \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${DBTT}\\cdot (2B{(W-A)}^{2})/{K}_{t}3{P}_{m}L$$\\end{document} Normalization with stress concentration factor Kayano  et al . 49 DBTT / K t ′ 1 / 2 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${DBTT}/{{K}_{t}^{{\\prime} }}^{1/2}$$\\end{document} Normalization with modified stress concentration factor Kurishita  et al . 12 If  ( A / ρ ) ~ 15 → \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$(A/\\rho ) \\sim 15\\to $$\\end{document} DBTT \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${DBTT}$$\\end{document} Using notch depth to root radius ratio Uehira  et al . 53 DBTT / ( 115 ( log 10 B K t ) − 158 ) \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${DBTT}/(115({\\log }_{10}B{K}_{t})-158)$$\\end{document} Empirical correlation",
+        "Conventional correlation techniques apply a constant temperature shift between the full-sized and sub-sized samples 9 , 43 , 52 , 56 . The temperature shift is determined empirically and it generally varies with the differences in specimen dimensions. For instance, Towers 52  recommended the following constant  0.7 10 − B 2 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$0.7{\\left(10-B\\right)}^{2}$$\\end{document} , Wallin  et el . 54  proposed the constant  51.4 · ln 2 B / 10 0.25 − 1 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$51.4\\cdot \\mathrm{ln}\\left(2{B/10}^{0.25}-1\\right)$$\\end{document} , and Lucon  et al . 38  proposed  92.7 − 14.34 · ln ( B · ( W − A ) 2 ) \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$92.7-14.34\\cdot \\mathrm{ln}(B\\cdot {(W-A)}^{2})$$\\end{document} . This approach is the most basic technique to estimate the correlated DBTT.",
+        "Louden  et al . 48  proposed a normalization factor for DBTT correlation given as  ( 2 B ( W − A ) 2 ) / K t 3 P m L \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$(2B{(W-A)}^{2})/{K}_{t}3{P}_{m}L$$\\end{document} , where  K t \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${K}_{t}$$\\end{document}  is the stress concentration factor,  P m \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${P}_{m}$$\\end{document}  denotes the maximum load during a Charpy test, and the other parameters are as defined in the previous section. Kayano  et al . 49  observed that using a normalization factor of  K t ′ 1 / 2 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${{K}_{t}^{{\\prime} }}^{1/2}$$\\end{document}  achieves adequate correlation for sub-sized specimens.",
+        "Kurishita  et al . 12  introduced a correlation based on the ratio of the notch depth  A \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$A$$\\end{document}  to notch root radius  ρ \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\rho $$\\end{document} . When the ratio  A / ρ \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$A/\\rho $$\\end{document}  is approximately 15, the authors reported that DBTT of sub-sized specimens is approximately equal to DBTT for the corresponding full-sized specimens.",
+        "Uehira  et al . 53  developed an empirical method that employs a logarithmic relationship including the sample thickness  B \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$B$$\\end{document}  and stress concentration factor  K t \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${K}_{t}$$\\end{document} .",
+        "Similar to the correlation methods for USE, the analytical methods for DBTT correlation are typically material and condition-specific and require calculation of empirical constants or parameters in order to be applicable to specific scenarios."
+      ]
+    },
+    {
+      "heading": "Data acquisition",
+      "paragraphs": [
+        "We conducted the literature search primarily using Google Scholar with the query terms “Charpy impact test”, “sub-sized Charpy”, “SA533B Charpy Impact”, “A533B Charpy Impact”, “SA302 Charpy Impact”, “A302 Charpy Impact”, “20MnMoNi55 Charpy Impact”, “SS316 Charpy Impact”, and “toughness test”. To address potentially missed results, additional search engines, including Google search and Bing search, were employed. This process resulted in 150 identified peer-reviewed publications containing potentially relevant data.",
+        "The next step included further analysis and refinement of the identified publications, based on inclusion criteria related to the specimen chemical composition, manufacturing treatment, irradiation conditions, mechanical properties, impact toughness energy, and test temperature. We considered publications that contain Charpy impact test results for RPV steels with a focus on the following steels: SA508, SA53B, 20MnMoNi55, and A302B. In addition, we collected data for Stainless Steel 316, due to its role as nuclear structural material. We collected Charpy test records for both sub-sized and full-sized specimens. Papers lacking the above information were excluded from further analysis, resulting in a final dataset based on 109 publications 7 , 8 , 10 , 57 ,  58 ,  59 ,  60 ,  61 ,  62 ,  63 ,  64 ,  65 ,  66 ,  67 ,  68 ,  69 ,  70 ,  71 ,  72 ,  73 ,  74 ,  75 ,  76 ,  77 ,  78 ,  79 ,  80 ,  81 ,  82 ,  83 ,  84 ,  85 ,  86 ,  87 ,  88 ,  89 ,  90 ,  91 ,  92 ,  93 ,  94 ,  95 ,  96 ,  97 ,  98 ,  99 ,  100 ,  101 ,  102 ,  103 ,  104 ,  105 ,  106 ,  107 ,  108 ,  109 ,  110 ,  111 ,  112 ,  113 ,  114 ,  115 ,  116 ,  117 ,  118 ,  119 ,  120 ,  121 ,  122 ,  123 ,  124 ,  125 ,  126 ,  127 ,  128 ,  129 ,  130 ,  131 ,  132 ,  133 ,  134 ,  135 ,  136 ,  137 ,  138 ,  139 ,  140 ,  141 ,  142 ,  143 ,  144 ,  145 ,  146 ,  147 ,  148 ,  149 ,  150 ,  151 ,  152 ,  153 ,  154 ,  155 ,  156 ,  157 ,  158 ,  159 ,  160 ,  161 – 162 .",
+        "In the publications that presented the data in tabular format, we extracted the test records and stored them in a spreadsheet. A significant portion of the Charpy impact test data was presented in graphical form in the publications. We used the WebPlotDigitizer software 163  to manually extract data points from graphs and plots. All extracted data were compiled into a spreadsheet for further analysis, resulting in 4,961 Charpy impact test records in total."
+      ]
+    },
+    {
+      "heading": "Data post-processing",
+      "paragraphs": [
+        "To ensure uniformity in the dataset, our team performed post-processing to standardize units and resolve inconsistencies. As many publications reported measurements in varying units, all values for the columns were converted to a single standard unit. For instance, temperatures reported in Fahrenheit or Kelvin degrees were converted to Celsius degrees. Additionally, material compositions often included the term “balance” for primary elements, such as Iron (Fe) in steels. This was remedied by subtracting the weight percentages (wt.%) of all other alloying elements to calculate the weight percentage of the primary element. Following post-processing, all values were standardized and recorded under consistent units to ensure compatibility and reliability for subsequent analysis."
+      ]
+    },
+    {
+      "heading": "Data distribution",
+      "paragraphs": [
+        "The histogram of the distribution of specimens’ materials in the dataset is shown in Fig.  2 . The most common materials are SA508 and SA533B, followed by SS316, 20MnMoNi55, A302B, and 15Cr2MoV-A. The distributions of specimens’ dimensions are shown in Fig.  3 , where full-sized specimens have thickness and width of 10 mm and length of 55 mm, while sub-sized specimens have thickness and width ranging from 1.5 to 5 mm, and lengths between 20 and 27.5 mm. In addition, Fig.  3  also shows the histograms for the notch depth and notch angle. Figure  4  presents histograms of the irradiation dose and temperature for the irradiated specimens in the dataset. Figure  5  presents plots of the distributions of USE and DBTT in the dataset. Fig. 2 Histogram of the material class distribution. Fig. 3 Histograms of specimen dimensions: ( a ) width, ( b ) thickness, ( c ) length, ( d ) notch depth, ( e ) notch angle. Fig. 4 Histograms of irradiation conditions: ( a ) irradiation dose, ( b ) irradiation temperature. Fig. 5 Histograms of Charpy parameters: ( a ) Upper Shelf Energy, ( b ) Ductile-to-Brittle Transition Temperature."
+      ]
+    },
+    {
+      "heading": "Data Records",
+      "paragraphs": [
+        "The dataset is available at the Materials Cloud Archive 164 . The extracted data are stored in a spreadsheet format. Figure  6  provides a schematic representation of the dataset’s structure and organization. The rows in the dataset contain retrieved data for individual Charpy impact tests. The dataset consists of 55 columns, categorized into the following groups: reference, material information, manufacturing and treatment information, irradiation conditions, specimen dimensions, Charpy test conditions, and Charpy properties. The worksheet includes a “References” worksheet listing the publications from which the data was extracted, and a “Column Description” worksheet providing descriptions of the columns in the dataset. Fig. 6 Organization of the dataset by columns and data categories.",
+        "The reference column contains the ID number corresponding to the publications in the References worksheet. The material information columns contain the name of the material for the test specimen and the chemical compositions. The manufacturing and treatment information columns provide important information related to the applied specimen treatment method, treatment time and temperature, cooling methods, microstructure, grain size, and morphology. The specimen irradiation conditions are important for nuclear applications of material, and include information for the irradiation dose, irradiation temperature, and time. The specimen dimensions and sizes are particularly important for this study and contain the testing standard, length, width, thickness, notch depth, notch angle, and notch root radius. The Charpy test conditions columns list the test temperature, test geometry, and specimen orientation. The Charpy properties columns provide the measured value for the impact energy and the estimated values for USE and DBTT."
+      ]
+    },
+    {
+      "heading": "Usage Notes",
+      "paragraphs": [
+        "It is important to note that a common challenge in compiling literature data is incomplete reporting and gaps in the provided information. Not all publications provide comprehensive information needed to populate all columns. Parameters such as microstructure, treatment details, or grain size are absent in some references, leading to gaps or blank entries in the worksheet. These limitations require a cautious interpretation of the data. In addition, potential errors can result from the data extraction procedure from publication graphs. As mitigation strategies, we ensured that the graph axes were calibrated carefully and that extraction procedures were consistent, and whenever feasible, extracted data points were cross validated with accessible tabular values in order to lessen these impacts. Despite these challenges, the dataset can serve as a valuable resource for validation and analysis of Charpy impact tests."
+      ]
+    },
+    {
+      "heading": "Technical Validation",
+      "paragraphs": [
+        "The collected data from the literature of Charpy impact tests underwent a rigorous process of review and validation by material science experts. The goal was to ensure the accuracy and reliability of the retrieved data, focusing on verifying features such as material composition, standardization of names and terms related to heat treatments and manufacturing methods, and validation that testing procedures are accurately extracted. Particular emphasis was placed on verifying specimen size information to ensure consistency and applicability to the study’s objectives. The technical experts also verified the consistency of data conversion to standardized units of measurement.",
+        "Furthermore, statistical analyses were conducted and data visualizations were applied to identify and assess outliers within the dataset. Potential outliers were examined and either validated as legitimate data points or excluded based on deviation from established norms. Comprehensive technical validation ensured that the dataset is reliable, robust, and suitable for subsequent analysis or modeling."
+      ]
+    }
+  ],
+  "tables": [
+    {
+      "caption": "Chemical compositions of the studied alloys, weight %.",
+      "headers": [
+        "",
+        "",
+        "C",
+        "Si",
+        "Mn",
+        "P",
+        "S",
+        "Ni",
+        "Cr",
+        "Mo",
+        "V",
+        "Cu",
+        "Fe"
+      ],
+      "rows": [
+        [
+          "SA533B",
+          "min",
+          "0",
+          "0.15",
+          "0.80",
+          "0",
+          "0",
+          "0.37",
+          "—",
+          "0.35",
+          "—",
+          "—",
+          "Balance"
+        ],
+        [
+          "SA533B",
+          "max",
+          "0.25",
+          "0.60",
+          "1.80",
+          "0.035",
+          "0.035",
+          "0.85",
+          "—",
+          "0.65",
+          "—",
+          "—",
+          "Balance"
+        ],
+        [
+          "SA508",
+          "min",
+          "0.15",
+          "0.15",
+          "0.66",
+          "0.006",
+          "0",
+          "0.37",
+          "0.31",
+          "0.37",
+          "—",
+          "0.03",
+          "Balance"
+        ],
+        [
+          "SA508",
+          "max",
+          "0.21",
+          "0.30",
+          "1.59",
+          "0.012",
+          "—",
+          "0.85",
+          "0.45",
+          "0.68",
+          "0.01",
+          "0.10",
+          "Balance"
+        ],
+        [
+          "20MnMoNi55",
+          "min",
+          "0.17",
+          "0",
+          "1.00",
+          "0",
+          "0",
+          "0.40",
+          "—",
+          "0.45",
+          "—",
+          "—",
+          "Balance"
+        ],
+        [
+          "20MnMoNi55",
+          "max",
+          "0.23",
+          "0.35",
+          "1.50",
+          "0.020",
+          "0.020",
+          "0.80",
+          "0.30",
+          "0.60",
+          "—",
+          "0.18",
+          "Balance"
+        ],
+        [
+          "A302B",
+          "min",
+          "0",
+          "0.13",
+          "1.07",
+          "0",
+          "0",
+          "—",
+          "",
+          "0.41",
+          "—",
+          "—",
+          "Balance"
+        ],
+        [
+          "A302B",
+          "max",
+          "0.25",
+          "0.45",
+          "1.62",
+          "0.035",
+          "0.035",
+          "—",
+          "—",
+          "0.64",
+          "—",
+          "—",
+          "Balance"
+        ],
+        [
+          "SS316",
+          "min",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "10.0",
+          "16.0",
+          "2.00",
+          "—",
+          "—",
+          "Balance"
+        ],
+        [
+          "SS316",
+          "max",
+          "0.08",
+          "0.75",
+          "2.00",
+          "0.045",
+          "0.030",
+          "14.0",
+          "18.0",
+          "3.00",
+          "—",
+          "—",
+          "Balance"
+        ]
+      ],
+      "header_groups": [],
+      "table_alignment_status": "resolved",
+      "row_provenance": [
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 7
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 8
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 9
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 10
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 11
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 12
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 13
+          }
+        ],
+        [
+          {
+            "source": "carried",
+            "source_row_index": 0,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 7
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 8
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 9
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 10
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 11
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 12
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 13
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 7
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 8
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 9
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 10
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 11
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 12
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 13
+          }
+        ],
+        [
+          {
+            "source": "carried",
+            "source_row_index": 2,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 7
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 8
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 9
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 10
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 11
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 12
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 13
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 7
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 8
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 9
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 10
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 11
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 12
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 13
+          }
+        ],
+        [
+          {
+            "source": "carried",
+            "source_row_index": 4,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 7
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 8
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 9
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 10
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 11
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 12
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 13
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 7
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 8
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 9
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 10
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 11
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 12
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 13
+          }
+        ],
+        [
+          {
+            "source": "carried",
+            "source_row_index": 6,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 7
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 8
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 9
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 10
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 11
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 12
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 13
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 8,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 8,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 8,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 8,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 8,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 8,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 8,
+            "source_col": 7
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 8,
+            "source_col": 8
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 8,
+            "source_col": 9
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 8,
+            "source_col": 10
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 8,
+            "source_col": 11
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 8,
+            "source_col": 12
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 8,
+            "source_col": 13
+          }
+        ],
+        [
+          {
+            "source": "carried",
+            "source_row_index": 8,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 9,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 9,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 9,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 9,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 9,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 9,
+            "source_col": 7
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 9,
+            "source_col": 8
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 9,
+            "source_col": 9
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 9,
+            "source_col": 10
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 9,
+            "source_col": 11
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 9,
+            "source_col": 12
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 9,
+            "source_col": 13
+          }
+        ]
+      ],
+      "tbody_alignment_status": "resolved"
+    },
+    {
+      "caption": "Analytical methods for correlation of USE between sub-sized and full-sized Charpy specimens.",
+      "headers": [
+        "Authors",
+        "Methodology",
+        "Explanation"
+      ],
+      "rows": [
+        [
+          "Lucas  et al . 46",
+          "USE / B W − A 2 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${USE}/{B\\left(W-A\\right)}^{2}$$\\end{document}",
+          "Normalization"
+        ],
+        [
+          "Corwin  et al . 47",
+          "USE / ( B W − A ) 3 / 2 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${USE}/{(B\\left(W-A\\right))}^{3/2}$$\\end{document}",
+          "Normalization"
+        ],
+        [
+          "Louden  et al . 48",
+          "USE · L K t / B W − A 2 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${USE}\\cdot {L{K}_{t}/B\\left(W-A\\right)}^{2}$$\\end{document}",
+          "Normalization with stress concentration factor"
+        ],
+        [
+          "Kayano  et al . 49",
+          "USE · K t ′ / ( B W − A ) 3 / 2 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${USE}\\cdot {K}_{t}^{{\\prime} }/{(B\\left(W-A\\right))}^{3/2}$$\\end{document}",
+          "Normalization with modified stress concentration factor"
+        ],
+        [
+          "Kumar  et al . 51",
+          "Δ USE + USE p \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\Delta {USE}+{{USE}}_{p}$$\\end{document}",
+          "Sum of crack initiation and crack propagation energy"
+        ],
+        [
+          "Sokolov  et al . 52",
+          "USE ( NF brittle 1 − S + NF ductile S ) \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${USE}({{NF}}_{{brittle}}\\left(1-S\\right)+{{NF}}_{{ductile}}S)$$\\end{document}",
+          "Empirical sum of ductile fracture and brittle fracture"
+        ],
+        [
+          "Uehira  et al . 53",
+          "USE / m Bb n \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${USE}/{m\\left({Bb}\\right)}^{n}$$\\end{document}",
+          "Empirical power-law correlation"
+        ],
+        [
+          "Wallin 54",
+          "USE B 10 1 − 0.5 e x p 0.11 U f B − 4.9 / 1 + e x p 0.11 U f B − 4.9 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${USE}\\frac{B}{10}\\left[1-\\left(0.5{e}{x}{p}\\left(0.11\\frac{{U}_{f}}{B}-4.9\\right)\\right)/\\left(1+{e}{x}{p}\\left(0.11\\frac{{U}_{f}}{B}-4.9\\right)\\right)\\right]$$\\end{document}",
+          "Empirical exponential correlation"
+        ]
+      ],
+      "header_groups": [],
+      "table_alignment_status": "resolved",
+      "row_provenance": [
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 3
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 3
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 3
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 3
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 3
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 3
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 3
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 3
+          }
+        ]
+      ],
+      "tbody_alignment_status": "resolved"
+    },
+    {
+      "caption": "Analytical methods for correlation of DBTT between sub-sized and full-sized Charpy specimens.",
+      "headers": [
+        "Authors",
+        "Methodology",
+        "Explanation"
+      ],
+      "rows": [
+        [
+          "Towers 165",
+          "DBTT + 0.7 10 − B 2 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${DBTT}+0.7{\\left(10-B\\right)}^{2}$$\\end{document}",
+          "Temperature shift of a constant"
+        ],
+        [
+          "Wallin  et al . 54",
+          "DBTT − 51.4 · ln ( 2 B / 10 0.25 − 1 ) \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${DBTT}-51.4\\cdot \\mathrm{ln}(2{B/10}^{0.25}-1)$$\\end{document}",
+          "Temperature shift of a constant"
+        ],
+        [
+          "Lucon  et al . 43",
+          "DBTT + 92.7 − 14.34 · ln ( B · W − A 2 ) \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${DBTT}+92.7-14.34\\cdot \\mathrm{ln}(B\\cdot {\\left(W-A\\right)}^{2})$$\\end{document}",
+          "Temperature shift of a constant"
+        ],
+        [
+          "Louden  et al . 48",
+          "DBTT · ( 2 B ( W − A ) 2 ) / K t 3 P m L \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${DBTT}\\cdot (2B{(W-A)}^{2})/{K}_{t}3{P}_{m}L$$\\end{document}",
+          "Normalization with stress concentration factor"
+        ],
+        [
+          "Kayano  et al . 49",
+          "DBTT / K t ′ 1 / 2 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${DBTT}/{{K}_{t}^{{\\prime} }}^{1/2}$$\\end{document}",
+          "Normalization with modified stress concentration factor"
+        ],
+        [
+          "Kurishita  et al . 12",
+          "If  ( A / ρ ) ~ 15 → \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$(A/\\rho ) \\sim 15\\to $$\\end{document} DBTT \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${DBTT}$$\\end{document}",
+          "Using notch depth to root radius ratio"
+        ],
+        [
+          "Uehira  et al . 53",
+          "DBTT / ( 115 ( log 10 B K t ) − 158 ) \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${DBTT}/(115({\\log }_{10}B{K}_{t})-158)$$\\end{document}",
+          "Empirical correlation"
+        ]
+      ],
+      "header_groups": [],
+      "table_alignment_status": "resolved",
+      "row_provenance": [
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 3
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 3
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 3
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 3
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 3
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 3
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 3
+          }
+        ]
+      ],
+      "tbody_alignment_status": "resolved"
+    }
+  ]
+}

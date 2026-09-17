@@ -1,0 +1,230 @@
+{
+  "doi": "10.1007/s40194-025-02323-9",
+  "title": "Influence of epoxy adhesive on the weldability and mechanical behavior of 22MnB5 in weld bonding",
+  "abstract": "Abstract Weld bonding is a hybrid joining technique that integrates structural adhesive bonding with resistance spot welding, combining the benefits of both chemical adhesion and metallurgical fusion. This study presents a comprehensive experimental and numerical framework for analyzing the weld bonding process in 1.5-mm-thick 22MnB5 steel sheets. A primary focus is placed on the rheological behavior and thermal degradation of the epoxy adhesive during squeeze-out, which was characterized experimentally and implemented into a finite element model using Simufact Forming. The model accurately captures the adhesive flow, weld nugget formation, surface indentation, and hardness evolution by coupling temperature-dependent material properties with phase transformation kinetics. Experimental validation confirms the simulation’s ability to predict nugget size (within 0.3 mm accuracy), adhesive spreading, and joint performance under lap shear and cross tension loading. Weld-bonded joints demonstrated enhanced mechanical performance compared to adhesive bonding and resistance spot welding alone, owing to increased nugget size and improved energy absorption. The integrated modeling strategy offers a robust predictive tool for optimizing hybrid joining processes in automotive and structural applications involving ultra-high-strength steels (UHSS).",
+  "journal": "Welding in the World",
+  "year": "2026",
+  "sections": [
+    {
+      "heading": "Introduction",
+      "paragraphs": [
+        "Resistance spot weld-bonding (RSWB), commonly referred to as weld bonding (WB), is a hybrid joining technique developed in the late twentieth century that combines the structural benefits of adhesive bonding with the speed and strength of weld bonding. This process leverages the advantages of both methods to produce joints with superior fatigue performance, enhanced crash energy absorption, improved corrosion resistance, and increased structural integrity. As such, it is widely implemented in the automotive and aerospace industries, particularly for lightweight and high-strength steel components. However, despite these advantages, WB presents challenges such as adhesive degradation under welding temperatures, potential void formation, and health concerns from toxic fume emissions during welding [ 1 ,  2 ].",
+        "The WB process involves a sequence of steps. Initially, a structural adhesive is applied between the mating surfaces of metal sheets. The sheets are then positioned between copper electrodes, where the adhesive undergoes squeeze-out as mechanical clamping pressure is applied. Following this, a high-intensity current is passed through the materials, generating localized heat at the faying surfaces due to electrical resistance. This heat melts the base material, forming a fusion zone or weld nugget. After the current is terminated, the clamping force is maintained to allow the weld to solidify under pressure, thereby forming a metallurgical bond. At the same time, the adhesive contributes to load distribution around the weld zone (Fig.  1 ) [ 3 ,  4 ]. This combination is particularly critical for UHSS such as 22MnB5, where traditional spot welding alone may lead to a reduction in fatigue life and corrosion resistance. At the same time, the adhesive layer helps distribute stress, enhance energy absorption, and reduce stress concentration around the weld nugget. Fig. 1 Schematic representation of weld bonding",
+        "Previous studies have focused extensively on the mechanical performance of weld-bonded joints, particularly on automotive applications [ 5 ,  6 – 7 ]. Experimental investigations have demonstrated significant improvements in fatigue life, joint strength, and corrosion resistance when adhesive bonding is combined with resistance spot welding. In addition, the presence of adhesive improves joint stiffness and stress distribution by reducing concentrations of local stress and enabling more uniform load transfer around the weld nugget [ 8 ,  9 – 10 ]. Dang et al. [ 11 ] and Kowieski and Matusiak [ 10 ] confirmed these benefits through comparative evaluations of conventional RSW and weld-bonded joints, showing increased failure loads and delayed crack initiation. Pouranvari and Safikhani [ 12 ] further demonstrated that hybrid joints with martensitic stainless steels exhibit greater toughness and load-bearing capacity, making them well-suited for structural and crash-relevant components. Darwish and Ghanya also emphasized the role of adhesives in balancing stress in joints with dissimilar sheet thicknesses, which helps mitigate early failure due to geometric mismatches [ 8 ].",
+        "On the modeling side, studies such as those by Zhang et al. [ 13 ] and Zhao et al. [ 14 ] have explored the interaction between adhesive and nugget formation, particularly how electrical resistance and adhesive degradation influence weld quality. However, most computational approaches still rely on simplified assumptions, often neglecting the adhesive’s rheological behavior during the squeeze cycle or its degradation under welding heat. While Li et al. [ 7 ] investigated weld-bonding process optimization in aluminum alloys and Maggiore et al. [ 15 ] characterized adhesive behavior in hybrid friction stir welded joints, these studies are not directly applicable to resistance spot weld bonding in press-hardenable steels (PHS). Consequently, current models do not fully capture the coupled thermomechanical behavior of weld-bonded joints, particularly the adhesive squeeze-out and thermal damage that occur under high electrode force and intense localized heating. These limitations are especially critical for materials like 22MnB5 steel, where the interaction between welding and adhesive dynamics plays a central role in weldability and joint performance.",
+        "In the field of hybrid joining technologies, such as self-pierce riveting (SPR) and weld bonding, finite element modeling often relies on simplified representations of adhesives using equivalent mechanical properties [ 16 ,  17 ,  18 ,  19 – 20 ]. While this approach significantly reduces computational complexity, it fails to capture key phenomena such as adhesive squeeze-out behavior, viscosity variation, and thermal degradation during welding. These limitations become particularly critical in high-temperature and high-pressure processes, such as resistance spot weld bonding, where the adhesive undergoes rapid deformation and a significant temperature rise. To improve simulation fidelity, this study focuses on modeling the adhesive spreading phase under coupled thermal and mechanical loading conditions. Given the non-Newtonian nature of structural epoxy adhesives, comprehensive rheological characterization was carried out to determine the temperature and shear-rate-dependent viscosity. These properties were then implemented in the initial stage of a thermo-mechanical simulation framework developed using finite element method (FEM), enabling a more accurate representation of the adhesive flow during the welding cycle.",
+        "While several studies have explored the numerical modeling of adhesive spreading in hybrid joining processes such as rivet bonding and flat clinch bonding, none has specifically addressed adhesive behavior in resistance spot weld bonding using a physically informed material model [ 18 ]. For instance, Potgorschek et al. [ 19 ] and Domitner et al. [ 16 ] modeled the adhesive in riv-bonding by substituting its viscoelastic properties with equivalent rate-dependent flow stress using the Ostwald–de Waele power law formulation, allowing implementation in Simufact Forming as a solid material with nonlinear strain rate sensitivity. Liu et al. [ 20 ] extended this approach by calibrating the model through interrupted tests, demonstrating the influence of adhesive distribution on deformation patterns during riveting. Similarly, Gerstmann and Awiszus [ 17 ] implemented a rate-power-law-based adhesive model in the flat clinch bonding process and highlighted the importance of capturing local flow-induced adhesive pockets to predict joint quality. However, to the best of the authors’ knowledge, no prior work has applied this adhesive modeling approach to resistance spot weld bonding. The current study bridges this gap by integrating a temperature and shear-rate-dependent adhesive model into a coupled thermal and mechanical simulation of the WB process using FEM. This represents a novel contribution in accurately simulating adhesive squeeze-out and degradation under the extreme conditions imposed by resistance spot welding.",
+        "This study investigates the influence of an epoxy adhesive on the weldability and mechanical behavior of 22MnB5 steel in resistance spot weld bonding. Experimental and numerical approaches are combined to elucidate the coupled thermal and mechanical interactions occurring during the process. Tensile shear and cross tension tests were performed on weld-bonded joints using 2 T stack configurations, defined as lap joints composed of two 22MnB5 sheets of thickness T, to characterize joint strength and failure behavior. In parallel, a coupled thermo-mechanical finite element framework was developed that explicitly integrates temperature and strain-rate-dependent adhesive rheological behavior into the resistance spot weld-bonding simulation. This approach enables physically informed prediction of adhesive squeeze-out, nugget formation, and local deformation during welding. The objective is to provide experimental validation and simulation-based insight into how adhesive flow and thermal effects jointly govern weld development and joint performance in weld-bonded ultra-high-strength steel assemblies."
+      ]
+    },
+    {
+      "heading": "Materials and methods",
+      "paragraphs": [
+        "The material used in this study was 22MnB5, a press-hardenable UHSS commonly applied in automotive structural components. The steel sheets were supplied with an Al-Si coating (AS80, 80 g/m 2 ) on both sides to improve oxidation resistance during hot stamping and joining. Flat sheets with a thickness of 1.5 mm were cut into coupons measuring 125 mm × 40 mm. Resistance spot welding and weld-bonding trials were performed using an Obara mid-frequency direct current (MFDC) pedestal-type spot welder. Dome-nose copper electrodes (ISO 5821/RWMA Class 2) with a 16-mm shank diameter and a 6-mm electrode face diameter were employed throughout all tests. For weld-bonding configurations, a structural epoxy adhesive was applied between the faying surfaces with a controlled bond-line thickness of 0.3 mm.",
+        "The structural adhesive used in this study was a one-component epoxy supplied by the manufacturer with the technical specifications summarized in Table  1 . Key parameters include viscosity at 25 °C, lap shear strength, elongation at break, and recommended curing conditions. The adhesive was cured at 180 °C for 30 min according to the supplier’s guidelines. Welding trials were conducted under controlled conditions using three different current levels while maintaining a constant electrode force, squeezing time, weld time, and hold time. In regions where the local temperature exceeded the adhesive thermal degradation temperature (150 °C), the adhesive was assumed to be fully degraded and therefore excluded from contributing to mechanical load transfer and electrical insulation.\n Table 1 Epoxy adhesive characteristics Chemical Base Density g·cm −3 Viscosity@25 °C Pa·s Lap Shear Strength MPa Elongation % Application temperature °C Thermal Degradation °C Curing Condition Epoxy 1.34 230 33 6.5 65 150 180 °C for 30 min",
+        "The complete set of welding parameters for both resistance spot welding (RSW) and weld bonding (WB) configurations is listed in Table  2 . Shorter welding times (83 and 167 ms) were used only for preliminary current-range evaluation and process window definition and were not considered in the performance testing discussed in this section.\n Table 2 Welding conditions for RSW and WB Squeeze time ms Current kA Weld time ms Hold time ms Force kN Electrodes mm 500 6.5, 8.5, 10.5 333 200 3.6 Dome-Nose (16–6)",
+        "Mechanical testing was performed to assess the structural performance of resistance spot-welded and weld-bonded joints. Lap shear tests (LST) and cross tension tests (CTT) were carried out at a crosshead speed of 10 mm·min⁻ 1  following AWS D8.9 recommendations [ 21 ]. To support material characterization, the epoxy adhesive was subjected to rheological measurements under controlled shear rates and a custom uniaxial compression test. These experiments provided input parameters for the thermo-mechanical finite element simulations. Numerical modeling was conducted using Simufact Forming 2025.2 to simulate thermal distribution, electrode indentation, and adhesive squeeze-out during the welding cycle. Adhesive squeeze-out was simulated using a shear-rate-dependent viscoplastic flow model. Element deletion was applied only when the adhesive thickness locally decreased below a minimum threshold, enabling direct sheet-to-sheet contact and stable calculation of electrical current flow during welding. Mechanical response and nugget integrity were further validated through load–displacement data collected using a servo-hydraulic MTS testing system and through microhardness profiling across the weld cross sections.",
+        "A custom-designed fixture (Fig.  2 A) was employed to ensure a consistent adhesive bond-line thickness of 0.3 mm across all weld-bonded samples. A regulatory plate was incorporated into the assembly setup to apply a uniform clamping load of 3 kg and ensure accurate alignment of the top and bottom sheets during adhesive application and thermal curing. This setup was used for all adhesive-bonded specimens to guarantee repeatable adhesive thickness and joint consistency. Figure  2  presents the adhesive bonding fixture, the assembled configuration used during curing, the sample geometries, and testing arrangements. Figure  2 A shows the adhesive application fixture and alignment system; Fig.  2 B displays the geometry used for lap shear testing; and Fig.  2 C illustrates the cross tension test configuration. Fig. 2 Schematic representation of the sample configurations and testing geometries"
+      ]
+    },
+    {
+      "heading": "Results and discussion",
+      "paragraphs": []
+    },
+    {
+      "heading": "Adhesive spreading behavior",
+      "paragraphs": [
+        "Figure  4  presents the results of the rheological tests performed to characterize the temperature and shear-rate-dependent behavior of the structural epoxy adhesive used in this study. Following the approach proposed by Potgorschek et al. [ 19 ], a rotational rheometer with parallel plate configuration (25 mm plate diameter, 1 mm gap) was used to evaluate the adhesive’s dynamic viscosity η* across a range of temperatures (20 to 65 °C) and nominal shear rates (1 to 150 s −1 ). The resulting viscosity data served as the basis for constructing a flow stress model suitable for finite element simulation in Simufact Forming. To translate the adhesive’s fluid behavior into an equivalent solid representation usable in finite element analysis, five key equations were applied. First, the dynamic viscosity η* was defined as the ratio of shear stress  τ ˙ \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\dot{\\tau }$$\\end{document} (t) to shear rate  Υ ˙ \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\dot{\\Upsilon }$$\\end{document} (t), as expressed in Eq. ( 1 ): 1 η ∗ = τ ˙ t Υ ˙ t \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${\\eta }^{*}=\\frac{\\dot{\\tau } \\left(t\\right)}{ \\dot{\\Upsilon }\\left(\\text{t}\\right)}$$\\end{document}",
+        "Equation ( 2 ) transforms the measured shear rate  Υ ˙ \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\dot{\\Upsilon }$$\\end{document} , obtained from rheological testing, into an equivalent strain rate  φ ˙ \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\dot{\\varphi }$$\\end{document} , which is commonly used in solid mechanics to describe deformation behavior in continuum models. The conversion factor 1/√3 is derived from the definition of Von Mises strain rate and ensures consistent energy dissipation between shear and general deformation states.",
+        "Similarly, Eq. ( 3 ) expresses the equivalent flow stress K f  as a function of the measured shear stress  τ ˙ \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\dot{\\tau }$$\\end{document} , using the corresponding factor √3. This transformation allows the adhesive to be modeled as a rate-dependent solid material in finite element simulations, enabling a more accurate representation of its flow behavior during the weld bonding process. 2 φ ˙ = Υ ˙ 3 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\dot{\\varphi }=\\frac{\\dot{\\Upsilon }}{\\sqrt{3}}$$\\end{document} 3 K f = 3 τ ˙ \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${K}_{f}=\\sqrt{3} \\dot{\\tau }$$\\end{document}",
+        "Combining Eqs. ( 1 ), ( 2 ), ( 3 ) and  ( 4 ) expresses the equivalent flow stress as a function of equivalent strain rate and complex viscosity: 4 K f = 3 φ ˙ η ∗ \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${K}_{f}=3\\dot{ \\varphi }{\\eta }^{*}$$\\end{document}",
+        "Finally, the adhesive’s rate-dependent behavior was modeled using the Ostwald–de Waele power law (Eq. 5), commonly implemented in hybrid joining simulations and available as a built-in material model in Simufact Forming: 5 K f = C φ ˙ n \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${K}_{f}=C{\\dot{\\varphi }}^{n}$$\\end{document}",
+        "In this equation,  C  and  n  are material constants determined through nonlinear regression of the experimental data obtained from rheological testing at each temperature. This regression-based approach enables the non-Newtonian liquid adhesive to be modeled as a solid with strain rate-dependent flow behavior, suitable for finite element simulation of adhesive squeeze-out and stress distribution during the weld bonding process.",
+        "Figure  3 A and B show the rheological behavior of the epoxy adhesive used in this study. Figure  3 A presents dynamic viscosity as a function of shear rate at temperatures from 20 to 65 °C. The results confirm that the adhesive exhibits pseudoplastic behavior, with viscosity decreasing as shear rate increases. At room temperature, the viscosity is significantly higher, indicating the importance of preheating the adhesive to improve flow and squeeze-out, and avoid excessive delay between the adhesive application and the execution of the resistance spot welding process. Figure  3 B displays the equivalent flow stress calculated from the viscosity data, plotted against equivalent strain rate. As expected, the flow stress is lowest at 65 °C, which means less resistance to deformation and spreading. These results support the use of a power law model and justify adhesive preheating to improve process performance. Fig. 3 Rheological test for epoxy adhesive",
+        "To validate the rheological parameters and evaluate the adhesive spreading behavior, an experimental setup was designed using a hollow cylinder, an acrylic sheet, and two metal stops of 0.3 mm to control the adhesive thickness (Fig.  4 ). The adhesive, preheated to 65 °C, was placed within the hollow section and compressed vertically using a dead weight of 0.6 kg. This configuration enabled direct observation of the adhesive flow in three dimensions under controlled conditions. A corresponding three-dimensional computational simulation was performed using the previously determined rheological parameters to replicate the experimental setup and compare the predicted adhesive displacement. Fig. 4 Experimental and simulated adhesive displacement during spreading validation",
+        "The experimental displacement in the Y and X directions was 10.7 and 11.0 mm, respectively, with a final adhesive thickness of 0.3 mm. The simulated values were slightly lower at 8.3 and 9.7 mm, while the Z-direction displacement was slightly overpredicted at 0.5 mm. The deviation arises primarily from modeling and experimental uncertainties, including the use of an equivalent shear-rate-dependent viscoplastic power-law representation that does not explicitly capture viscoelastic or time-dependent adhesive behavior, the strong sensitivity of viscosity to small temperature variations during compression, and simplified adhesive–surface contact conditions that neglect local friction and wetting effects. Minor variations in initial adhesive volume and gap control may also contribute. Despite these differences, the simulation captures the correct spreading trend and provides a physically meaningful representation of adhesive flow suitable for weld-bonding process modeling.",
+        "These results demonstrate that incorporating temperature- and strain-rate-dependent viscosity is essential for accurately capturing adhesive squeeze-out during weld bonding. The agreement between experimental and simulated adhesive displacement confirms that the power-law-based rheological model provides a physically meaningful representation of adhesive flow under combined thermal and mechanical loading. This capability is critical for subsequent prediction of nugget formation and joint performance, as the local adhesive distribution directly influences heat transfer and contact conditions during welding."
+      ]
+    },
+    {
+      "heading": "Welding current range and nugget formation",
+      "paragraphs": [
+        "The influence of welding current on nugget formation in weld-bonded joints was experimentally evaluated. The optimal current range was identified between 6.5 and 8.5 kA. Currents above 8.5 kA caused excessive expulsion and void formation, compromising weld integrity. Conversely, currents at or below 6.5 kA often led to interfacial failure, as previously reported in [ 22 ]. At 8.5 kA, limited expulsion was observed; however, this condition resulted in improved nugget size, higher joint strength, and increased displacement, whereas excessive expulsion at higher currents led to void formation and performance degradation. The horizontal orange line in Fig.  5  marks the minimum acceptable nugget diameter based on the AWS C1.1 M standard, defined as 4√t, where t is the average thickness of the welded sheets [ 21 ]. Any nugget diameter falling below this threshold is considered inadequate due to its inability to meet strength requirements. Fig. 5 Effect of welding current on nugget formation and joint integrity in weld-bonded 22MnB5",
+        "Adhesive expulsion analysis confirmed that the adhesive was effectively pushed out of the nugget area. However, a degraded adhesive region was detected surrounding the weld zone due to exposure to temperatures exceeding the thermal stability limit of the adhesive (150 °C). A localized adhesive-free zone was observed directly beneath the electrode due to high contact pressure (Fig.  6 , welded using 8.5kA). Fig. 6 Adhesive distribution after the weld bonding process",
+        "The results indicate that welding current plays a dual role in weld-bonded joints by controlling both nugget growth and adhesive degradation. While higher currents promote larger nugget diameters and favorable failure modes, excessive current leads to expulsion and void formation that offset these benefits. The identified optimal current range (6.5–8.5 kA) represents a balance between sufficient heat input for nugget formation and controlled adhesive degradation, highlighting the importance of process optimization in hybrid joining."
+      ]
+    },
+    {
+      "heading": "Thermal analysis and microhardness",
+      "paragraphs": [
+        "The thermal behavior during weld bonding was analyzed using a sequential numerical simulation strategy in Simufact Forming. The approach consisted of two stages: adhesive squeeze-out simulation followed by resistance spot welding simulation. Figure  7  shows the adhesive spreading stage modeled for the preheated epoxy under mechanical compression using the previously established temperature and strain-rate-dependent flow law. This stage predicted a lateral spread of 0.92 mm, closely matching the experimental observation of 1.0 mm and validating the accuracy of the rheological parameters. Additionally, validation confirmed that the adhesive thickness remained closed at the designed 0.3 mm. Fig. 7 Thermal analysis and adhesive squeeze-out displacement",
+        "For the welding stage, a finite element-based resistance spot welding process model was used. The simulation setup was designed to reproduce the experimental trials summarized in Table  2 , with the results presented in Fig.  7  corresponding to a welding current of 6.5kA. The model focuses on predicting weld nugget formation and the associated thermal fields. This modeling approach is well established in the literature and solves coupled electrical, thermal, and mechanical governing equations under appropriate contact and boundary conditions. Although no calibration was applied, thermal and material parameters were adapted from prior work by Brizes et al. [ 22 ,  23 ] to ensure representative behavior of the 22MnB5 steel used in this study.",
+        "The model defines contact interactions between the steel sheets and the electrodes using frictional sliding, gap-dependent electrical conductivity, and thermal conductivity. These contact properties evolve based on local pressure and temperature, capturing the transition from initial contact to melting. Nugget formation is determined through localized heating due to the Joule effect, modeled via contact resistance between the sheets. As illustrated in Fig.  7 , the simulation predicts that adhesive degradation is localized near the edge of the nugget where temperatures exceed the thermal degradation temperature. The predicted nugget diameter was 6.7 mm, which is in close agreement with the experimentally measured value of 6.4 mm. This confirms the model’s predictive capability for nugget geometry in weld-bonded joints. The temperature gradient across the weld also influenced the width of the heat-affected zone and controlled the dynamics of nugget growth.",
+        "The close agreement between simulated and measured nugget size confirms the robustness of the coupled thermal–metallurgical modeling approach. The results show that adhesive presence does not inhibit nugget formation but locally alters the thermal field, influencing HAZ width and phase evolution. This finding supports the use of weld bonding in press-hardened steels, where maintaining predictable microstructural transformations is critical for joint reliability."
+      ]
+    },
+    {
+      "heading": "Micro-hardness analysis",
+      "paragraphs": [
+        "In this study, hardness prediction in the weld bonding process was performed using a thermal-metallurgical model implemented in Simufact Forming. The simulation approach relies on temperature-dependent phase transformation kinetics to compute phase distributions and subsequently derive local hardness values through an empirical mixture rule.",
+        "The thermal history of each finite element during the resistance spot welding cycle was evaluated using a phase transformation model reported by Wang et al. [ 24 ]. The model uses the chemical composition, initial phase fractions, and thermal history to calculate critical cooling times, individual phase hardness, and resulting volume fractions of each phase. The model also includes a term for martensite tempering, which is crucial for press-hardened steels. The calculated phase fractions, including ferrite, pearlite, bainite, and martensite, are then used to compute the Vickers hardness, HV, for each element using a rule-of-mixtures formulation (E1. 6): 6 H V = f α · H V α + f p · H V p + f B · H V B + f M · H V M \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$HV=f_\\alpha\\cdot HV_\\alpha+f_p\\cdot HV_p+f_B\\cdot HV_B+f_M\\cdot HV_M$$\\end{document}",
+        "where f i  represents the volume fraction of phase i, and HV i  denotes the empirical hardness for each phase, typically drawn from validated literature or alloy-specific data. In this case, transformation kinetics and hardness coefficients were adapted from Brizes’ material database for 22MnB5 steel [ 23 ]. The simulation output yields a detailed map of hardness across the weld cross-section, capturing the transition from the base metal through the heat-affected zone and into the fusion zone. As shown in Fig.  8 , the predicted hardness values closely align with the experimental microhardness measurements. The fusion zone exhibits peak hardness due to the formation of martensite, while the heat-affected zone shows softened regions consistent with partial tempering and phase recovery. Fig. 8 Measured and simulated hardness profiles in weld-bonded joints using 22MnB5 steel and epoxy adhesive",
+        "This coupled thermal and metallurgical model provides strong predictive capability for understanding local mechanical behavior in weld-bonded joints and validates the utility of Simufact for accurate hardness mapping in high-strength steel joining applications."
+      ]
+    },
+    {
+      "heading": "Performance testing",
+      "paragraphs": [
+        "Mechanical testing was conducted to evaluate the strength and toughness of weld-bonded joints in comparison to resistance spot-welded and adhesive-bonded counterparts, following the parameters shown in Table  2 . Both lap shear and cross tension tests confirmed that weld-bonded joints demonstrated superior mechanical performance, with increased energy absorption and higher peak forces.",
+        "Lap shear testing results demonstrated the superior shear response of adhesive bonding compared to resistance spot welding. As shown in Fig.  9 , adhesive-bonded joints exhibited higher load capacity and greater deformation before failure, indicating better toughness and energy absorption. The force–displacement curves clearly show that the adhesive layer contributes significantly to joint compliance and shear strength, whereas RSW joints failed earlier with lower displacement and peak force. In addition, the performance of the RSW was simulated, and the results agreed with the experimental data. Fig. 9 Force–displacement plots for adhesive bonding and RSW samples",
+        "A parametric study was conducted to evaluate the influence of welding current on lap shear strength. As shown in Fig.  10 , three current levels were tested. At 6.5 kA, the average peak load reached 35 kN, but failure occurred through interfacial fracture, indicated by a sharp drop in displacement. Increasing the current to 8.5 kA shifted the failure mode to button pull-out, leading to greater deformation and improved energy absorption. At 10.5 kA, although the displacement remained high, the peak force declined to 30 kN due to excessive expulsion, which is known to reduce effective nugget integrity and compromise load transfer. The transition from interfacial failure at 6.5 kA to button pull-out at 8.5 kA explains the increased displacement and energy absorption observed in the force–displacement curves, while excessive expulsion at 10.5 kA leads to a reduction in peak force. A computational simulation at 8.5 kA showed close agreement with experimental data, supporting the accuracy of the model in predicting shear strength and failure mode. The corresponding test specimen at this current level is also shown in Fig.  10 . Fig. 10 The effect of current on lap shear testing of weld-bonded samples",
+        "The experimental cross tension behavior of adhesive-bonded, resistance spot-welded, and weld-bonded joints is shown in Fig.  11 . All tests were conducted using a welding current of 8.5 kiloamperes, as summarized in Table  2 . Adhesive-bonded joints displayed the lowest peak force and minimal displacement, indicating brittle failure. Resistance spot-welded joints achieved a peak force of approximately 5 kN with a displacement of 16 mm. Fig. 11 CTT comparison of adhesive bonding, RSW, and Weld bonding samples",
+        "Weld-bonded joints initially followed the same deformation path as adhesive bonding; however, they continued to resist separation after adhesive failure due to the spot weld contribution. This dual-stage resistance led to a higher overall force and greater displacement, confirming the enhanced mechanical integrity of the hybrid joint.",
+        "Fracture surface observations, presented in Fig.  12 , confirmed distinct failure mechanisms for each joining method. Adhesive-bonded samples failed through cohesive failure, reflecting low toughness and limited energy absorption. Resistance spot-welded samples exhibited button pull-out failure, with an average nugget diameter of 7.5 mm. In contrast, weld-bonded joints displayed a mixed-mode failure: cohesive failure in the adhesive layer and button pull-out in the welded region. Notably, the pull-out region observed in weld-bonded joints is larger than that of conventional RSW, which is consistent with the measured increase in nugget diameter. Although the epoxy adhesive is electrically insulating, its presence initially increases the electrical contact resistance at the faying interface, leading to increased Joule heat generation during welding. Under electrode pressure, adhesive squeeze-out enables localized metal-to-metal contact while maintaining elevated resistance in the surrounding region, resulting in concentrated heat input and enhanced nugget growth. The weld-bonded samples exhibited a larger nugget diameter of 8.3 mm, which contributed to their higher load-bearing capacity and superior energy absorption. The presence of both adhesive and weld mechanisms allowed the joint to maintain structural integrity even after adhesive failure. Fig. 12 Fracture surfaces of  a  weld bonding,  b  adhesive bonding, and  c  RSW samples",
+        "The mechanical testing results clearly demonstrate the synergistic effect of combining adhesive bonding with resistance spot welding. Weld-bonded joints benefit from the initial load sharing provided by the adhesive and the sustained load-carrying capacity of the weld nugget after adhesive failure. This dual-stage deformation behavior explains the improved energy absorption and failure resistance observed in both lap shear and cross tension tests, linking joint performance directly to the coupled adhesive–weld mechanisms identified earlier in the study.",
+        "Although adhesive spreading was not directly correlated with mechanical performance in this study, it plays a fundamental role in establishing the conditions that govern joint behavior. Adhesive squeeze-out controls the local contact state and electrical resistance at the faying interface, thereby influencing Joule heat generation, nugget growth, and failure mode. In addition, the adhesive distribution relative to its thermal degradation temperature defines the extent of degraded or adhesive-free regions surrounding the nugget, which affects load transfer and energy absorption. Accordingly, adhesive spreading acts as an enabling mechanism that indirectly governs joint performance through its influence on nugget integrity and adhesive degradation. Incorporation of adhesive degradation temperature as a governing variable represents a natural extension of the present modeling framework."
+      ]
+    },
+    {
+      "heading": "Conclusions",
+      "paragraphs": [
+        "This study presents a comprehensive experimental and numerical investigation of resistance spot weld bonding in 22MnB5 press-hardened steel, with particular emphasis on the role of adhesive rheology and its interaction with the welding process. While the mechanical advantages of weld bonding are well documented, this work advances current understanding by explicitly linking adhesive flow behavior, thermal evolution, and weld nugget development within a unified experimental numerical framework.",
+        "The results demonstrate that weld-bonded joints exhibit superior mechanical performance compared to adhesive-bonded and resistance spot-welded joints, as evidenced by higher peak loads, increased energy absorption, and more favorable failure modes under both lap shear and cross tension loading. Beyond confirming these performance gains, the study reveals that adhesive squeeze-out behavior governed by temperature and strain-rate-dependent viscosity plays a critical role in controlling local heat transfer, nugget growth, and deformation beneath the electrodes. The proposed modeling approach accurately predicted adhesive spreading within 2 mm of experimental measurements and final adhesive thickness within 0.2 mm, while weld nugget diameter was predicted with good accuracy (6.7 mm simulated versus 6.4 mm measured). These results confirm the capability of the framework to capture the coupled adhesive weld interactions that govern joint formation and performance.",
+        "A key contribution of this work is the development of a physically informed methodology for representing non-Newtonian adhesive behavior within thermo-mechanical simulations. By converting experimentally measured viscosity into an equivalent rate-dependent flow formulation and coupling this behavior with thermal and metallurgical models, the approach consistently captures nugget formation and microstructural evolution, indicating adhesive thermal degradation. The analysis further identified an optimal welding current range of 6.5–8.5 kA, which promotes larger nugget diameters and favorable fracture modes characterized by button pull-out in the HAZ combined with interfacial failure in the adhesive layer while avoiding excessive expulsion.",
+        "Although the numerical implementation in this study was carried out using a commercial finite element platform, the proposed methodology is based on fundamental rheological, thermal, and metallurgical relationships and is therefore not software specific. The conversion of viscosity to equivalent flow stress, the coupling of strain rate and temperature-dependent adhesive behavior, and the sequential simulation strategy are transferable to other simulation environments capable of coupled thermo-mechanical analysis. Future extensions of this framework will incorporate adhesive thermal degradation temperature as a governing criterion for predicting joint performance and failure transitions in weld-bonded assemblies. Overall, the findings provide new insight into the coupled adhesive weld interactions governing weld-bonded joint performance and establish a general physics-based framework for modeling hybrid joining processes in ultra-high-strength steel assemblies."
+      ]
+    }
+  ],
+  "tables": [
+    {
+      "caption": "Epoxy adhesive characteristics",
+      "headers": [
+        "Chemical Base",
+        "Density g·cm −3",
+        "Viscosity@25 °C Pa·s",
+        "Lap Shear Strength MPa",
+        "Elongation %",
+        "Application temperature °C",
+        "Thermal Degradation °C",
+        "Curing Condition"
+      ],
+      "rows": [
+        [
+          "Epoxy",
+          "1.34",
+          "230",
+          "33",
+          "6.5",
+          "65",
+          "150",
+          "180 °C for 30 min"
+        ]
+      ],
+      "header_groups": [],
+      "table_alignment_status": "resolved",
+      "row_provenance": [
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 7
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 8
+          }
+        ]
+      ],
+      "tbody_alignment_status": "resolved"
+    },
+    {
+      "caption": "Welding conditions for RSW and WB",
+      "headers": [
+        "Squeeze time ms",
+        "Current kA",
+        "Weld time ms",
+        "Hold time ms",
+        "Force kN",
+        "Electrodes mm"
+      ],
+      "rows": [
+        [
+          "500",
+          "6.5, 8.5, 10.5",
+          "333",
+          "200",
+          "3.6",
+          "Dome-Nose (16–6)"
+        ]
+      ],
+      "header_groups": [],
+      "table_alignment_status": "resolved",
+      "row_provenance": [
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 6
+          }
+        ]
+      ],
+      "tbody_alignment_status": "resolved"
+    }
+  ]
+}

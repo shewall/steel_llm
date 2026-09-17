@@ -1,0 +1,1589 @@
+{
+  "doi": "10.1007/s11340-026-01360-9",
+  "title": "Design of a Materials Testing 2.0 Creep Test Using the Virtual Fields Method and Open Source Tools",
+  "abstract": "Abstract Background Traditional creep testing takes thousands of hours and incurs large costs. Calibrating constitutive models for creep offers the potential to perform shorter tests and extrapolate to longer durations. Objective This work focuses on the design of a complex specimen geometry, suitable for a Materials Testing 2.0 (MT2) style creep test, that uses a heterogeneous stress field and inverse identification to determine constitutive model parameters. Methods A digital toolchain comprising of finite element simulation, image deformation, 2D Digital Image Correlation (DIC) and inverse identification has been used to assess candidate geometries. The open source material modelling code New Engineering Material model Library 2 (NEML2) has been used to create a GPU-accelerated Virtual Fields Method (VFM) for inverse identification. Results Promising specimen geometries have been identified from a grid search of a simple two variable geometry parameterisation. Investigations of the design space suggest that wide stress ranges and high constitutive model parameter sensitivities drive accurate creep constitutive model identification. However, the maximum achievable stress range and sensitivity is limited by the ability of the DIC system to resolve the strain field. Conclusions The results demonstrate the necessity of including DIC within the design loop for MT2 tests to generate realistic and measurable specimen designs.",
+  "journal": "Experimental Mechanics",
+  "year": "2026",
+  "sections": [
+    {
+      "heading": "Introduction",
+      "paragraphs": [
+        "High temperature operation of power plants is necessary to increase efficiency and reduce carbon dioxide emissions. The upper operating temperature is often limited by thermal creep. This is a particular problem for Gen IV fission components [ 1 ] and for the in-vessel components of fusion reactors [ 2 ], where high-flux radiation is present in addition to high temperatures and mechanical loads. Thermal creep is a life-limiting failure mode for fusion reactor components [ 3 ] but it is challenging and time consuming to obtain the necessary material data to design components against this.",
+        "New variants of reduced activation ferritic-martensitic (RAFM) steels with improved creep resistance are being developed specifically for application in the fusion environment, typically targeting operating temperatures of 650 °C. Compared to traditional ferritic-martensitic steels these are specifically formulated to mitigate activation due to exposure to fusion spectrum neutron radiation. This includes Oxide Dispersion Strengthened (ODS) grades [ 4 ,  5 – 6 ], new alloy compositions [ 7 ,  8 – 9 ] and modified thermo-mechanical processing routes [ 10 ,  11 – 12 ]. Given the ambitious timeline for delivery of commercial demonstration fusion plants, the development and qualification of these materials must be expedited [ 13 ,  14 ], necessitating accelerated creep testing.",
+        "Traditional accelerated creep rupture tests use higher test temperatures and/or stresses, before using a time–temperature parameter (TTP), such as Larson-Miller, to predict tests at lower temperatures and/or stresses more representative of in-service conditions [ 15 ]. The TTP approach can be applied to strain intervals, i.e. time to 1%, but cannot predict minimum creep rate, the creep curve or damage, limiting the applicability to design [ 16 ]. Alternatively, suitable creep constitutive models could be calibrated and used to extrapolate data from shorter tests to longer durations [ 17 ]. The challenge is then to calibrate these models. This typically requires a large number of tests [ 18 ,  19 ], using a large volume of material and incurring significant costs in terms of money and time. Recently, calibration approaches using conventional creep specimens subjected to variable stress histories have been proposed. Loading strategies with either a load increase (e.g. the stepped isostress method [ 20 ]) or a load decrease (e.g. the dynamic negative stepped test [ 21 ]) have been used to calibrate a creep constitutive model.",
+        "Materials testing 2.0 (MT2) [ 22 ,  23 ] is another approach to materials testing that takes advantage of full-field measurement techniques and inverse modelling to identify material constitutive behaviour. In contrast to standardised testing, heterogeneities are introduced to maximise the richness of the test. This could be achieved via a complex stress or temperature field for example. The MT2 approach has been applied to: orthotropic elasticity in composites [ 24 ,  25 ]; anisotropic plasticity [ 26 ,  27 ], high strain-rate viscoplasticity [ 28 ,  29 ], and welds [ 30 ] in metals; viscoelasticity [ 31 ,  32 ], and hyperelasticity in polymers [ 33 ,  34 ]. An exhaustive set of references can be found in [ 23 ]. MT2 is attractive as an approach for calibrating creep constitutive models from fewer tests in less time. The inverse modelling approaches used for MT2 are typically the Virtual Fields Method (VFM) [ 35 ] or Finite Element Model Updating (FEMU) [ 36 ]. The VFM is faster and less computationally demanding but requires an assumption about the through-thickness stresses. FEMU is a more versatile technique, but requires repeated solving of finite element models, which is often slow.",
+        "Other non-standard approaches have been applied to maximise the creep data obtained from individual tests, often using tapered or waisted (hourglass shaped) specimens. An early example is Levy & Barody [ 37 ], however this predates camera-based measurements. Digital Image Correlation (DIC) has also been used for the measurement of creep deformation in waisted specimens [ 38 ,  39 ,  40 – 41 ]. The objective of these tests was to extract creep curves at different stresses that are comparable to those from standard tests, i.e. a constant uniform stress at each cross-section. Hence, the choice of specimen geometry was based on the achievable stress range for a taper or waist. Rupture will occur at the highest stress location, however lower stress regions may have crept little by this time, promoting a shallow taper.",
+        "The objective in this work is to develop an approach to designing an MT2 geometry, or set of geometries, that provides the best identification of a given constitutive model (including creep) while accounting for the uncertainties and capabilities of the DIC measurements system. MT2 geometries do not need to be statically determinate. Alternative, non-standard geometries can be considered with heterogeneous stress distributions. The best approach to test design, suggested by Pierron [ 22 ], is a full simulation of the experiment, including the uncertainties of the DIC processing. This is necessary to include confounding factors such as: camera resolution, camera noise, DIC smoothing and speckle pattern quality that affect the experimenter’s ability to accurately measure strain fields. Previous computational approaches to test design, that have not included DIC in-the-loop, tend to produce intricate geometries with sharp features [ 42 ,  43 ,  44 – 45 ]. These sharp features create high strain gradients, which are difficult to resolve with DIC and will introduce identification errors.",
+        "A testing setup for performing creep tests on such MT2 designs is under development. This will comprise an electromechanical load frame equipped with a water-cooled vacuum vessel and induction heating. Tests will be monitored by a DIC setup and an infrared camera. Tests will be conducted under vacuum to replicate the environment (excluding radiation) for in-vessel fusion reactor components.",
+        "In this work we develop a fully open source MT2 test design tool chain for flexible, low cost and scalable deployment on computing resources from laptops through to supercomputing clusters. We employ the VFM over FEMU as the computation speed is a significant advantage when considering large numbers of candidate geometries. We significantly increased the speed of the non-linear VFM by using GPU accelerated stress reconstruction, with the added benefit of automatic differentiation allowing for the use of faster gradient-based optimisers for the identification. This performant open source MT2 tool chain is demonstrated by designing the first optimised MT2 test for creep, including digital image correlation uncertainty quantification in the loop.",
+        "We first introduce the theoretical background of the VFM, constitutive model, and the GPU-accelerated stress reconstruction. This is followed by a detailed explanation of the components of the tool chain, and the methodology used to generate and assess candidate geometries. Results from the tool chain are shown, with an investigation into why particular geometries provide a lower identification error. The effect of DIC error sources on the test design is discussed, and suggestions are made for future research directions."
+      ]
+    },
+    {
+      "heading": "Theory",
+      "paragraphs": []
+    },
+    {
+      "heading": "Virtual Fields Method",
+      "paragraphs": [
+        "The Virtual Fields Method (VFM) is based upon the principal of virtual work, which for quasistatic loading at timestep  t \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$t$$\\end{document}  can be expressed as: 1 - ∫ V σ x , t : ε ∗ x , t d V + ∫ ∂ V T · u ∗ x , t d S = 0 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\begin{array}{c}-{\\int}_{V}{\\varvec{\\sigma}}\\left(\\mathbf{x},t\\right) : {{\\varvec{\\varepsilon}}}^{\\boldsymbol{*}}\\left(\\mathbf{x},t\\right) dV+{\\int}_{\\partial V}{\\varvec{T}}\\cdot {{\\varvec{u}}}^{\\boldsymbol{*}}\\left(\\mathbf{x},t\\right)dS=0\\end{array}$$\\end{document} where:  σ \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${\\varvec{\\sigma}}$$\\end{document}  is the Cauchy stress tensor,  T \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${\\varvec{T}}$$\\end{document}  is the surface tractions,  x \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\mathbf{x}$$\\end{document}  are the spatial coordinates, and  t \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$t$$\\end{document}  the time.  u ∗ \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${{\\varvec{u}}}^{\\boldsymbol{*}}$$\\end{document}  is the virtual displacement field and  ε ∗ \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${{\\varvec{\\varepsilon}}}^{\\boldsymbol{*}}$$\\end{document}  is the virtual strain field.  ε ∗ \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${{\\varvec{\\varepsilon}}}^{\\boldsymbol{*}}$$\\end{document}  is related to  u ∗ \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${{\\varvec{u}}}^{\\boldsymbol{*}}$$\\end{document}  using the typical small strain–displacement relationship  ε ∗ = 1 2 ∇ u ∗ + ∇ u ∗ T \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${{\\varvec{\\varepsilon}}}^{\\boldsymbol{*}}=\\frac{1}{2}\\left(\\nabla {{\\varvec{u}}}^{\\boldsymbol{*}}+\\nabla {{\\varvec{u}}}^{\\boldsymbol{*}T}\\right)$$\\end{document} .  V \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$V$$\\end{document}  is the specimen volume and  ∂ V \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\partial V$$\\end{document}  it’s boundary. The first term of (1) describes the internal virtual work, derived from internal stresses; and the second term describes the external virtual work, derived from external forces.",
+        "DIC only measures the surface deformation of a specimen, so an assumption of the behaviour through thickness is required to use the principal of virtual work. For the creep of thin flat specimens, the assumption of plane stress is reasonable. By keeping the virtual displacement  u ∗ \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${{\\varvec{u}}}^{\\boldsymbol{*}}$$\\end{document}  constant where the specimen is gripped, the unknown tractions can be eliminated and replaced with the measured force, as  F = ∫ T d A \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${\\varvec{F}}=\\int {\\varvec{T}}dA$$\\end{document} . Using all the data points from DIC, the left-hand integral can be approximated as a discrete sum. Equation ( 1 ) at timestep  t \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$t$$\\end{document}  can then be expressed in a more practical form: 2 - b · S ∑ p nPts σ x ( p ) , t : ε ∗ x ( p ) , t + F · u ∗ x ( p ) , t = 0 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\begin{array}{c}-b\\cdot S\\sum\\limits_{p}^{nPts}{\\varvec{\\sigma}}\\left(\\mathbf{x}(p),t\\right) : {{\\varvec{\\varepsilon}}}^{\\boldsymbol{*}}\\left(\\mathbf{x}(p),t\\right)+F\\cdot {{\\varvec{u}}}^{\\boldsymbol{*}}\\left(\\mathbf{x}(p),t\\right)=0\\end{array}$$\\end{document} where:  b \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$b$$\\end{document}  is the specimen thickness,  S \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$S$$\\end{document}  is the area of the surface,  p \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$p$$\\end{document}  are the DIC data points with spatial coordinates  x ( p ) \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\mathbf{x}(p)$$\\end{document} , and  F \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${\\varvec{F}}$$\\end{document}  is the applied force.",
+        "The components necessary to use (2) to perform inverse identification using the VFM are a full-field strain measurement technique, such as DIC; a constitutive law and associated method to reconstruct the stresses from the DIC strains; a method to generate virtual fields; and for non-linear problems an optimiser to minimise the difference between external and internal virtual work. The VFM has been used to identify viscoplastic models at high strain rates [ 28 ,  29 ,  46 ,  47 ,  48 ,  49 – 50 ] and with high temperatures [ 51 ]. To the authors knowledge this work is the first time that the VFM has been applied to a creep problem, where the model is viscoplastic but subjected to a force- rather than displacement- controlled loading. The selection of the virtual fields is detailed in Sect. “ Sensitivity-based Virtual Fields ”. The constitutive model and stress reconstruction approach are explained in detail in Sects. “ Constitutive Model ” and “ Stress Reconstruction ”."
+      ]
+    },
+    {
+      "heading": "Sensitivity-based virtual fields",
+      "paragraphs": [
+        "The choice of virtual fields has a significant impact on the performance of the VFM. The sensitivity-based virtual fields (SBVFs) formulation developed in [ 52 ] was used in this work to automate the generation of virtual fields and reduce identification reliance on user defined selection.",
+        "By perturbing each constitutive parameter and computing the corresponding change in stress across the specimen, the stress sensitivity of each parameter is obtained. A mesh of 2D elements is then used to construct a virtual field for each parameter. The virtual displacements at the nodes are defined such that the virtual strains aim to replicate the stress sensitivity maps, whilst also enforcing virtual boundary conditions, i.e. constant virtual displacement on traction boundaries. As such, the resulting virtual fields preferentially weight regions with high signal to noise ratio, reducing the effect of noise on the identification. In this work the incremental stress sensitivity is used to construct the virtual fields. See [ 52 ] for further details. Example images of virtual fields are shown in Sect. “ Virtual Field Generation ”."
+      ]
+    },
+    {
+      "heading": "Constitutive Model",
+      "paragraphs": [
+        "During a test, complex geometry specimens will typically contain different regions that are undergoing primary, secondary and tertiary creep simultaneously. To accurately model such a test, the constitutive model must be able to capture the behaviour in these regions. A unified viscoplastic model with the following form is employed: 3 ε e = ε - ε p \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\begin{array}{c}{\\varepsilon}_{e}=\\varepsilon -{\\varepsilon}_{p}\\end{array}$$\\end{document} 4 σ = 3 K vol ( ε e ) + 2 G dev ( ε e ) \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\begin{array}{c}\\sigma =3K\\mathrm{vol}{(\\varepsilon }_{e})+2G\\mathrm{dev}({\\varepsilon}_{e})\\end{array}$$\\end{document} 5 σ ¯ = J 2 σ \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\overline{\\sigma}={J}_{2}\\left({\\varvec{\\sigma}}\\right)$$\\end{document} 6 f = σ ¯ - h - σ y \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$f=\\overline{\\sigma }-h-{\\sigma}_{y}$$\\end{document} 7 h ˙ = θ 0 1 - h R ε p - h τ m - 1 h τ \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\dot{h}={\\theta}_{0}\\left(1-\\frac{h}{R}\\right){\\varepsilon}_{p} -{\\left(\\frac{\\left|h\\right|}{\\tau }\\right)}^{m-1}\\frac{h}{\\tau }$$\\end{document} 8 N = ∂ f ∂ σ \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${\\varvec{N}}=\\frac{\\partial f}{\\partial{\\varvec{\\sigma}}}$$\\end{document} 9 γ ˙ = ⟨ f ⟩ η n \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\dot{\\gamma }={\\left(\\frac{\\langle f\\rangle }{\\eta }\\right)}^{n}$$\\end{document} 10 ε ˙ p = γ ˙ N \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${\\dot{\\varepsilon }}_{p}=\\dot{\\gamma }{\\varvec{N}}$$\\end{document} 11 h n + 1 = h n + ( t n + 1 - t n ) ε ˙ p \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${h}_{n+1}={h}_{n}+{(t}_{n+1}-{t}_{n}){\\dot{\\varepsilon }}_{p}$$\\end{document} 12 σ n + 1 = σ n + ( t n + 1 - t n ) ε ˙ p \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${{\\varvec{\\sigma}}}_{n+1}={{\\varvec{\\sigma}}}_{n}+{(t}_{n+1}-{t}_{n}){\\dot{\\varepsilon }}_{p}$$\\end{document} where:  ε e \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${\\varepsilon }^{e}$$\\end{document}  is the elastic strain,  v o l ( ε e ) = 1 3 t r ε e \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\mathrm{v}\\mathrm{o}\\mathrm{l}{(\\varepsilon }_{e})=\\frac{1}{3}\\mathrm{t}\\mathrm{r}\\left({\\varepsilon}_{e}\\right)$$\\end{document}  is the volumetric elastic strain,  d e v ( ε e ) = ε e - v o l ( ε e ) \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\mathrm{d}\\mathrm{e}\\mathrm{v}{(\\varepsilon }_{e})={\\varepsilon}_{e}-\\mathrm{v}\\mathrm{o}\\mathrm{l}{(\\varepsilon }_{e})$$\\end{document}  is the deviatoric elastic strain,  K = E 3 ( 1 - 2 ν ) \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$K= \\frac{E}{3(1-2\\nu )}$$\\end{document}  is the bulk modulus,  G = E 2 ( 1 + ν ) \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$G= \\frac{E}{2(1+\\nu )}$$\\end{document}  is the shear modulus,  ε p \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${\\varepsilon }^{p}$$\\end{document}  is the plastic strain,  σ \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${\\varvec{\\sigma}}$$\\end{document}  is the Cauchy stress tensor,  f \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$f$$\\end{document}  is the yield function,  σ ¯ \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\bar{\\sigma }$$\\end{document}  is the von Mises stress,  h \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$h$$\\end{document}  is the hardening function,  N \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${\\varvec{N}}$$\\end{document}  is the plastic flow direction,  t \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$t$$\\end{document}  is time, and  n \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$n$$\\end{document}  is the time step. Model parameters are given in Table  1 .\n Table 1 Reference parameters for the material model studied Parameter Symbol Value Units Elastic Modulus E \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$E$$\\end{document} 100,000 MPa Poisson’s Ratio ν \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\nu$$\\end{document} 0.3 - Yield Strength σ y \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${\\sigma}_{y}$$\\end{document} 50 MPa Saturation Strength R \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$R$$\\end{document} 100 MPa Initial Hardening Rate θ 0 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${\\theta}_{0}$$\\end{document} 12,000 MPa.s −1 Recovery Rate τ \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\tau$$\\end{document} 1,000 - Recovery Exponent m \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$m$$\\end{document} 4 - Reference Stress η \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\eta$$\\end{document} 500 MPa Power Law Exponent n \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$n$$\\end{document} 5 -",
+        "The model assumes that the strain is small and can be additively decomposed into elastic and plastic strains, and that the elastic behaviour is linear and isotropic. von Mises (J2) plasticity is used, and the plastic flow is associative. Hardening is described in a rate form, with the left-hand side of equation ( 7 ) describing a saturating Voce-type model and the right-hand side a static (time dependent) recovery. The stress and hardening are integrated using the backward Euler method, which is solved at each time step using a Newton solver. This model form has no explicit temperature dependence, hence a uniform test temperature is assumed.",
+        "The input parameters of the model are given in Table  1 . These are not intended to correspond to the behaviour of any real material but are chosen to be within the range of what is expected of a typical ductile metal."
+      ]
+    },
+    {
+      "heading": "Stress Reconstruction",
+      "paragraphs": [
+        "The VFM is more computationally efficient than FEMU, however the performance bottleneck is the algorithm used for the stress reconstruction [ 52 ]. Recently, new explicit reconstruction algorithms have been introduced to mitigate this problem [ 53 ]. Alternatively, this study uses a highly performant material modelling code called the New Engineering Model Library version 2 (NEML2) [ 54 ,  55 ]. NEML2 is built upon pytorch [ 56 ], an optimised tensor library for deep learning using Graphics Processing Units (GPUs). NEML2 is an attractive tool for VFM stress reconstruction as complex constitutive models can be assembled from smaller sub-models. NEML2 also handles the stress integration using the backward Euler method and a Newton solver.",
+        "NEML2 models can be evaluated in python using the pyzag package [ 57 ]. In this application, when passed a time and strain history, pyzag will return the associated stress history. NEML2 models can also be used as a material backend for the Multiphysics Object-Oriented Simulation Environment (MOOSE) [ 58 ,  59 ] finite element code, where the NEML2 model is solved for the time and strain history at each element quadrature point. This is fundamental for assessing the accuracy of the VFM identification as it allows the creation of a ground truth finite element simulation. In the absence of spatial discretisation error, the stresses from a MOOSE FE simulation of a particular NEML2 model will match the stresses from pyzag running the same model using the time and strain history from the simulation, shown diagrammatically in Fig.  1 . Practically, there is a slight spatial discretisation error introduced by evaluating the nodal strain history when running pyzag. This can be minimised using a fine mesh. The parameters identified by performing the VFM on outputs derived from the ground truth simulations should match those used to produce the simulation. Fig. 1 Diagram showing the stresses from a NEML2 model running through pyzag and MOOSE. In the absence of spatial discretisation error, both sets of stresses will be identical",
+        "NEML2 calculates the material model stresses batch-wise. For this application the time and strain history at each node in the FE model, or each subset in the DIC data, is treated as the batch dimension. These can then be solved independently, in parallel, using the GPU. We further take advantage of the batched processing to more rapidly calculate the stress sensitivity of each geometry. A batch is constructed that includes each of the perturbed parameter sets, which can then all be solved simultaneously in parallel.",
+        "A key advantage of using NEML2 for the stress reconstruction in the VFM is automatic differentiation, enabled by pytorch. Automatic differentiation can provide the derivatives of scalar stress-based cost functions with respect to each of the model parameters, with low computational cost. Gradient-based optimisers, which converge quickly can then be used without having to perform costly finite-differences to estimate the derivatives.",
+        "In summary, the computational efficiency of the VFM has been improved by using NEML2 as the stress reconstructor. Firstly, by taking advantage of batch processing and GPU acceleration to solve the model and calculate stress sensitivities in parallel. Secondly, by accelerating the optimisation using automatic differentiation to provide gradients and enabling gradient-based optimisation algorithms."
+      ]
+    },
+    {
+      "heading": "Out of plane strain",
+      "paragraphs": [
+        "NEML2 is a full 3D stress reconstructor. Therefore, the plane stress assumption we have made must be encoded into the strain data before it is passed to NEML2. The out of plane strain  ε zz \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${\\varepsilon}_{zz}$$\\end{document}  can be inferred from the in-plane strains  ε xx \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${\\varepsilon}_{xx}$$\\end{document}  and  ε yy \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${\\varepsilon}_{yy}$$\\end{document}  using the assumption of plane stress: 13 ε zz = - ν 1 - ν ε xx + ε yy \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${\\varepsilon}_{zz}=-\\frac{\\nu }{1-\\nu }\\left({\\varepsilon}_{xx}+{\\varepsilon}_{yy}\\right)$$\\end{document}",
+        "When the strains are elastic,  ν = 0.3 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\nu =0.3$$\\end{document} , as in Table  1 . During plastic deformation the material volume does not change, hence  ν = 0.5 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\nu =0.5$$\\end{document} .",
+        "During a heterogeneous tensile test, it would be difficult to determine when each part of the geometry begins plastically deforming. However, in the restricted case of a creep test, the strains are primarily elastic during load application and plastic afterwards during the hold time. Therefore, it is assumed that  ν = 0.3 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\nu =0.3$$\\end{document}  until the test load is reached and  ν = 0.5 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\nu =0.5$$\\end{document}  afterwards. This assumption was verified using strains from the finite element model.",
+        "The uncertainty on the out-of-plane strains will be relatively high using this approach due to the noise on both in-plane strains. This will introduce additional uncertainty to the reconstructed stresses. Future work will include a plane stress enforcement within NEML2, to reduce this uncertainty and improve the generality of NEML2 as a VFM stress reconstructor."
+      ]
+    },
+    {
+      "heading": "Computational Test Design",
+      "paragraphs": []
+    },
+    {
+      "heading": "Geometry Parameterisation and Search Grid",
+      "paragraphs": [
+        "A simple geometry parameterisation scheme was adopted using two free parameters,  ( p 0 , p 1 ) \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$({p}_{0},{p}_{1})$$\\end{document} , shown in Fig.  2 . These two parameters define the intersection of the left and right sides of the specimen with the X-axis. The upper points of the geometry are fixed at  ( x = ± 7.5 , y = 15 ) \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$(x=\\pm 7.5,y=15)$$\\end{document} , to allow for gripping tabs. The sides between these points are constrained to be circular arcs. This choice of parameterisation produces ‘hourglass’ and ‘banana’ shaped specimens. Fig. 2 ( a ) Geometry parameterisation scheme adopted in this work. Points p0 and p1 are free to move along the x-axis. The sides are restricted to circular arcs. The upper portion of the geometry is fixed with a width of 15 mm designed to interface with tabs for gripping in a test machine. ( b ) Valid and invalid regions of the search grid. Geometries from the upper left are barrel-shaped, geometries from the lower right have narrow ligaments or are self-intersecting. In both cases these would be infeasible shapes",
+        "Gmsh [ 60 ] was used to create and mesh the parameterised geometries. The X- and Z- axis are symmetry planes, with half the specimen thickness (1.5 of the 3 mm total) being modelled. Fully integrated linear elements (HEX8) were used for the mesh. 75, 75 and 8 elements were used in the x-, y- and z- directions respectively, giving an element size of approximately (0.2 × 0.2 × 0.2 mm), dependent on the geometry. A 9 × 9 grid of parameters to create geometries was created, with  - 15 ≤ p 0 ≤ - 3 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$-15\\le {p}_{0}\\le -3$$\\end{document}  and  - 6 ≤ p 1 ≤ 6 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$-6\\le {p}_{1}\\le 6$$\\end{document} , as shown in Fig.  2 . A band of valid geometries exist on the diagonal. Outside of this region, the geometries would be barrel-shaped or self-intersecting leaving 38 candidate geometries to assess."
+      ]
+    },
+    {
+      "heading": "Finite Element Simulation",
+      "paragraphs": [
+        "Finite element simulations for each of the geometries were performed using MOOSE. NEML2 was used to implement the material model as described previously in Sect. “ Constitutive Model ”. A Neumann (stress) boundary condition was applied to the upper  ( y = 15 m m ) \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$(y=15mm)$$\\end{document}  surface. The force was ramped to the hold value over 100 s, then held for 1,000 h to simulate a creep test. To account for the different geometries, and give a similar average nominal stress, the force hold value was scaled by the cross-sectional area of the lower surface for each geometry. An additional penalty constraint was applied to keep the  y \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$y$$\\end{document} - displacement approximately constant over the traction surface. This prevents in-plane bending and more accurately replicates the loading applied by a stiff test frame. A symmetric boundary condition was applied to the lower  ( y = 0 m m ) \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$(y=0mm)$$\\end{document}  surface using a Dirichlet boundary condition to prevent movement in the  y \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$y$$\\end{document} - direction. Logarithmic time stepping was used, giving 36 time steps. As linear elements were used, a volumetric locking correction was applied to prevent over stiffening. A transient solve was used, with a Newton solver and automatic scaling."
+      ]
+    },
+    {
+      "heading": "Image Noise Characterisation and Simulation",
+      "paragraphs": [
+        "Identification quality with any inverse method is affected by noise in the input images, which flows through to the deformations measured by DIC. The grey level noise in digital images is heteroscedastic, where the noise on each pixel is dependent on its intensity. This cannot be accurately captured by a global Gaussian model. However, the noise at each pixel intensity is assumed to be Gaussian.",
+        "To assess the noise of the cameras in our laboratory that will be used for later experimental validation of the method, 50 images were captured of a real target pattern using the setup detailed in Table  2 . A ‘noise-free’ reference image was generated by averaging all the images. The heteroscedastic noise was assessed by calculating the standard deviation of grey levels for each pixel from the original image throughout the set. Figure  3  shows the pattern image, it’s histogram and the measured noise. A smoothing spline was fit to the noise distribution and used to generate new copies of noise for subsequent analysis.\n Table 2 Hardware for image capture Camera Allied Vision Alvium U-508-M Image Resolution 2464 × 2056 pixels Lens Edmund Optics 100 mm C Series Fixed Focal Length Aperture f/11 Field-of-view 39.4 × 32.9 mm Image Scale 62.5 px/mm Stereo Angle N/A Image Acquisition Rate 2 Hz Patterning Technique White VHT airbrushed base layer, black VHT speckle Pattern Feature Size (Approx) 5–7 px",
+        "In a real experiment there will also be noise on the force signal from the load cell. This impacts the external virtual work calculation and hence the VFM identification. To simulate this, a uniform error was applied to the force signal ± 0.5% of the force value, following the stated accuracy of the load cell from the manufacturer. Fig. 3 ( a ) Averaged 5Mpx image, ( b ) image histogram and ( c ) heteroscedastic noise evaluation"
+      ]
+    },
+    {
+      "heading": "Image Deformation",
+      "paragraphs": [
+        "Images were deformed using the pyvale toolkit’s 2D image deformation module [ 61 ]. This takes the nodal positions and displacements from a finite element model and deforms a supplied image. The averaged ‘noise-free’ image described in Sect. “ Image Noise Characterisation and Simulation ” was used as the input for this process. Heteroscedastic noise was applied to each deformed image, giving a set of noisy images, an example of which can be seen in Fig.  4 . This procedure captures some of the key sources of error likely to be present in a real experiment due to the spatial resolution of the system, digitisation, contrast and the signature of the speckle pattern itself. It does not include other effects possible during actual high temperature testing, such as: heat haze, pattern contrast changes and distortion due to chamber windows. Note that future research using ray tracing to create the deformed speckle images will be able to capture some of these effects and it is an open research question as to how these can best be accounted for in DIC uncertainty quantification simulations. Fig. 4 Example of a deformed image at the first step for a geometry with  p 0 , p 1 = - 4.5 , 4.5 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\left(p_{0},p_{1}\\right)\\;=\\left(-4.5,4.5\\right)$$\\end{document}"
+      ]
+    },
+    {
+      "heading": "Digital Image Correlation & Strain Calculation",
+      "paragraphs": [
+        "DIC analysis was performed on the synthetically deformed images using the open source software DICe [ 62 ] to measure displacement fields. The region of interest was defined programmatically using the shape mask of the specimen generated during the image deformation step. The settings in Table  3  were used to correlate each set of noisy images. The coordinate and displacement maps from DICe were post-processed using in-house python code to calculate the strains. Different virtual strain gauge (VSG) sizes and bilinear (Q4) and biquadratic (Q9) interpolants were used. Q4 shape functions have less degrees of freedom, hence are easier to fit, however may not be able to fully capture the complexity of the strain fields. VSG sizes ranging from 5 × 5 to 15 × 15 subsets were used. Larger VSGs will reduce noise, but smooth the strain fields more, introducing bias. Typically, there is a trade-off between rejection of random error (reducing the noise-floor) with the introduction of a systematic error as the VSG gets larger. The VSG size is also influenced by the subset- and step- sizes. To make the problem more tractable, these were kept constant in this study.\n Table 3 DIC software parameters DIC Software DICe version 2.0 Image Filtering None Subset Size 21 Step Size 10 Subset Shape Function Affine Matching Criterion Zero-normalised sum of square differences (ZNSSD) Interpolant Keys 4th Order Strain Window Variable, see results Virtual Strain Gauge Size Variable, see results Strain Formulation Small-strain tensor Post-filtering of Strains N/A Displacement Noise-Floor 1.5 × 10 –4  mm Strain Noise-Floor Variable",
+        "The output vertical displacement from DICe and post-processed  ε yy \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${\\varepsilon}_{yy}$$\\end{document}  strain field are shown in Fig.  5  for a geometry with  p = - 12.0 , - 3.0 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$p=\\left(-12.0,-3.0\\right)$$\\end{document}  at the final simulation time step. The strain field shows a noise pattern that looks similar to real experimental DIC data. Fig. 5 ( a ) Displacement map from DICe and ( b ) post-processed strains with a 5 × 5px Q4 interpolant at the final time step. Geometry constructed using  p 0 , p 1 = - 12 , - 3 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\left(p_{0},p_{1}\\right)\\;=\\;\\left(-12,-3\\right)$$\\end{document}"
+      ]
+    },
+    {
+      "heading": "Virtual Field Generation",
+      "paragraphs": [
+        "As introduced in Sect. “ Sensitivity-Based Virtual Fields ”, the generation of sensitivity-based virtual fields requires maps of stress sensitivity for each material model parameter. The parameters were individually perturbed by 15% from the initial guess position. i.e.   σ y = 50 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${\\sigma}_{y}=50$$\\end{document}  MPa becomes   σ y = 42.5 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${\\sigma}_{y}=42.5$$\\end{document}  MPa whilst all other parameters are held at their original value. Sensitivity maps are then calculated for each parameter as: 14 δ σ i ε , X , t = σ ε , X , t - σ ε , X + δ x i , t \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\delta {{\\varvec{\\sigma}}}_{\\left(i\\right)}\\left({\\varvec{\\varepsilon}},{\\varvec{X}},t\\right)={\\varvec{\\sigma}}\\left({\\varvec{\\varepsilon}},{\\varvec{X}},t\\right)-{\\varvec{\\sigma}}\\left({\\varvec{\\varepsilon}},{\\varvec{X}}+\\delta {x}_{i},t\\right)$$\\end{document} where:  σ \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${\\varvec{\\sigma}}$$\\end{document}  is the Cauchy stress tensor, and  δ σ i \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\delta {{\\varvec{\\sigma}}}_{\\left(i\\right)}$$\\end{document}  the sensitivity of the stress tensor at time  t \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$t$$\\end{document}  to the perturbation of parameter  x i \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${x}_{i}$$\\end{document} .",
+        "The incremental stress sensitivity is then calculated as follows: 15 δ σ ~ i ε , X , t = δ σ i ε , X , t - δ σ i ε , X , t - 1 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\delta {\\widetilde{{\\varvec{\\sigma}}}}_{\\left(i\\right)}\\left({\\varvec{\\varepsilon}},{\\varvec{X}},t\\right)=\\delta {{\\varvec{\\sigma}}}_{\\left(i\\right)}\\left({\\varvec{\\varepsilon}},{\\varvec{X}},t\\right)-\\delta {{\\varvec{\\sigma}}}_{\\left(i\\right)}\\left({\\varvec{\\varepsilon}},{\\varvec{X}},t-1\\right)$$\\end{document}",
+        "A virtual mesh size of 9 × 15 elements was used. This was found to have enough degrees of freedom to capture the sensitive areas for each material parameter without being too fine and increasing sensitivity to the noise. The stress sensitivity maps in Fig.  6  show that, at the final time step, different regions of the specimen have different sensitivity to each parameter. The similarity between the virtual strain fields and the incremental stress-sensitivity map they were derived from is clear. Slight differences arise due to the virtual mesh discretisation and enforcement of the virtual boundary conditions. Fig. 6 Sensitivity maps and associated virtual strain fields for each parameter for  σ xx \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${\\sigma}_{xx}$$\\end{document} ,  σ yy \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${\\sigma}_{yy}$$\\end{document}  and  σ xy \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${\\sigma}_{xy}$$\\end{document}  at the final timestep. This geometry was created using  p 0 , p 1 = - 7.5 , - 0 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\left(p_{0},p_{1}\\right)\\;=\\;\\left(-7.5,-0\\right)$$\\end{document}",
+        "The virtual fields modules of the mt2py package [ 63 ] was used to generate the virtual fields. This is a python translation of the MATLAB code used in [ 52 ]. The virtual fields were only generated once, at the start of the optimisation, using the initial guess parameter set. For the model considered in this work, updating the sensitivity based virtual fields at each step of the optimisation increased the computational time but did not significantly impact the identified values."
+      ]
+    },
+    {
+      "heading": "Optimisation",
+      "paragraphs": [
+        "With the strain field obtained from the post-processed DICe displacements, the virtual fields, the stress from NEML2 (via pyzag), and the force from the simulation, the optimisation of the material model parameters can be completed. The cost function to be minimised is given as: 16 ϕ ε , t , X = ∑ i nVF 1 α i ∑ t nTime ∑ p nPts b s p σ ( ε , t , X ) : ε ∗ i - f ( t ) · u ∗ i 2 = 0 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${\\phi \\left({\\varvec{\\varepsilon}},t,{\\varvec{X}}\\right)=\\left(\\sum_{i}^{nVF}\\frac{1}{{\\alpha}_{i}}\\sum_{t}^{nTime}\\left[\\sum_{p}^{nPts}b{s}^{p}{\\varvec{\\sigma}}({\\varvec{\\varepsilon}},t,{\\varvec{X}}):{{{\\varvec{\\varepsilon}}}^{\\boldsymbol{*}}}_{{\\varvec{i}}}-{\\varvec{f}}(t)\\cdot {{{\\varvec{u}}}^{\\boldsymbol{*}}}_{{\\varvec{i}}}\\right]\\right)}^{2}=0$$\\end{document} where:  X = ( x 0 , ⋯ , x n ) \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${\\varvec{X}}=({x}_{0},\\dots ,{x}_{n})$$\\end{document}  are the parameters of the material model,  s p \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${s}^{p}$$\\end{document}  is the surface area associated with point  p \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$p$$\\end{document} ,  b \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$b$$\\end{document}  is the thickness of the specimen,  α i \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${\\alpha}_{i}$$\\end{document}  is a weighting factor to balance the contributions from each virtual field and prevent one field dominating.  α \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\alpha$$\\end{document}  is calculated as the mean of the largest 5 values of the internal work over time.  nPts \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$nPts$$\\end{document}  is the number of points in the DIC data set, typically around 11,000;  nTime \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$nTime$$\\end{document}  is the number of time steps, 36 for all geometries; and  nVF \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$nVF$$\\end{document}  is the number of virtual fields, 7 (one for each parameter).",
+        "As introduced in Sect. “ Stress Reconstruction ”, the automatic differentiation functionality of NEML2 allows for the gradients of the cost function with respect to the model parameters  ∂ ϕ ∂ X \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\frac{\\partial \\phi }{\\partial {\\varvec{X}}}$$\\end{document}  to be calculated with minimal additional time. It is no longer necessary to perform multiple model runs for finite difference-based gradient calculation, improving the time taken for gradient based optimisers.",
+        "For this work, the Sequential Least Squares Programming (SLSQP) algorithm of the ‘minimize’ function in scipy was used to optimise the cost function. Gradient based optimisers are local optimisers and can be trapped by local minima in the cost function. To mitigate this, 5 start positions were used for the optimisations, given in Table  4 . These were chosen using Latin Hypercube sampling within ± 10% of the input values given in Table  1 .\n Table 4 Initial guesses used for each of the parameters Initial Guess Parameter  x \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$x$$\\end{document} 1 2 3 4 5 σ y \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${\\sigma}_{y}$$\\end{document} 46.7 51.6 48.7 53.9 50.5 R \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$R$$\\end{document} 105 95.4 92.5 98.5 106 θ 0 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${\\theta}_{0}$$\\end{document} 13,000 10,990 12,470 11,460 11,850 τ \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\tau$$\\end{document} 930 1,070 971 1,006 1,047 m \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$m$$\\end{document} 4.12 3.97 4.25 3.88 3.74 η \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\eta$$\\end{document} 498 512 544 456 470 n \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$n$$\\end{document} 5.00 5.22 4.52 4.72 5.48"
+      ]
+    },
+    {
+      "heading": "Parameter scaling",
+      "paragraphs": [
+        "The virtual fields themselves are scaled to give equal weighting to the stress sensitivity of each parameter. However, this does not account for the sensitivity of the cost to each parameter. The exponential parameters  n \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$n$$\\end{document}  and  m \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$m$$\\end{document}  cause a large change in cost for a small change in parameter. To mitigate this, a parameter scaling has been performed, in a similar manner to [ 64 ]. In addition, the derivative of the scaling is required to modify the cost function gradients. 17 x scale = x - x L x U - x L linear scaling e x - e x L e x U - e x L exponential scaling \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${x}_{scale}=\\left\\{\\begin{array}{l}\\frac{x-{x}_{L}}{{x}_{U}-{x}_{L}}\\;\\mathrm{linear scaling}\\\\ \\frac{{e}^{x}-{e}^{{x}_{L}}}{{e}^{{x}_{U}}-{e}^{{x}_{L}}}\\;\\mathrm{exponential scaling}\\end{array}\\right.$$\\end{document} 18 ∂ ϕ ∂ x scale = ∂ ϕ ∂ x · ∂ x ∂ x scale \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\frac{\\partial \\phi }{{\\partial x}_{scale}}=\\frac{\\partial \\phi }{\\partial x} \\cdot \\frac{\\partial x}{{\\partial x}_{scale}}$$\\end{document} 19 ∂ x ∂ x scale = x U - x L linear scaling e x U - e x L x ( e x U - e x L ) + e x L exponential scaling \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\frac{\\partial x}{{\\partial x}_{scale}}=\\left\\{\\begin{array}{l} {x}_{U}-{x}_{L}\\;\\mathrm{linear scaling}\\\\ \\frac{{e}^{{x}_{U}}-{e}^{{x}_{L}}}{{x(e}^{{x}_{U}}-{e}^{{x}_{L}})+{e}^{{x}_{L}}}\\;\\mathrm{exponential scaling}\\end{array}\\right.$$\\end{document} where:  x \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$x$$\\end{document}  is the unscaled parameter,  x U \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${x}_{U}$$\\end{document}  the upper bound on the parameter value,  x L \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${x}_{L}$$\\end{document}  the lower bound on the parameter value,  ϕ \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\phi$$\\end{document}  is the VFM cost, and  ∂ ϕ ∂ x \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\frac{\\partial \\phi }{\\partial x}$$\\end{document}  is the component of the gradient automatically produced by pytorch. The choice of scaling scheme and the range to which parameter is scaled is given in Table  5 .\n Table 5 Parameters to be optimised, their bounds and scaling Parameter  x \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$x$$\\end{document} Lower bound  x L \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${x}_{L}$$\\end{document} Upper bound  x U \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${x}_{U}$$\\end{document} Scaling σ y \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${\\sigma}_{y}$$\\end{document} 0 150 Linear R \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$R$$\\end{document} 20 200 Linear θ 0 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${\\theta}_{0}$$\\end{document} 1,000 15,000 Linear τ \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\tau$$\\end{document} 100 2,000 Linear m \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$m$$\\end{document} 3 10 Exponential η \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\eta$$\\end{document} 150 1,000 Linear n \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$n$$\\end{document} 2 9 Exponential"
+      ]
+    },
+    {
+      "heading": "Error Assessment and Cross Validation Geometry",
+      "paragraphs": [
+        "Non-uniqueness in the material model makes direct comparison of the identified parameters misleading [ 64 ,  65 ]. To mitigate this, a FE simulation has been run using each of the identified constitutive parameter sets with an alternative complex geometry, not found in the search grid. The calibrated model must be able to predict the behaviour of a different geometry to be generalisable. A plate with two holes was chosen, shown in Fig.  7 , as this generates a complex stress field. Hereafter, the plate shown in Fig.  7  is referred to as the cross-validation geometry. Fig. 7 ( a ) von Mises stress at the beginning of the creep hold for the cross-validation geometry, and ( b ) equivalent strain at the end of the simulation",
+        "To enable a quantitative comparison between each of the identified parameter sets, the root mean square error (RMSE) of the equivalent strain,  ε eq = 2 3 ε : ε \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${\\varepsilon}_{eq}= \\sqrt{\\frac{2}{3}{\\varvec{\\varepsilon}}:{\\varvec{\\varepsilon}}}$$\\end{document} , over the duration of the simulation is used as the error metric, given by: 20 R M S E = ∑ ε eq opt ( x , y , t ) - ε eq ref ( x , y , t ) 2 n \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$RMSE=\\sqrt{\\frac{{\\sum \\left({\\varepsilon}_{eq}^{opt}(x,y,t)-{\\varepsilon}_{eq}^{ref}(x,y,t)\\right)}^{2}}{n}}$$\\end{document} where:  n \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$n$$\\end{document}  is the number of points in the simulation,  ε eq ref , ε eq opt \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${\\varepsilon}_{eq}^{ref}, {\\varepsilon}_{eq}^{opt}$$\\end{document}  are the equivalent strains for the cross-validation simulation run with the reference parameters or the identified parameters respectively. Note that we use strain instead of stress as an error metric here as the creep tests are load controlled."
+      ]
+    },
+    {
+      "heading": "Complete Methods",
+      "paragraphs": [
+        "The preceding sections have introduced the individual components of the computational test design methodology. We will now detail the methods for which results will be presented in Sect. “ Results and Discussion ”."
+      ]
+    },
+    {
+      "heading": "Geometry analysis",
+      "paragraphs": [
+        "The goal of the geometry analysis is to find ‘good’ geometries from the grid outlined in Sect. “ Geometry Parameterisation and Search Grid ” ‘Good’ geometries are those that allow the identification of a parameter set with a low RMSE on the cross-validation check. The analysis steps are shown in Fig.  8  and are as follows: Generate all 38 geometries in the search grid (Sect. “ Geometry Parameterisation and Search Grid ”). Perform the finite element simulations, in parallel, using the reference parameters (Sect. “ Finite Element Simulation ”). Create deformed image sets for each geometry using the noise-free reference image (Sect. “ Image Deformation ”). Add noise to the image sets, drawn from the measured heteroscedastic distribution associated with the experimental setup (Sect. “ Image Noise Characterisation and Simulation ”). Perform DIC on the noisy image sets and post-process to get strain fields (Sect. “ Digital Image Correlation and Strain Calculation ”) for 6 different VSG settings. Perform the VFM identification for the raw FE strains and noisy DIC strains for each geometry and 5 optimisation start positions (Sect. “ Optimisation ”). This gives 38 + 38 × 5 × 6 = 1,178 VFM optimisations, each producing an identified parameter set. Run the reference simulation of the cross-validation geometry (Sect. “ Error Assessment and Cross Validation Geometry ”). Run simulations of the cross-validation geometry using each of the identified parameter sets from step 6 and calculate the RMSE. Plot the lowest RMSE of the 5 start positions and identify ‘good’ geometries. Fig. 8 Flow chart of the geometry analysis methodology"
+      ]
+    },
+    {
+      "heading": "Random error analysis",
+      "paragraphs": [
+        "The goal of the random error analysis is to determine how the noise on the input images and choice of VSG settings impacts the identification. After identifying a suitable ‘good’ geometry, the following steps, also shown diagrammatically in Fig.  9 , will be used to assess the random error: Using a single ‘good’ geometry, create a new set of noisy images with 40 different copies of noise drawn from the heteroscedastic distribution. Perform DIC for each noisy image set, with the 6 different VSG settings. Perform the VFM for each start position and VSG setting, giving 40 × 5 × 6 = 1,200 further VFM optimisations, each producing an identified parameter set. Run simulations of the cross-validation geometry using each of the identified parameter sets from step 3 and calculate the RMSE. Plot the identification error for each VSG setting. Fig. 9 Diagram showing the steps in assessment of the random error from different copies of noise"
+      ]
+    },
+    {
+      "heading": "Results and Discussion",
+      "paragraphs": []
+    },
+    {
+      "heading": "Geometry Analysis",
+      "paragraphs": [
+        "To numerically verify the VFM approach, identifications were performed using the raw FE strains, i.e. no DIC filter or noise applied, evaluated at the nodes of the FE model. Nodal values were chosen as the nodes lie on the surface of the model (unlike element centroids or Gauss points). The values were not projected to DIC subset locations to avoid interpolation errors. The results are shown in Fig.  10 , where three geometries are highlighted, corresponding to the best (yellow), median (magenta), and worst (blue) identifications. Despite the lack of DIC filter and noise there is some variation in the RMSE values, though all are below 4 × 10 –4 . For context, the median and maximum strain during the cross-validation simulation are 2.2 × 10 –3  and 6.6 × 10 –2  respectively. These identification results are influenced by spatial discretisation error due to the stress reconstruction algorithm operating at nodes, whereas the simulation uses element quadrature points. However, as shown by the equivalent strain error maps in Fig.  10 (b) even the worst performing identification (blue) has a low error at the final time step, with a peak absolute error of 3 × 10 –3 , approximately 4.5% of the maximum strain. The results shown in Fig.  10  provide verification of the computational accuracy of the sensitivity based VFM with GPU accelerated stress reconstruction developed in this work. Fig. 10 ( a ) The lowest RMSE for each geometry, and ( b ) equivalent strain error at the end of the simulation. The yellow geometry had the lowest error, magenta the median error and blue the highest error",
+        "The colormaps in Fig.  11  show the impact of adding the simulated noisy images and the DIC filter, with various VSG settings. 6 different VSG formulations were tested, with bilinear (Q4) and biquadratic (Q9) interpolants with sizes ranging from 5 × 5 subsets to 15 × 15 subsets, the physical size and the noise floors associated with these settings are given in Table  6 . Adding the DIC filter, with any of the VSG settings, causes a reduction in the identification accuracy for all geometries. Note that the scale bar is an order of magnitude larger than in Fig.  10 (a) which used raw FE data. Fig. 11 Maps of the RMSE for the DIC VSG settings used for the strain fields in the identifications. Shown is the lowest RMSE for each geometry Table 6 Virtual Strain Gauge (VSG) settings, with associated sizes and equivalent strain noise floor values VSG Size (px) Size (mm) Noise Floor 3 × Noise Floor Q4 5 × 5 61 × 61 0.98 × 0.98 2.2 × 10 –4 6.7 × 10 –4 Q4 9 × 9 101 × 101 1.62 × 1.62 8.2 × 10 –5 2.5 × 10 –4 Q4 13 × 13 141 × 141 2.26 × 2.26 4.2 × 10 –5 1.3 × 10 –4 Q9 9 × 9 101 × 101 1.62 × 1.62 1.5 × 10 –4 4.5 × 10 –4 Q9 13 × 13 141 × 141 2.26 × 2.26 8.8 × 10 –5 2.6 × 10 –4 Q9 15 × 15 181 × 181 2.90 × 2.90 7.0 × 10 –5 2.1 × 10 –4",
+        "To identify ‘good’ geometries from Fig.  11 , a threshold error level needs to be applied and a natural choice for this threshold is the noise floor for the VSG settings used. The noise floor was determined for each VSG by correlating a series of 40 static noisy images and taking the average of the standard deviation of the equivalent strain for each image. We used a threshold value of 3 times the noise floor, which implies a level of strain error lower than could reliably be detected with the given DIC and VSG settings. These values are provided in Table  6 . The data from Fig.  11  with the threshold applied can be seen in Fig.  12 . A larger number of geometries appear ‘good’ for the smallest Q4 and Q9 VSGs, potentially due to the relatively larger threshold (noise floor) value. For all VSG settings, there is consistently a region around  p = ( - 12.0 , 0.0 ) \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$p=(-\\mathrm{12.0,0.0})$$\\end{document}  where ‘good’ geometries can be found. For some settings there are geometries in the upper right that appear feasible. It should be noted that in this analysis all optimisations were performed on a single copy of the noise for each geometry. Some of the variability could be due to the images for particular geometries having a greater noise than others. Fig. 12 Colormaps from Fig.  11  with a threshold applied, showing geometries where the identification error is less than 3 × the noise floor of each VSG"
+      ]
+    },
+    {
+      "heading": "Random Error Analysis",
+      "paragraphs": [
+        "The geometry with  p = ( - 12.0 , 0.0 ) \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$p=(-\\mathrm{12.0,0.0})$$\\end{document}  was chosen for the random error analysis, as parameters identified using it had the lowest cross-validation RMSE in most of the optimisation results shown in Fig.  11 . As detailed in Sect. “ Random Error Analysis ”, simulated images with 40 different copies of heteroscedastic noise were created. The same 6 VSG settings were used as in the global analysis. Again, 5 start positions were used for the identification and the result from the best used as the RMSE for each copy of noise. The results of the random error analysis are summarised in the boxplot shown in Fig.  13 . The orange lines are the median identification error, with the box showing the interquartile range. The whiskers extend to 1.5 × the interquartile range from the median, with points beyond this marked with circles. In all cases the addition of the image deformation, noise and DIC has pushed the median identification error away from the identification error using raw FE strains. Some individual identifications have achieved lower error, possibly due to interaction between the spatial discretisation error and introduced random errors. Fig. 13 Boxplots of the identification error for the 40 copies of noise for the geometry with  p  = (−12.0,0.0), showing 3 × the noise floor used as a threshold in Fig.  12 . Circles indicate points > 1.5 × the interquartile range away from the median (orange line)",
+        "There is significant spread in the Q9 9 × 9 results compared to the other VSG settings. The number of subsets used may not have been sufficient to accurately fit the greater degrees of freedom present in the quadratic interpolant, leading to higher susceptibility to noise. There is a trend of increasing bias in the Q4 results, with larger subsets giving a larger median error. This is likely due to the linear interpolant poorly fitting the strain fields over the VSG size and introducing significant filtering. Interestingly, the Q4 5 × 5 subset appears to perform well compared to the larger sized Q4 VSGs, despite reduced smoothing. The use of sensitivity based virtual fields may be helping the identification performance as they also act to reject noise by spatially weighting the strain fields to regions of high sensitivity to each model parameter. For the Q9 interpolant there is a reduction in the spread and bias of the identification as the VSG size increases. These observations suggest that the complexity of the strain field in this geometry is better captured by a quadratic interpolant, but a larger VSG size is required to reduce the susceptibility to noise. We therefore propose that the most suitable VSG setting is the Q9 15 × 15, which gives a low noise floor, and the lowest susceptibility of the identification result to noise and bias, indicated by the low spread and low median error.",
+        "Selected geometries from the Q9 15 × 15 VSG identification are shown in Fig.  14 . These represent ‘good’, ‘moderate’ and ‘poor’ identifications, shown in yellow, magenta, and blue respectively. The equivalent strain error at the final step of the cross-validation simulations for each geometry are shown in Fig.  14 (b). The worst performing geometry (blue) has a peak absolute error of 3 × 10 –2  (approximately 50%). The best performing geometry (yellow) has a peak absolute error of 7.3 × 10 –4 , comparable to the raw identifications in Fig.  10 . There is a general trend for the more extreme ‘banana’ shaped geometries to over predict strains (positive error), and the ‘hourglass’ shapes to under predict strains. Fig. 14 ( a ) RMSE plot for the Q9 15 × 15 VSG, and ( b ) equivalent strain error at the end of the simulation for selected ‘good’, ‘moderate’ and ‘poor’ identification geometries in yellow, magenta, and blue respectively. Note that the error scale is 10 × greater than Fig.  10"
+      ]
+    },
+    {
+      "heading": "Investigation of Reasonable Geometries",
+      "paragraphs": [
+        "The results suggest that there is a region around  p = ( - 12.0 , 0.0 ) \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$p=(-\\mathrm{12.0,0.0})$$\\end{document}  where the reasonable geometries lie (i.e. giving an RMSE below 3 × the noise floor for each VSG setting). Further investigation is necessary to understand why this region of the geometry space provides good identifications.",
+        "Absolute total sensitivity maps are shown in Fig.  15  for the three geometries included in Fig.  14 : one with a low cross-validation RMSE of 1.93 × 10 –4  (yellow), one with high RMSE of 2.23 × 10 –3  (blue) and one intermediate RMSE of 9.76 × 10 –4  (magenta). Note these are equal to the sum over time of the incremental sensitivity maps, previously shown in Fig.  6 , for each geometry. Intuitively, higher sensitivities should correspond to improved identifications. The yellow and magenta geometries align with this, as the magenta geometry has a qualitatively lower sensitivity and performs worse. However, the blue geometry appears to have a higher sensitivity than both of the others but performs much worse. The characteristic ‘banana’ shape of the best and worst cases is similar, but the worst case (blue) is less wide and has higher curvature. This produces higher strain gradients and fills less of the available pixels of the sensor. Fig. 15 Absolute total sensitivity maps at the final time step for the 3 geometries from Fig.  14 . The RMSE of yellow < magenta < blue",
+        "Figure  16  shows the trends of various parameters likely to impact the identification over the geometry space including: the von Mises stress range, the number of DIC subsets sampling the strain fields, the mean intensity gradient of the strain fields, and the DIC strain error. Intuition would suggest that a larger stress range on the specimen, Fig.  16 (a), would give an improved identification, as the constitutive model has stress dependent terms. The yellow and magenta geometries again obey this behaviour, but blue performs worse despite having the largest stress range. The impact of the DIC spatial resolution and VSG helps to explain this apparently contradictory result. Figure  16 (b) shows the number of DIC subsets on each geometry. A trend can be seen that geometries towards the upper left have more subsets, i.e. they more efficiently fill the field of view of the camera. This means that the yellow and magenta geometries have approximately 1.5 times as many data points available for the identification. Sharp gradients in the sensitivity maps for the blue geometry are visible in Fig.  15 . The Mean Intensity Gradient (MIG) of the strains was used to characterise the ‘sharpness’ of the gradients in the strain fields which is shown in Fig.  16 (c). This has been calculated by interpolating the raw  ε yy \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${\\varepsilon}_{yy}$$\\end{document}  FE strains to a regular grid and performing finite difference gradients in the x- and y- directions, then taking the mean of these gradient fields. A trend of increasing gradients in the strain fields towards the bottom left of the geometry space can be seen. Sharper strain gradients are harder to resolve with the DIC. To demonstrate this, the RMSE between the DIC strains (using the Q9 15 × 15 VSG) and the raw  ε yy \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${\\varepsilon}_{yy}$$\\end{document}  FE strains (interpolated to the DIC subset positions) is shown in Fig.  16 (d). The same trend as the MIG in Fig.  16 (c) can be seen. There are larger strain errors towards the lower left, i.e. the DIC is unable to accurately resolve the strain field where the gradients are larger. Fig. 16 Plots showing the trends over the geometry space for ( a ) von Mises stress range, ( b ) the number of DIC subsets, ( c ) Mean Intensity Gradient of the  ε yy \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${\\varepsilon}_{yy}$$\\end{document}  strain field, and ( d ) the  ε yy \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${\\varepsilon}_{yy}$$\\end{document}  strain RMSE between the raw FE strain and the Q9 15 × 15 DIC VSG post-processed strain. Note the values in plots a, b and d have been calculated at the beginning of the creep hold",
+        "Figure  17  shows the combined effects of the previously presented results showing a clear trade-off between various parameters that lead to an improved identification. The stress range and parameter sensitivity tend to push the ‘good’ geometries towards the lower left of the geometry space. This region has a wide stress range, due to the higher curvatures and greater in-plane bending stresses. The consequence of the wider stress range is sharper gradients in the strain field. These sharp gradients are penalised by the systematic bias caused by the DIC and VSG, which tend to prefer smoother strain fields with low gradients. The DIC also penalises geometries with a small surface area, that do not efficiently fill the image. In total, the addition of DIC to the VFM identification chain drives the ‘good’ geometries towards the top of the geometry space. The combined effect of these drivers is a compromise, where ‘good’ geometries have the highest sensitivity and stress range possible on a strain field that can be resolved without significant bias. Fig. 17 Schematic showing the competing effects observed in the VFM identifications for each geometry",
+        "The results presented demonstrate the necessity of including DIC within the optimisation loop for MT2 test design. All geometries in Fig.  10 , using raw FE strains for identification, perform well and give a low cross-validation error. Simulating the measurement chain via image simulation, DIC, and strain calculation causes an increase in the cross-validation error and highlights a region of the geometry space that still allows for accurate parameter identification. The amount of spatial filtering and bias from the DIC and the heteroscedastic noise in the images is a function of the experimental setup used and the processing parameters. This study shows that it is necessary to optimise test geometries while including uncertainties from the full imaging and DIC process as trade-offs between measurement uncertainty must be balanced against the richness of the kinematics required to accurately identify the material model of interest."
+      ]
+    },
+    {
+      "heading": "Conclusions and Future Work",
+      "paragraphs": [
+        "In this work we have developed an open source tool chain, comprising image deformation, heteroscedastic noise, 2D DIC, strain calculation, and a GPU-accelerated VFM identification to simulate a complete Materials Testing 2.0 test for creep model identification. The key findings we present are: The speed of inverse identification using the VFM has been increased by utilising NEML2 and GPU-acceleration. This speed up is two-fold: reducing the stress reconstruction algorithm time via parallelisation, and providing cost function derivatives w.r.t model parameters using automatic gradient calculations. The VFM, with sensitivity-based virtual fields, has been applied to load-controlled (creep) problems for the first time and verified by demonstrating accurate model identification using raw FE strains. Geometries that provide good creep model identification tend to have a high stress range and parameter sensitivity. However, incorporating the measurement chain simulation within the identification reveals a preference for specimens with a larger surface area and strongly penalises high strain gradients. The VFM identification errors (systematic and random) are influenced by the choice of VSG interpolant and size. For the geometries investigated in this work, a biquadratic (Q9) interpolant with a size 15 × 15 subsets was found to give low bias and spread in identification error. Neglecting the effect of the DIC measurement uncertainty results in test designs that give poor model identification.",
+        "Future work will involve producing specimens based on these results and then performing real creep tests for experimental validation. Additionally, in the future more complex geometry parameterisation schemes and optimisations should be investigated. Use of a surrogate-based optimisation may also be suitable as the cost calculations of the geometry optimisation will involve a (relatively) long VFM identification. A design constraint not explicitly considered here is the manufacturability of the specimens. Designs with sharp or intricate features such as notches or holes are difficult to manufacture. It is of particular interest whether the addition of the DIC filter within the loop and its preference for smoother fields would produce inherently more manufacturable designs. Given the rise in computational power this work demonstrates that future test designs for MT2 can use DIC in-the-loop to identify near optimal geometries that are also measurable in practice."
+      ]
+    }
+  ],
+  "tables": [
+    {
+      "caption": "Reference parameters for the material model studied",
+      "headers": [
+        "Parameter",
+        "Symbol",
+        "Value",
+        "Units"
+      ],
+      "rows": [
+        [
+          "Elastic Modulus",
+          "E \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$E$$\\end{document}",
+          "100,000",
+          "MPa"
+        ],
+        [
+          "Poisson’s Ratio",
+          "ν \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\nu$$\\end{document}",
+          "0.3",
+          "-"
+        ],
+        [
+          "Yield Strength",
+          "σ y \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${\\sigma}_{y}$$\\end{document}",
+          "50",
+          "MPa"
+        ],
+        [
+          "Saturation Strength",
+          "R \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$R$$\\end{document}",
+          "100",
+          "MPa"
+        ],
+        [
+          "Initial Hardening Rate",
+          "θ 0 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${\\theta}_{0}$$\\end{document}",
+          "12,000",
+          "MPa.s −1"
+        ],
+        [
+          "Recovery Rate",
+          "τ \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\tau$$\\end{document}",
+          "1,000",
+          "-"
+        ],
+        [
+          "Recovery Exponent",
+          "m \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$m$$\\end{document}",
+          "4",
+          "-"
+        ],
+        [
+          "Reference Stress",
+          "η \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\eta$$\\end{document}",
+          "500",
+          "MPa"
+        ],
+        [
+          "Power Law Exponent",
+          "n \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$n$$\\end{document}",
+          "5",
+          "-"
+        ]
+      ],
+      "header_groups": [],
+      "table_alignment_status": "resolved",
+      "row_provenance": [
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 8,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 8,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 8,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 8,
+            "source_col": 4
+          }
+        ]
+      ],
+      "tbody_alignment_status": "resolved"
+    },
+    {
+      "caption": "Hardware for image capture",
+      "headers": [],
+      "rows": [
+        [
+          "Camera",
+          "Allied Vision Alvium U-508-M"
+        ],
+        [
+          "Image Resolution",
+          "2464 × 2056 pixels"
+        ],
+        [
+          "Lens",
+          "Edmund Optics 100 mm C Series Fixed Focal Length"
+        ],
+        [
+          "Aperture",
+          "f/11"
+        ],
+        [
+          "Field-of-view",
+          "39.4 × 32.9 mm"
+        ],
+        [
+          "Image Scale",
+          "62.5 px/mm"
+        ],
+        [
+          "Stereo Angle",
+          "N/A"
+        ],
+        [
+          "Image Acquisition Rate",
+          "2 Hz"
+        ],
+        [
+          "Patterning Technique",
+          "White VHT airbrushed base layer, black VHT speckle"
+        ],
+        [
+          "Pattern Feature Size (Approx)",
+          "5–7 px"
+        ]
+      ],
+      "header_groups": [],
+      "table_alignment_status": "no_header",
+      "row_provenance": [
+        [
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          },
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          },
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          },
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          },
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          },
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          },
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          },
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          },
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          },
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          },
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          }
+        ]
+      ],
+      "tbody_alignment_status": "no_headers_to_target"
+    },
+    {
+      "caption": "DIC software parameters",
+      "headers": [],
+      "rows": [
+        [
+          "DIC Software",
+          "DICe version 2.0"
+        ],
+        [
+          "Image Filtering",
+          "None"
+        ],
+        [
+          "Subset Size",
+          "21"
+        ],
+        [
+          "Step Size",
+          "10"
+        ],
+        [
+          "Subset Shape Function",
+          "Affine"
+        ],
+        [
+          "Matching Criterion",
+          "Zero-normalised sum of square differences (ZNSSD)"
+        ],
+        [
+          "Interpolant",
+          "Keys 4th Order"
+        ],
+        [
+          "Strain Window",
+          "Variable, see results"
+        ],
+        [
+          "Virtual Strain Gauge Size",
+          "Variable, see results"
+        ],
+        [
+          "Strain Formulation",
+          "Small-strain tensor"
+        ],
+        [
+          "Post-filtering of Strains",
+          "N/A"
+        ],
+        [
+          "Displacement Noise-Floor",
+          "1.5 × 10 –4  mm"
+        ],
+        [
+          "Strain Noise-Floor",
+          "Variable"
+        ]
+      ],
+      "header_groups": [],
+      "table_alignment_status": "no_header",
+      "row_provenance": [
+        [
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          },
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          },
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          },
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          },
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          },
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          },
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          },
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          },
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          },
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          },
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          },
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          },
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          },
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          }
+        ]
+      ],
+      "tbody_alignment_status": "no_headers_to_target"
+    },
+    {
+      "caption": "Initial guesses used for each of the parameters",
+      "headers": [
+        "Parameter  x \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$x$$\\end{document}",
+        "1",
+        "2",
+        "3",
+        "4",
+        "5"
+      ],
+      "rows": [
+        [
+          "σ y \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${\\sigma}_{y}$$\\end{document}",
+          "46.7",
+          "51.6",
+          "48.7",
+          "53.9",
+          "50.5"
+        ],
+        [
+          "R \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$R$$\\end{document}",
+          "105",
+          "95.4",
+          "92.5",
+          "98.5",
+          "106"
+        ],
+        [
+          "θ 0 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${\\theta}_{0}$$\\end{document}",
+          "13,000",
+          "10,990",
+          "12,470",
+          "11,460",
+          "11,850"
+        ],
+        [
+          "τ \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\tau$$\\end{document}",
+          "930",
+          "1,070",
+          "971",
+          "1,006",
+          "1,047"
+        ],
+        [
+          "m \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$m$$\\end{document}",
+          "4.12",
+          "3.97",
+          "4.25",
+          "3.88",
+          "3.74"
+        ],
+        [
+          "η \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\eta$$\\end{document}",
+          "498",
+          "512",
+          "544",
+          "456",
+          "470"
+        ],
+        [
+          "n \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$n$$\\end{document}",
+          "5.00",
+          "5.22",
+          "4.52",
+          "4.72",
+          "5.48"
+        ]
+      ],
+      "header_groups": [
+        {
+          "label": "Initial Guess",
+          "start_col": 2,
+          "end_col": 6
+        }
+      ],
+      "table_alignment_status": "resolved",
+      "row_provenance": [
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 6
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 6
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 6
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 6
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 6
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 6
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 6
+          }
+        ]
+      ],
+      "tbody_alignment_status": "resolved"
+    },
+    {
+      "caption": "Parameters to be optimised, their bounds and scaling",
+      "headers": [
+        "Parameter  x \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$x$$\\end{document}",
+        "Lower bound  x L \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${x}_{L}$$\\end{document}",
+        "Upper bound  x U \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${x}_{U}$$\\end{document}",
+        "Scaling"
+      ],
+      "rows": [
+        [
+          "σ y \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${\\sigma}_{y}$$\\end{document}",
+          "0",
+          "150",
+          "Linear"
+        ],
+        [
+          "R \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$R$$\\end{document}",
+          "20",
+          "200",
+          "Linear"
+        ],
+        [
+          "θ 0 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${\\theta}_{0}$$\\end{document}",
+          "1,000",
+          "15,000",
+          "Linear"
+        ],
+        [
+          "τ \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\tau$$\\end{document}",
+          "100",
+          "2,000",
+          "Linear"
+        ],
+        [
+          "m \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$m$$\\end{document}",
+          "3",
+          "10",
+          "Exponential"
+        ],
+        [
+          "η \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\eta$$\\end{document}",
+          "150",
+          "1,000",
+          "Linear"
+        ],
+        [
+          "n \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$n$$\\end{document}",
+          "2",
+          "9",
+          "Exponential"
+        ]
+      ],
+      "header_groups": [],
+      "table_alignment_status": "resolved",
+      "row_provenance": [
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 4
+          }
+        ]
+      ],
+      "tbody_alignment_status": "resolved"
+    },
+    {
+      "caption": "Virtual Strain Gauge (VSG) settings, with associated sizes and equivalent strain noise floor values",
+      "headers": [
+        "VSG",
+        "Size (px)",
+        "Size (mm)",
+        "Noise Floor",
+        "3 × Noise Floor"
+      ],
+      "rows": [
+        [
+          "Q4 5 × 5",
+          "61 × 61",
+          "0.98 × 0.98",
+          "2.2 × 10 –4",
+          "6.7 × 10 –4"
+        ],
+        [
+          "Q4 9 × 9",
+          "101 × 101",
+          "1.62 × 1.62",
+          "8.2 × 10 –5",
+          "2.5 × 10 –4"
+        ],
+        [
+          "Q4 13 × 13",
+          "141 × 141",
+          "2.26 × 2.26",
+          "4.2 × 10 –5",
+          "1.3 × 10 –4"
+        ],
+        [
+          "Q9 9 × 9",
+          "101 × 101",
+          "1.62 × 1.62",
+          "1.5 × 10 –4",
+          "4.5 × 10 –4"
+        ],
+        [
+          "Q9 13 × 13",
+          "141 × 141",
+          "2.26 × 2.26",
+          "8.8 × 10 –5",
+          "2.6 × 10 –4"
+        ],
+        [
+          "Q9 15 × 15",
+          "181 × 181",
+          "2.90 × 2.90",
+          "7.0 × 10 –5",
+          "2.1 × 10 –4"
+        ]
+      ],
+      "header_groups": [],
+      "table_alignment_status": "resolved",
+      "row_provenance": [
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 5
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 5
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 5
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 5
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 5
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 5
+          }
+        ]
+      ],
+      "tbody_alignment_status": "resolved"
+    }
+  ]
+}

@@ -1,0 +1,728 @@
+{
+  "doi": "10.1016/j.ssc.2026.116326",
+  "title": "Microstructurally-based multi-phase finite element analysis of bending in Advanced High Strength Steels (AHSS)",
+  "abstract": "Understanding the bendability of Advanced High Strength Steels (AHSS) is critical for both the forming of components and improving crash worthiness. This paper addresses this for a Dual-Phase DP-980 steel. In tandem with experimental work presented elsewhere we have developed a Finite Element Analysis (FEA) to model both the 90° VDA V-Bend test and a simple 3-point bend test. The FEA utilizes HyperWorks and LS-DYNA as the simulation platforms. Multi-scale, multi-phase modeling is implemented, incorporating real microstructures to capture the stress and strain evolution of DP-980 steel throughout the respective bending procedures. In this framework, macro-scale models inform and drive micro-scale models, ensuring realistic strain localization. We have demonstrated that the strain histories for these two modes of bending are quite different, although the final strains are similar. We have used the model to demonstrate how altering the microstructure through modification of the Martensite Volume Fraction and the Carbon content, affects strain localization within both Ferrite and Martensite. Furthermore, varying the relative strengths of each microstructural phase has a large effect on phase strain partitioning which is known to be important to damage tolerance. The results help to establish a robust methodology for multi-scale bending simulations of multi-phase materials.",
+  "journal": "Solid State Communications",
+  "year": "2026",
+  "sections": [
+    {
+      "heading": "Introduction",
+      "paragraphs": [
+        "Steel has long been a cornerstone of industrial society, underpinning the infrastructure of modern cities, transportation systems, and communication networks. As the demand for sustainability increases, the steel industry faces the challenge of minimizing its environmental impact, particularly in the context of production, manufacturing, and end-use. The automotive sector, a significant consumer of steel, is increasingly embracing “Light-Weighting” as a strategy to optimize fuel efficiency, reduce carbon emissions, and lower operational costs. In line with global emissions protocol and the Canadian 2025 target of 109 g of CO 2 /km [ 1 ], the automotive industry in North America is progressively turning to a multi-materials solution where Advanced High Strength Steels (AHSS) are increasingly used to reduce vehicle weight while maintaining safety performance.",
+        "The push for improved manufacturing efficiency and reduced environmental impact has elevated the importance of bendability in the development of automotive sheet materials and components. Steel components with poor bendability can lead to damaged products and significant production losses. Furthermore, from a crash performance point of view, poor bendability material often results in early onset cracking which hinders progressive folding resulting in decreased energy absorption and mean crush forces [ 2 ]. The development of AHSS, such as Dual-Phase (DP) steels, aims to provide high-strength, lightweight solutions without compromising energy absorption in crash zones.",
+        "The research described in this paper is part of a larger project that seeks to advance our understanding of microstructural influences on the local bendability of AHSS, specifically focusing on DP 980 steel as a start, a material with a two-phase microstructure. By developing a multi-scale Finite Element Analysis (FEA) model, this research aims to predict local bendability based on microstructural characteristics and micro-mechanical properties. A central goal is to quantify the relationship between local plastic strain responses in bending tests and analyze how microstructural parameters influence the material's behavior. The research objectives are twofold: (1) to develop a repeatable methodology for multi-scale multi-phase modeling, and (2) to investigate the effects of bend test and material microstructure variation on bend response.",
+        "FEA simulation packages such as LS DYNA and ABAQUS are widely used to model material response, with the modeling of DP steel often categorized into macro-modelling and micro-modeling approaches. For a multi-scale macro-micro-mechanical model to produce accurate results, a seamless integration between these scales is essential. Multi-level or sub-modeling techniques are frequently employed to link macro-global models with micro-sub models, capturing local effects at smaller length scales. For this project, FEA software LS DYNA is utilized.",
+        "Realistic microstructure simulation is a powerful tool in material modeling, but it is typically limited to 2D representations due to the high computational cost and difficulty in acquiring accurate 3D scans of DP steel microstructures. These 2D representations are often referred to as 2D Representative Volume Elements (RVEs), which approximate the material morphology in a local region. To balance computational efficiency and microstructural authenticity ( Fig. 1 \n                      ), many studies employ simplified 3D microstructures, such as random polycrystal morphologies or those that statistically match the Martensite Volume Fraction (MVF). For example, Ayatollahi et al. [ 3 ] and Halim et al. [ 4 ] both use 3D representations of DP steel microstructures to analyze fracture behavior, with various techniques used to simulate Martensite distribution. The first uses a random Martensite particle dispersion in a 3D cube derived from a realistic microstructure; while the latter also use a 3D cube, but with a statistically accurate Martensite particle dispersion.",
+        "In the case of DP steels, realistic 2D microstructure mesh generation software packages like Gitter [ 6 ], DMR [ 7 ], and OOF2 [ 8 ] are often employed to generate 2D RVEs based on real micrographs. These tools allow for the creation of microstructures that capture phase distributions and morphology, which are then used to analyze material behavior under various loading conditions, such as tensile or bending tests. RVE modeling or sub-modelling is commonly used to refine a specific region of interest within a larger model. By linking macro-scale displacement fields to micro-sub models, this technique allows for higher resolution modeling of localized microstructural behavior. RVE sub-modelling has been extensively applied to study the mechanical properties of DP steels, with studies exploring both elasticity and plasticity, as well as damage and failure mechanisms.",
+        "The mechanical behavior of DP steels under loading conditions such as uniaxial tensile or bending, is influenced by the interaction between the two phases: Ferrite and Martensite. Studies such as those by Sun et al. [ 9 ] and Perzyński et al. [ 7 ] have shown that failure in higher-grade DP steels is driven by phase inhomogeneity, particularly at the Martensite – Ferrite interface. Furthermore, Li et al. [ 10 ] have highlighted the significant role of carbon content in the Ferrite phase, which influences strength and strain hardening behavior. In addition to uniaxial tensile testing, RVE sub-modelling has been applied to more complex loading conditions, such as bending. Liu et al. [ 11 ] and Huang et al. [ 12 ] demonstrated that in DP steel sheets under bending, plastic deformation and damage nucleation are concentrated in the Ferrite phase, particularly near the Martensite – Ferrite interface. As DP steels undergo bending, the localized plastic strains often result in shear band formation and crack propagation, with cracks nucleating at the Martensite – Ferrite boundaries and propagating through the Ferrite phase.",
+        "In this study, the focus will be on using 2D RVE modeling to simulate the microstructure of DP 980 steel and analyze its local bendability. By utilizing a macro-micro multi-scale approach, the research will explore how variations in microstructural parameters, such as Martensite Volume Fraction and Carbon content, influence the material's response to bending. For this paper, the focus will be on the micro-scale component of the multi-scale analysis, more information on the macro-scale portion can be found elsewhere [ 13 , 14 ]. Note, that this research considers only the elastic and plastic regimes of the respective material and bending deformation processes, while damage and fracture are not considered."
+      ]
+    },
+    {
+      "heading": "Methodology",
+      "paragraphs": []
+    },
+    {
+      "heading": "Macro model creation",
+      "paragraphs": [
+        "For multi-scale FEA analysis, macro-models that apply the specific Toyota 90° V-Bend test geometry as well as a simple 3-point bend test geometries have been created. Matching the experimental configurations detailed by Mendes-Fonseca et al. [ 13 ], and shown in  Fig. (2) \n                         , both respective bend configurations are assumed to be in plane strain and are modelled via fully integrated (2 × 2) 2D plane strain elements. The final bend configurations include large deflection/deformation to a bend angle of 90°, along with non-linear contacts and non-linear material properties; the static implicit analysis method is used. The major differences in the respective test geometries are that the V-Bend has a span width of approximately 50 mm while the 3-point bend test has a smaller span width of 20 mm; the V-Bend test also uses a closed die while the other geometry involves die-free bending. These geometric differences result in a noticeable difference in tangential strain evolution throughout each respective bend process, detailed in section  3.0 .",
+        "Each macro-model consists of 4 parts: Punch, Die/Rollers, Specimen, and 2D Representative Volume Element (RVE). A 2D specimen is created and split into 2 regions: a small region of interest and the rest of the sample. In this application, this small region (Deemed the 2D “Representative Volume Element” or 2D RVE) is in the center of the bend sample, at the bottommost fiber of the specimen. The specimen and the 2D RVE are of interest in this study and are assigned an identical elastic-plastic response (MAT_24). For the elastic portion, the Young's Modulus is approximately 210 GPa while the Yield Strength is extracted via the 0.2 % offset method; the experimental stress-strain curve is shown in the Appendix,  Fig. (A.1) . The plastic portion is assigned by utilizing a Hollomon fit extracted from the experimental True Stress – True Strain curve, detailed in Ref. [ 13 ] and shown in  Fig. (3) \n                         . The Hollomon Equation, (σ = K ∙ ε n ) parameters used for this study are K = 1450 MPa and n = 0.12; these parameters yield a root mean square error of 29 MPa [ 13 ]. The material is assumed to be strain-rate independent and is therefore driven solely by the displacement of the punch. The Punch/Rollers and Die are outside the scope of this study and are constructed using a rigid material card. The Die/Rollers are constrained in all directions while the Punch is allowed a vertical displacement centered upon its punch tip radius to complete the bending process. The specific vertical displacement is formulated geometrically for each respective punch radius.",
+        "For Contact, “Mortar Surface to Surface” Contact was used which allows for increased robustness and smoothness proving beneficial for implicit solution schemes such as this bending application [ 15–17 ]. The coefficients of kinetic and static friction are identical and chosen to equal 0.125. The effect of friction is not in the scope of this project; however, it is known that varying the friction coefficients from 0.1 to 0.3 does not result in any significant difference in strain response [ 13 ]. The Punch, Die/Rollers, and Specimen are all initially drawn in contact. As mentioned, the specimen is separated into 2 parts, the 2D RVE and the rest of the macro sample. The 2D RVE is meshed using quad-elements with a size of 0.1 μm. Each macro model allows for input of a microstructure or 2D RVE at the bottom most center fiber of the bend specimen with a size of",
+        "30 μm × 24 μm illustrated in  Fig. (4) \n                         . As shown, we use the Multi-Zone Quad/Tri meshing regime to mesh the rest of the specimen while allowing for a radial smooth transition from the very fine meshed region of the 2D RVE to the relatively coarse meshed region of the rest of the specimen; the growth rate used is 1.05 and the target average mesh size of the rest of the specimen region is set to 0.25 mm. A growth rate of 1.05 is selected to ensure a smooth mesh transition maintaining mesh conformity and preserving solution stability and convergence [ 18 , 19 ]. For further details on the macro-modelling process utilized in this project consult [ 13 , 14 ]."
+      ]
+    },
+    {
+      "heading": "Microstructural modeling and bend micro-model generation",
+      "paragraphs": [
+        "With macro-models completed, connected multi-phase micromodels are generated. To create multi-phase microstructures, we grind, polish, and etch a representative steel specimen. The LePera etchant provides good contrast between martensite (appearing white) and ferrite (appearing orange/brown) and was used to generate the micrographs.  Fig. (5) \n                          illustrates three micrographs with varying Martensite Volume Fractions (MVF), representing regional variation within the sample. Micrographs are processed using ImageJ to enhance contrast, clean images, and segment phases into black-and-white, 8-bit grayscale format.",
+        "The processed images are imported into the software “Object Oriented Finite Element Analysis 2-D\" (OOF2) for meshing. OOF2 groups pixels based on grayscale values and assigns arbitrary material IDs (e.g., Black = Ferrite, White = Martensite). A rectangular grid with 0.1 μm element size forms the “skeleton”, which is refined into a mesh with linear 2D plane strain elements. Homogeneity Index (HI) is a value extracted from OOF2 that represents the similarity of the final FEA microstructural meshes to the initially introduced micrograph, a perfect match being 1.0 or 100 % [ 20 ]. HI values of about 0.97 or 97 % confirm high mesh accuracy compared to the original microstructure. As shown in  Fig. (6) \n                          and as mentioned prior, each microstructure is 30 μm × 24 μm in size consisting of 300 × 240 elements and comprising of 72,000 2D plane strain elements.",
+        "The respective meshes, exported in ABAQUS format, are converted into LS-DYNA files using LS Pre-Post and processed in Altair HyperWorks. Micro-models differ from macro-models primarily in element configuration, meshing, material phases, and boundary conditions. As mentioned previously and in Ref. [ 13 ], the macro models use fully integrated 2D plane strain elements (ELFORM = 2) and therefore hourglass modes do not exist. However, the micro models use first order reduced integration 2D plane strain elements (ELFORM = 1). This choice was made to improve computational efficiency, and therefore requires hourglass stabilization. Accordingly, the micro models all utilize an assumed strain, co-rotational stiffness formulation by Belytschko-Bindeman (Hourglass Type IHQ = 6); the default hourglass coefficient of 0.1 is used. Indeed, this hourglass control regime is well-suited for plane strain and forming problems due to its stability and ability to handle large displacements without distortion of stress/strain results [ 21 , 22 ]. While macro-models treat the specimen as a single material with displacement-enforced boundaries, micro-models include Ferrite and Martensite phases and are driven by displacement data extracted from the macro-model's RVE interface, discussed further in section  2.5 . These displacements, captured at intervals throughout the bending process, allow detailed microstructural strain localization and trend analysis."
+      ]
+    },
+    {
+      "heading": "Microstructural single-phase material property",
+      "paragraphs": [
+        "Macroscopic material properties are extracted from the real material via tensile tests as shown by Mendes-Fonseca et al. [ 13 ] and, in the Appendix,  Fig. (A.1) . However, a method is necessary to extract respective phase material properties from the macro-material. An extensively reported single-phase constitutive behavior method, called the “Dislocation Density-Based Strain Hardening” (DDBSH) model [ 8 , 23 ], can be used specifically to derive the plastic flow curves of the individual phases, Ferrite and Martensite respectively, at room temperature, for a specific Dual-Phase chemistry and are shown to follow \n                            \n                               [1] \n                               \n                                  \n                                     σ \n                                     \n                                     \n                                        ( \n                                        \n                                           M \n                                           P \n                                           a \n                                        \n                                        ) \n                                     \n                                     = \n                                     \n                                        σ \n                                        0 \n                                     \n                                     + \n                                     Δ \n                                     σ \n                                     + \n                                     α \n                                     · \n                                     M \n                                     · \n                                     μ \n                                     · \n                                     \n                                        b \n                                     \n                                     · \n                                     \n                                        \n                                           \n                                              1 \n                                              − \n                                              ex \n                                              p \n                                              \n                                                 ( \n                                                 \n                                                    − \n                                                    M \n                                                    · \n                                                    \n                                                       k \n                                                       r \n                                                    \n                                                    · \n                                                    ε \n                                                 \n                                                 ) \n                                              \n                                           \n                                           \n                                              \n                                                 k \n                                                 r \n                                              \n                                              · \n                                              L \n                                           \n                                        \n                                     \n                                  \n                               \n                            \n                         where the phase-specific Von Mises Stress (σ) and the Von Mises True Strain (ε) are represented for each respective material separately (Martensite and Ferrite). Therefore, two of these formulations are necessary. The first term σ 0  represents the Peierls Stress and the effects of alloying elements in solid solution. This is identical for Martensite and Ferrite and is given by \n                            \n                               [2] \n                               \n                                  \n                                     \n                                        σ \n                                        0 \n                                     \n                                     \n                                        ( \n                                        \n                                           M \n                                           P \n                                           a \n                                        \n                                        ) \n                                     \n                                     = \n                                     77 \n                                     + \n                                     750 \n                                     · \n                                     \n                                        ( \n                                        \n                                           P \n                                           % \n                                        \n                                        ) \n                                     \n                                     + \n                                     60 \n                                     · \n                                     \n                                        ( \n                                        \n                                           S \n                                           i \n                                           % \n                                        \n                                        ) \n                                     \n                                     + \n                                     80 \n                                     · \n                                     \n                                        ( \n                                        \n                                           C \n                                           u \n                                           % \n                                        \n                                        ) \n                                     \n                                     + \n                                     45 \n                                     · \n                                     \n                                        ( \n                                        \n                                           N \n                                           i \n                                           % \n                                        \n                                        ) \n                                     \n                                     + \n                                     60 \n                                     · \n                                     \n                                        ( \n                                        \n                                           C \n                                           r \n                                           % \n                                        \n                                        ) \n                                     \n                                     + \n                                     80 \n                                     · \n                                     \n                                        ( \n                                        \n                                           M \n                                           n \n                                           % \n                                        \n                                        ) \n                                     \n                                     + \n                                     11 \n                                     · \n                                     \n                                        ( \n                                        \n                                           M \n                                           o \n                                           % \n                                        \n                                        ) \n                                     \n                                     + \n                                     5000 \n                                     · \n                                     \n                                        ( \n                                        \n                                           N \n                                           \n                                              S \n                                              S \n                                           \n                                        \n                                        % \n                                        ) \n                                     \n                                  \n                               \n                            \n                         Here the concentrations are in units of wt.%. The second term in the DDBSH equation Δσ, is responsible for providing the strengthening by the Carbon in solution. For Martensite, this is given by \n                            \n                               [3] \n                               \n                                  \n                                     Δ \n                                     σ \n                                     \n                                        ( \n                                        \n                                           M \n                                           P \n                                           a \n                                        \n                                        ) \n                                     \n                                     = \n                                     3065 \n                                     · \n                                     \n                                        ( \n                                        \n                                           \n                                              C \n                                              \n                                                 S \n                                                 S \n                                              \n                                              M \n                                           \n                                           % \n                                        \n                                        ) \n                                     \n                                     − \n                                     161 \n                                  \n                               \n                            \n                         where the  \n                            \n                               ( \n                               \n                                  \n                                     C \n                                     \n                                        S \n                                        S \n                                     \n                                     M \n                                  \n                                  % \n                               \n                               ) \n                            \n                          denotes the Carbon Content found in the Martensite. For Ferrite, the strength increment is given by \n                            \n                               [4] \n                               \n                                  \n                                     Δ \n                                     σ \n                                     \n                                        ( \n                                        \n                                           M \n                                           P \n                                           a \n                                        \n                                        ) \n                                     \n                                     = \n                                     5000 \n                                     · \n                                     \n                                        ( \n                                        \n                                           \n                                              C \n                                              \n                                                 S \n                                                 S \n                                              \n                                              f \n                                           \n                                           % \n                                        \n                                        ) \n                                     \n                                  \n                               \n                            \n                         while the  \n                            \n                               ( \n                               \n                                  \n                                     C \n                                     \n                                        S \n                                        S \n                                     \n                                     f \n                                  \n                                  % \n                               \n                               ) \n                            \n                          denotes the Carbon Content found in the Ferrite. The Ferrite is assumed to be saturated in Carbon with a concentration of 0.025 wt%, while the Martensite Carbon Content ( \n                            \n                               \n                                  C \n                                  \n                                     S \n                                     S \n                                  \n                                  M \n                               \n                               % \n                            \n                         ) is given by the remainder of the total Carbon Content. Therefore, \n                            \n                               [5] \n                               \n                                  \n                                     \n                                        C \n                                        \n                                           S \n                                           S \n                                        \n                                        M \n                                     \n                                     % \n                                     = \n                                     \n                                        \n                                           \n                                              C \n                                              \n                                                 S \n                                                 S \n                                              \n                                              \n                                                 T \n                                                 o \n                                                 t \n                                                 a \n                                                 l \n                                              \n                                           \n                                           % \n                                           − \n                                           \n                                              ( \n                                              \n                                                 \n                                                    C \n                                                    \n                                                       S \n                                                       S \n                                                    \n                                                    f \n                                                 \n                                                 % \n                                                 · \n                                                 \n                                                    ( \n                                                    \n                                                       1 \n                                                       − \n                                                       M \n                                                       V \n                                                       F \n                                                    \n                                                    ) \n                                                 \n                                              \n                                              ) \n                                           \n                                        \n                                        \n                                           M \n                                           V \n                                           F \n                                        \n                                     \n                                  \n                               \n                            \n                         where the  \n                            \n                               ( \n                               \n                                  \n                                     C \n                                     \n                                        S \n                                        S \n                                     \n                                     \n                                        T \n                                        o \n                                        t \n                                        a \n                                        l \n                                     \n                                  \n                                  % \n                               \n                               ) \n                            \n                          represents the overall nominal Global %C. The third term in equation [ 1 ] recognizes the effects of dislocation strengthening along with work softening due to recovery. The various terms in these equations are defined in  Table 1 \n                         , along with the appropriate values for the respective Ferrite and Martensite phases in DP steels, as found in several literature sources [ 3 , 8 , 10 , 24–26 ].",
+        "Upon employing the DDBSH method, utilizing the specific DP 980 chemistry measured on this alloy, given in  Table 2 \n                         , the phase plastic flow curves for each phase can be determined, as shown in  Fig. (7) \n                         , for Martensite and Ferrite respectively. A ferrite grain size of 5 μm was used in the DDBSH method. As mentioned prior, for the macroscopic model, the elastic portion of each respective phase is completed with an identical Young's Modulus of 210 GPa, and an identical Poisson's ratio of 0.3 [ 13 , 14 ]. The respective plastic portions of the Martensite and Ferrite are populated with the curves from  Fig. (7) . Each micro-model simulation is run using LS-Run and parallelized across 4 CPUs; simulation times are approximately 45 min."
+      ]
+    },
+    {
+      "heading": "Volume averaged homogenization and Rule of Mixture averaging",
+      "paragraphs": [
+        "Upon bend/tensile simulation completion, post-processing is completed using the HyperWorks software.  Fig. (8 \n                         ) (A) shows a typical result at the end of a V-Bend simulation. The microstructural mesh for this simulation includes 45,720 Ferrite elements out of 72,000 total elements, each returning specified output values. The primary output of interest is the “Effective Plastic Strain,” though this homogenization method can also process stress outputs such as “Von Mises Stress,” used to derive macro-tensile curves discussed further in Section  2.6 .",
+        "Effectively, this results in 45,720 different strain evolution curves, shown in  Fig. (8 ) (B) for a V-Bend process for all the Ferrite elements. Conversely, another set of results entailing 26,280 different strain evolution curves for the Martensite elements exists but is omitted here for clarity. To manage the large variability and quantity of the curves, these curves must be averaged in some manner. Volume Homogenization [ 3 , 27 ] is used to average output parameters across a large domain of elements that comprise a specific volume or area. With uniform quad elements (0.1 μm, aspect ratio 1), variable element volume effects are negligible, validating equations [ 6 , 7 ] below. All the stresses/strains are integrated along the full respective phase volume domain; this is then averaged accordingly. \n                            \n                               [6] \n                               \n                                  \n                                     \n                                        ε \n                                        \n                                           f \n                                           M \n                                        \n                                     \n                                     = \n                                     \n                                        1 \n                                        \n                                           V \n                                           \n                                              f \n                                              M \n                                           \n                                        \n                                     \n                                     · \n                                     \n                                        ∫ \n                                        \n                                           V \n                                           \n                                              f \n                                              M \n                                           \n                                        \n                                     \n                                     ε \n                                     \n                                     d \n                                     V \n                                  \n                               \n                            \n                         \n                         \n                            \n                               [7] \n                               \n                                  \n                                     \n                                        σ \n                                        \n                                           f \n                                           M \n                                        \n                                     \n                                     = \n                                     \n                                        1 \n                                        \n                                           V \n                                           \n                                              f \n                                              M \n                                           \n                                        \n                                     \n                                     · \n                                     \n                                        ∫ \n                                        \n                                           V \n                                           \n                                              f \n                                              M \n                                           \n                                        \n                                     \n                                     σ \n                                     \n                                     d \n                                     V",
+        "Equation [ 6 ] is applied to homogenize Effective Plastic Strains for Ferrite and Martensite phases, yielding two distinct curves per simulation; similarly, equation [ 7 ] handles the stresses. To understand holistic microstructural behavior, a “mixing” method is necessary to combine these curves; the common “Rule of Mixture” or ROM is used. \n                            \n                               [8] \n                               \n                                  \n                                     \n                                        ε \n                                        \n                                           D \n                                           P \n                                           \n                                           S \n                                           t \n                                           e \n                                           e \n                                           l \n                                        \n                                     \n                                     = \n                                     \n                                        V \n                                        M \n                                     \n                                     · \n                                     \n                                        ε \n                                        M \n                                     \n                                     + \n                                     \n                                        V \n                                        f \n                                     \n                                     · \n                                     \n                                        ε \n                                        f \n                                     \n                                  \n                               \n                            \n                         Here,  \n                            \n                               \n                                  V \n                                  M \n                               \n                            \n                          and  \n                            \n                               \n                                  V \n                                  f \n                               \n                            \n                          represent the volume fractions of the Martensite and Ferrite phases respectively, for each microstructural 2D RVE. Since both Martensite and Ferrite curves have output values at identical bend displacements, a holistic strain evolution can be formulated. The resulting strain/stress evolution curve, in theory, describes the holistic DP 980 strain/stress evolution throughout the respective deformation process."
+      ]
+    },
+    {
+      "heading": "Macro – micro interface linking",
+      "paragraphs": [
+        "Due to the significant material inhomogeneity between the phases in DP 980 steel, a single cohesive model cannot yield realistic results. Instead, a multi-scale sub-modeling approach is employed, that couples a macro-model at the millimeter scale (detailed above and in Ref. [ 13 ]) with micro-models at the micrometer scale; the latter are the focus of this paper. These models are connected seamlessly using LS DYNA's interface linking capabilities. This approach integrates both realistic microstructural modeling and the referenced macro-scale simulations, coupling the micro-level phase properties with the macro-level material properties and respective forming processes for both V-Bend and 3-Point bending.",
+        "Two interface-linking techniques are evaluated: NODE_TO_NODE and NODE_TO_EDGE. The NODE_TO_NODE method directly constrains macro-model nodal displacements to corresponding micro-model nodes, but this results in artificial stresses and premature model termination due to the vastly differing deformation behaviors of Ferrite and Martensite. The NODE_TO_EDGE technique, however, imposes macro-model displacements on a “Linking Edge,” which drives the micro-model while allowing realistic deformation of the microstructure. This method was successfully applied and utilized in this work. A critical component of the process is the “RVE_Interface” (.d3if) file, which stores the nodal displacement data needed to drive the micro-models. Once generated, this file eliminates the need to re-run the macro-model for each micro-model. For this project, displacements for 1080 nodes shown in  Fig. (9) \n                          on the perimeter",
+        "of the analyzed RVE are extracted, focusing on the most deformed central fiber region of the steel bend sample. To validate the connectivity, we ran the micro model with a single-phase material having the same constituent behavior as the macro material, as shown in  Fig. (10) \n                         . This test shows that the Von Mises strains are the same confirming that the NODE_TO_EDGE technique maintains consistent deformation and strain data (extracted from the bottom of the sample spine) between the macro scale (lines) and the micro scale (points) for V-bend tests of identical macro-material property and different radii, shown in  Fig. (10) (C) ; similar consistent deformation results are also reported for the 3-point bend test. This indeed is the ideal multi-scale modeling strategy for such a highly inhomogeneous DP 980 material as both macro and micro scales are now seamlessly connected."
+      ]
+    },
+    {
+      "heading": "Uniaxial tensile micro-model generation and validation",
+      "paragraphs": [
+        "Beyond an analysis of the bending behavior of the experimentally studied DP-980 alloy, we also wish to perform parametric studies to determine how bending deformation is altered were we to change, for example, the alloy Carbon concentration or the Ferrite-Martensite ratio. In these scenarios the measured macroscopic tensile response is no longer valid. We therefore need to develop this response from a tensile micro model. Furthermore, aside from the bending process application, the completed accurate FEA mesh models described in section  2.2  can also be modified to simulate a 2D plane strain uniaxial tensile test. Rather than using the RVE interface file displacements to drive the micro-model as seen for the bending process above, the microstructural mesh is taken as a new file, and new independent displacement boundary conditions are imposed on the perimeter nodes. As shown in  Fig. (11) (A) \n                         , 4 independent displacement boundary conditions are placed on the mesh edges simulating 2D plane strain",
+        "boundary conditions in which ε 1  = ε 2  and ε 3  = 0. All imposed tensile boundary conditions are symmetric about the origin (center of RVE) and are pulled to a total uniaxial strain of 10 %. These uniaxial tensile models will be used to, validate the initial experimental tensile material response, along with, approximating holistic DP steel macro-material flow curves with varying microstructural parameters such as MVF or %C. These approximated macro-material flow curves are subjected to a Hollomon Fit (up to a true strain of 1 or 100 %) and are then used as inputs to the bend macro models. Essentially, prior to varying any microstructural parameters in the bending process, these variations are tested first in the tensile regime. The resulting uniaxial tensile response results in a homogenized macro curve which is used to better approximate the macro response of the material in the bending processes after making a microstructural change. Indeed, the tensile response is used to generate a new flow curve for the new virtual material that replaces the experimentally derived curves used in the initial macro-micro bending calculations."
+      ]
+    },
+    {
+      "heading": "Parametric analysis and proposed investigations",
+      "paragraphs": [
+        "Once the macro and micro models are connected, executed and validated to experimental results, different inquiries and analyses can be developed. Three major investigations have been undertaken and are reported here, including: \n                            \n                               (1) \n                               The effect of bend test punch radius \n                            \n                            \n                               (2) \n                               The effect of varying the Martensite Volume Fraction \n                            \n                            \n                               (3) \n                               The effect of varying the total/global steel Carbon Content"
+      ]
+    },
+    {
+      "heading": "Effect of bend test configuration on strain development",
+      "paragraphs": [
+        "Detailed macroscopic bend results and analysis have been reported by Mendes-Fonseca et al. [ 13 , 14 ]. However, the overall strain evolution insights are summarized here. FEA simulations are validated and show good agreement with the experimental data, detailed in Refs. [ 13 , 14 ], for both V-Bend and 3-point bend test geometries. To compare between the two bending geometries, progression through the bending process is described in terms of normalized punch displacement, defined as the instantaneous punch displacement normalized by the total prescribed stroke. It should be noted that these geometries are quite different and therefore show very different tangential strain evolution trends, even though both tests result in a plane strain bending procedure. The V-Bend experiences a low macro-strain response until approximately 80–85 % of the bending process is complete, beyond which the samples undergo “Bottoming” as the sheet is pushed against the die. This results in a large increase in strain during the final 15–20 % of the bending process. The 3-point bend test has a much smaller span width and no die. As a result, the 3-point bend test tends to start with relatively high strains and then experiences a “relaxation plateau” rather than the bottoming and coining phenomena found in the V-Bend test.",
+        "Aside from punch tip radius (Section  4.0 ), span length is also an important geometric variable in bending configurations. Upon increasing the span length of a 3-point bend test, the effective plastic strain evolution decreases as shown in  Fig. (12) \n                       for a punch radius of 2 mm. Since the 3-Point Bend test has no die, it is effectively an air-bending technique for the full bend process. For the V-Bend simulations, however, the first 80 % of the bend process experiences air-bending, followed by the final 20 % of the simulation experiencing bottoming and coining induced by the die-to-sample interaction [ 13 , 14 ]. Therefore, the V-Bend test can be thought of as a 3-point bend test up to approximately 80–85 % of normalized punch displacement. As shown in  Fig. (12) , when the span widths for bending are close to that for the V-Bend tests, the initial parts of the curve are quite similar."
+      ]
+    },
+    {
+      "heading": "Effect of punch radius on stress and strain development in DP 980",
+      "paragraphs": [
+        "Figs. (13) and (14) \n                      \n                       illustrate the post-bending strain distributions for the Ferrite and Martensite, respectively, when varying the bend test punch tip radius. In the Ferrite phase ( Fig. 13 ), significant shear/deformation bands are observed at approximately 45°, accompanied by localized strain concentrations or “hot spots.” A comparison between the two bend test geometries, V-bend tests (A, C, E) and 3-point bend tests (B, D, F) reveals that both produce similar von Mises strain distributions. However, the three-point bend tests exhibit slightly greater strain localization. Notably, for the most severe punch radius of 1 mm, the Ferrite phase experiences extreme deformation. For punch radii of 2 mm and 3 mm, the shear banding patterns and strain localization zone positions remain largely unchanged between the two bending geometries, though the intensity of strain localization is marginally higher in the 3-point bend test.",
+        "Examining the effect of punch radius in the V-bend tests, increasing the radius to 2 mm (C) results in a similar number of localized strain zones as the 1 mm radius case (A). As the punch radius increases, the intensity of strain localization decreases, yet the spatial distribution of localized strain zones and major shear bands remains largely unchanged. This trend persists with a further increase to a 3 mm punch radius (E), where a further reduction in localized strain intensity is observed. A similar pattern emerges in the three-point bend tests (D, F), where increasing the punch radius leads to an overall decrease in strain localization intensity. Additionally, with a larger punch tip radius, a greater number of Ferrite elements are shielded by neighboring Martensite islands, as indicated by the dark blue regions in  Fig. (13) .",
+        "In contrast,  Fig. (14)  demonstrates that strain partitioning into the Martensite is minimal compared to the Ferrite. While some shear/deformation banding is evident, plastic strain",
+        "localization remains the dominant trend in the Martensite elements. As with the Ferrite phase, the sites of strain localization zones and major shear bands are predominantly dictated by the intrinsic material microstructure and exhibit minimal variation with changes in punch radius.",
+        "Fig. (15) \n                       provides a detailed view of the Ferrite following bend deformation for a punch radius of 2 mm in both bending tests. The V-bend and three-point bend tests exhibit similar shear/deformation banding patterns and microstructural strain evolution trends. At the onset of bending, plastic strain localizes in specific vulnerable regions within the Ferrite, subsequently expanding and coalescing along the primary 45° shear bands. This strain growth and coalescence behavior aligns with findings in the literature [ 3 , 5 , 6 , 9 ], indicating that the inherent microstructural morphology predominantly governs strain evolution, while variations in bend test geometry introduces only minor deviations in final microstructural plastic strain distributions.",
+        "Although Martensite accommodates minimal plastic strain compared to Ferrite shown in  Fig. (16) \n                      , certain Martensite islands experience relatively high localized plastic strains, rendering them particularly susceptible to excessive deformation and potential damage. These islands, characterized by complex morphologies, can be associated with the Martensite cracking phenomenon reported in the literature [ 5 , 6 ].",
+        "Through the previously discussed homogenization process in section  2.4 , the volumetric averages of the Ferrite and Martensite element sets are extracted and presented in  Fig. (17) \n                      , alongside the corresponding homogenized “Rule of Mixtures” (ROM) curves (Dotted Black Line) and the macroscopic “Effective Plastic Strain” (Solid Black Line). Notably, the ROM and macroscopic curves exhibit good agreement, within 5 % error. To further investigate strain partitioning between the phases, a “Strain Partitioning Intensity Ratio” (SPIR) is introduced. This metric quantifies the instantaneous ratio of plastic strain accommodated by the Ferrite relative to the Martensite and is represented by the blue lines in  Figs. (17) and (18) \n                      \n                      .",
+        "As shown in  Fig. (17) , the strain evolution trends differ notably between the V-bend tests (A, C, E) and the three-point bend tests (B, D, F). This distinction is evident in the strain responses of both phases, as well as in the overall homogenized and macroscopic curves. In all bending simulations, the material initially behaves elastically until the Ferrite phase reaches its yielding point. Beyond this threshold, Ferrite undergoes plastic deformation while Martensite remains in the elastic regime, with Ferrite accommodating the majority of plastic strain. As deformation progresses, Martensite eventually transitions into its plastic regime, contributing to the overall plastic deformation of the microstructure. For both bending configurations an increase in punch tip radius results in a decrease in overall homogenized strain averages, with both Ferrite and Martensite exhibiting reduced strain responses. However, the Strain Partitioning Intensity Ratio",
+        "(SPIR) remains relatively constant across varying punch tip radii, as expected, since SPIR is an inherent material property.",
+        "Due to the inherently low plastic strain susceptibility of Martensite when compared to the Ferrite, final plastic strain distributions tend to have a strong skew towards lower plastic strains (Shown in the Appendix,  Fig. (A.10) ). For a more comparative analysis, final plastic strain values are reported using median values rather than averages, with the spread represented as ±1 standard deviation. Given the strongly skewed nature of the strain distributions, the standard deviation reflects strain heterogeneity rather than symmetric dispersion about the median, and does not imply negative strain values. These values are plotted against increasing punch tip radius for each bending test, as shown in  Fig. (18) .",
+        "As anticipated, overall final plastic strain in both Ferrite and Martensite decreases with increasing punch tip radius, accompanied by a reduction in phase strain variability. Consequently, a greater proportion of elements experience strains within one standard deviation of the median, resulting in fewer instances of excessively high or low strain values, shown by the decrease in respective phase spreads."
+      ]
+    },
+    {
+      "heading": "parametric studies",
+      "paragraphs": []
+    },
+    {
+      "heading": "Effect of varying microstructural Martensite Volume Fraction (MVF)",
+      "paragraphs": [
+        "As expected, variations in microstructural features, such as changes in Martensite Volume Fraction (MVF), lead to corresponding alterations in the macroscopic material response. An increase in MVF is anticipated to result in a higher stress-strain response, while a decrease in MVF should produce the opposite effect. To investigate this, two distinct microstructures are generated: Microstructure B with an MVF of 26.2 % and Microstructure C with an MVF of 49.8 %. We assume a constant overall Carbon content of the alloy at 0.096 wt%, which means that as the MVF increases, the Martensite itself gets somewhat weaker. As shown in the Appendix in  Figs. (A.2–A.4)  and referenced in Section  2.6 , holistic uniaxial tensile macroscopic curves are extracted to predict the macro-level response of the material during bending having made a microstructural change (MVF variation for this investigation). These curves serve as the driving input for the microstructural behavior throughout the respective bending processes.",
+        "Despite variations in MVF, all microstructures exhibit similar shear/deformation banding at approximately 45°, but with some noteworthy differences. Consistent with previous findings, Ferrite accommodates the majority of the overall strain, forming localized strain regions that expand and merge with adjacent high-strain bands throughout the bending process. A lower MVF reduces the likelihood of shear bands cutting through Martensite islands, thereby decreasing the occurrence of Martensite cracking due to the relatively lower presence of Martensite within the 2D RVE. Additionally, fewer secondary shear/deformation bands emerge, as major shear bands experience less of a need to deflect or break into smaller bands. Since strain band propagation and deflection is known to be influenced by Martensite islands [ 12 ], an increase in MVF is expected to generate more secondary or deflecting shear bands. This trend is evident in  Fig. (20) \n                         , whereby increasing the MVF to 36.5 % leads to a greater number of secondary shear bands. Major shear bands predominantly propagate along Martensite-Ferrite interfaces, as previously discussed and observed in  Figs. 15 and 16 .",
+        "Notably, Martensite islands experiencing excessive plastic strain tend to exhibit a predominantly horizontal microstructural morphology, i.e. perpendicular to the direction of bend punch motion. These islands are often influenced by propagating secondary shear bands, further influencing strain localization patterns.",
+        "A further increase in MVF to 49.8 % leads to an additional increase in secondary shear bands, as illustrated in  Fig. (21) \n                         . In this microstructural configuration, Martensite accommodates a significantly greater portion of the overall strain compared to the lower MVF cases. Due to the increased Martensite content, Ferrite is confined to narrower regions, which in turn experiences excessively high plastic strains. This is particularly evident in the prominent shear band occupying the central region of the 2D RVE in  Fig. (21) , which represents one of the most extreme strain localization zones observed in this investigation. Notably, the maximum plastic strains experienced by the Ferrite phase increase with higher MVF. This phenomenon arises from both the microstructural incompatibility of the increasingly complex phase distribution and the inherent material inhomogeneity between the Ferrite and Martensite, as documented in the literature [ 26 , 28 ]. Interestingly, the observed microstructural plastic strain patterns closely resemble the experimental bend fracture images found in Ref. [ 29 ].",
+        "As depicted in  Figs. (22) and (23) \n                         \n                         , for both V-bend and three-point bend tests, an increase in MVF leads to higher average final von Mises (VM) strain values in the Ferrite. This is likely due to the formation of excessively narrow Ferritic strain regions, further corroborating the microstructural trends observed in  Figs. 19–21 . Additionally, with increasing MVF, Martensite accommodates a greater proportion of the total plastic strain, resulting in elevated plastic strain levels in both phases. However, the macroscopic VM strain curve and the homogenized Rule of Mixtures (ROM) strain curve exhibit minimal variation in response to MVF changes (Shown in the Appendix,  Fig. (A.5) ). In contrast, the SPIR curves display progressively lower plateau values as MVF increases. As expected, strain partitioning decreases significantly with increasing MVF.",
+        "A reduction in SPIR indicates that a larger fraction of the overall plastic strain is transferred to the Martensite. This trend aligns with the expectation that, as MVF increases, more Martensite islands and bands are engaged in accommodating the imposed bend deformation. Furthermore, Martensite bands are known to undergo earlier plasticity [ 6 ], enabling more effective strain sharing with adjacent Ferrite regions. Notably, this decrease in SPIR is independent of bend test geometry, as a similar trend is observed in three-point bending tests. This behavior is consistent with the fact that SPIR is an intrinsic material property rather than a test-specific parameter."
+      ]
+    },
+    {
+      "heading": "Effect of varying the total/global carbon content",
+      "paragraphs": [
+        "Varying the carbon content within the microstructure inevitably influences the macroscopic material response, with an increase in %C resulting in greater strength. To assess this effect, two variations of the DDBSH are considered: one in which the %C is reduced from the nominal value of 0.096 %–0.065 %, and another in which it is increased to 0.2 %. In all these cases the MVF is held constant. As shown in the Appendix,  Figs. (A.6–A.8)  holistic uniaxial tensile macro curves are developed and these are then used to predict the macroscopic response of the material in bending for each carbon level.",
+        "Since Ferrite has a maximum carbon solubility of approximately 0.025 %, variations in global %C primarily affects the strength of the Martensite phase, thereby altering the heterogeneity between the two phases. As documented in the literature, the strength of Martensite is quite sensitive to its carbon content, with morphology playing a secondary role [ 30 ]. This increased material heterogeneity is evident in the Ferrite, shown in  Fig. (24) \n                         , whereby a higher %C results in narrower and more intense strain bands. Despite maintaining a constant MVF, increasing %C alters the strain distribution within the Ferrite. Instead of dispersing across a wider Ferrite region, plastic",
+        "strain localizes into narrower bands. This occurs due to the substantially stronger, higher-carbon Martensite exerting a pseudo-localization effect on the 2D RVE. Essentially, the increased strength gradient, along with the shielding effect of high-carbon Martensite, reduces the effective area of deformed Ferritic elements. This leads to an increased spread in the Ferrite and a microstructural strain band localization effect. However, this localized strain behavior pertains specifically to plastic strain banding and does not account for interfacial decohesion. In fact, increased microstructural strain localization, reduced Martensite ductility, and a pronounced mechanical incompatibility between Ferrite and Martensite—factors that all intensify with increasing %C—are known to adversely affect interfacial cohesion and promote damage [ 23 ]. This trend mirrors observations from section  5.1 , where increasing MVF also induced strain localization.",
+        "Fig. (26)  illustrates the phase-specific strain evolution and strain partitioning trends across",
+        "different bend tests. With increasing %C, the average plastic strain in the Ferrite phase exhibits a slight increase in the V-bend test, whereas in the three-point bend test, it remains largely unchanged. Conversely, the Martensite experiences a relatively pronounced reduction in overall plastic strain across both bending tests with increasing %C.",
+        "Fig. (27)  highlights the final plastic strain distribution across varying %C levels. With increasing %C, the evolution of average and median Ferrite plastic strain remains relatively stable, with only a slight increase observed in the V-bend test. In the three-point bend test, these values exhibit minor variations but tend to decrease slightly with higher %C. Notably, the SPIR increases significantly as the Ferrite phase experiences a larger share of the plastic strain.",
+        "Furthermore, the spread of the final Ferrite median von Mises strain increases with higher %C. This is attributed to greater material heterogeneity and the complex morphology of Martensite, which causes more Ferrite elements to experience either minimal deformation or excessively high plastic strains due to the pseudo-localization narrowing effect and Martensite shielding observed in the microstructures."
+      ]
+    },
+    {
+      "heading": "Summary and conclusions",
+      "paragraphs": [
+        "A repeatable and robust procedure has been formulated for creating multi-scale bend models for multi-phase materials. Macro-bend simulations (mm scale) are used to drive micro-bend models (μm scale). We have used this to model a Dual-Phase (DP) Steel microstructure. The methodology used to produce the digitized microstructure from experimental micrographs has been shown to exhibit a high degree of conformity with a Homogeneity Index (“Microstructure Mesh Accuracy”) exceeding 95 %.",
+        "The model has been used to study the effect of bend test configuration and bending punch radius on a DP 980 alloy under current investigation.",
+        "We found that the strain localization regions are highly dependent on morphology, moreover, the plastic strain for a given amount of bending decreases with increasing punch tip radius.",
+        "We then used the model to investigate hypothetical changes such as changing MVF at a constant %C content, and changing the %C content at constant MVF. In the first case, we found that primary shear bands propagate at about 45° regardless of MVF. However, strains localize in narrower Ferrite channels and along the Martensite – Ferrite interface as MVF increases. Moreover, secondary shear bands are more likely to form due to the complexity of the microstructures. With regard to %C content, which largely impacts Martensite strength, increased %C leads to increases in material heterogeneity. This results in heavy sheltering in certain areas and high localization in others.",
+        "Overall, 2D plane strain bending models exhibit similar final strain trends in both V-Bend and 3-point bend FEA tests. However, the strain evolution during the bending processes differs significantly between the two configurations. In the V-Bend test, the macro-strain remains low until approximately 80 % of the bending process is complete, after which a pronounced increase in strain occurs due to “Bottoming” as the sheet is forced along the die walls. In contrast, the 3-point bend test, which features a smaller span width and lacks a die, starts with relatively high strains and then transitions into a “relaxation plateau”. Despite these differences in strain evolution, the final strain achieved in both tests are quite similar.",
+        "From a microstructural perspective, all microstructures exhibit comparable shear/deformation banding at approximately 45°, irrespective of the bend test type, MVF, or %C. Ferrite and Martensite micro-strain evolution trends follow their driving macro-strain bending test trends. By varying the amount of Martensite and the %C content of the alloy we have explored the influence of microstructure on bending. The variation in relative phase strengths significantly influences the way strain is partitioned between the phases, as measured by the SPIR parameter. As shown experimentally [ 31 ], this will affect the damage tolerance of the material. Increased microstructural strain localization, reduced ductility of high %C Martensite, and the mechanical incompatibility between Ferrite and Martensite, are all known factors that will impact damage tolerance [ 32 ]."
+      ]
+    },
+    {
+      "heading": "CRediT authorship contribution statement",
+      "paragraphs": [
+        "Mahmoud Diab:  Writing – review & editing, Writing – original draft, Visualization, Validation, Software, Methodology, Investigation, Formal analysis, Data curation, Conceptualization.  David S. Wilkinson:  Writing – review & editing, Validation, Supervision, Resources, Project administration, Investigation, Funding acquisition, Formal analysis, Conceptualization.  Jidong Kang:  Writing – review & editing, Supervision, Conceptualization."
+      ]
+    },
+    {
+      "heading": "Modelling details",
+      "paragraphs": [
+        "The engineering and true stress-strain curves measured experimentally for DP 980 are shown in  Fig. (A.1) . \n                         \n                            Fig. (A.1) \n                            \n                               (A) DP 980 Stress-Strain Flow Curves (B) DP 980 Tensile Mechanical Properties. \n                            \n                            Fig. (A.1)",
+        "As demonstrated, sections  2.3 and 2.6  using the Dislocation Density-Based Strain Hardening (DDBSH) model for a Dual-Phase steel results in distinctive single phase flow curves ( Fig. (A.2) ) that are then used to represent Ferrite and Martensite respectively. Shown in  Fig. (A.3)  are the resultant holistic uniaxial tensile macroscopic curves upon utilizing the DDBSH curves as material input parameters for the Ferrite and Martensite; these flow curves along with their respective uniaxial tensile tests deform the microstructure to a true strain of 10 %. Indeed, while holding global %C constant and increasing the MVF, an increased stress-strain response is expected; the opposite is expected when MVF is decreased. A Hollomon fit is imposed on the resultant uniaxial flow curves shown in  Fig. (A.4) ; all fits are within 5 % error. These approximated flow curves are the input parameters to the macro-models that will subsequently drive the micro-models in section  5.1 . Shown in  Fig. (A.5)  are the macro effective plastic strain results at the spine of the sample, interestingly, there is little change in the macro strain evolution when varying the MVF within the allotted 26–49 % while holding a constant global Carbon content. \n                         \n                            Fig. (A.2) \n                            \n                               (A) Resultant Dislocation Density-Based Strain Hardening Curves for Different Martensite Volume Fractions; Ferrite grain size is estimated with consultation from Refs. [ 13 , 14 ], note the slight decrease in Martensite strength with an increase in MVF while holding %C constant. \n                            \n                            Fig. (A.2) \n                            \n                         \n                      \n                      \n                         \n                            Fig. (A.3) \n                            \n                               FEA Uniaxial Stress-Strain Curves for Different Martensite Volume Fractions. \n                            \n                            Fig. (A.3) \n                            \n                         \n                      \n                      \n                         \n                            Fig. (A.4) \n                            \n                               (A) Microstructure B Hollomon Fit with an RMSE of 55.4 MPa (B) Microstructure C Hollomon Fit with an RMSE of 62.3 MPa, all fits are within 5 % error. \n                            \n                            Fig. (A.4) \n                            \n                         \n                      \n                      \n                         \n                            Fig. (A.5) \n                            \n                               Macro-Bend Von Mises Strain Evolution Results for Different Martensite Volume Fractions, note that macro results are relatively similar when varying MVF within the allotted range of 26 %–49 % and maintaining a constant %C of 0.096 %, these macro models drive their subsequent micro-models for section  5.1 . \n                            \n                            Fig. (A.5)",
+        "Fig. (A.6)  shows the resultant single-phase flow curves for the respective Martensite and Ferrite when the MVF is held constant while the global %C is varied. As noted, due to the Ferrite carbon saturation, increasing global %C will tend to vastly increase the strength of the Martensite relative to the Ferrite. This can be noted by the large difference in the Martensite and Ferrite flow curves for the increased %C. These flow curves are implemented into uniaxial microstructural tests and pulled to a true strain of 10 %. As expected, increasing the global %C results in an increase in stress-strain response of the microstructure. As before, a Hollomon fit is imposed on the resultant uniaxial tensile curves to a true strain of 1; this is shown in  Fig. (A.8)  and like before, the imposed fits are all within 5 % error. These curves are then utilized to run the macro models for the Carbon varying investigation. Shown in  Fig. (A.9) , the macro effective plastic strain response shows a pronounced decrease when increasing the global %C. The representative “RVE_Interface” files are extracted and used to run the subsequent micro-models in section  5.2 . \n                         \n                            Fig. (A.6) \n                            \n                               (A) Resultant Dislocation Density-Based Strain Hardening Curves for Different Carbon Content; Ferrite grain size is constant from Refs. [ 13 , 14 ], note the large increase in Martensite strength with an increase in %C while holding MVF constant. \n                            \n                            Fig. (A.6) \n                            \n                         \n                      \n                      \n                         \n                            Fig. (A.7) \n                            \n                               FEA Uniaxial Stress-Strain Curves for Different Carbon Content. \n                            \n                            Fig. (A.7) \n                            \n                         \n                      \n                      \n                         \n                            Fig. (A.8) \n                            \n                               (A) Low Carbon Hollomon Fit with an RMSE of 56.7 MPa (B) High Carbon Hollomon Fit with an RMSE of 74.6 MPa, all fits are within 5 % error. \n                            \n                            Fig. (A.8) \n                            \n                         \n                      \n                      \n                         \n                            Fig. (A.9) \n                            \n                               Macro-Bend Von Mises Strain Evolution Results for Different Carbon Contents, note that macro results are relatively similar when decreasing %C from 0.096 % to 0.065 %, however a decreased macro effective plastic strain response is noticed when a %C of 0.096 % is increased to 0.2 %, MVF is held constant, these macro models drive their subsequent micro-models for section  5.2 . \n                            \n                            Fig. (A.9)",
+        "For the sake of space and clarity, final plastic strain histogram distributions are also extracted from the microstructural configurations and are shown in the  Figs. (A.10 – A.12)  for each respective inquiry. As expected, since the shown distribution results are the microstructural plastic strains, Martensite is expected to deform relatively little. This results in much of the Martensite final plastic strain distribution data being very low and having a heavy left skew. Due to this skew, and to improve statistical accuracy, the final plastic strain values are reported as median values rather than averages, while the spread is considered a ±1 Standard Deviation; this is shown in  Figs. (18), (23) and (27) . Note in  Fig. (A.10) , increasing the punch tip radius for both the V-Bend and the 3-Point bend tests, results in a steady decrease in the median Ferrite plastic strains. The Martensite medians also decrease quite steadily, along with both respective phase spreads. For increasing MVF, shown in  Fig. (A.11) , the Ferrite experiences a slight increase in the final median VM strains for both bend tests respectively. The Martensite phase experiences a very clear increase in final VM strain values with increasing MVF. Interestingly, the spread of the Ferrite and Martensite phases does not vary much with increasing MVF. Shown in  Fig. (A.12) , expectedly, the median final plastic strain distribution in the Martensite decreases dramatically with an increase in %C. Final Ferrite median plastic strain response varies relatively little with varying %C. The spread of the plastic strain found in the Martensite phase does not tend to vary much with increasing %C. Validating the “pseudo-localization” effect imposed on the Ferrite by the relatively stronger Martensite and the “sheltering” effect prominently found in  Figs. (25) and (27) \n                      \n                      \n                      , one can note that with increasing global %C, the overall Ferrite spread increases noticeably; this is true for both respective bend tests. With increasing %C, microstructural regions experiencing no/low plastic strain will increase in size while regions experiencing high plastic strains will increase in both size and intensity; especially when no interfacial decohesion or damage is considered. \n                         \n                            Fig. (A.10) \n                            \n                               Final Respective Phase Von Mises Strain Distribution (Punch Tip Radius); Martensite has a heavy left skew therefore statistical medians are compared rather than statistical averages. \n                            \n                            Fig. (A.10) \n                            \n                         \n                      \n                      \n                         \n                            Fig. (A.11) \n                            \n                               Final Respective Phase Von Mises Strain Distribution (MVF); Martensite has a heavy left skew therefore statistical medians are compared rather than statistical averages. \n                            \n                            Fig. (A.11) \n                            \n                         \n                      \n                      \n                         \n                            Fig. (A.12) \n                            \n                               Final Respective Phase Von Mises Strain Distribution (%C); Martensite has a heavy left skew therefore statistical medians are compared rather than statistical averages. \n                            \n                            Fig. (A.12)"
+      ]
+    }
+  ],
+  "tables": [
+    {
+      "caption": "Dislocation density based strain hardening (DDBSH) parameters used.",
+      "headers": [
+        "Symbol",
+        "α",
+        "M",
+        "μ",
+        "b",
+        "k \n                                     r",
+        "L",
+        "d \n                                     α"
+      ],
+      "rows": [
+        [
+          "Title",
+          "Dislocation Strengthening Coefficient",
+          "Taylor Factor",
+          "Shear Modulus",
+          "Burgers Vector",
+          "Recovery Rate",
+          "Dislocation Mean Free Path",
+          "Ferrite Grain Size"
+        ],
+        [
+          "Value",
+          "0.33 (Constant)",
+          "3 (Constant)",
+          "80,000",
+          "2.5 × 10 −10",
+          "–",
+          "–",
+          "–"
+        ],
+        [
+          "Ferrite Value",
+          "–",
+          "–",
+          "–",
+          "–",
+          "10 −5 /d α",
+          "d α",
+          "5 × 10 −6"
+        ],
+        [
+          "Martensite Value",
+          "–",
+          "–",
+          "–",
+          "–",
+          "41",
+          "3.8 × 10 −8",
+          "–"
+        ],
+        [
+          "Units",
+          "Dimensionless",
+          "Dimensionless",
+          "MPa",
+          "m",
+          "m −1",
+          "m",
+          "m"
+        ]
+      ],
+      "header_groups": [
+        {
+          "label": "Dislocation Density Based Strain Hardening (DDBSH) Parameters Used",
+          "start_col": 1,
+          "end_col": 8
+        }
+      ],
+      "table_alignment_status": "resolved",
+      "row_provenance": [
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 7
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 8
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 7
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 8
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 7
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 8
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 7
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 8
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 7
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 8
+          }
+        ]
+      ],
+      "tbody_alignment_status": "resolved"
+    },
+    {
+      "caption": "Specific DP 980 steel chemical composition.",
+      "headers": [
+        "C",
+        "Mn",
+        "Si",
+        "Other"
+      ],
+      "rows": [
+        [
+          "0.096",
+          "2.085",
+          "0.299",
+          "Cr, Mo, Nb, Ti, B"
+        ]
+      ],
+      "header_groups": [
+        {
+          "label": "DP 980 Steel Composition",
+          "start_col": 1,
+          "end_col": 4
+        }
+      ],
+      "table_alignment_status": "resolved",
+      "row_provenance": [
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 4
+          }
+        ]
+      ],
+      "tbody_alignment_status": "resolved"
+    },
+    {
+      "caption": "List of symbols and abbreviations",
+      "headers": [],
+      "rows": [
+        [
+          "AHSS",
+          "Advanced High Strength Steel"
+        ],
+        [
+          "DP",
+          "Dual-Phase"
+        ],
+        [
+          "FEA",
+          "Finite Element Analysis"
+        ],
+        [
+          "VM Strain",
+          "Von Mises Strain/Effective Plastic Strain"
+        ],
+        [
+          "VM Stress",
+          "Von Mises Stress"
+        ],
+        [
+          "MVF",
+          "Martensite Volume Fraction"
+        ],
+        [
+          "%C",
+          "Carbon Content (%)"
+        ],
+        [
+          "M-F",
+          "Martensite – Ferrite"
+        ],
+        [
+          "2D RVE",
+          "2D Representative Volume Element"
+        ],
+        [
+          "DDBSH",
+          "Dislocation Density-Based Strain Hardening"
+        ],
+        [
+          "ROM",
+          "Rule of Mixture"
+        ],
+        [
+          "SPIR",
+          "Strain Partitioning Intensity Ratio"
+        ],
+        [
+          "OOF2",
+          "Object Oriented Finite Element Analysis - 2D"
+        ],
+        [
+          "RMSE",
+          "Root Mean Square Error"
+        ]
+      ],
+      "header_groups": [],
+      "table_alignment_status": "no_header",
+      "row_provenance": [
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 2
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 2
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 2
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 2
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 2
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 2
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 2
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 2
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 8,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 8,
+            "source_col": 2
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 9,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 9,
+            "source_col": 2
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 10,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 10,
+            "source_col": 2
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 11,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 11,
+            "source_col": 2
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 12,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 12,
+            "source_col": 2
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 13,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 13,
+            "source_col": 2
+          }
+        ]
+      ],
+      "tbody_alignment_status": "resolved"
+    }
+  ]
+}

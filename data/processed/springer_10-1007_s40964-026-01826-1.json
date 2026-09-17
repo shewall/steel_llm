@@ -1,0 +1,665 @@
+{
+  "doi": "10.1007/s40964-026-01826-1",
+  "title": "Modular Binder Jetting via geometry-driven interlocking and co-sintering",
+  "abstract": "Abstract This study provides a feasibility-level assessment of a geometry-driven co-sintering strategy for metal Binder Jetting (BJT) to enable modular fabrication beyond conventional build-volume limitations. Complementary green parts in 17-4PH stainless steel, featuring interlocking geometries, were printed separately, manually assembled in the green state, and subsequently co-sintered without external pressure to avoid potential damage. Three prismatic joint configurations (box, dovetail, and pyramidal) and three cylindrical configurations (threaded M10, threaded M14, and conical) were systematically analyzed as a function of the nominal interface offset. Dimensional measurements and local split thickness analysis revealed that the residual interface opening after sintering is consistently lower than the imposed design offset, indicating shrinkage-assisted partial gap closure during densification. The evolution of the split distribution demonstrated geometry-dependent behavior: interlocking prismatic joints were more sensitive to assembly misalignment and local constraint effects, whereas axisymmetric cylindrical configurations exhibited more uniform shrinkage accommodation. The approach combines mechanical interlocking in the green state with potential metallurgical bonding during sintering, providing a framework for modular BJT assemblies and offering a promising pathway to simplifying the depowdering phase of complex parts and overcoming build-size limitations. While mechanical characterization of the joints is required to assess structural load-bearing capability, the study establishes the geometrical and process foundations necessary for controlled co-sintered assemblies. Future optimization should assess the repeatability of the junctions produced considering the intrinsic variability of the BJT process.",
+  "journal": "Progress in Additive Manufacturing",
+  "year": "2026",
+  "sections": [
+    {
+      "heading": "Introduction",
+      "paragraphs": [
+        "Powder Metallurgy (PM) has long served as a high-volume paradigm for the production of near-net-shape components, significantly maximizing material utilization while minimizing secondary machining operations [ 1 ,  2 ]. However, the geometric complexity achievable through traditional PM is fundamentally constrained by uniaxial pressing and tooling limitations, which hinder the realization of intricate internal architectures such as closed cavities, undercuts, or mobile assemblies [ 3 ,  4 ]. To circumvent these limitations, co-sintering (also termed sinter-joining or sinter-bonding) has emerged as a high-integrity joining strategy. By assembling “green” or “brown” sub-components and consolidating them during a single thermal cycle, metallurgical continuity can be achieved across engineered interfaces [ 5 ,  6 ]. Unlike traditional fusion welding or brazing, which are often plagued by hot cracking, residual stress, and deleterious heat-affected zones (HAZ) in porous media, co-sintering relies on solid-state or liquid-phase diffusion to eliminate interfacial discontinuities [ 7 ,  8 – 9 ]. Sinter-joining can also be of great interest for applications requiring significant mechanical property gradients to reproduce specific performance, as in natural materials: assembling parts with different porosities or compositions enables the production of components with core-shell configurations similar to biological structures, such as bones and shells [ 10 ]. In this work, “mechanical interlocking” refers to the geometrical constraint that allows the green parts to be assembled and remain in position prior to sintering. “Metallurgical bonding” refers instead to local diffusion-driven joining that may develop during co-sintering, where mating surfaces approach or come into contact.",
+        "In conventional press-and-sinter or Hot Isostatic Pressing (HIP) applications, researchers have developed various strategies to enhance interfacial strength. For instance, co-sintering of tungsten alloys and steel has been achieved successfully through liquid-phase migration mechanisms, in which alloying elements such as nickel promote the formation of transition layers that relieve sintering stresses and suppress brittle intermetallic phases [ 7 ,  11 ]. Mechanical interlocking concepts have also been explored by combining powders with markedly different particle sizes to increase effective contact area and extend crack propagation paths, although excessive sintering temperatures may negate this benefit through brittle phase growth [ 12 ]. For simple pressed components, nickel-containing bonding agents have been shown to reduce interfacial porosity via chemical gradients and the Kirkendall effect at the multi-material interface, thereby improving hardness compared to pure iron-based pastes [ 13 ].",
+        "When extended to Metal Injection Molding (MIM), sinter-joining enables the fabrication of complex micro-components that cannot be produced monolithically, such as micro-check valves with enclosed cavities [ 3 ]. In such systems, sintering temperature critically governs bond quality; for 17-4PH stainless steel valves, increasing the temperature from 1245 °C to 1370 °C was necessary to transition from weak, leaking bonds to fully dense, pressure-resistant joints [ 3 ]. Additional innovations include Inserted Powder Injection Molding (IPIM), in which the feedstock is molded over a metallic insert; electroplated nickel interlayers have proven effective in promoting diffusion bonding between dissimilar materials such as WC-Co and steel [ 14 ]. Similarly, polymer-based pastes applied between green components have been shown to improve shear strength and bonding consistency compared to direct surface contact alone [ 15 ].",
+        "The integration of co-sintering strategies with Binder Jetting (BJT) Additive Manufacturing (AM) represents a further technological evolution. While sinter-joining is well established in conventional powder metallurgy and MIM, its integration with BJT through deliberately designed green-state interlocking geometries remains largely unexplored. BJT is particularly suited for this methodology because it decouples the layerwise printing stage from the subsequent thermal consolidation step. Unlike fusion-based AM, BJT defines the geometry in the green state; that geometry then densifies during sintering, thereby enabling assembly operations before consolidation.",
+        "This separation enables a “split-and-join” manufacturing strategy in which complex components can be printed as separate sub-parts, depowdered, and subsequently reassembled before sintering. Such an approach directly addresses one of the main industrial bottlenecks in BJT: removing loose powder from intricate internal channels, particularly in applications such as microfluidic devices and heat exchangers [ 16 ,  17 ]. Indeed, by dividing monolithic geometries into accessible sections and rejoining them during sintering, features such as long serpentine cooling channels could be manufactured without compromising cleanability [ 16 ]. Recent studies have explored sinter-joining in BJT as a means to overcome these limitations. In contrast to conventional powder metallurgy, where external pressure can be easily applied to promote bonding, BJT co-sintering relies predominantly on the quality of the initial surface contact between mating parts. For instance, Rütjes and colleagues [ 17 ] systematically investigated the co-sintering of flat circular specimens placed in direct contact, analyzing the influence of surface roughness, printing orientation, shape deviations, and externally applied contact pressure on the final bonding quality. Their work demonstrated that interface morphology and initial contact pressure significantly affect sinter-bond formation. Specifically, they found that “up-skin” surfaces generally provide higher contact ratios than lateral ones, and that applying external weights during sintering is often necessary to maximize the effective interfacial contact area [ 17 ]. To enhance interfacial bonding without deforming fine geometrical features, the use of sintering additives has also been investigated. The incorporation of elements such as boron can locally lower the solidus temperature, promoting transient liquid-phase formation that bridges interfacial gaps and accelerates atomic diffusion, thereby enabling leak-tight bonding while preserving dimensional stability [ 16 ].",
+        "Among candidate materials, 17-4PH stainless steel plays a central role due to its combination of high strength, corrosion resistance, and magnetic functionality. However, its co-sintering kinetics are highly sensitive to shrinkage mismatches and thermal expansion differences between the joining partners, which may generate biaxial stresses that lead to delamination or distortion [ 18 ,  19 ]. Furthermore, the tool-less nature of BJT typically results in higher surface roughness than MIM, limiting initial green-state contact to discrete asperities and potentially reducing final joint strength [ 13 ].",
+        "To compensate for this lack of initial contact area and the absence of external pressure, geometry-driven assembly strategies become crucial. The idea of exploiting geometrically complex designs to create solid junctions has long been applied to traditional manufacturing techniques, such as the Japanese woodcraft technique  kigumi  [ 20 ,  21 ,  22 – 23 ]. While the application of such macroscopic interlocking principles to metal BJT is currently limited, mechanical interlocking has been extensively studied in the context of polymer-based AM to enable multi-material printing. Particularly in the Material Extrusion (MEX) process, including commonly employed sub-technologies such as the Fused Deposition Modeling (FDM), where weak chemical compatibility between dissimilar polymers often limits interfacial strength, macro-scale interlocking geometries, such as dovetail, T-shaped, encapsulated, or lattice-based interfaces, have been shown to significantly enhance tensile and shear performance. These designs promote geometry-driven load-transfer mechanisms rather than relying solely on adhesive or molecular bonding [ 24 ,  25 ,  26 – 27 ]. Moreover, recent studies combining interlocking features with adhesive bonding have demonstrated improved stress redistribution and a transition from adhesive to cohesive failure modes in FDM-fabricated assemblies [ 28 ,  29 ,  30 ,  31 – 32 ].",
+        "Despite this growing body of work in polymer systems, the application of mechanical interlocking strategies to powder-based metal AM, particularly in BJT followed by sintering, remains largely unexplored. In such systems, interlocking may interact with shrinkage-driven densification and solid-state diffusion, potentially enabling hybrid mechanical–metallurgical bonding mechanisms that have not yet been systematically investigated. However, the literature does not yet provide design guidelines for BJT components assembled in the green state through complementary interlocking geometries and subsequently co-sintered without external pressure. In particular, the roles of nominal clearance/offset and joint morphology in the residual interfacial split after sintering remain unclear.",
+        "Within this context, the present work proposes and experimentally validates a geometry-driven co-sintering strategy for BJT-fabricated 17-4PH components, owing to the interest of such alloy in strategic sectors such as aerospace, biomedical, and energy [ 33 ,  34 – 35 ]. Complex designs enabled by the assembly of sub-components would be of interest to further widen the possibilities offered by AM. Unlike previously reported planar superposition approaches [ 16 ,  17 ], the proposed methodology introduces complementary interlocking geometries that combine mechanical interlocking in the green state with shrinkage-assisted metallurgical bonding during sintering. The conceptual workflow of the process is illustrated in Fig.  1 , encompassing the separate printing of complementary parts, green-state assembly, and subsequent co-sintering, resulting in a consolidated joined component. The target of the proposed approach is a modular co-sintered assembly rather than a guaranteed fully monolithic component. Accordingly, residual split thickness is used as a quantitative geometrical descriptor of interface closure after sintering. Lower residual split values indicate improved contact and a higher potential for local metallurgical bonding, but they do not, by themselves, prove complete structural continuity.",
+        "The objective of this study is to establish a design-oriented framework for interfacial engineering in BJT assemblies. Accordingly, the aim of this study is threefold: to determine whether BJT green parts can be manually assembled using interlocking geometries and remain joined after pressureless co-sintering; to explore the extent to which sintering shrinkage reduces the residual split generated by the imposed nominal offset; and to evaluate how the joint design and the interface orientation affect the distribution of residual split and sensitivity to potential manual assembly misalignments occurring at the green state. By systematically analyzing the interaction among nominal interface offset, geometric configuration, and shrinkage-driven gap closure, this work aims to define practical guidelines for BJT modular component fabrication beyond build-volume limitations and to identify process- and operator-dependent criticalities relevant to industrial implementation.",
+        "Fig. 1 Conceptual workflow of the proposed green-state assembly and co-sintering strategy for BJT.  A  Separate fabrication of complementary green parts (male and female geometries) by BJT.  B  Manual assembly of the green components through geometric interlocking.  C  Co-sintering in a controlled-atmosphere furnace, where volumetric shrinkage promotes interface contact and densification.  D  Final joined component obtained after sintering, featuring a consolidated interface"
+      ]
+    },
+    {
+      "heading": "Materials and methods",
+      "paragraphs": []
+    },
+    {
+      "heading": "Parts design and joint configuration",
+      "paragraphs": [
+        "To investigate the feasibility of green-state modular assembly followed by co-sintering, three different joint geometries were designed: a box joint, a dovetail joint, and a pyramidal joint (internal draft) (Fig.  2 A). In all cases, the starting geometry consisted of a rectangular prism with nominal dimensions 20 × 12 × 16 mm³. The joint interface was defined on the 20 × 16 mm² face to ensure a consistent contact area. One assembled specimen was produced for each geometry/offset condition for a total of 18 rectangular components. Therefore, the reported trends should be interpreted as preliminary design considerations rather than statistically validated process correlations.",
+        "Fig. 2 Schematic representation of the investigated joint geometries and parametric design workflow.  A  The three joint configurations considered in the study are the box joint, the dovetail joint, and the pyramidal dovetail joint. In all cases, two complementary green parts (part A and part B) are generated from an initial 20 × 12 × 16 mm³ prism.  B  Construction of the pyramidal joint: (1) splitting of the base geometry into two halves, (2) addition of a truncated pyramidal male feature to part A through a drafted extrusion, and (3) generation of the complementary cavity in part B through Boolean subtraction with surface offset.  C  Profile–offset–Boolean subtraction workflow used for the box and dovetail configurations: (1) definition of the base interface profile, (2) application of a planar offset Δ, and (3) Boolean subtraction to obtain complementary mating geometries",
+        "The pyramidal joint was generated according to the following approach (Fig.  2 B). The original prism was first divided into two halves along a plane parallel to the interface surface. A truncated pyramidal feature was then added to one half, and the corresponding negative cavity was created in the mating half through a Boolean subtraction. As for the other joint families, a controlled offset Δ was introduced between the mating surfaces to control the initial gap before sintering. The imposed offset should be interpreted as an assembly clearance rather than as a target final gap. Its purpose is to avoid interference and damage during green-state mating. The key quantity evaluated in this work is the residual split after sintering, which indicates how effectively densification compensates for the initial clearance.",
+        "For the box and dovetail geometries, the two complementary green parts were generated through a parametric profile–offset–subtraction procedure (Fig.  2 C). An interface profile was first sketched on the selected face of the prism. In the box configuration, the profile consisted of repeated rectangular interlocking features, whereas in the dovetail one, the interface was defined by trapezoidal features with a constant flank angle of 75°, as schematically illustrated in Fig.  2 C. The angle was maintained constant throughout the study to isolate the influence of clearance variability from that of the geometric profile.",
+        "Once the base profile was defined, a second profile was generated by applying a uniform planar offset Δ to the original one. This offset introduces a necessary clearance strictly functional to assembly operations: it ensures that the fragile green parts can be manually mated without friction, mechanical interference, or structural damage. The offset value was treated as a design variable and systematically varied as follows: 0.10, 0.15, 0.20, 0.25, 0.30, and 0.40 mm. The region bounded by the original and offset profiles was then used to perform a Boolean subtraction operation, resulting in two complementary bodies (part A and part B) that could be assembled in the green state (Fig.  1 B). In this way, the joint geometry was fully defined by the profile type and the selected offset value. The theoretical contact surfaces for the dovetail and box joints are shown in Fig.  3  (left and centre).",
+        "Following geometric generation, the two complementary parts were assembled in the green state without external deformation or applied preload. Due to the Boolean subtraction strategy applied, the assembly results from selective surface contact rather than from full geometric coincidence. The theoretical contact configuration of the pyramidal joint is schematically illustrated in Fig.  3  (right).",
+        "Fig. 3 Schematic representation of the green-state assembly configuration for the three investigated joint geometries: box (frontal view), dovetail (frontal view), and pyramidal (sectioned view). The red arrows indicate the surfaces theoretically in direct contact immediately after assembly, while the yellow-highlighted regions represent the controlled split (gap) areas generated by the imposed offset Δ. In all configurations, contact occurs along the horizontal interface plane, whereas the lateral faces (vertical in the box joint and inclined in the dovetail and pyramidal joints) remain separated. Due to the offset-based geometric construction, the assembled height h is reduced with respect to the original prism height h₀ (h = h₀ − Δ). Gaps are located along vertical faces (x-direction split) in the box joint and along inclined faces (xy split) in the dovetail and pyramidal joints",
+        "In all configurations, the horizontal interface surfaces come into direct contact upon assembly. Conversely, the lateral faces of the interlocking features remain separated by controlled gaps whose magnitude is governed by the offset parameter Δ. In the box configuration, these gaps are located along vertical faces (x-direction split), whereas in the dovetail and pyramidal configurations, they occur along inclined faces (xy split), as indicated in Fig.  3 . The nomenclature for the gaps and associated directions is used consistently in the subsequent analysis and results sections of this study.",
+        "As a direct consequence of the offset-based subtraction procedure, the overall height of the assembled specimen (h) is lower than that of the original prism (h₀ = 16 mm). The reduction in height (h = h₀ − Δ) reflects the fact that only the horizontal faces are in contact at assembly, while the lateral surfaces remain separated. This geometric condition is intrinsic to the design methodology and does not result from deformation occurring during assembly.",
+        "In addition to the prismatic assemblies, a second family of specimens was designed to assess the applicability of the green-state assembly and co-sintering approach to functional cylindrical joints (Fig.  4 A).",
+        "Fig. 4 Schematic representation of the investigated cylindrical joint geometries and parametric design workflow.  A  The three cylindrical joint configurations considered in the study are a threaded M10 × 1.5 joint, a threaded M14 × 2 joint (ISO metric profiles), and a truncated conical joint (76° cone angle). In all cases, two complementary green parts (part A and part B) are generated from an initial Ø20 mm x 20 mm (h) cylinder with external knurling.  B  Parametric design workflow for the threaded joints: (1) splitting of the cylindrical base geometry into two parts, (2) addition of the male cylindrical feature and generation of the external thread, and (3) Boolean subtraction with surface offset Δ to obtain the complementary threaded cavity.  C  Section views of the assembled geometries highlighting the in-contact surfaces (red arrows) and the initial gap condition generated by the imposed offset Δ",
+        "The starting geometry consisted of a solid cylinder with nominal dimensions of 20 mm in diameter and 20 mm in height (Fig.  4 B). The cylinder was divided into two segments by introducing a plane parallel to the base, located 6 mm from one end. This operation generated a smaller segment (height 6 mm) and a larger complementary segment (height 14 mm).",
+        "On the smaller segment, the male geometry of the joint was defined. Three joint configurations were investigated:",
+        "A threaded cylindrical feature with ISO metric profile M10 × 1.5, A threaded cylindrical feature with ISO metric profile M14 × 2, A truncated conical feature with a nominal cone angle of 76°.",
+        "The threaded geometries were modeled according to standard ISO metric thread profiles.",
+        "For all configurations, the complementary female geometry was generated on the larger segment via Boolean subtraction of the male feature. As in the prismatic assemblies, a uniform offset Δ was introduced between mating surfaces to control the nominal clearance at green-state assembly. For the cylindrical joints, three offset values were investigated: Δ = 0.10, 0.15, and 0.20 mm.",
+        "To facilitate manual handling and assembly of the green components, a knurled pattern (Fig.  4 ) was applied to the external cylindrical surfaces. The knurling was restricted to the outer surface and did not interfere with the joint interface geometry.",
+        "Following printing, curing, and depowdering, the two cylindrical segments were manually assembled in the green state without external preload and subjected to the same debinding and sintering cycle used for the prismatic specimens. Press-fit conditions were intentionally avoided because the low strength of BJT green parts makes them sensitive to frictional damage, edge chipping, and uncontrolled local deformation. The present study, therefore, focuses on pressureless assembly as the least invasive joining route. The resulting assembled configurations and the offset-induced clearances are illustrated in the longitudinal sections shown in Fig.  4 C."
+      ]
+    },
+    {
+      "heading": "Components manufacturing",
+      "paragraphs": [
+        "All components were fabricated using a Desktop Metal Shop System BJT platform. The selected material was 17-4PH stainless steel (AISI 630), supplied as a gas-atomized powder by Desktop Metal (Burlington, MA, USA). The powder exhibited high sphericity and a monomodal particle size distribution characterized by  D 10  = 10 μm,  D 50  = 25 μm, and  D 90  = 50 μm.",
+        "Printing was performed using a layer thickness of 75 μm. The binder system employed was the water-based SS-01 solution provided by the machine manufacturer. All green parts were produced in accordance with the geometrical definitions described in Sect.   2.1 , with the junction surface oriented upward during printing to ensure consistent feature resolution in all directions.",
+        "After printing, the components underwent the standard curing and depowdering procedure recommended by the manufacturer. Once cleaned, the complementary halves were manually assembled in the green state according to the defined joint configuration and offset value Δ. No external mechanical pressure was applied during assembly or thermal treatment. The two halves were simply seated in contact along the horizontal interface plane (as described in Sect.   2.1  and illustrated in Figs.  3  and  4 C) and positioned on the supports for subsequent debinding and sintering. During thermal processing, the joining action was therefore promoted solely by gravity and volumetric sintering-driven shrinkage.",
+        "Debinding and sintering were carried out in an inert Ar atmosphere at a peak temperature above 1300 °C and a dwelling time of over 1 h to achieve densification above the δ-ferrite forming point, according to the procedures recommended by the manufacturer. The thermal cycle was identical across all configurations to enable direct comparison of joint geometries and offset values.",
+        "To evaluate the potential influence of manual operations, particularly depowdering and green-state assembly, on dimensional accuracy and repeatability, monolithic reference prisms with identical nominal dimensions (20 × 12 × 16 mm³) were manufactured within the same printing jobs. These reference specimens underwent the same post-processing and thermal treatment as the assembled components.",
+        "For production logistics and build organization, the specimens were divided into two printing jobs: the first included components with nominal offsets Δ = 0.20, 0.30, and 0.40 mm, while the second included Δ = 0.10, 0.15, and 0.25 mm. Therefore, in total 27 samples were printed considering rectangular and cylindrical specimens. This non-sequential distribution of the offsets was intentionally chosen to help decouple the geometric effects of the interface clearance from potential machine-related variability or operator-dependent factors.",
+        "A summary of all the configurations manufactured and their respective contact regions within the interlocking mechanisms is reported in Table  1 .",
+        "Table 1 Summary of the printed assembly configurations for rectangular and cylindrical components Joint family Geometry Direct contact at assembly Offset-generated gap region Main residual split metric # Samples Prismatic Box Horizontal faces Vertical flanks x split 6 Prismatic Dovetail Horizontal faces Inclined flanks xy split 6 Prismatic Pyramidal Horizontal/internal seating faces Inclined drafted surfaces Internal xy split 6 Cylindrical M10 thread Thread/root contact regions depending on seating Thread flanks Flank split 3 Cylindrical M14 thread Thread/root contact regions depending on seating Thread flanks Flank split 3 Cylindrical Conical Tapered seating surface/base Conical surface Conical split 3"
+      ]
+    },
+    {
+      "heading": "Assemblies’ characterization and interface analysis",
+      "paragraphs": [
+        "The geometrical accuracy of the assembled components was evaluated through dimensional measurements performed with a digital caliper (0.01 mm resolution and ± 0.02 mm precision). In addition, the mass of each specimen was measured using a Scaltec SBC 22 electronic precision balance (max. 210 g/0.01/0.1 mg resolution). The experimentally measured overall dimensions were compared with the nominal values to quantify the influence of the imposed offset Δ on the final assembled geometry.",
+        "Special attention was devoted to the analysis of the interfacial regions generated by green-state assembly and subsequent co-sintering. The junctions between the two parts were examined both on the external surfaces and at the internal core of the specimens to assess possible variations in gap closure and bonding development along the interface.",
+        "Optical metallography was performed using a Nikon Eclipse LV150NL light optical microscope (Nikon, Tokyo, Japan), while higher-resolution observations were carried out by scanning electron microscopy (SEM) with a ZEISS EVO 50XVP instrument (ZEISS, Oberkochen, Germany). To access the internal interface, the specimens were sectioned along their vertical planes of symmetry, embedded when necessary, and mechanically ground and polished to a mirror finish (see Fig.  15  (Appendix)).",
+        "Quantitative evaluation of the residual split regions was performed on optical micrographs using ImageJ ( https://imagej.net/ij/ ). The analysis workflow is schematically illustrated in Fig.  16  (Appendix). The acquired images were first converted to 8-bit grayscale to enable threshold-based segmentation. Void regions corresponding to interfacial gaps were identified by selecting the darkest regions in the images using controlled thresholding. To isolate the relevant junction regions from background porosity, the segmented areas were filtered using morphological criteria, retaining only features with an area greater than 5000 μm² and an elongated geometry consistent with the joint orientation. The local thickness of the identified split regions was then quantified using the “Local Thickness” plugin, with a maximum evaluation scale set to 300 μm. This procedure allowed spatially resolved mapping of interfacial spacing along the junction length. The resulting thickness distributions were visualized through color maps to highlight localized variations in gap closure. Relative frequency distributions were subsequently extracted, and dominant peaks were identified to correlate characteristic spacing values with specific interface orientations (horizontal contact plane versus lateral split regions). To improve peak identification, the distribution curves were smoothed using a 95th -percentile filter.",
+        "Fig. 5 Sintered prismatic assemblies produced in the first and second printing jobs. For each job, box, dovetail, and pyramidal joints are shown at the investigated nominal interface offsets Δ. All specimens remained macroscopically intact and joined after co-sintering"
+      ]
+    },
+    {
+      "heading": "Results",
+      "paragraphs": []
+    },
+    {
+      "heading": "External dimensional accuracy of assembled components",
+      "paragraphs": []
+    },
+    {
+      "heading": "Prismatic specimens",
+      "paragraphs": [
+        "Representative sintered assemblies are shown in Fig.  5 . All geometries and offset conditions yielded stable, crack-free components after sintering, confirming the effectiveness of the co-sintering approach at the macroscopic level.",
+        "The dimensional accuracy of the assembled prismatic specimens was evaluated by comparing the measured external dimensions with the nominal design values. The percentage deviation from the theoretical size is reported in Fig.  6  for the three joint geometries as a function of the imposed interface offset Δ, together with the reference values obtained from monolithic prisms printed in the same jobs.",
+        "Fig. 6 Percentage deviation with respect to the nominal external dimensions of the prismatic components obtained from different junction methods, depending on the imposed offset Δ. The straight lines represent the average differences measured for the monolithic prisms printed for comparison in the first (solid) and second (dashed) jobs",
+        "Overall, all assembled configurations exhibited dimensional deviations within a limited range, with maximum values generally below approximately 2.5% across all geometries and measurement directions. Additionally, the deviations measured for the assembled components are of the same order of magnitude as those observed for the single-piece reference prisms, indicating that the assembly and co-sintering procedure does not introduce large additional distortions beyond the intrinsic dimensional variability of the BJT process.",
+        "A dependence on the imposed offset Δ was observed for all joint geometries, although the relationship was not strictly monotonic. For the dovetail configuration (Fig.  6 ), dimensional deviations ranged from 0.63% to 2.10% along the Y direction and from 0.42% to 2.08% along the Z direction, with the largest deviations occurring at Δ = 0.30 mm. The X direction showed more moderate variation, with a maximum deviation of 2.00%.",
+        "The box joint exhibited comparable overall magnitudes but a more irregular response to offset variation (Fig.  6 ). The largest deviations were again observed at Δ = 0.30 mm, with values of 2.48% along the Y axis and 2.08% along the Z axis. At smaller offsets, deviations remained generally below approximately 1%, particularly along the X direction, where near-zero deviation was measured for Δ = 0.10 mm.",
+        "The pyramidal configuration showed similar behavior, with dimensional deviations increasing at intermediate offset values (Fig.  6 ). Maximum deviations were observed at Δ = 0.30 mm, reaching 2.08% along the Z axis and 1.97% along the Y axis, while the X direction exhibited a maximum deviation of 1.75% at Δ = 0.30 mm.",
+        "However, the interpretation of the offset-dependent trend must account for the intrinsic variability associated with printing jobs. The specimens were produced in two separate jobs, and the monolithic reference prisms revealed a systematic difference in baseline dimensional deviation between them. The job including the larger offset values (Δ = 0.20, 0.30, and 0.40 mm) exhibited higher average deviations (1.58%, 1.66%, and 2.41% along the X, Y, and Z axes, respectively) compared with the second job containing the smaller offsets (Δ = 0.10, 0.15, and 0.25 mm), for which the corresponding values were 1.22%, 1.41%, and 1.89%. This difference indicates that part of the apparent increase in dimensional deviation at larger offset values may reflect process-related variability between printing jobs rather than a purely geometric effect of the interface spacing.",
+        "Across all joint geometries, anisotropic dimensional behavior was evident, with different deviation magnitudes measured along the three orthogonal axes. This directional dependence is consistent with the initial assembly condition, in which only the horizontal interface surfaces are in direct contact while lateral faces remain separated by controlled gaps (Fig.  3 ). During sintering, progressive closure of these gaps may occur non-uniformly, contributing to axis-dependent dimensional changes.",
+        "Overall, all three joint geometries exhibited comparable deviation levels, indicating that modular green-state assembly followed by co-sintering can be implemented without substantial loss of global dimensional control relative to standard BJT variability."
+      ]
+    },
+    {
+      "heading": "Cylindrical specimens",
+      "paragraphs": [
+        "The dimensional deviations measured for the cylindrical assemblies are shown in Fig.  7  as percentage differences relative to the nominal theoretical dimensions in the radial (Y) and axial (Z) directions.",
+        "Fig. 7 Percentage deviation from the nominal external dimensions of the cylindrical assemblies as a function of the imposed offset Δ. Results are reported for M10 × 1.5 and M14 × 2 threaded joints and for the conical joint. Deviations along the Y and Z axes are shown for each configuration",
+        "For all joint configurations (M10, M14, and conical), a general reduction in dimensional deviation is observed with increasing nominal offset Δ. In the M10 threaded specimens, the axial deviation decreases from 1.70% at Δ = 0.10 mm to 0.45% at Δ = 0.20 mm, while the radial deviation reduces from 0.80% to 0.50%. A similar trend is observed for the M14 configuration, where both radial and axial deviations progressively approach zero as the offset increases, reaching values close to ± 0.05% at Δ = 0.20 mm (Fig.  7 ).",
+        "The conical joint exhibits a more pronounced sensitivity along the axial direction. While radial deviations decrease steadily from 1.05% to 0.10% with increasing Δ, the axial deviation transitions from positive values at low offset (1.00% at Δ = 0.10 mm) to a slight over-compensation at Δ = 0.20 mm (− 1.40%) (Fig.  7 ).",
+        "Overall, the cylindrical assemblies exhibit more regular, monotonic behavior than the prismatic interlocking joints. The axisymmetric geometry appears to accommodate shrinkage more uniformly, reducing the impact of local misalignment and promoting a more predictable dimensional response as the interface clearance increases. This behavior may also be related to the absence of dual contact regions, such as the horizontal supporting faces present in prismatic joints, which can introduce localized constraints and non-uniform stress distribution during sintering."
+      ]
+    },
+    {
+      "heading": "Residual split at the junction interface",
+      "paragraphs": []
+    },
+    {
+      "heading": "Prismatic specimens",
+      "paragraphs": [
+        "The residual split at the junction interfaces after co-sintering was quantified by image-based local thickness analysis and visualized as heatmaps, separately for the external surface and the internal cross-section of the assemblies. Figures  8  and  9  report the detected interfacial spacing for the three joint geometries (box, dovetail, and pyramidal) across the investigated offset values, using a common color scale (0–300 μm).",
+        "Fig. 8 Heatmaps of the residual split thickness measured at the junction interfaces on the external surfaces of the prismatic assemblies. From left to right: box, dovetail, and pyramidal joint geometries. For each geometry, specimens are arranged from top to bottom in order of increasing nominal interface offset Δ. The color scale (0–300 μm) represents the local thickness of the residual split detected after co-sintering. For the pyramidal joint, the junction appears only as a thin horizontal trace, as the external observation mainly intersects the planar contact region of the interface (Fig.  5 )",
+        "Fig. 9 Heatmaps of the residual split thickness measured at the junction interfaces on internal cross-sections of the prismatic assemblies. From left to right: box, dovetail, and pyramidal joint geometries. For each geometry, specimens are arranged from top to bottom in order of increasing nominal interface offset Δ. The color scale (0–300 μm) represents the local thickness of the residual split detected after co-sintering",
+        "A key difference between external and internal observations is evident in the pyramidal joint. On the external surfaces (Fig.  8 ), the junction appears predominantly as a narrow, nearly horizontal trace, indicating that the external view primarily intercepts the planar contact region of the assembled interface. In contrast, the internal cross-sections (Fig.  9 ) clearly reveal the inclined draft surfaces of the pyramidal feature, enabling direct visualization of the split evolution along the internal oblique faces.",
+        "For the box and dovetail joints, the external and internal heatmaps display broadly consistent qualitative patterns, with residual split localized along the vertical faces (box) or inclined faces (dovetail), in agreement with the designed contact condition. Across several configurations, the heatmaps show localized regions of increased spacing along one side of the interface (Figs.  8  and  9 ). This asymmetric distribution suggests that, in some specimens, the two green parts were not perfectly seated or aligned during manual assembly, resulting in a non-uniform split along the joint length. To better understand the origin of the spatial heterogeneity observed in the residual split heatmaps and frequency distributions, representative examples of aligned and misaligned assemblies are compared in Fig.  10  for the dovetail and box geometries.",
+        "Fig. 10 Comparison between aligned and misaligned prismatic assemblies for dovetail and box joints. For each geometry, optical micrographs (top left), corresponding residual split heatmaps (bottom left), schematic representation of the interface (center), and normalized relative frequency distributions of the split thickness (right) are shown. In aligned assemblies (upper panels), the residual split is uniformly distributed along the designed interface (xy split for dovetail, x split for box). In misaligned assemblies (lower panels), asymmetric assembly generates distinct “major” and “minor” split regions, leading to broadened or bimodal thickness distributions. Red-highlighted areas in the schematics indicate locally enlarged split regions caused by misalignment",
+        "In the case of aligned assemblies (upper panels of Fig.  10 ), the residual split is relatively uniform along the interface. For the dovetail joint, the split is predominantly localized along the inclined faces (xy split), while the horizontal contact plane remains closed. The corresponding normalized frequency distribution exhibits a single dominant peak at high split-thickness values, consistent with a nearly constant residual gap between the drafted surfaces. A similar behavior is observed for the box joint, where the split is confined to the vertical faces (x split) and the frequency distribution shows a narrow peak centered around a characteristic opening value.",
+        "In contrast, misaligned assemblies (lower panels of Fig.  10 ) exhibit a clear asymmetry in the split distribution. Optical micrographs and corresponding heatmaps reveal that one side of the interface exhibits an enlarged gap (highlighted in red in the schematic), whereas the opposite side shows partial closure. This asymmetric seating condition results in two distinct split regions: a “major” split and a “minor” split.",
+        "For the dovetail joint, misalignment affects the inclined xy split, producing two separated populations in the frequency distribution. As shown in Fig.  10 , the histogram exhibits a bimodal profile, with one peak associated with the enlarged split region and a second peak corresponding to the reduced split region. A comparable behavior is observed for the box joint, where misalignment along the x-direction generates distinct “major” and “minor” x-splits, again leading to a broadened, bimodal distribution.",
+        "These results demonstrate that, beyond the nominal offset Δ, the effective residual split is strongly influenced by the initial alignment condition of the green parts. Even small translational or angular deviations during manual assembly can lead to non-uniform gap closure during sintering. The consequence is a spatial redistribution of the interface opening rather than a simple uniform reduction of the initial clearance.",
+        "To quantitatively evaluate the residual interface opening, normalized relative frequency distributions of the locally measured split thickness were extracted for each joint geometry and offset value (Fig.  11 ). These distributions provide a statistical description of the spatial variability of the residual split after co-sintering.",
+        "Fig. 11 Normalized relative frequency distributions of the residual split thickness measured at the junction interfaces. External surfaces are shown in panels  A ,  C ,  E  while internal cross-sections are shown in panels  B ,  D ,  F . Joint geometries are reported from top to bottom as box  A ,  B , dovetail  C ,  D , and pyramidal  E ,  F",
+        "For all geometries, increasing the nominal offset Δ generally shifts the distributions toward larger split values. However, substantial overlap between neighboring conditions is observed, indicating that sintering-driven shrinkage partially compensates for the imposed clearance. The degree of compensation depends strongly on joint geometry and interface orientation.",
+        "For the box joint (Fig.  11 A and B), the distributions along the x split show a systematic rightward shift with increasing Δ, but the real split values remain consistently lower than the theoretical ones. This indicates partial gap closure during sintering, with increasing offset leading to larger residual openings but not in a strictly proportional manner.",
+        "In the dovetail configuration (Fig.  11 C and D), the xy split distributions broaden and shift toward higher values as Δ increases. However, the distributions often exhibit a wider spread than in the box configuration, reflecting the higher sensitivity of inclined surfaces to alignment and shrinkage interactions.",
+        "In the pyramidal configuration (Fig.  11 A and B), the internal distributions reveal a progressive increase in the dominant split population with increasing Δ, while the external measurements remain confined to lower values. An exception is observed for the Δ = 0.20 mm specimen, where a broader distribution is detected. This behavior is associated with a non-uniform contact of the external horizontal face, as clearly visible in the heatmaps reported in Fig.  8 , where the horizontal surface does not exhibit full contact.",
+        "To further quantify this behavior, the mode values of each distribution were extracted and compared with the corresponding theoretical split sizes (Fig.  12 ). The theoretical split increases linearly with Δ for all geometries, as dictated by the design procedure. In contrast, the experimentally measured mode values exhibit sub-linear growth.",
+        "Fig. 12 Comparison between theoretical split size and experimentally determined mode values extracted from the split thickness distributions (Fig.  11 ) for box, dovetail, and pyramidal joints. Results are reported separately for external and internal interfaces and for relevant split orientations",
+        "For the pyramidal joint (Fig.  12  right), the real internal split xy int  increases from approximately 0.042 mm at Δ = 0.10 mm to approximately 0.160 mm at Δ = 0.40 mm, remaining significantly lower than the theoretical values. Although the theoretical split along the horizontal internal interface (y int ) is zero by design, non-zero values are detected experimentally in some specimens. This residual separation can be attributed to imperfect planarity and incomplete contact of the horizontal faces at green-state assembly, resulting in localized persistence of a small split after sintering. This behavior is consistent with the presence of two opposing horizontal contact surfaces in the prismatic design (Fig.  3 ), which can introduce ambiguity during assembly, as it is not possible to ensure which surface effectively establishes contact in the green state.",
+        "A similar behavior is observed for the box joint. While the theoretical y ext  split is nominally zero, small but measurable residual openings are detected. These values reflect slight deviations from ideal planar contact, possibly due to surface roughness, green-part distortion, or minor assembly misalignment prior to thermal treatment.",
+        "In all configurations, and particularly for the relevant split directions (x split for box, xy split for dovetail, internal drafted split for pyramidal), the experimentally measured split sizes remain consistently lower than the corresponding theoretical predictions. This systematic reduction demonstrates that volumetric shrinkage during sintering promotes partial closure of the initially imposed gap. As densification progresses, shrinkage-driven contraction enhances contact between mating surfaces, reducing the effective interface opening.",
+        "For the box joint (Fig.  12  left), the real external x split increases from approximately 0.108 mm at Δ = 0.10 mm to approximately 0.224 mm at Δ = 0.40 mm, consistently remaining below the theoretical values. For the dovetail joint (Fig.  12  centre), the real xy split increases from approximately 0.065–0.100 mm at Δ = 0.10 mm to approximately 0.239–0.273 mm at Δ = 0.40 mm, again significantly lower than theoretical predictions.",
+        "It is also worth noting that the actual split values do not follow a perfectly linear trend as Δ increases. Deviations from linearity are primarily attributed to assembly-induced misalignment effects previously discussed (Fig.  10 ).",
+        "For example, in the box joint, the real x ext  split measured at Δ = 0.20 mm exhibits a local maximum that deviates from the expected monotonic behavior. As shown in the external heatmaps (Fig.  8 ), this specimen exhibits an asymmetric gap distribution, consistent with partial misalignment between the two green halves. The enlarged local split region shifts the modal value of the distribution, producing an apparent overestimation relative to neighboring offset values.",
+        "This confirms that the effective residual split is governed not only by the nominal design parameter Δ and shrinkage-driven closure, but also by the initial assembly condition. Local misalignment can alter the gap redistribution during sintering, leading to non-linear variations in the measured split thickness. Therefore, the offset-dependent trends should not be interpreted as isolated causal relationships. Rather, they represent the combined effects of nominal clearance, job-specific dimensional variability, and manual assembly conditions."
+      ]
+    },
+    {
+      "heading": "Cylindrical specimens",
+      "paragraphs": [
+        "The residual interface opening of the cylindrical assemblies was analyzed through local thickness heatmaps and corresponding normalized frequency distributions (Fig.  13 ). For clarity, the three geometries (M10 × 1.5, M14 × 2, and conical) are compared at Δ = 0.15 mm, while the M10 configuration is additionally evaluated at Δ = 0.10 and 0.20 mm to illustrate the influence of the imposed offset.",
+        "Fig. 13 Residual split analysis of cylindrical assemblies. Heatmaps of the local interface opening (0–300 μm scale) are shown for threaded M10 × 1.5, threaded M14 × 2, and conical joints. For clarity, all three geometries are reported for Δ = 0.15 mm, while the M10 joint is additionally shown for Δ = 0.10 and 0.20 mm to illustrate the effect of increasing offset. Corresponding normalized relative frequency distributions of the local split thickness are reported to highlight the statistical evolution of the interface opening",
+        "At Δ = 0.15 mm, the three joint geometries exhibit distinct interface behaviors. The threaded configurations (M10 and M14) show a residual split primarily localized along the thread flanks, while the bottom contact surface exhibits reduced opening values. The heatmaps reveal that the gap distribution follows the helical geometry of the threads, with relatively uniform thickness along the inclined surfaces (Fig.  13 ).",
+        "The corresponding frequency distributions confirm that the threaded joints exhibit moderately broad split distributions, with dominant populations centered at intermediate opening values. The M14 configuration shows slightly larger residual openings than M10 at the same offset, likely due to its larger nominal diameter and thread pitch, which reduce the effective contact area and affect shrinkage accommodation.",
+        "In contrast, the conical joint exhibits a different behavior. The residual split is concentrated along the inclined conical surface, while the horizontal contact base shows significantly reduced opening values. The frequency distribution appears narrower and shifted toward lower values than that of the threaded joints, indicating a more effective shrinkage-driven accommodation of the conical interface.",
+        "The evolution of the split for the M10 joint with increasing offset further clarifies this behavior. Increasing Δ from 0.10 to 0.20 mm progressively shifts the distribution toward higher opening values; however, the shift remains sub-linear relative to the nominal increase in offset. This confirms that volumetric shrinkage during sintering partially compensates for the imposed clearance, as observed in the prismatic specimens."
+      ]
+    },
+    {
+      "heading": "SEM analysis of the interfaces",
+      "paragraphs": [
+        "SEM images, presented in Fig.  14 , allow for evaluating the local quality of the joining obtained during co-sintering. It can be observed that all the interfaces with clear openings (as highlighted already by optical microscopy) present similar profiles on both facing surfaces: a sequence of rounded asperities separated by sharp valleys. The curvature radius of such asperities is consistently larger than 10–20 μm; thus, it can be excluded that they correspond to the original particles employed in the printing process, but they rather derive from the progressive spheroidization of the grain boundaries due to surface diffusive mechanisms in the absence of neighboring grains.",
+        "The image of the upper flat surface of the box joint (Fig.  14 , upper left) shows an area where partial joining was achieved. The disconnected grains appear to have rounded profiles, as observed in the other openings, whereas the internal grains and the bridging grain exhibit flat, elongated grain boundaries. It is well known from literature that 17-4PH steel obtained by BJT features martensitic grains surrounded by δ-ferrite, formed at high temperatures during the sintering. The minimization of the grain boundaries’ surface energies leads to their progressive flattening, especially in the presence of a BCC-type phase, such as ferrite, which improves diffusion rates at heterophase interfaces [ 36 ,  37 – 38 ].",
+        "Fig. 14 SEM images of split openings in various locations of box and dovetail junctions with Δ = 0.10 mm"
+      ]
+    },
+    {
+      "heading": "Discussion",
+      "paragraphs": [
+        "The experimental activity demonstrates that the proposed green-state assembly and co-sintering strategy is effective for joining separately printed BJT components. In all investigated configurations, the two parts remained stably assembled after sintering, and the residual split analysis confirms that densification promotes partial closure of the initially imposed gap. The systematic reduction in the real split thickness relative to the theoretical offset values highlights the active role of volumetric shrinkage in enhancing interfacial contact during sintering. However, as already mentioned, the experimental matrix was designed to maximize the number of geometrical configurations explored, so replicate specimens were not included for each condition. Consequently, the study does not aim to quantify process repeatability. The statistical information reported here refers to the spatial distribution of residual split thickness within each measured interface, not to specimen-to-specimen variability.",
+        "As introduced in the state of the art, existing literature on BJT co-sintering has predominantly focused on the planar superposition of simple flat surfaces, often requiring externally applied weights to compensate for surface roughness and shape deviations to promote bonding [ 17 ]. In contrast, the present study extends the concept of co-sintering by introducing complementary interlocking geometries designed to ensure positional stability already in the green state. The proposed approach, therefore, combines two mechanisms: physical co-sintering driven by diffusion and shrinkage, and mechanical interlocking defined by joint geometry. This hybrid strategy allows controlled assembly without external pressure, which could be detrimental for components at the “green state”, and enables joining components whose overall dimensions exceed the build volume, a limitation not addressed in previous studies and that could instead be of relevance for promoting the adoption of the BJT process.",
+        "This shrinkage-assisted gap reduction is a key advantage of the proposed approach, as it enables interface consolidation without external pressure. However, the results also reveal aspects that require further optimization. In particular, the sensitivity of interlocking prismatic geometries to assembly misalignment indicates the need for a more controlled centering or alignment system during green-state assembly. The presence of asymmetric split distributions and local deviations from linear trends demonstrates that even small positional errors can influence the final interface morphology. In this context, further investigations should also address the influence of part orientation during assembly, as well as the potential application of a varied distribution of masses among the lower and upper parts to promote more consistent and reproducible contact between mating surfaces in the green state.",
+        "Another aspect that deserves further investigation is the possibility of introducing direction-dependent offsets. The current study employed a uniform offset Δ along the interface, but the results suggest that differential clearance in selected directions might compensate for anisotropic shrinkage effects and improve the predictability of the final split size.",
+        "Although geometrical and morphological analyses confirm the feasibility of the joining strategy, mechanical characterization of the bonded interfaces is still required to assess structural performance and load-bearing capability. Such analysis will be essential to quantify the actual strength of the co-sintered joints and to correlate bonding efficiency with residual split values.",
+        "Based on the experimental observations, specific design guidelines can be derived to optimize the co-sintering of BJT assemblies. The analysis highlights a distinct advantage of axisymmetric geometries over prismatic interlocking configurations. While prismatic joints proved highly sensitive to manual positioning errors, resulting in asymmetric gap closure, cylindrical and specifically tapered interfaces demonstrated a superior ability to accommodate uniform radial shrinkage. Consequently, conical or self-centering designs should be prioritized, as they leverage volumetric shrinkage to correct minor initial misalignments that remain permanent in non-tapered geometries. Furthermore, regarding the green-state clearance, an offset range of 0.10–0.20 mm appears optimal; this clearance ensures safe assembly without damaging the fragile green parts while remaining small enough to be effectively reduced by sintering-driven densification, thereby promoting structural continuity without the need for external pressure.",
+        "Finally, the observed behavior must be interpreted within a process-dependent framework. Baseline dimensional deviations between printing jobs indicate build-specific variability, while slicing strategies and printer compensation algorithms may influence effective tolerances, particularly for small interlocking features. In addition, manual green-state assembly introduces an operator-dependent variable that can affect alignment and initial contact conditions. While the general trends identified in this study are robust, quantitative outcomes may vary depending on machine settings, process control, and assembly precision.",
+        "Overall, the results confirm the feasibility of modular co-sintered assemblies in BJT and demonstrate that combining shrinkage-driven bonding with mechanical interlocking is a promising approach to extending component size beyond machine build limits. A series of useful recommendations is reported in Table  2 . Still, the specimens investigated here are small and represent local interface units that can be embedded in larger modular components. Scaling the concept to larger parts would require controlling tolerance accumulation, green-state handling, alignment during assembly, gravitational distortion during sintering, and spatial variations in furnace temperature and shrinkage. Besides, the mechanical strength of the interface is another aspect to be investigated, also with respect to the intended application. Therefore, the present results should be interpreted as interface-level feasibility data rather than direct validation of large-scale components.",
+        "Table 2 Recommendations for interlocking mechanisms design for BJT components to assemble Geometry Recommended offset range Main advantage Main risk Suitability Box 0.10–0.20 mm Simple design, easy analysis Sensitive to lateral misalignment Medium Dovetail 0.10–0.20 mm Strong geometrical engagement Inclined split sensitive to seating error Medium Pyramidal 0.10–0.20 mm 3D interlocking, internal engagement Ambiguous contact at horizontal faces Medium M10 thread 0.10–0.20 mm Functional screw-like engagement Thread-flank residual split Medium-high M14 thread 0.10–0.20 mm Larger engagement scale Larger pitch may increase residual opening Medium Conical 0.10–0.20 mm Self-centering, uniform shrinkage accommodation Axial positioning sensitivity High"
+      ]
+    },
+    {
+      "heading": "Conclusions",
+      "paragraphs": [
+        "This study demonstrates the feasibility of a geometry-driven co-sintering strategy for BJT of 17-4PH stainless steel components. Specifically, the following interlocking strategies were studied: three prismatic joint configurations (box, dovetail, and pyramidal) and three cylindrical configurations (threaded M10, threaded M14, and conical), which were systematically analyzed as a function of the nominal interface offset. The green-state assembly of complementary interlocking parts enabled stable joining during sintering without external pressure. Experimental results showed that volumetric shrinkage systematically reduces the effective interface split compared to the nominal offset, promoting shrinkage-assisted bonding. Within the investigated design matrix, the measured residual split was consistently lower than the nominal imposed clearance, indicating shrinkage-assisted partial gap closure. Because the study was not designed as a repeatability assessment, these trends should be interpreted as feasibility-level design indications.",
+        "The joint geometry significantly influences the residual split distribution, with axisymmetric configurations exhibiting more uniform behavior compared to interlocking prismatic geometries, which are more sensitive to assembly alignment. Process- and operator-dependent factors were identified as critical parameters affecting dimensional accuracy and interface morphology.",
+        "Overall, the proposed approach represents a novel manufacturing strategy for BJT that extends component size beyond build-volume limitations while potentially enabling structural continuity, pending mechanical validation, and simplifying the depowdering phase of samples. Such a procedure could complement properly the capabilities offered by fusion-based AM techniques for large-scale productions such as WAAM (wire arc AM) and DED (direct energy deposition), which grant high deposition rates at the expense of resolution and accuracy [ 39 ,  40 ]. The obtained results provide indications for the design of the interfaces and open new research directions concerning the structural assessment of such interfaces. Besides, the approach has been tested with 17-4PH stainless steel, which has been previously studied for conventional BJT. However, it could be applied to any material suited for sintering, whether metallic or non-metallic. Especially in the latter case, manufacturing of large ceramic or composite materials can be rather difficult owing to the limited shaping possibilities into large volumes and the inherent brittleness of these material classes: producing multiple smaller components and joining them through robust interlocking mechanisms could overcome these barriers, therefore, potentially leading to previously unattainable resolution-to-size ratios.",
+        "It should be noted that the work is limited to individual components, so future studies should assess the repeatability of the proposed process, considering the intrinsic variability of the printing process, the depowdering step, the manual assembly and the additional thermal treatments."
+      ]
+    }
+  ],
+  "tables": [
+    {
+      "caption": "Summary of the printed assembly configurations for rectangular and cylindrical components",
+      "headers": [
+        "Joint family",
+        "Geometry",
+        "Direct contact at assembly",
+        "Offset-generated gap region",
+        "Main residual split metric",
+        "# Samples"
+      ],
+      "rows": [
+        [
+          "Prismatic",
+          "Box",
+          "Horizontal faces",
+          "Vertical flanks",
+          "x split",
+          "6"
+        ],
+        [
+          "Prismatic",
+          "Dovetail",
+          "Horizontal faces",
+          "Inclined flanks",
+          "xy split",
+          "6"
+        ],
+        [
+          "Prismatic",
+          "Pyramidal",
+          "Horizontal/internal seating faces",
+          "Inclined drafted surfaces",
+          "Internal xy split",
+          "6"
+        ],
+        [
+          "Cylindrical",
+          "M10 thread",
+          "Thread/root contact regions depending on seating",
+          "Thread flanks",
+          "Flank split",
+          "3"
+        ],
+        [
+          "Cylindrical",
+          "M14 thread",
+          "Thread/root contact regions depending on seating",
+          "Thread flanks",
+          "Flank split",
+          "3"
+        ],
+        [
+          "Cylindrical",
+          "Conical",
+          "Tapered seating surface/base",
+          "Conical surface",
+          "Conical split",
+          "3"
+        ]
+      ],
+      "header_groups": [],
+      "table_alignment_status": "resolved",
+      "row_provenance": [
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 6
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 6
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 6
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 6
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 6
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 6
+          }
+        ]
+      ],
+      "tbody_alignment_status": "resolved"
+    },
+    {
+      "caption": "Recommendations for interlocking mechanisms design for BJT components to assemble",
+      "headers": [
+        "Geometry",
+        "Recommended offset range",
+        "Main advantage",
+        "Main risk",
+        "Suitability"
+      ],
+      "rows": [
+        [
+          "Box",
+          "0.10–0.20 mm",
+          "Simple design, easy analysis",
+          "Sensitive to lateral misalignment",
+          "Medium"
+        ],
+        [
+          "Dovetail",
+          "0.10–0.20 mm",
+          "Strong geometrical engagement",
+          "Inclined split sensitive to seating error",
+          "Medium"
+        ],
+        [
+          "Pyramidal",
+          "0.10–0.20 mm",
+          "3D interlocking, internal engagement",
+          "Ambiguous contact at horizontal faces",
+          "Medium"
+        ],
+        [
+          "M10 thread",
+          "0.10–0.20 mm",
+          "Functional screw-like engagement",
+          "Thread-flank residual split",
+          "Medium-high"
+        ],
+        [
+          "M14 thread",
+          "0.10–0.20 mm",
+          "Larger engagement scale",
+          "Larger pitch may increase residual opening",
+          "Medium"
+        ],
+        [
+          "Conical",
+          "0.10–0.20 mm",
+          "Self-centering, uniform shrinkage accommodation",
+          "Axial positioning sensitivity",
+          "High"
+        ]
+      ],
+      "header_groups": [],
+      "table_alignment_status": "resolved",
+      "row_provenance": [
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 5
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 5
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 5
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 5
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 5
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 5
+          }
+        ]
+      ],
+      "tbody_alignment_status": "resolved"
+    }
+  ]
+}

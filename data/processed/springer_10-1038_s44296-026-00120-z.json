@@ -1,0 +1,1753 @@
+{
+  "doi": "10.1038/s44296-026-00120-z",
+  "title": "Engineering oxygen evolution anodes for practical water electrolysis: advances, challenges, and perspectives",
+  "abstract": "Abstract Green hydrogen via renewable-powered electrolysis is vital for decarbonization, yet OER anode scalability remains a key limitation. A comparison of ALK, PEM, AEM, and SOEC technologies reveals challenges in dynamic integration. Lab-to-industrial translation suffers from mass/heat transfer and stability constraints. Understanding fluctuating operation–induced degradation is critical. Future advances demand co-design of materials, interfaces, and systems to bridge performance gaps and enable sustainable, large-scale deployment.",
+  "journal": "npj Materials Sustainability",
+  "year": "2026",
+  "sections": [
+    {
+      "heading": "Introduction",
+      "paragraphs": [
+        "As the global energy structure accelerates its transition toward clean and low-carbon sources, the contradiction between the high carbon emission intensity of fossil fuels and environmental carrying capacity has become increasingly prominent 1 .Hydrogen, with its high gravimetric energy density (approximately 33.3 kWh kg −1 ) and potential for low-carbon production pathways, is widely regarded as a key energy carrier for building a future clean energy system 2 . According to data from the China Hydrogen Alliance, China’s hydrogen production in 2022 was approximately 40 million tons, of which about 78% was derived from fossil fuel-based processes (gray hydrogen) 3 . The life-cycle carbon emission intensity of such pathways can reach up to ~18–20 kg CO 2 /kg H 2  depending on feedstock and process conditions. In contrast, hydrogen produced via renewable-powered electrolysis (green hydrogen) can reduce life-cycle emissions to below 1–2 kg CO 2 /kg H 2 , corresponding to a reduction of over 80–90% compared with conventional routes 4 . In the field of industrial decarbonization, hydrogen applications demonstrate significant potential. For instance, hydrogen-based direct reduction in ironmaking can reduce CO 2  emissions by approximately 1.5–1.8 tons per ton of steel compared to conventional blast furnace processes. Similarly, replacing fossil-derived hydrogen with green hydrogen in ammonia synthesis can achieve emission reductions of approximately 70-90%, depending on system boundaries and energy sources 4 . Despite these advantages, the penetration rate of green hydrogen in China’s hydrogen supply structure remains below 2%. Therefore, the large-scale deployment of green hydrogen is widely considered a key pathway for decarbonizing hard-to-abate sectors and achieving carbon neutrality targets.",
+        "At present, there are significant differences in the four mainstream technologies of water electrolysis (alkaline water electrolysis, proton exchange membrane, anion exchange membrane and solid oxide, as shown in Fig.  1 ) 5  in terms of technology maturity, cost and application scenarios. Alkaline water electrolysis (ALK) boasts mature technology, low costs, and ease of large-scale implementation, with its production capacity already covering over 90% of the global water electrolysis hydrogen market. Proton exchange membrane (PEM) water electrolysis employs pure water and precious metal catalysts (e.g., platinum, iridium); while achieving high current density (1–2 A cm -2 ), it suffers from high equipment costs (approximately $1200–2000/kW, system-level capital cost) and reliance on imported membranes, currently occupying only about 5% of the market. Anion exchange membrane technology attempts to combine the cost-effectiveness of ALK with PEM’s efficiency, yet suffers from insufficient membrane conductivity and alkali resistance, still requiring precious metal catalysts and remaining in laboratory research. Solid oxide electrolysis cells (SOEC) demonstrate up to 90% efficiency at high temperatures (700–850 °C), but face stringent material heat resistance requirements, remain in pilot-scale development, and have manufacturing costs exceeding $3000/kW with no commercial applications yet. Fig. 1 Schematic diagrams of four mainstream water electrolysis technologies. a  Alkaline water electrolysis (ALK): two electrodes immersed in liquid alkaline electrolyte 20–30 wt% KOH separated by a diaphragm.  b  Proton exchange membrane (PEM) electrolysis: solid polymer electrolyte conducts H + ; catalysts are Pt on cathode and Ir/Ru oxides on anode.  c  Anion exchange membrane electrolysis: membrane conducts OH - , enabling non‑precious metal catalysts.  d  Solid oxide electrolysis cell (SOEC): ceramic electrolyte conducts O 2-  at 700–850 °C 108 , Copyright 2022 Elsevier Ltd.",
+        "Figure  2  illustrates the integrated workflow of clean electricity - to - hydrogen technology. Despite significant advancements in alkaline water electrolysis technology, several challenges persist. High costs of electrode catalysts remain a major hurdle, with China’s high-current-density coating processes primarily relying on imported materials. The addition of precious metals like platinum to reduce hydrogen evolution overpotential has significantly increased equipment costs. Operational challenges include: (1) Stability issues during dynamic operation (traditional alkaline electrolyzers require over 40 min for cold start-up with power regulation limited to 30–110%, making them incompatible with variable wind and solar power sources); (2) Material innovation gaps (laboratory-grade catalysts show 30–50% efficiency loss in pilot-scale production); (3) Relatively high energy consumption (current alkaline electrolyzers consume 4.3–5.0 kWh Nm −3  of DC power, compared to PEM’s 4.0 kWh Nm −3 ), constrained by membrane resistance, bubble effects, and electrode activity limitations. As anode materials determine hydrogen production energy consumption, reaction rates, and system compatibility, developing room-temperature cold-start, lightweight, and low-DC-consumption electrolysis systems requires first overcoming anode material technical challenges 6 . Fig. 2 Clean electricity‑to‑hydrogen technology roadmap 109 . The diagram shows the integrated workflow from renewable energy sources including wind, solar and hydro to hydrogen production via water electrolysis, covering power conditioning, electrolyzer operation, gas separation, and storage, Copyright 2020 Elsevier Ltd."
+      ]
+    },
+    {
+      "heading": "Basic technology and industrial background of hydrogen production by electrolysis of water",
+      "paragraphs": []
+    },
+    {
+      "heading": "Basic principle and reaction mechanism of electrolytic water",
+      "paragraphs": [
+        "As the cleanest green hydrogen production technology 7 , the development of water electrolysis for hydrogen production can be traced back to the first experiment in 1789 by Paets van Troostwijk and Deimann, who decomposed water using an electrostatic generator. However, the true systematic breakthrough began in 1800 when Nicholson and Carlisle achieved water electrolysis for hydrogen production using a Voltaic cell, an event hailed as one of the three major milestones in electrochemistry. During the 1920s–1930s, driven by the ammonia synthesis industry, alkaline water electrolysis (AWE) technology entered its first phase of large-scale application (Norway’s Norsk Hydro built a 10,000 m 3  h -1  facility). Subsequently, in the 1960s–1980s, China achieved independent production by introducing Soviet technology (such as the pressurized water electrolysis hydrogen production device developed by CSIC 718 Institute) 8 , 9 ."
+      ]
+    },
+    {
+      "heading": "Hydrogen and oxygen evolution reaction mechanism",
+      "paragraphs": [
+        "The electrolytic water device (Fig.  3 ) consists of three components: a cathode, an anode, and an electrolyte. Its core reaction involves the coupled processes of hydrogen evolution (HER) at the cathode and oxygen evolution (OER) at the anode 10 . The theoretical voltage for the overall reaction 2H 2 O → 2H 2  + O 2 11  is 1.23 V, but the actual operating voltage must be increased to 1.5–1.8 V due to kinetic hysteresis and ohmic losses. The anode OER involves four-electron transfer and adsorption of multiple intermediates (e.g.,*,OOH) 12 , with its overpotential (>300 mV) accounting for over 60% of the system’s energy consumption, making it a critical bottleneck for efficiency improvement. Fig. 3 Schematic of a single electrolysis water unit. A single cell comprises a cathode on the left, an anode on the right, and an aqueous electrolyte. The cathode evolves hydrogen H 2  bubbles and the anode evolves oxygen O 2  bubbles. The external circuit provides an applied voltage V. Theoretical cell voltage is 1.23 V, practical operation requires 1.5–1.8 V due to overpotentials and ohmic losses."
+      ]
+    },
+    {
+      "heading": "HER reaction mechanism",
+      "paragraphs": [
+        "The hydrogen evolution reaction HER 13 , 14  at the cathode involves two-electron transfer, whereas the OER at the anode involves four-electron transfer and multiple intermediates, making OER the primary efficiency bottleneck (overpotential >300 mV, >60% of energy consumption) 15 , 16 . Detailed HER mechanisms are well established and are not the focus of this review; interested readers are referred to dedicated works 17 ."
+      ]
+    },
+    {
+      "heading": "OER reaction mechanism",
+      "paragraphs": [
+        "Oxygen evolution reaction (OER) 18 , as a four-electron transfer process, involves continuous generation and transformation of OH * , O, and OOH intermediates 19 , 20 . In alkaline media, heterogeneous OER catalysis operates through two primary mechanisms: the Adsorbate Evolution Mechanism (AEM) and the Lattice Oxygen-Mediated Mechanism (LOM). The AEM follows the pathway  * OH →  * O → OOH → O 2 , with its activity governed by a linear scaling relationship of oxygen-containing intermediates (OH, O, OOH) binding energy (ΔG OOH  = ΔG OH  + 3.2 ± 0.2 eV). The LOM mechanism breaks this limitation through dynamic lattice oxygen reconstruction, including three O-O bond formation pathways: (1) Surface lattice oxygen nucleophilic interaction with OH −  to form OOH; (2) Direct coupling of reconstructed surface O intermediates with adjacent lattice oxygen; (3) Bridging oxygen species coupling at bimetallic sites. For NiCo-based catalysts, both mechanisms have been experimentally verified—when AEM dominates, intermediate binding energy requires moderate regulation to balance the reaction energy barrier, while LOM achieves low overpotential OER through lattice oxygen oxidation-release cycles. The enhanced activity stems from dynamic surface reconstruction breaking the linear relationship and synergistic effects of multiple active sites 21 ,  22 – 23 . Figure  4  schematically illustrates the AEM pathway and three LOM pathways involved in the OER processes discussed above, providing a visual summary of the reaction mechanisms and structural transformations during oxygen evolution. Fig. 4 Schematic diagrams of OER mechanisms. a  Shows the adsorbate evolution mechanism AEM pathway.  b – d  Show three possible lattice oxygen‑mediated mechanism LOM pathways.  b  represents the oxygen vacancy mechanism OVSM,  c  the single metal site mechanism SMSM, and  d  the bimetallic site mechanism DMSM 110 , Copyright 2021 Royal Society of Chemistry.",
+        "Under industrial high-current-density operation (e.g., >500 mA cm −2 ), the kinetics of OER become increasingly complex and deviate from idealized Tafel behavior. Dynamic surface reconstruction—wherein the catalyst surface continuously evolves between different oxide/hydroxide/oxyhydroxide phases—actively competes with parasitic side reactions such as peroxide formation and metal dissolution 21 , 22 . This kinetic competition manifests in three primary ways: (i) an increase in the apparent Tafel slope at high overpotentials due to mass transport limitations and bubble crowding. (ii) a gradual shift in the rate-determining step (RDS) from electron transfer to O–O bond formation 24 . (iii) accelerated degradation when the rate of surface reconstruction exceeds the self-healing (re-passivation) capacity of the catalyst. Understanding this interplay is essential for designing electrodes that maintain high Faradaic efficiency under fluctuating industrial loads. Recent operando X-ray absorption spectroscopy (XAS) studies have captured this dynamic behavior, revealing that the true active phase under high current densities often differs substantially from the as-prepared catalyst structure 25 , 26 .",
+        "With this context, it is critical to distinguish between reversible surface reconstruction that facilitates the LOM pathway and irreversible bulk amorphization that leads to catastrophic catalyst failure. Reversible reconstruction involves the dynamic formation and healing of surface oxygen vacancies, a process that operates within a self-limiting cycle: lattice oxygen participates in O–O bond formation, the resulting vacancy is rapidly refilled by OH -  from the electrolyte, and the bulk crystalline framework remains intact. This benign LOM cycle can persist for hundreds of hours under optimal conditions 27 .",
+        "In contrast, when the rate of lattice oxygen extraction exceeds the rate of vacancy refilling—a scenario commonly encountered at high overpotentials or in poorly conductive electrolytes—the catalyst enters a regime of irreversible degradation. The accumulation of subsurface oxygen vacancies triggers a cascade of detrimental events: (i) local charge imbalance drives cation migration and structural disordering. (ii) the weakened metal–oxygen framework collapses into an amorphous phase. (iii) unprotected metal cations leach into the electrolyte 28 .",
+        "DFT calculations have proposed a thermodynamic threshold for this transition based on the oxygen vacancy formation energy (ΔG ~ VO ~ ). When ΔG ~ VO~ falls below approximately 1.5–2.0 eV, oxygen extraction becomes energetically facile, and the catalyst operates near the boundary between beneficial and destructive LOM. Experimental studies on perovskite oxides (e.g., Ba 0.5 Sr 0.5 Co 0.8 Fe 0.2 O 3- δ) have confirmed that catalysts with excessively low ΔG ~ VO~ exhibit rapid surface amorphization and cobalt leaching within hours of operation 29 .Therefore, an optimal LOM catalyst must possess a moderate oxygen vacancy formation energy that balances activity with stability.",
+        "To further connect mechanistic understanding with practical electrochemical performance, representative OER polarization and electrolyzer cell polarization curves from recent literature are provided in Supplementary Fig.  S1 . The comparison demonstrates how catalyst reconstruction and electrode design influence both intrinsic OER activity and overall electrolyzer performance under industrially relevant operating conditions 30 , 31 ."
+      ]
+    },
+    {
+      "heading": "Comparison of mainstream electrolytic water technology routes",
+      "paragraphs": [
+        "ALK (alkaline water electrolysis) 32 : ALK is a mature technology that produces hydrogen at the cathode and oxygen at the anode by electrolyzing water in an alkaline electrolyte, with a diaphragm separating the electrodes. Its advantages include technological maturity, relatively low system cost, and the use of non-precious metal catalysts such as nickel, making it suitable for large-scale industrial hydrogen production 33 . However, ALK also has inherent limitations, including relatively low current density, moderate efficiency, slow dynamic response, and issues related to electrolyte corrosion and gas crossover. At present, ALK remains the most widely deployed electrolysis technology and is primarily applied in large-scale and steady-state industrial scenarios such as chemical and metallurgical processes Table  1 . Table 1 Reaction pathways of HER in acidic and alkaline electrolytes 106 Electrolyte Reactions Overall reaction 1st step 2nd step Volmer reaction: Heyrovsky reaction: Tafel reaction: chemical electrochemical adsorption electrochemical desorption desorption Tafel slope: Tafel slope: Tafel slope: b = 2.3RT/zF≈120 mV dec−1 b = 2.3RT/zF≈40 mV dec−1 b = 2.3RT/zF≈30 mV dec−1 Acidic solution 2H + +2e − →H 2 M + H + +e − →M–H * M–H *  + H +  +e −  → M + H 2 2M–H *  → 2 M + H 2 Alkaline solution 2H 2 O + 2e −  → H 2  + 2OH − M + H 2 O + e −  → M–H *  + OH - M–H *  + H 2 O + e −  → M + OH + H 2",
+        "Proton Exchange Membrane (PEM) electrolysis 34 : PEM electrolysis employs solid polymer electrolytes that selectively conduct protons (H + ), enabling hydrogen production in pure water systems. The process typically relies on noble metal catalysts such as platinum and iridium 35 . Compared with ALK systems, PEM electrolysis offers higher current density, higher efficiency, rapid dynamic response, and high hydrogen purity, making it particularly suitable for coupling with intermittent renewable energy sources 36 .However, PEM technology still faces challenges such as high system cost, dependence on scarce noble metals, and durability limitations of membrane materials. Currently, PEM electrolysis is undergoing rapid development and commercialization, especially in renewable energy-integrated hydrogen production systems, although its deployment scale remains smaller than that of ALK systems Table  2 . Table 2 Reaction pathways of OER in acidic and alkaline electrolytes 106 Electrolyte Reaction Overall reaction Intermediate reaction steps Acidic solution 2H 2 O → O 2  + 4H +  +4e − M + H 2 O → M–OH *  + H + +e - M–OH *  + OH → M–O *  + H 2 O + e - Then either 2M–O *  → 2 M + O 2  or M–O *  + H 2 O → MOOH *  + H +  +e - MOOH *  + H 2 O → M + O 2  + H + +e - Alkaline solution 4OH → O 2  + 2H 2 O + 4e − M + OH → M–OH * M–OH *  + OH → M–O *  + H 2 O Then either 2M–O *  → 2 M + O 2  or M–O *  + OH → M–OOH * +e - M–OOH *  + OH → M + O 2  + H 2 O",
+        "AEM (Anion Exchange Membrane Electrolysis for Hydrogen Production) 37 : AEM utilizes anion exchange membranes that permit hydroxide ions (OH − ) passage, employing either low-concentration electrolytes (e.g., 1 M KOH) or pure water. The electrode materials predominantly consist of nickel-based or non-precious metal catalysts. Key advantages of AEM include high current density (6000–10,000 A m −2 ), improved efficiency (70–80%), rapid dynamic response (second-level), and hydrogen purity of 99.99%. However, technical challenges persist, such as the chemical instability of anion exchange membranes (susceptible to degradation) and the need for enhanced catalyst activity and longevity. Currently in the R&D demonstration phase, AEM is primarily applied in distributed hydrogen production and renewable energy integration, with most demonstration projects operating at the megawatt (MW) scale.",
+        "Solid Oxide Electrolysis Cell (SOEC) 38 : SOEC utilizes ceramic electrolytes to electrolyze water at high temperatures (700–1000 °C), producing hydrogen at the cathode and oxygen at the anode. Its advantages include extremely high efficiency (80–90%), direct utilization of industrial waste heat or nuclear thermal energy, and low power consumption. However, significant drawbacks exist, such as rapid material aging under high-temperature conditions, long startup times, high costs (approximately $2000/kW), and immature technology. Currently, SOEC remains in the laboratory and demonstration phase, primarily applied in high-temperature industrial scenarios and nuclear energy coupling for hydrogen production, without achieving large-scale commercialization. Table  3  presents the current status and technical comparisons of different hydrogen production technologies (alkaline water electrolysis ALK, proton exchange membrane electrolysis PEM, anion exchange membrane electrolysis AEM, and solid oxide electrolysis SOEC) across multiple dimensions including electrolytes, current density, production efficiency, response speed, hydrogen purity, initial costs, and industrialization stages. Table 3 Different technology routes evolution, status quo, and comparison (Data sourced from IEA and IRENA 2025) parameter ALK 32 PEM 34 AEM 37 SOEC 38 Electrolyte High-concentration KOH/NaOH (20%-30%) pure water Low concentration KOH (1 M) or pure water Ceramic electrolyte (high temperature) current density 2000–4000 A m −2 å 10000 A m −2 6000–10000 A m −2 5000–10000 A m −2 productiveness 60–70% 70–80% 70–80% 80–90% response speed Slow (minute-level) Fast (second-level) Faster (second-level) Slow (hour-level) hydrogen purity 99.5–99.9% 99.99% 99.99% 99.99% prime cost Low (about 800 $ kW −1 ) High (about 1200 $ kW −1 ) Higher (about 1000 $ kW −1 ) Maximum (about 2000 $ kW −1 ) Industrialization stage ripe Commercialization Phase R&D and demonstration phase Lab and demo phase"
+      ]
+    },
+    {
+      "heading": "Market application and policy driven analysis",
+      "paragraphs": [
+        "From an industrial application perspective, water electrolysis for hydrogen production is emerging as a pivotal driver in the clean energy transition. In recent years, alkaline electrolyzers have dominated large-scale applications through their mature industrial chain and cost advantages 39 . With a localization rate exceeding 90%, single-cell production capacity surpassing 2200 Nm³/h, and unit investment costs reduced to 950 USD/kW, meanwhile, proton exchange membrane (PEM) electrolyzers demonstrate significant advantages in dynamic response and current density, though their high equipment costs and reliance on precious metal catalysts remain major bottlenecks for widespread adoption. With fourth-generation alkaline electrolyzer systems achieving energy efficiency breakthroughs of 81.3% and DC power consumption dropping to 3.8 kWh/Nm³, green hydrogen costs have entered the critical 14.8 Yuan/kg range, laying a solid foundation for large-scale commercial applications. Additionally, integrated IGBT converter-based flexible power supply technology expands load regulation range to 10–120% and reduces response time to 30 s, perfectly adapting to the fluctuating power characteristics of wind and solar energy while further enhancing the economic viability of hydrogen production from renewable sources.",
+        "From the perspective of policy-driven development, China’s electrolysis water hydrogen production industry is ushering in unprecedented development opportunities 40 . During the 2024 Two Sessions, hydrogen energy was highlighted as a crucial component of clean energy, with representatives and committee members calling for accelerated technological innovation and industrial application of hydrogen energy to promote energy structure transformation and support the achievement of the “dual carbon” goals. The “Medium-and Long-Term Development Plan for Hydrogen Energy Industry (2021–2035)” explicitly states that by 2030, the proportion of green hydrogen in terminal energy consumption will reach 15%, providing a clear direction for industrial development. Policy support continues to intensify, including R&D subsidies, promotion of demonstration projects, and incentives for green hydrogen consumption, further accelerating the industrialization of electrolysis water hydrogen production technology. Beyond China, major economies have also established ambitious hydrogen strategies. The European Union’s Net-Zero Industry Act targets 40 GW of renewable hydrogen electrolyzer capacity by 2030, supported by the European Hydrogen Bank’s auction‑based subsidies. The United States, through the Inflation Reduction Act (IRA), offers a production tax credit of up to $3 per kg of clean hydrogen (Section 45 V), aiming to reduce green hydrogen cost to $1 per kg by 2031 (Hydrogen Shot). Japan and South Korea have released national hydrogen roadmaps prioritizing liquid hydrogen carriers and fuel cell applications, with Japan targeting 15 GW of electrolyzer capacity by 2040. These international policy frameworks, together with China’s initiatives, are accelerating the global deployment of water electrolysis technology. For example, in the Sinopec Kuche photovoltaic hydrogen production project, the LA-1000 alkaline electrolyzer by LONGi Hydrogen and the PEM system by SACS achieved 1200 h of continuous operation without degradation, fully verifying the reliability of the technology. In the future, with the dual drivers of technological innovation and scale effects, the price of green electricity (renewable energy) is expected to decline, and the cost of green hydrogen is likely to decrease further, providing strong momentum for energy structure transformation and the realization of the “dual carbon” goals."
+      ]
+    },
+    {
+      "heading": "Research progress of core material system of oxygen evolution reaction",
+      "paragraphs": []
+    },
+    {
+      "heading": "Design and performance optimization of anode substrate materials",
+      "paragraphs": [
+        "Unlike cathodic hydrogen evolution reactions involving only two-electron transfers, anodic OER with four-electron transfers through multiple intermediates exhibit greater complexity and kinetic uphill behavior. This makes optimizing oxygen evolution anode performance a core challenge in water electrolysis technology development. Current research focuses on substrate material design, catalyst activity enhancement, and process innovation. Emerging trends include substrate functionalization using self-supporting substrates with high conductivity and corrosion resistance; non-precious metal catalyst development 41  replacing expensive Ru/Ir-based catalysts to reduce costs; and process integration for industrial-scale production. This section elaborates on three key aspects: anode substrates for water electrolysis, catalyst systems, and preparation methods."
+      ]
+    },
+    {
+      "heading": "Anode substrate material",
+      "paragraphs": [
+        "The substrate material serves as the primary support framework for electrodes, often determining their initial performance. While methods like modifying catalysts can enhance overall performance, the substrate material must inherently possess certain advantages to serve as a prerequisite for improving anode performance. High conductivity of the electrode substrate is crucial for reducing energy loss 42 . As the main channel for current transmission, the substrate’s conductivity directly affects the ohmic impedance of the electrolyzer. Under industrial conditions with high current density, a highly conductive substrate can significantly reduce electrical energy loss. In fluctuating power sources (such as wind-solar electrolysis), a highly conductive substrate can rapidly respond to current variations, preventing localized overheating and voltage fluctuations to minimize energy loss. Corrosion resistance is the core factor ensuring long-term stability of electrode sheets. First, alkaline or acidic electrolytes exhibit strong corrosiveness to substrate materials. Second, active oxygen species (e.g., ·OOH) generated during OER accelerate substrate oxidation. Additionally, solid oxide electrolyzers (SOECs) operating at 700–1000 °C require substrates that can withstand high-temperature oxidation and electrolyte erosion. Strong adhesion between the substrate and catalytic layer forms the foundation for improving anode efficiency and lifespan. Insufficient bonding between the catalytic layer and substrate may lead to active material spalling. A strong interfacial bond reduces electron transfer barriers to optimize charge transport pathways. During electrolysis, bubble desorption and mechanical vibrations may cause interfacial cracking, requiring substrate materials with stress-buffering structures. Therefore, substrate selection must typically combine high conductivity, corrosion resistance, and strong adhesion to the catalytic layer."
+      ]
+    },
+    {
+      "heading": "Carbon-based substrate",
+      "paragraphs": [
+        "Carbon-based life formstrates have become crucial supports for water electrolysis hydrogen production catalysts owing to their high electrical conductivity, chemical stability, and controllable microstructures (limited to Alkaline Cathodes or Low-Potential Alkaline OER) 43 . Carbon materials such as graphite felt (GF) and silicon carbide (SiC) foam 44  demonstrate remarkable efficiency in hydrogen evolution (HER) and OER by exposing active sites through porous structures, optimizing electron transport pathways, and enhancing electrolyte interface interactions. For instance, the three-dimensional fiber network in graphite felt effectively promotes gas diffusion and electron conduction, while the high-temperature stability and photoelectrochemical synergistic effects of SiC foam enable efficient hydrogen production under extreme conditions.",
+        "Graphite felt, a three-dimensional porous carbon material synthesized from polyacrylonitrile (PAN) through high-temperature graphitization, features a hierarchical pore structure (80%-90% porosity) created by its unique needle-punching technique. This material combines high electrical conductivity (resistivity 0.0038 Ω cm) with mechanical flexibility, enabling effective adaptation to the dynamic working environment of electrolyzers. In their CAWE (coal-assisted water electrolysis) research, Chen Shuai’s team 45  innovatively employed unmodified commercial graphite felt (GF) as an anode. Their findings revealed that the three-dimensional porous network efficiently adsorbs coal particles and enhances electron transfer. Experimental results demonstrated: in the Pt∥GF electrode system, a coal electrolysis current density of 5 mA cm −2  was achieved at 1 V. When current densities reached 1, 5, 10, and 50 mA cm −2 , the required voltages for conventional water electrolysis systems (Pt∥IrO 2 -RuO 2 /Ti) were 1.84,1.64,1.50, and 1.13 times those of the CAWE system, respectively, significantly reducing energy consumption. Compared to precious metal electrodes like Pt, SnO 2 /Ti, and IrO 2 -RuO 2 /Ti, the GF anode exhibited superior reaction activity while cutting system costs by over 90%. Mechanistic studies revealed that abundant oxygen-containing functional groups (C = O, C–OH) on the GF surface effectively accelerate hydrogen evolution kinetics by lowering the H 2 O dissociation energy barrier (theoretical reduction of 0.35 eV). This work provides a cost-effective solution for hydrogen production through electrolysis, combining material innovation with engineering feasibility.",
+        "Note: Carbon materials are generally considered unsuitable for high-potential anodic OER environments, particularly in Proton Exchange Membrane (PEM) electrolysis, due to thermodynamically driven carbon corrosion at potentials above  ~  1.0   V vs. RHE. The following discussion is strictly limited to their application as cathode supports in alkaline media or as anodes only in specific low-potential, mild alkaline conditions 46 ."
+      ]
+    },
+    {
+      "heading": "Ceramic substrates",
+      "paragraphs": []
+    },
+    {
+      "heading": "",
+      "paragraphs": [
+        "Ceramic substrates play a critical role in electrochemical water splitting systems, particularly under harsh operating conditions where conventional metal or carbon-based substrates may suffer from corrosion, degradation, or structural instability."
+      ]
+    },
+    {
+      "heading": "",
+      "paragraphs": [
+        "In contrast to low-temperature alkaline and proton exchange membrane (PEM) electrolysis systems, ceramic substrates are more commonly employed in high-temperature solid oxide electrolysis cells (SOECs), where operating temperatures typically range from 600 to 1000 °C. Under such conditions, materials are required to possess not only excellent chemical stability but also sufficient ionic/electronic conductivity and thermal compatibility."
+      ]
+    },
+    {
+      "heading": "",
+      "paragraphs": [
+        "Ceramic materials 47  are well suited to these requirements due to their outstanding thermal stability (>1000 °C), corrosion resistance in both acidic and alkaline environments, and low thermal expansion coefficients (e.g., ~10⁻⁶ °C⁻¹ for zirconia-based materials), which ensure mechanical integrity during long-term operation. In addition, their tunable electronic structures—achieved through doping or defect engineering—enable enhanced charge transport and improved electrode–substrate interactions."
+      ]
+    },
+    {
+      "heading": "Strontium titanate (SrTiO 3 )",
+      "paragraphs": [
+        "Strontium titanate (SrTiO₃) is a perovskite-type oxide with a cubic lattice (cell parameter ~3.905 Å). Its oxygen vacancy concentration can be regulated through doping (e.g., La³⁺, Nb⁵⁺), thereby improving its electrical conductivity and interfacial charge transfer properties 48 . The ORR mechanism of perovskite oxide catalysts is illustrated in Fig.  5 . Fig. 5 Oxygen reduction reaction ORR mechanism on perovskite oxide catalysts. The ORR proceeds in four steps.  Step 1  is surface hydroxide substitution.  Step 2  is formation of surface peroxide.  Step 3  is formation of surface oxide.  Step 4  is surface hydroxide regeneration 111  Copyright 2011 Nature Publishing Group.",
+        "In the context of electrode design, SrTiO₃ is primarily employed as a ceramic substrate or support material rather than as the main active catalyst. Its structural stability, tunable electronic properties, and compatibility with various catalytic coatings make it a promising platform for anchoring OER-active species. Previous studies on perovskite oxides have demonstrated their potential not only as electrocatalysts but also as conductive supports that can modulate surface electronic structure and enhance catalyst dispersion 49 .",
+        "Therefore, the discussion of synthesis strategies (e.g., polymer-assisted methods) is particularly relevant for tailoring the surface morphology and interfacial properties of SrTiO₃-based substrates, which in turn influence the loading and performance of active catalytic phases."
+      ]
+    },
+    {
+      "heading": "Iridium oxide-coated zirconium oxide (IrO 2 @ZrO 2 )",
+      "paragraphs": [
+        "Zirconium oxide (ZrO₂), known for its excellent chemical stability and corrosion resistance, is widely used as a ceramic support material in electrochemical systems.When combined with active catalytic phases such as IrO₂, ZrO₂ serves as a robust substrate that enhances catalyst dispersion, structural stability, and resistance to degradation under harsh operating conditions.Jinkyu Lim et al. 50  reported a synthesis strategy for ultrathin IrO₂ nanostructures with well-defined morphology. Although IrO₂ is the primary active phase for the OER, the role of the ZrO₂-based substrate (or similar oxide supports) is crucial in maintaining structural integrity, improving catalyst-support interactions, and enabling stable operation under high current densities and acidic environments typical of PEM electrolysis systems.",
+        "This highlights that ceramic substrates such as ZrO₂ not only provide mechanical and chemical stability but also indirectly influence catalytic performance through interfacial effects."
+      ]
+    },
+    {
+      "heading": "Titanium-based substrates for PEM electrolysis",
+      "paragraphs": [
+        "In proton exchange membrane (PEM) electrolyzers, the harsh oxidizing environment (potential >1.8 V vs. RHE, pH < 2) requires substrate materials with exceptional corrosion resistance. Titanium and its alloys (e.g., Ti mesh, Ti felt, and sintered Ti plates) are the most widely used anode substrates due to their stable passive oxide layer. Porous Ti felt (porosity 50–70%, pore size 20–100 μm) is commonly employed as a porous transport layer (PTL) to facilitate both electron conduction and oxygen removal. To reduce contact resistance and improve durability, Ti substrates are often coated with thin noble metal layers or conductive ceramic oxides.",
+        "Beyond these basic functions, recent advances have revealed that the structural parameters of Ti-based PTLs critically influence mass transport and contact resistance. For example, increasing porosity enhances gas permeability but may compromise electrical conductivity and mechanical strength. A systematic study by Liu et al. investigated the effect of PTL thickness (0.2–1.0 mm) under identical pore structure and found a non-monotonic performance relationship driven by competition between electron conduction and gas-liquid transport 51 .",
+        "Surface engineering remains essential to mitigate contact resistance and improve durability. Stein et al. compared seven Ti passivation-protecting coatings over >2000 h; Pt coating achieved a 93% reduction in overall degradation rate (to 7 μV h -1  at 3 A cm -2  over 5000 h), whereas Nb and TiN coatings showed dissolution and oxidation. Mixed metal oxide coatings such as IrO 2 –RuO 2 –TaO x  on Ti felt have demonstrated a single-cell voltage of 1.836 V at 2 A cm -2  (80 °C, ambient pressure) with a precious metal loading of only 1 mg cm −2  in the anode catalyst layer 52 .",
+        "A critical long-term stability issue arises from Ti-PTL corrosion. Ti ions released under anodic polarization can migrate and accumulate in the cathode catalyst layer, poisoning the catalyst and degrading cell performance. Ion-exchange resin filtration of the water loop has been shown to reduce the degradation rate by 71% 53 . Furthermore, the highly insulating TiO 2  passivation layer that forms on Ti surfaces during long-term operation increases ohmic losses, motivating research into conductive ceramic coatings such as Ti 4 O 7  and Nb-doped TiO 2 . Ongoing efforts also focus on reducing noble metal loading through advanced coating techniques like reactive high-power impulse magnetron sputtering, achieving Pt overlayers as thin as 5 nm while meeting interfacial contact resistance targets."
+      ]
+    },
+    {
+      "heading": "Metal substrate",
+      "paragraphs": []
+    },
+    {
+      "heading": "Pure nickel mesh",
+      "paragraphs": [
+        "Nickel mesh, the primary substrate for alkaline water electrolysis, demonstrates excellent high-temperature stability (≤500 °C), strong alkali corrosion resistance (e.g., concentrated KOH solutions), and high electrical conductivity due to its woven structure (typically 40–60 mesh, with nickel wire diameters on the order of hundreds of micrometers).The main production flow of nickel mesh substrates includes nickel ingot melting, wire drawing, and weaving, as illustrated in Fig.  6 . As a commonly used material for industrial electrolyzers, nickel mesh (NM) combines relatively simple manufacturing processes, good mechanical strength, ductility, and stability in alkaline environments. Fig. 6 Production process of nickel mesh substrate. The flow diagram shows the steps from nickel ingot melting, wire drawing, weaving, to final nickel mesh product. Nickel mesh is widely used as an anode substrate in alkaline water electrolysis.",
+        "In this study, NM was selected as a representative, cost-effective substrate widely used in industrial electrolysis systems, particularly due to its compatibility with conventional fabrication processes such as welding. In addition, its conductive network and porous woven structure facilitate efficient gas release during electrolysis. Compared with nickel foam, NM offers advantages in mechanical robustness and ease of industrial-scale processing. Its ductility and relatively high melting point further support stable operation under practical conditions 54 ."
+      ]
+    },
+    {
+      "heading": "Nickel foam",
+      "paragraphs": [
+        "The three-dimensional porous structure of nickel foam (with pore sizes of 50-500 μm) serves as an ideal support for high-performance electrodes by significantly increasing specific surface area (approximately 10 times that of nickel mesh) and shortening mass transfer pathways. As demonstrated in Fig.  7 , Gao Boxu et al. 55  proposed a simple three-step pretreatment process to restructure the nickel foam substrate into an efficient OER catalyst, involving calcination, high-pressure treatment, and electrolyte immersion. The optimized the nickel foam substrate after three-step activation exhibited outstanding OER performance in alkaline media, withstanding long-term testing at high current densities of 500 mA cm −2 . This study provides a straightforward method for manufacturing high-performance catalysts with accessible nickel foam, demonstrating potential for large-scale industrial applications and offering new perspectives for nickel-based catalyst development. Fig. 7 Three‑step preactivation process of commercial nickel foam for OER electrocatalysis 55 . Step 1 is calcination in air.  Step 2  is high‑pressure treatment.  Step 3  is electrolyte immersion. After activation, the nickel foam exhibits outstanding OER performance in alkaline media at high current densities such as 500 mA cm -2 , Copyright 2023 American Chemical Society."
+      ]
+    },
+    {
+      "heading": "Nickel-based alloy",
+      "paragraphs": [
+        "Nickel-based alloys (e.g., Ni-Fe, Ni-Co) 56  demonstrate enhanced corrosion resistance and mechanical strength in specific applications through optimized electronic structures via element doping. ANSIZHU New Energy’s iron-containing nickel anode (Ni-Fe oxide nanosheets) achieves a 0.4 V reduction in OER overpotential in alkaline electrolytes with a 10,000 h lifespan, attributed to the synergistic effect of nickel-iron alloy that boosts active site density. Faraday New Materials’ quaternary nickel-based alloy (Ni-Co-Mo-Fe) electrode delivers 13,000 A m −2  current density at 2 V with a power consumption of 3.94 kWh Nm −3 , its corrosion-resistant properties making it suitable for high-voltage electrolysis environments. However, nickel-cobalt alloys face higher costs due to cobalt price fluctuations, currently being primarily used in specialized applications like marine water electrolysis.",
+        "Ye Ying’s team 57  successfully constructed an oxygen-rich NiFe-LDH@Ni(OH) 2  − x p-n heterostructure through a multi-step synergistic strategy combining electrodeposition and in-situ etching (Fig.  8 ). This structure significantly enhances catalytic performance through dual regulation mechanisms: (1) The p-n heterojunction-induced electron redistribution modulates the d-band center of NiFe-LDH, optimizing hydroxyl (OH) adsorption free energy; (2) Oxygen vacancies (OVs) not only increase active site density but also reduce charge transfer resistance during OER/UOR processes. Experimental results demonstrate excellent OER performance in 1 M KOH solution: overpotentials of 250 mV and 290 mV at 100 mA cm −2  and 200 mA cm −2  current densities, respectively, with a Tafel slope as low as 43.6 mV dec −1 , and activity decay <5% after 100 h stability testing. The OER reaction order (~1.02) confirms rapid adsorption kinetics of  * OH. Additionally, the material exhibits outstanding catalytic activity for UOR (urea oxidation reaction), achieving a working potential of 1.44 V (vs. RHE) at 100 mA cm −2  current density with a Tafel slope of 37 mV dec −1 , outperforming most current Ni-based catalysts (e.g., Ni(OH) 2 : 62 mV dec −1 ). This study innovatively achieves the coupling effect of electronic structure modulation and surface reconstruction through the synergistic interaction of oxygen vacancy engineering and p-n heterojunction, providing a new paradigm for designing efficient bifunctional (OER/UOR) electrocatalysts. Fig. 8 Synthesis process of NiFe LDH@Ni(OH) 2  heterostructure 57 . The multi‑step strategy combines electrodeposition and in‑situ etching to form an oxygen‑rich NiFe LDH@Ni(OH) 2-x  p‑n heterostructure.  Step I  is electrodeposition of NiFe LDH on nickel foam.  Step II  is in‑situ etching to create oxygen vacancies and p‑n junction, Copyright 2022 Elsevier Ltd.",
+        "NiFe-based hydroxides exhibit high catalytic activity but require complex synthesis and suffer from short deposition carrier lifespan. This study demonstrates that easily processable iron-nickel alloys spontaneously develop high-activity NiFe-based hydroxides. The surface morphology and composition of NiFe hydroxides depend on alloy elements and the initial atomic Fe/Ni ratio, which governs OER activity. When the surface Fe/Ni ratio ranges between 0.2 and 0.4, optimal OER performance (superior to commercial IrO 2 ) and durability are achieved, along with abundant active sites 58 ."
+      ]
+    },
+    {
+      "heading": "Nickel plating sheet",
+      "paragraphs": [
+        "Nickel-coated metal plates 59  form a 50–100 μm dense nickel layer on carbon steel surfaces through electroplating or chemical plating processes, effectively preventing galvanic corrosion between the iron substrate and nickel catalyst. A manufacturer of electrolyzers employs chemical nickel plating technology for electrode plates, achieving a porosity of less than 10 points/100 cm² (blue dot test) and extending alkaline solution corrosion resistance to over 8 years. The high bonding strength of the coating (≥50 MPa) prevents peeling. Keliyuan New Energy further developed gradient nickel layers (inner pure nickel, outer nickel-phosphorus alloy), reducing the corrosion rate of electrodes in 80 °C 30 wt% KOH solution to 0.02 mm/year. This gradient structure balances conductivity and corrosion resistance. The nickel plating process strictly adheres to GB/T 19823 standards, with thickness uniformity error below ±5 μm, ensuring long-term stable operation of electrolyzers.",
+        "Considering that this study is oriented to industrialization, it is necessary to pay attention to the cost of substrate materials and the difficulty of subsequent modification of catalysts. Therefore, stainless steel and nickel iron foam are considered as substrates for further research, mainly for the following reasons:",
+        "The selection of stainless steel substrates is primarily driven by their industrial compatibility, cost-effectiveness, and potential for surface redox-active restructuring. As industrial-grade alloys, stainless steels (e.g., 316 L and 201) feature mature supply chains and low production costs. Through dynamic polarization inversion strategies, these materials can in-situ form NiFe hydroxide oxide active layers on surfaces without relying on noble metal coatings, significantly enhancing OER activity. Moreover, their chromium-based passivation films remain stable at high potentials (>1.6 V), while the manganese-chromium dual-passivation design demonstrates chlorine ion corrosion resistance, addressing the common corrosion issues of traditional nickel-based materials in complex water environments. With mechanical strength (tensile strength ≥520 MPa) and processability (direct stamping into electrolyzer electrodes), these substrates reduce system integration challenges, providing a cost-effective solution for large-scale green hydrogen production.",
+        "The primary rationale for using nickel foam iron as the anode substrate in water electrolysis for hydrogen production stems from its unique structural advantages and functional characteristics. This material features a three-dimensional porous network structure that significantly increases the electrode’s specific surface area, providing abundant active sites for electrochemical reactions and thereby enhancing the catalytic efficiency of OER. Its high porosity not only optimizes the contact interface between electrolyte and electrode but also accelerates gas release (e.g., oxygen), preventing electrode passivation caused by bubble accumulation. Additionally, the nickel foam iron substrate itself exhibits excellent electrical conductivity, effectively facilitating electron transfer and reducing electrochemical overpotential. In terms of long-term stability, its corrosion resistance and mechanical strength enable continuous operation under industrial-grade high current densities. Furthermore, by incorporating nickel iron-based catalysts (such as NiFe-LDH or heterostructures), the synergistic effects between nickel and iron components can be further utilized to enhance catalytic activity. Beyond material composition, the synergy between substrate and catalyst layer plays a critical role. Surface wettability and roughness influence bubble nucleation, growth, and detachment. A hydrophilic substrate promotes electrolyte penetration but may retain bubbles, while a moderately hydrophobic surface facilitates rapid bubble release, reducing the iR drop. For example, nickel mesh with optimized pore size (40–60 mesh) and surface treatment can reduce the average bubble detachment diameter from 100 μm to 50 μm, lowering the ohmic overpotential by 10–20 mV at 500 mA cm -2 . Tailoring substrate morphology to balance active area and bubble management is therefore an effective strategy for enhancing overall electrode performance. Table  4  summarizes four types of anode substrate materials and compares their respective advantages. Table 4 Anode substrate material comparison material superiority boundedness Typical scenarios Nickel screen Low cost and mature technology Good corrosion resistance The catalyst should be sprayed to enhance the activity Main current electrode of alkaline electrolytic cell (like the Boshi Lai BSL series) Nickel foam Large specific surface area Multiple reaction points Poor structural stability Cost is high High activity demand electrode/AEM electrolyzer Nickelage polar plate Strong corrosion resistance Extend substrate life complicated technology cost increase Corrosion protection treatment of plate surface (Hebei Heshengyuan, for example) Stainless steel Low cost, good mechanical strength, in-situ formation of NiFe oxyhydroxides Requires surface activation; lower conductivity than Ni Large-scale alkaline electrolyzers"
+      ]
+    },
+    {
+      "heading": "Classification and research frontiers of oxygen evolution reaction catalysts",
+      "paragraphs": [
+        "Electrolytic water hydrogen production catalysts are pivotal materials for enhancing OER efficiency. Ideal catalysts require high active site density, excellent electronic conductivity, and long-term stability. With the rapid advancement of green hydrogen technology, researchers are dedicated to developing low-cost, high-activity, and environmentally friendly catalyst systems. This effort aims to gradually reduce reliance on precious metal materials while optimizing catalytic performance through nanostructure design 60 , element doping, and interface engineering. The following sections will elaborate on design strategies and performance enhancement mechanisms from material categories, supported by typical research cases."
+      ]
+    },
+    {
+      "heading": "Noble metal-based catalysts",
+      "paragraphs": [
+        "Precious metal-based catalysts (such as platinum, iridium, ruthenium and their oxides) have long been regarded as the gold standard for water electrolysis due to their unique electronic structures and exceptional intrinsic activity. These materials demonstrate remarkably low overpotentials and outstanding stability under both acidic and alkaline conditions. However, their high costs and scarcity have limited large-scale applications. In recent years, researchers have employed strategies like alloying, doping 61 , and nanostructure design to reduce precious metal consumption while maintaining or even enhancing catalytic performance.",
+        "The recently developed silicon-modified RuO 2  catalyst by Ping et al. 62  demonstrates excellent activity and stability in acidic OER. This study achieved two key effects by introducing non-metallic silicon (effective ionic radius 0.26 Å) into the RuO 2  lattice: First, silicon doping effectively weakens the covalent character of Ru-O bonds (Fig.  9 ), shifting the OER reaction pathway from lattice oxygen oxidation mechanism (LOM) to Adsorbate Evolution Mechanism (AEM), thereby significantly enhancing catalytic stability. Second, silicon forms higher-energy Si-O bonds (~799 kJ mol −1  vs. Ru-O bonds ~652 kJ mol −1 ) with oxygen, which anchor lattice oxygen to suppress LOM processes and further strengthen structural stability. Experimental results confirm that silicon interstitial doping improves RuO 2  stability under acidic OER conditions by over 10-fold. This work reveals a novel strategy for optimizing electrocatalytic stability through regulation of metal-oxygen bond covalency, providing important theoretical guidance for designing corrosion-resistant oxygen evolution catalysts. Fig. 9 Silicon doping scheme for reducing Ru–O covalent bonding to enhance acidic OER stability. The left panel shows pure RuO 2  lattice with strong Ru–O bonds depicted as red lines. The right panel shows Si‑doped RuO 2  where a silicon atom blue sphere replaces a Ru site, weakening Ru–O covalency and shifting the OER pathway from LOM to AEM. Yellow lightning bolt indicates photo‑assisted condition 62 , Copyright 2024 Nature Publishing Group."
+      ]
+    },
+    {
+      "heading": "Transition metal-based catalysts",
+      "paragraphs": [
+        "Transition metal-based catalysts 63  (such as oxides, sulfides, and phosphides of nickel, iron, and cobalt) have emerged as a promising alternative to precious metals due to their low cost, high abundance, and tunable electronic structures. While these materials demonstrate exceptional performance under alkaline conditions, their activity and stability in acidic environments require further enhancement. Through defect engineering, element doping, and nanostructure design, researchers have significantly optimized their catalytic performance. Wei et al. reported that a corrosion-engineered NiFe LDH electrode on iron foam achieved an overpotential of only 254 mV at 500 mA cm -2  in alkaline electrolyte, with a Tafel slope of 51.7 mV dec -1  and stable operation for over 100 h at this high current density 64 .",
+        "NiCo-based electrocatalysts demonstrate exceptional catalytic performance in OER through their tunable atomic/electronic structures, combining high intrinsic activity with long-term stability 65 . Recent breakthroughs in understanding the structure-activity relationships of NiCo-based catalysts have been achieved through multi-level structural engineering strategies (including nanostructure design, hetero-element doping, and surface coordination environment modulation) and advanced mechanistic exploration methods (such as in-situ characterization techniques and theoretical simulations). The research framework focuses on three core dimensions: (1) Dynamic analysis of reaction pathways—distinguishing AEM (Adsorbate Evolution Mechanism) and LOM (lattice oxygen mechanism) dominance through surface reconstruction and lattice oxygen activation; (2) Precise identification of active sites—revealing the chemical nature of active centers by integrating oxygen vacancy regulation, bimetallic synergistic effects, and electronic redistribution of high-valent metal species (e.g., Ni³⁺/Ni⁴⁺, Co³⁺/Co⁴⁺); 3) Establishing cross-scale structure-activity correlations—developing multi-level mathematical models that encompass atomic-level coordination environments (e.g., metal-oxygen bond lengths, coordination numbers), mesoscale surface characteristics (e.g., defect density, electron transport channels), and macroscopic catalytic performance (TOF values, Tafel slopes). These systematic studies provide a theoretical framework and technical roadmap for rational design of next-generation high-efficiency OER catalysts.",
+        "While oxygen vacancies (OVs) are widely recognized for enhancing OER activity by modulating the electronic structure and creating unsaturated coordination sites, their stability under highly oxidizing anodic potentials warrants careful consideration. At potentials above ~1.5 V vs. RHE, OVs can be dynamically annihilated through several pathways: (i) direct filling by OH -  or H₂O molecules from the electrolyte. (ii) migration to the surface followed by passivation. (iii) clustering into extended defects that reduce the effective active area. Density functional theory (DFT) calculations indicate that the formation energy of an oxygen vacancy (ΔG ~ VO ~ ) is a critical predictor of its stability—vacancies with ΔG ~ VO ~ < 2 eV tend to be short-lived under OER conditions 66 . Strategies to kinetically stabilize OVs include doping with high-valence cations (e.g., Mo 6+ , W 6+ ) that strengthen adjacent metal–oxygen bonds 67 , or constructing heterostructures where interfacial charge transfer creates a local electric field that suppresses vacancy migration. Operando X-ray photoelectron spectroscopy (XPS) and electron paramagnetic resonance (EPR) studies have confirmed that OV concentrations can decrease by 50–80% after only a few hours of OER operation, underscoring the need to evaluate vacancy-engineered catalysts under realistic durability testing protocols 27 . In summary, for alkaline OER, activating the LOM pathway requires moderate metal–oxygen covalency, while the AEM pathway relies on optimized intermediate adsorption energies; stability considerations should guide the choice between them.",
+        "Sun Jiameng’s team 68  addressed the challenge of developing cost-effective and high-performance water electrolysis catalysts for electrochemical hydrogen production by proposing a controllable preparation strategy for nickel-molybdenum (Ni-Mo) bimetallic alloy catalysts based on magnetron co-sputtering technology. Through precise control of sputtering parameters, they obtained Ni x Mo 10−x  alloy thin films with compositional gradient distribution. Figure  11  demonstrates the behavior of molybdenum in Ni 4 Mo alloy during alkaline water electrolysis reactions. The synergistic effect of Ni-Mo bimetallic components effectively optimized the electronic structure and enhanced intrinsic catalytic activity.",
+        "Experimental results demonstrated that the Ni 4 Mo 6  alloy exhibited an overpotential of 258 mV for the OER in 1 M KOH at 10 mA cm -2 .",
+        "Similarly, for practical water electrolysis in complex electrolyte environments such as seawater, catalyst design must prioritize durability and selectivity against impurities alongside intrinsic activity; recent strategies including phase engineering, heteroatom doping, and heterojunction construction have been comprehensively reviewed by Park et al. 69 ."
+      ]
+    },
+    {
+      "heading": "Carbon-based catalysts",
+      "paragraphs": [
+        "Carbon-based catalysts, such as nitrogen-doped carbon and single-atom catalysts, have emerged as ideal bifunctional catalysts due to their high electrical conductivity, tunable electronic structures, and cost-effectiveness. By incorporating heteroatoms or combining with metal nanoparticles, these materials can demonstrate high efficiency in both hydrogen evolution reaction (HER) and OER.",
+        "For instance, breakthrough applications of nitrogen-doped carbon nanotubes (N-CNTs) and other metal-free carbon-based catalysts in oxygen reduction reactions (ORR) have driven researchers to explore their potential in OER. Despite challenges like insufficient activity, poor stability, and difficulties in optimizing dual reactions in ORR and OER due to differences in reaction mechanisms and active site requirements, advancements in heteroatom co-doping (e.g., N/S, N/P), edge/vacancy engineering, core-shell structures, hierarchical porous carbon, and bifunctional composites (e.g., cobalt-nitrogen-carbon) have enabled carbon-based catalysts to demonstrate ORR activity comparable to precious metals in alkaline electrolytes. Some materials even achieve dual-function synergy between ORR and OER, offering new approaches for all-carbon electrodes and noble metal-free electrolyzers. However, key bottlenecks remain in enhancing long-term stability by suppressing corrosion and structural collapse, precise active site analysis requiring in-situ characterization and theoretical calculations, and scalable preparation technologies. Future efforts should integrate material innovation with mechanism studies to advance fuel cells and water electrolysis toward lower costs, higher efficiency, and sustainable development. As illustrated in Fig.  10 , the design and dual-function strategies of high-density active site C-MFCs materials visually complement these research directions, highlighting how structural regulation enhances catalytic performance in noble-metal-free systems. Fig. 10 Design strategies for carbon‑based metal‑free catalysts C‑MFCs. a  Shows the preparation and catalytic mechanism of high‑density active site C‑MFCs using biomass precursors via high‑temperature pyrolysis 112 , copyright 2019 Wiley-VCH.  b  Shows design strategies for C‑MFCs applied in OER and HER 113 , copyright 2019 Wiley-VCH.",
+        "Based on the graphene double-vacancy defect model, we designed non-metallic N-doped catalytic materials and systematically screened the adsorption behavior of all carbon active sites. DFT calculations showed that 13 carbon sites exhibited insufficient H₂O adsorption capacity, while O₂ molecules could stably adsorb at defect edges and sites adjacent to pyridine N, suggesting reactions via oxygen intermediates ( * O * ,OOH). Among these, the C12 site (adjacent to pyridine N) demonstrated optimal ORR activity with a theoretical overpotential of 0.71 V (vs. RHE), surpassing C10 (0.75 V) and C3 (0.78 V) sites. This advantage stems from the pyridine N-induced local charge redistribution that enhances π-electron delocalization and optimizes oxygen intermediate adsorption energy. This study elucidates the ORR catalytic mechanism of non-metallic N-doped defective graphene, reveals synergistic effects, and provides theoretical basis and guidance for designing efficient bifunctional OER/ORR non-metallic catalysts 70 ."
+      ]
+    },
+    {
+      "heading": "Composite catalyst",
+      "paragraphs": [
+        "Catalytic composites achieve synergistic effects through heterogeneous interfaces or core-shell structures, combining the advantages of different materials to overcome the performance bottlenecks of single components. These materials often exhibit multifunctional characteristics while enhancing activity and stability.",
+        "Zhang et al. 71  developed a binder-free La-RuO 2 @TM composite catalyst featuring simultaneous optimization of adsorbate evolution (AEM) and lattice oxygen mediated (LOM) mechanisms (as illustrated in Fig.  11 a, b), demonstrating significant potential for practical applications in proton exchange membrane electrolyzers (PEMWE). Experimental results indicate that La doping optimizes the electronic structure of Ru-O bonds, effectively reducing the adsorption energy barriers of reaction intermediates ( * OH * ,O * ,OOH), thereby enhancing oxygen evolution kinetics (Fig.  11c ). The material maintains stable operation for over 300 h at 10 mA cm −2  current density, with improved durability attributed to La³⁺‘s electronic compensation effect on Ru sites, which effectively suppresses Ru dissolution and lattice oxygen evolution. Notably, Fig.  11d  reveals a synergistic interface engineering strategy, La-RuO 2 @TM achieves OER activity (ΔG ‡  = 0.38 eV) comparable to commercial IrO 2 , yet with 3.2 times higher mass activity—a breakthrough that provides a novel atomic-level doping strategy for non-iridium-based acidic OER catalysts. This study not only overcomes cost limitations of precious metal catalysts in PEMWE but also reveals a synergistic optimization mechanism between activity and stability in transition metal oxide-based catalysts through interface engineering, laying a crucial technical foundation for industrial applications of proton exchange membrane water electrolysis. Fig. 11 OER mechanisms and orbital hybridization modulation in La‑RuO 2 @TM composite. a  Shows the adsorbate evolution mechanism AEM.  b  Shows the lattice oxygen‑mediated mechanism LOM.  c  Shows modulation of Ru–O covalency by La doping with blue arrows indicating increased orbital overlap.  d  Shows the molecular orbital energy diagram for La‑RuO 2 @TM versus pristine RuO 2 , indicating a lowered energy barrier for acidic OER 71 , Copyright 2025 Wiley-VCH."
+      ]
+    },
+    {
+      "heading": "Advanced preparation methods of catalyst and electrode",
+      "paragraphs": [
+        "The preparation method of electrolytic water hydrogen production catalysts dirdirectly determines their activity, stability, and cost-effectiveness. Current mainstream approaches include physical synthesis, chemical synthesis, and advanced manufacturing technologies, which aim to optimize the exposure of catalytic sites and electron transport efficiency by precisely controlling the material composition, microstructure, and interface characteristics. These advanced preparation methods not only determine the performance of catalysts at the laboratory scale but also play a crucial role in enabling scalable electrode fabrication and practical electrolysis systems. This paper illustrates the design principles, implementation pathways, and performance enhancement mechanisms of different preparation strategies through representative literature examples. The preparation process significantly influences the catalyst’s morphology, binding strength, and scalability potential."
+      ]
+    },
+    {
+      "heading": "Flame spray pyrolysis (FSP)",
+      "paragraphs": [
+        "The flame combustion method synthesizes nanoparticles through rapid pyrolysis by atomizing metal precursor solutions into high-temperature flames. The process involves atomizing the solution into micron-sized droplets and spraying them into flames at 1000–3000 °C, where the droplets evaporate and decompose to form 5–50 nm particles. The final product is collected through quenching or electrostatic precipitation. This method supports continuous production with narrow particle size distribution and can synthesize multi-component oxides or carbides. However, it requires flammable precursors like metal nitrates, is prone to particle agglomeration, necessitates surface modification, and faces challenges of high energy consumption and exhaust gas treatment. Key parameters include the decisive role of flame temperature and residence time in determining crystal phase composition, as well as the precise control of particle size through atomization pressure. Wang S et al. 72  prepared self-supporting NiFe layered double hydroxide/Fe 2 O 3  (NiFe LDH/Fe 2 O 3 ) electrodes via combustion growth. This novel catalyst demonstrated excellent durability exceeding 100 h at the industrial benchmark current density of 500 mA cm −2 , with an overpotential of only 248 mV at 50 mA cm −2 . System characterization and electrochemical tests revealed superior performance in interfacial electron transfer and dynamic atomic structure transformation.",
+        "Although FSP demonstrates excellent performance in laboratory settings, its large-scale production still faces challenges such as low precursor utilization (<50%) and inadequate equipment corrosion resistance to high temperatures. The application of ceramic-lined reactors and multi-nozzle array designs can enhance yield and extend equipment lifespan."
+      ]
+    },
+    {
+      "heading": "Hydrothermal/solvent thermal method",
+      "paragraphs": [
+        "Hydrothermal/solvothermal synthesis is a high-temperature and high-pressure reaction technique utilizing sealed reactors to drive material synthesis. The core principle involves promoting hydrolysis, nucleation, and directional crystal growth of metal salt precursors through 100–250 °C temperatures and 1-10 MPa pressures. The typical process comprises three steps: First, metal salts (e.g., nitrates or chlorides) are dissolved with reducing agents (e.g., thiourea or urea) in water or organic solvents like ethylene glycol or DMF to form precursor solutions. Next, precise control of system pH, temperature, and reaction time (typically 6–48 h) regulates crystal morphology, such as nanosheets or nanowires. Finally, products are separated by centrifugation, washed, and dried to obtain high-crystallinity target materials. This method offers significant advantages, enabling direct synthesis of high-purity crystalline materials like sulfides or oxides while precisely controlling microstructures like nanosheets and core-shell structures. It also supports in-situ crystal growth on substrates such as foam metals. However, its applications are limited by the high cost of high-pressure equipment, challenges in large-scale production, and potential environmental issues from organic solvents. Key control parameters include the influence of solvent polarity on nucleation rates and the direct impact of precursor concentration and molar ratios on material composition distribution.",
+        "Liu et al. 73  employed a two-step hydrothermal method to immobilize carbon spheres (CS) onto NiFe-LDH sheets to enhance OER performance. They investigated the effects of hydrothermal carbonization (HTC) parameters, including hydrothermal duration and glucose concentration, on the loading efficiency of CSs onto NiFe-LDH@CS. The results demonstrated that the two-step hydrothermal synthesis significantly improved the OER performance of NiFe-LDH@CS. By optimizing the HTC process, the surface characteristics and graphitization degree of carbonized microspheres could be effectively controlled, thereby enhancing the OER performance of NiFe-LDH@CS. For OER, the hybrid catalyst exhibited an excellent overpotential of 292 mV at 50 mA cm −2  and 372 mV at 100 mA cm −2 .",
+        "Guo et al. 74  achieved the doping of transition metal W into NiFe layered bimetallic hydroxide (NiFe LDH) using a one-step solvothermal method, directly growing NiFeW LDH nanosheet array structures on carbon fiber paper (CP) substrates. Electrochemical performance tests demonstrated that the catalyst exhibited excellent OER activity in 1.0 M KOH electrolyte, achieving a current density of 20 mA cm −2  with an overpotential of only 248 mV and a Tafel slope of 68 mV dec −1 . After 24 h of continuous electrolysis at 20 mA cm −2  current density, the OER activity retention rate remained as high as 99.3%, showcasing outstanding stability. Characterization analysis of stabilized samples revealed no significant changes in the microstructure or chemical composition of the NiFeW LDH catalyst, further confirming its structural stability and catalytic durability."
+      ]
+    },
+    {
+      "heading": "Chemical vapor deposition (CVD)",
+      "paragraphs": [
+        "Chemical vapor deposition (CVD) is a technique that utilizes gaseous precursors to deposit thin films or nanostructures through chemical reactions on high-temperature substrates 75 . The process works by decomposing metal-organic compounds or carbon source gases on substrate surfaces at 500–1000 °C, enabling directional growth. Typical workflow involves introducing precursors like carbonyl compounds or methane into the reaction chamber, heating the substrate to activate surface catalytic activity, and then precisely controlling film thickness (1–100 nm) or nanostructure morphology by adjusting gas flow rate, pressure (1-100 Pa), and deposition time (minutes to hours). This method offers advantages such as high material purity and excellent crystallinity, achieving atomic-level deposition precision while being compatible with complex substrates like graphene or carbon fibers. However, it requires vacuum systems, leading to high costs, and the utilization rate of precious metal precursors often falls below 30%. Key control parameters include substrate temperature regulation of nucleation density and precise influence of gas partial pressure ratios on stoichiometric ratios."
+      ]
+    },
+    {
+      "heading": "Electrochemical deposition",
+      "paragraphs": [
+        "Electrochemical deposition 76  is a technique that enables the directional deposition of catalyst layers on conductive substrates through electrochemical reactions. The process begins with preparing an acidic or alkaline electrolyte containing metal salts such as nickel or iron ions. By employing constant potential, constant current, or pulse modes, the deposition rate and microstructure are precisely controlled. The resulting materials—nanoparticles, nanosheets, or three-dimensional porous structures—are obtained through washing and drying. This method features simple operation without requiring high-temperature or high-pressure conditions, allowing precise control of deposition layer thickness from nanometers to micrometers, making it particularly suitable for flexible anode fabrication. However, it is limited to conductive substrates, and deposition uniformity may be affected by uneven electric field distribution. Key parameters include selecting deposition potential windows to prevent hydrogen or oxygen evolution side reactions, as well as utilizing surfactant additives for directional microstructure control.",
+        "Rajendiran R et al. 77  developed a tungsten-doped Ni-Fe hydroxide catalyst via cathodic electrodeposition on three-dimensional nickel foam, which demonstrates exceptional performance in alkaline water oxidation. The controlled incorporation of tungsten (W) into the Ni-Fe hydroxide structure modulates the local electronic environment of nickel (Ni) and iron (Fe), creating oxygen vacancies that enhance OER activity. The optimized catalyst exhibits superior performance to the established 20 wt% Ir/C electrode, achieving current densities of 10 mA cm −2  and 50 mA cm −2  at 224 mV and 251 mV overpotentials respectively, both operating at ultra-low Tafel slopes. Surface analysis after 30-h long-term potentiostatic cycling revealed that tungsten doping facilitates Ni and Fe active site stabilization, enabling efficient water oxidation. This study provides critical insights into optimizing tungsten doping levels, which significantly enhances Ni-Fe’s electronic coupling for hydroxyl and oxygen intermediate adsorption, thereby substantially improving OER activity."
+      ]
+    },
+    {
+      "heading": "Electrochemical etching",
+      "paragraphs": [
+        "Electrochemical etching has emerged as a crucial technique for enhancing the activity and stability of OER catalysts by enabling in-situ modulation of defect structures and surface morphology. For instance, studies have demonstrated that precisely controlling iron vacancies (VFe) concentration in FeNi 2 O 4  (FNO) spinel oxide through etching yields defect-type FNO (VFe-FNO) with significantly improved OER performance, achieving a 200 mV reduction in 10 mA cm −2  overpotential. DFT calculations reveal that iron vacancies optimize the surface electronic structure by increasing Ni 3+  proportion and Ni-O covalency, thereby enhancing water adsorption activation and charge transfer. Another team developed a phosphorus-doped etched nano-porous material (FeCoNiCu foil), which exhibited a 46-fold increase in electrochemically active area post-etching, with OER and HER overpotentials decreasing by 102 mV and 157 mV respectively. When applied to commercial nickel mesh, the electrolyzer voltage was reduced to 1.931 V (80 °C, 30 wt% KOH, 500 mA cm −2 ), representing a 126 mV improvement over bare nickel mesh. While these achievements validate the advantages of electrochemical etching in defect regulation and nanostructure construction, most studies have not addressed long-term stability issues caused by Fe dissolution-induced active layer detachment in industrial electrolyzers, limiting practical applications 78 , 79 ."
+      ]
+    },
+    {
+      "heading": "3D printing technology",
+      "paragraphs": [
+        "3D printing technology constructs three-dimensional porous catalytic structures through layer-by-layer material deposition 80 , with common methods including direct ink writing and selective laser melting. The process involves mixing catalyst precursors with binders such as agarose or hydroxypropyl methylcellulose to prepare printable slurries. Parameters like nozzle diameter (100–500 microns), layer thickness (10–200 microns), and printing speed are optimized. Structural stability is ultimately enhanced through sintering at 800–1500 °C or chemical activation.",
+        "Tang Yang et al. 81  fabricated three-dimensional self-supporting NiFe electrodes by directly writing 3D-printed spherical Ni and Fe powders, followed by hydrothermal treatment in a urea-NH4F solution at 130 °C. The fabricated 3D micro-nanostructured NiFe electrodes exhibited outstanding OER activity, achieving a peak current of 100 mA cm −2  at 220 mV overpotential, a Tafel slope of 49.1 mV dec −1 , and maintaining stability for 100 h under both continuous and intermittent power supply conditions."
+      ]
+    },
+    {
+      "heading": "High temperature pyrolysis",
+      "paragraphs": [
+        "The high-temperature pyrolysis method prepares carbon-supported catalysts by decomposing metal-organic precursors. The typical procedure involves mixing metal salts (e.g., cobalt nitrate or iron chloride) with carbon sources (e.g., glucose or polyaniline), followed by pyrolysis at 600–1200 °C for 1–5 h under nitrogen or hydrogen/argon atmosphere. Subsequent acid washing removes unstable species to expose active sites. This method enables kilogram-scale production, featuring excellent electrical conductivity of carbon supports suitable for monatomic catalyst synthesis. However, high temperatures may induce particle aggregation and carbon structures could potentially encapsulate active sites. Key parameters include the pyrolysis heating rate’s regulation of pore structure and the metal-carbon ratio’s directional optimization of material’s electronic structure.",
+        "Table  5  summarizes the preparation of seven catalysts and provides a detailed analysis of their advantages and disadvantages. Current catalyst preparation methods have achieved significant progress in enhancing activity and structural control. For instance, precise synthesis of atomically dispersed catalysts, surface crystal plane engineering, and defect chemistry strategies have substantially improved the atomic utilization rate and reaction selectivity of precious metal catalysts. However, their development remains constrained by three major bottlenecks: (1) dependence on precious metal resources; (2) high production costs (e.g., Pt-based catalysts require high-temperature reduction processes with energy consumption reaching 150 kWh kg −1 ); (3) insufficient long-term stability (e.g., Pt/C catalysts in proton exchange membrane fuel cells experience activity degradation rates as high as 5%/1000 h due to agglomeration). Table 5 Catalyst preparation method Preparation method Principle Structural characteristics Performance impact Advantages Limitations Typical applications / materials Flame synthesis 72 Combustion-driven rapid formation of nanoparticles from precursor solutions Small particle size; high dispersion; relatively low crystallinity; abundant defects High catalytic activity due to large surface area and defect sites, but limited stability Fast production; scalable; suitable for mass production Poor control over morphology; possible particle aggregation IrSnSbOx catalysts; oxide nanoparticles Hydrothermal / solvothermal synthesis 73 Solution-phase crystal growth under high temperature and pressure Well-defined nanostructures (nanosheets, nanorods, LDHs); tunable morphology; moderate crystallinity High surface area and exposed active sites enhance activity; possible structural degradation during long-term operation Good morphology control; versatile material design Long reaction time; scale-up challenges NiFe-LDH, CoOOH, MnOx-based catalysts Chemical vapor deposition (CVD) 75 Gas-phase precursor decomposition and deposition on substrates Highly crystalline; uniform nanostructures; low defect density; strong substrate interaction Excellent stability and conductivity; lower density of active defect sites may limit activity High purity; precise thickness control Expensive equipment; high temperature requirements MoS₂, graphene-based catalysts, nanowires Electrodeposition 76 Electrochemical reduction of metal ions onto conductive substrates Dense or porous films; strong adhesion; controllable thickness; limited hierarchical structure Good electrical contact and mechanical stability; moderate activity due to limited surface area Simple process; scalable; compatible with industrial systems Limited control over micro/nano-structure NiCo, NiFe coatings on electrodes Electrochemical etching / activation 78 Surface reconstruction via electrochemical dissolution and redeposition Increased surface roughness; defect-rich surfaces; formation of active layers Enhanced active site density and catalytic activity; possible stability issues In situ activation; improves existing materials Limited control; potential degradation over time Activated Ni mesh, Ni-based catalysts 3D printing (additive manufacturing) 80 Layer-by-layer fabrication of structured electrodes Precisely designed macroscopic architectures; hierarchical porosity; integrated structures Improved mass transport and gas diffusion; tunable performance via structure design Customizable geometry; integration of structure and function Limited material choices; high cost NiFe alloy structures; 3D electrodes High-temperature pyrolysis / cracking 107 Thermal decomposition of precursors into carbon-supported or metallic catalysts Formation of nanoparticles embedded in carbon matrix; defect-rich carbon; possible aggregation High conductivity and stability; activity depends on dispersion and defect control Suitable for large-scale production; versatile precursor selection Particle agglomeration; energy-intensive Ru/C catalysts; M–N–C catalysts",
+        "Importantly, different preparation methods can result in substantial variations in the microstructure of catalysts, even for materials with similar compositions. For example, hydrothermal synthesis typically produces nanostructured materials with controlled morphology (e.g., nanosheets or layered double hydroxides), which exhibit high surface area but may suffer from structural instability during long-term operation. In contrast, electrodeposition methods can generate dense and strongly adhered coatings with improved electrical contact and mechanical stability, although they often show limited control over porosity and active site exposure. Similarly, chemical vapor deposition tends to produce highly crystalline and uniform nanostructures, which are beneficial for stability but may reduce the density of defect sites that are often crucial for catalytic activity.",
+        "Therefore, the selection of preparation method not only determines the morphology and structure (e.g., particle size, defect density, crystallinity, and interface characteristics), but also directly affects catalytic performance, including activity, selectivity, and durability. These material and electrode design strategies provide the foundation for the subsequent integration of electrolysis systems with renewable energy sources.",
+        "Future research should focus on three key directions: First, developing non-precious metal catalysts by targeting coordination structure modulation of Ni/Fe-OOH active sites in Fe/Ni-based materials, or creating layered materials like CoSe 2  and NiFe-LDH that synergistically enhance OER activity through lattice strain and pseudocapacitance effects (ΔG < 0.3 eV). Second, optimizing interface engineering by constructing heterostructures (e.g., MoS 2 /TiO 2 , CQD/MXene) or core-shell architectures (e.g., PtNi@Pt) to enhance intermediate adsorption/desorption kinetics via charge redistribution and synergistic effects, while designing self-healing protective layers (e.g., Nafion@C) to suppress metal oxide species dissolution. Third, innovating green preparation processes including low-temperature plasma-assisted synthesis (atom utilization>90%), biomimetic mineralization self-assembly (eliminating high-temperature calcination), and solvent-free mechanochemical methods (reducing energy consumption by 30%), combined with machine learning-aided catalyst design (e.g., GANet-based screening of high-entropy alloy catalysts)."
+      ]
+    },
+    {
+      "heading": "Advanced characterization for OER mechanism verification",
+      "paragraphs": [
+        "The complexity of the OER mechanism, involving four proton-coupled electron transfers and multiple surface intermediates, demands characterization techniques capable of probing the electrode–electrolyte interface under operating conditions. While ex situ analysis provides valuable structural identification, it fails to capture the transient species and dynamic surface reconstructions that define catalytic turnover 82 .",
+        "Operando Raman spectroscopy has emerged as a cornerstone technique for detecting oxygen-containing surface intermediates (e.g.,*,OOH*,O) 83  and monitoring phase transitions during OER. The characteristic vibrational bands appearing in the 400–600 cm -1  and 800–1100 cm -1  regions provide direct evidence for the formation of metal–oxygen and metal–oxo species. X-ray absorption spectroscopy (XAS), encompassing both XANES and EXAFS regions, is essential for tracking the evolution of oxidation states and coordination environments at active metal sites. For NiFe-based catalysts, XAS can distinguish between Ni 2+ , Ni 3+ , and Ni 4+  oxidation states while quantifying metal–oxygen bond length variations associated with lattice oxygen participation 84 .",
+        "To unambiguously establish oxygen evolution pathways, differential electrochemical mass spectrometry (DEMS) and online inductively coupled plasma mass spectrometry (ICP-MS) are indispensable 85 . DEMS enables real-time quantification of evolved O 2  and distinguishes between oxygen originating from the electrolyte (via the AEM pathway) and lattice oxygen (via the LOM pathway) through isotope labeling experiments (e.g., using H 2 18 O). Concurrently, online ICP-MS monitors catalyst dissolution rates with parts-per-billion sensitivity 86 , providing a direct measure of stability under operating conditions.",
+        "We emphasize that no single technique is sufficient to unambiguously assign the OER mechanism. The most robust studies in recent literature integrate at least two operando methods. For example, correlating XAS-derived oxidation states with Raman-detected surface species, to construct a self-consistent mechanistic picture 87 ."
+      ]
+    },
+    {
+      "heading": "Research on engineering challenges and dynamic response of anodes for industrialization",
+      "paragraphs": []
+    },
+    {
+      "heading": "Key constraints in material amplification",
+      "paragraphs": [
+        "Figure  12  summarizes the key constraints encountered during material amplification from laboratory to industrial scale. As reactor volume increases, fundamental differences in mass and heat transfer, together with variability in raw materials and long-term equipment degradation, collectively challenge process stability, safety, and product consistency. These constraints are strongly coupled and often amplify each other during scale-up, making them critical limiting factors for industrial implementation. Among them, mass transfer deterioration is typically the earliest and most dominant issue, directly influencing reaction selectivity, yield, and safety, and therefore requires prioritized analysis in scaled reaction systems. Fig. 12 Key constraints in material amplification from laboratory to industrial scale. The schematic illustrates four major challenges. Challenge one is mass transfer differences such as lower kLa and dead zones. Challenge two is heat transfer limitations such as hotspots. Challenge three is raw material variability such as batch impurities. Challenge four is equipment degradation such as corrosion and aging.",
+        "Three primary engineering factors account for the typical 30–50% efficiency loss observed when scaling laboratory‑grade catalysts to pilot‑scale production: (1) uneven current distribution arising from electrode geometry and busbar connections, which creates localized hotspots and underutilized active area. (2) exacerbated mass transfer limitations in larger reactors, leading to bubble‑induced “dead zones” and concentration polarization. (3) batch‑to‑batch inconsistency in catalyst coating processes, including thickness variation and adhesion defects. Each of these factors is elaborated in the following subsections."
+      ]
+    },
+    {
+      "heading": "Solid oxide electrolysis cells (SOECs)",
+      "paragraphs": [
+        "Although SOECs operate at high temperatures (700–850 °C) with superior efficiency (80–90%), their oxygen evolution anodes face unique challenges not encountered in low-temperature systems. Unlike ALK or PEM, the SOEC anode must withstand extreme thermal cycling, which induces mechanical stress and delamination at the electrode–electrolyte interface. Furthermore, high-temperature oxygen evolution promotes cation segregation, leading to passivation and increased polarization resistance. These degradation mechanisms become more severe under fluctuating power supply, as thermal gradients accelerate crack propagation. While SOEC remains promising for industrial waste heat-integrated hydrogen production, its dynamic response capability and long-term stability under variable loads require further investigation. Readers seeking a comprehensive discussion of SOEC anodes are referred to dedicated reviews 88 , 89 ."
+      ]
+    },
+    {
+      "heading": "Mass transfer differences",
+      "paragraphs": [
+        "The difference in mass transfer efficiency refers to the uneven distribution of reactant concentrations caused by reduced mixing efficiency when reactor volume increases. Laboratory-scale pilot tests achieve molecular-level mixing through high-speed agitation (e.g., magnetic stirrers reaching 2000 rpm), whereas industrial reactors with volume magnification (over 1000 times) experience decreased Reynolds numbers, transitioning from turbulent to laminar flow and forming “dead zones” (areas with mixing efficiency <50%). For instance, the oxygen transfer coefficient (kLa) in gas-liquid reactions may drop from 120 h −1  in laboratory conditions to 30 h −1  in industrial applications.",
+        "If the attenuation of mass transfer efficiency is ignored, the reaction selectivity will decrease (the by-product increases by 5–10 times), the yield will decrease (from 95% to 80%), and even the explosion will be caused by the local concentration is too high (such as the accumulation of nitric acid in the nitration reaction).",
+        "The silicon carbide microreactor achieves over 10 times higher mass transfer efficiency than conventional reactors through its microchannel design (channels <1 mm in diameter), successfully increasing the selectivity of a gas-liquid reaction from 75% to 92%. Its high-efficiency mass transfer capability enables industrial-scale amplification in rapid reactions such as nitration and oxidation. Furthermore, the modular parallel configuration (e.g., 128 channels) effectively avoids the mass transfer degradation issues associated with traditional scale-up methods 90 . Beyond the macroscopic engineering challenges, poor mass transfer exerts profound mechanistic consequences at the micro-scale. At high current densities, the rapid consumption of OH -  at the anode surface creates a steep local pH gradient within the porous electrode structure. This gradient can drop the interfacial pH by 2–3 units relative to the bulk electrolyte (e.g., from pH 14 to pH 11), fundamentally altering the thermodynamic stability of the catalyst 91 . For instance, NiFe-based (oxy)hydroxides, which are stable in bulk 30 wt% KOH, may undergo partial phase separation or accelerated Fe leaching in the locally acidic (or less alkaline) microenvironment near the active site. Furthermore, the accumulation of dissolved oxygen supersaturation can nucleate bubbles within the catalyst pores, mechanically disrupting the electrode structure. Recent scanning electrochemical microscopy (SECM) and in situ Raman studies have directly visualized these pH gradients 92 , confirming their role in accelerating catalyst degradation during prolonged high-current operation."
+      ]
+    },
+    {
+      "heading": "Heat transfer capacity limitation",
+      "paragraphs": [
+        "Heat transfer capacity limitation remains a critical bottleneck in chemical reactor scaling-up 93 . As equipment size increases, the heat dissipation area per unit volume decreases significantly, exacerbating thermal accumulation effects. This heat transfer constraint becomes particularly pronounced in exothermic reactions, potentially triggering a chain reaction of localized hotspots, increased side reactions, catalyst deactivation, and in severe cases, even thermal runaway risks.",
+        "In reactor design, heat transfer capacity must precisely match the rate of exothermic reaction heat release. This requires systematic investigation of reaction thermodynamic characteristics and corresponding optimization of heat transfer structure design. Advanced temperature control technologies, such as combined cooling systems and precision temperature control devices, can effectively suppress temperature fluctuations and enhance reaction selectivity and safety. Meanwhile, innovative reactor configurations like continuous flow reactors provide viable solutions for industrial implementation of strongly exothermic reactions by improving heat transfer efficiency.",
+        "Heat transfer optimization during reactor scaling requires comprehensive consideration of equipment structure, operational parameters, and process characteristics. Through rational heat transfer design and precise temperature control, both reaction efficiency and product quality can be enhanced while ensuring safety, which is crucial for the industrial implementation of chemical processes."
+      ]
+    },
+    {
+      "heading": "Raw material batch differences",
+      "paragraphs": [
+        "Lot-to-lot variations in raw materials represent a critical factor in the scale-up of electrolytic hydrogen production, primarily manifested through fluctuations in industrial-grade raw material purity affecting cell performance and durability. Unlike ultra-pure reagents used in laboratory settings, industrial raw materials often contain trace impurities and moisture. These seemingly minor variations can significantly alter electrode reaction pathways, leading to issues such as catalyst poisoning and reduced activity.",
+        "To mitigate challenges arising from raw material fluctuations, establishing systematic pre-treatment and quality control strategies is essential. Purification methods such as ion exchange and molecular sieve dehydration effectively reduce key impurity levels 94 . Furthermore, continuous flow processes leveraging precise online monitoring and feedback control systems enable real-time parameter adjustments to counteract feedstock variations. These integrated measures form a technical safeguard that ensures production stability, providing reliable quality assurance for industrial-scale manufacturing."
+      ]
+    },
+    {
+      "heading": "Equipment status fluctuations",
+      "paragraphs": [
+        "During prolonged operation, material aging and structural failure are critical factors affecting the stability of chemical processes. Reduced sealing performance may contaminate the reaction environment, while internal wall corrosion can alter heat transfer characteristics and fluid dynamics in reactors. These issues not only diminish reaction selectivity and product yield but may also pose serious safety hazards. By adopting corrosion-resistant materials and modular design principles, equipment reliability and service life can be significantly enhanced. Advanced material surface treatments and innovative structural designs—such as ceramic coatings and parallel channel configurations—effectively resist corrosive media erosion and mechanical stress, ensuring stable long-term operation under harsh conditions. This provides robust hardware support for continuous production processes."
+      ]
+    },
+    {
+      "heading": "Energy consumption, cost and resource circular economy analysis",
+      "paragraphs": [
+        "The comprehensive energy consumption in anode amplification production processes encompasses not only direct electricity usage but also hidden energy consumption stages such as solvent recovery and wastewater treatment. These factors, often overlooked, significantly impact overall economic efficiency. Through synergistic optimization of continuous flow processes and energy integration technologies, a comprehensive improvement in system energy efficiency can be achieved. Continuous flow reactors reduce baseline energy consumption by 30-50% through enhanced mass and heat transfer efficiency, while the “reaction-separation” coupled design substantially cuts energy demands in auxiliary processes like solvent recovery."
+      ]
+    },
+    {
+      "heading": "Typical dynamic test cases and performance evaluation",
+      "paragraphs": []
+    },
+    {
+      "heading": "Photovoltaic output fluctuation characteristics",
+      "paragraphs": [
+        "Photovoltaic power generation exhibits significant volatility (Fig.  13 ), with its power output constrained by dual natural factors. On one hand, solar irradiance undergoes strict diurnal cyclical variations, where daily sunlight duration and solar altitude angle fluctuate in a sinusoidal pattern, causing photovoltaic arrays to display parabolic-shaped output power changes during daytime. On the other hand, weather processes like cloud migration, aerosol concentration variations, and precipitation induce periodic disturbances in irradiance, leading to sawtooth fluctuations in output power. Taking the 1.8 MW installed capacity of Australia’s DKA Solar Center as an example, its power output demonstrates distinct spatiotemporal distribution characteristics: Under typical sunny conditions on the spring equinox, effective power generation periods are strictly confined to the 6:00 AM to 6:00 PM interval after sunrise. Around noon, when solar altitude reaches its maximum, the surface irradiance of modules peaks at 826.94 W/m 2 , accounting for 38.7% of total daily power generation. During cloudy weather, cloud cover effects cause irradiance to oscillate frequently within the 100-800 W/m 2  range, triggering 8%-15% short-term power output drops every 3-5 minutes. Compared to wind power’s turbulence-driven random fluctuations, photovoltaic power generation exhibits pronounced semi-diurnal tidal patterns. While its power curve shows high repeatability across daily comparisons, seasonal variations influenced by solar declination angle result in 42% differences in daily power generation between winter and summer. This fluctuation pattern, which is a combination of periodicity and randomness, puts forward differentiated technical requirements for power system dispatching and energy storage system configuration 95 . Fig. 13 Photovoltaic power output curve at DKA Solar Center 114 . The curve shows typical diurnal variation of solar irradiance in watts per square meter blue line and corresponding power output in megawatts orange line under sunny conditions. The x‑axis is time of day in hours. The left y‑axis is irradiance, the right y‑axis is power. Copyright 2021 Northern territory solar resource.",
+        "Xu Yanhui et al. 96  proposed a novel method for generating operational modes of photovoltaic electrolyzers, addressing the industry challenge of lacking standardized simulation methods for photovoltaic water electrolysis systems. The approach combines time-frequency domain feature extraction with operational mode reconstruction. First, empirical wavelet transform is applied to decompose photovoltaic power output across multiple scales, revealing coupling relationships with proton exchange membrane (PEM) electrolyzer dynamics through time-frequency energy entropy analysis. Subsequently, an improved weighted fuzzy clustering algorithm combined with dynamic time warping (DTW) distance measurement identifies periodic and fluctuating operational patterns from historical data. Finally, principal component analysis reconstructs simplified operating curves, generating cyclic condition spectra with key parameters like power ramp rate and fluctuation duration. Three key innovations emerge: (1) Overcoming limitations of traditional single-scale analysis by mapping photovoltaic output fluctuations to electrolyzer performance degradation mechanisms; (2) Enhancing clustering accuracy by introducing dynamic weighting factors, achieving 37% improvement over K-means; (3) Developing a polarization curve-based model that reduces redundant parameters by 62% while retaining over 90% performance sensitivity. Field tests at a northwest China demonstration site confirmed the method’s ability to accurately reproduce performance degradation trajectories under real-world scenarios like abrupt start-stop operations and gradual shadow shading, establishing a standardized benchmark for electrolyzer lifespan evaluation."
+      ]
+    },
+    {
+      "heading": "Wind power fluctuation simulation and electrolytic cell dynamic response optimization",
+      "paragraphs": [
+        "The output power of wind power generation also exhibits significant and irregular fluctuations (Fig.  14 ), with its dynamic characteristics posing unique challenges to the stable operation of power systems and energy conversion applications. Taking a Belgian wind farm with an installed capacity of 2,578 MW as an example, its operational data reveal wide-ranging, nonlinear variations in power generation throughout the annual cycle: the power output can drop to as low as 10.8% of rated capacity (2.79 MW), while peak power may reach 77.5% of rated value (1996.74 MW). This volatility stems from the inherently intermittent nature of wind energy resources, encompassing turbulence disturbances ranging from seconds to minutes, as well as wind speed variations spanning hours or even days. Notably, the power curve of this wind farm shows significant inter-day variations—under identical wind speed conditions, actual power output may deviate by over ±15% due to factors like yaw angle adjustments and turbulence intensity fluctuations. Fig. 14 Wind turbine power output curve from a Belgian wind farm 115 . The graph illustrates irregular power fluctuations over ten days. Power output in megawatts green line ranges from less than ten percent to more than seventy‑five percent of rated capacity due to intermittent wind resources. Copyright 2021 Wind power generation.",
+        "When such fluctuating power sources are directly applied to electrolytic hydrogen production systems, they must undergo a dual conversion process involving AC/DC rectification followed by DC/DC power regulation. In the AC/DC stage, the frequency fluctuations (typically 0.5–2 Hz) and voltage amplitude oscillations (±10% of nominal values) from wind turbine outputs trigger rectifier firing angle oscillations, causing millisecond-level transient fluctuations in DC bus voltage. Subsequent DC/DC converters face inherent challenges when implementing voltage step adjustments, as their switching frequency characteristics (typically kHz-level) fundamentally conflict with the electrolyzer’s requirement for DC voltage ripple rates (generally needing to be controlled within ±1%). This multi-temporal coupling of power fluctuation characteristics makes traditional LC filter and PI control strategies inadequate for meeting the dynamic response requirements of hydrogen production systems.",
+        "Specifically, electrolyzers require extremely stringent steady-state precision from their power supply. Fluctuations exceeding ±3% of rated DC voltage may cause localized overheating in proton exchange membranes, while current ripple coefficients above 2% accelerate catalyst agglomeration failure. However, random power spikes from wind energy (e.g., a 150 MW power surge within 30 seconds caused by gusts) can induce ±8% instantaneous deviations in the DC bus, necessitating multi-stage buffer devices for smooth transitions. Current engineering practices involve configuring power-type energy storage systems (e.g., hybrid supercapacitor-lithium battery systems) with multi-level topology converters. A virtual synchronous generator control strategy is implemented in the DC/DC link, utilizing virtual inertia injection and active-reactive decoupling control to achieve over 90% power fluctuation attenuation. However, this composite solution doubles system complexity, increasing equipment costs by approximately 40% compared to conventional photovoltaic hydrogen production systems, while also complicating multi-temporal energy management coordination 94 .",
+        "During grid-connected operation of wind power with significant fluctuations, the power system implements multi-scale coordinated control strategies through the Energy Management System (EMS) to achieve dynamic balance of grid frequency and voltage across wide areas. Relying on real-time monitoring data and predictive algorithms, EMS employs a hierarchical control architecture to mitigate power fluctuations: regulating unit output allocation at the second-level time scale, optimizing reserve capacity scheduling at the minute-level time scale, and coordinating cross-regional grid interconnection at the hour-level time scale. This multi-level energy coordination mechanism ensures electrolyzers operate within their rated voltage window, effectively avoiding impacts from voltage sags or harmonic distortion on electrochemical processes. As shown in Fig.  15 , the system transforms power disturbances caused by wind fluctuations into smooth power flows through this multi-level coordination mechanism. Its dynamic response characteristics align spatiotemporally with the steady-state operational requirements of electrolytic hydrogen production, ultimately achieving efficient and stable operation in the green electricity-to-green hydrogen conversion process. Fig. 15 Characteristics of hydrogen production under wind power fluctuation 116 . The diagram shows the multi‑scale coordination control strategy through the Energy Management System EMS. Fluctuating wind power on the left is transformed into smooth power supply on the right via battery and supercapacitor energy storage and power electronics. Copyright 2022 Integrated Intelligent Energy."
+      ]
+    },
+    {
+      "heading": "Standardized stability assessment protocols",
+      "paragraphs": [
+        "Industrial viability requires long‑term durability (>1000 h) under dynamic load profiles, yet most academic studies still rely on short‑term (≤100 h) chronopotentiometry or chronoamperometry under static conditions. Standardized accelerated stress tests (ASTs) that realistically simulate intermittent renewable power—such as square‑wave potential cycling, load ramp cycles, and start‑stop protocols—are urgently needed. To enable fair comparison across different catalyst systems, future publications should report at least 500 h of dynamic operation with quantified degradation rates under well‑defined load profiles 97 ."
+      ]
+    },
+    {
+      "heading": "Benchmarking laboratory OER performance against industrial targets",
+      "paragraphs": [
+        "A direct comparison between laboratory achievements and industrial benchmarks reveals several critical gaps that must be addressed for practical water electrolysis. Performance metrics routinely reported in academic studies—overpotential at 10 mA cm -2  and short‑term chronopotentiometry—correlate poorly with industrial requirements, where current densities exceed 1 A cm -2  and degradation must remain below 0.5% per 1000 h under dynamic operation 98 . The translation from rotating disk electrode measurements to membrane electrode assembly performance typically erodes 30–50% of the voltage efficiency observed in half‑cell tests due to mass transport limitations and ohmic losses 99 ,  100 ,  101 – 102 . Table  6  summarizes these discrepancies across four key metrics and highlights the urgent need for standardized, industrially relevant evaluation protocols. Table 6 Laboratory data compiled from representative studies published in 2023–2025 Metric Representative lab-scale result (2023–2025) Industrial target (DOE/IEA/IRENA 2030) Gap and implication Current density 1.5–3.0 A cm -2  @ 1.8 V (RDE) 2.0–3.0 A cm -2  @ <1.9 V (single cell) 30–50% efficiency loss upon MEA integration Degradation rate <5 mV per 100 h (static CP) <0.5% per 1000 h under dynamic cycling Static protocols underestimate real decay PGM loading (anode) 0.3–0.5 mg~Ir~ cm -2 <0.05 mg~Ir~ cm -2 Ir capacity requires an order of magnitude loading reduction System cost N/A (materials only) <$2 per kg H₂ (LCOH) Lab studies ignore >60% of total cost. (Industrial targets adapted from DOE Hydrogen Shot 2024 99 , IEA Global Hydrogen Review 2025 100 , IRENA 2025 101 , and Clean Hydrogen Partnership SRIA 2025  103 ).",
+        "Further device-level investigations into practical electrolyzer performance, including durability under dynamic operation and system integration, have been reported by Lee et al., highlighting the remaining gaps between laboratory catalyst development and industrial deployment 103 ."
+      ]
+    },
+    {
+      "heading": "Core issues and future prospects",
+      "paragraphs": []
+    },
+    {
+      "heading": "Key scientific and technological challenges currently faced",
+      "paragraphs": [
+        "While substantial progress has been achieved in water electrolysis hydrogen production technology, critical barriers remain to be addressed for its large-scale commercial deployment. Figure  16  illustrates the various challenges faced in the large-scale commercialization of hydrogen production through water electrolysis technology. Fig. 16 Challenges facing large‑scale commercialization of water electrolysis hydrogen production technology. Key engineering aspects such as membrane electrode assembly (MEA) fabrication, catalyst coating uniformity, gas diffusion layer (GDL) design, and membrane selection are also critical for lab-to-industry transition but are not explicitly shown.",
+        "The “impossible triangle” of material activity, stability, and cost: Current high-performance OER catalysts remain dependent on precious metals (Ir, Ru), resulting in high costs. Although non-precious metal catalysts (e.g., Ni, Fe, Co-based) demonstrate good activity in alkaline environments, their long-term stability under industrial-grade high current densities—particularly resistance to dissolution and oxidation—remains unproven. Moreover, their intrinsic activity lags behind precious metal benchmarks. In proton exchange membrane water electrolysis, Wang et al. developed a supported IrO 2  nanocatalyst with a tri-layered structure (IrO 2 @TaO x @TaB) achieving an Ir loading as low as 0.26 mg cm -2 . The low-Ir-loading PEMWE delivered a high current density of 3.9 A cm -2  at 2.0 V and maintained stable operation for more than 1500 h at 2.0 A cm -2 31 . Breaking the linear scaling relationship of OER intermediates is a key scientific challenge for achieving breakthrough catalyst design. A quantitative industrial benchmark for PEM water electrolysis is the “111” target: 1.9 V at 2 A cm -2 , <0.5% degradation per 1000 h under dynamic operation, and <0.1 mg Ir cm -2 104 .",
+        "To illustrate this trade-off, consider the morphology design of the catalyst layer. High-surface-area nanostructures (e.g., ultrathin nanosheets or nanowires) provide abundant edge-active sites and reduce overpotential, thereby significantly enhancing catalytic activity. However, under vigorous gas evolution at industrial current densities (typically 1–2 A cm -2  for PEM and 0.5–1 A cm -2  for alkaline electrolyzers), these fragile nanostructures are susceptible to Ostwald ripening, mechanical detachment, or agglomeration, leading to rapid decay of the active surface area. Conversely, dense planar films exhibit excellent mechanical stability but suffer from intrinsically low activity. To balance this activity–stability–mass transfer triangle, several design principles have emerged: constructing core–shell architectures wherein a thin, highly active shell is supported by a stable conductive core to achieve synergy between protection and activity, engineering self-healing layers, for example by incorporating redox-active Fe species, that dynamically repair dissolution-induced defects, and employing three-dimensional porous substrates with optimized pore sizes of 50–200μm to facilitate efficient bubble detachment without compromising structural integrity 105 .",
+        "Mechanisms of Material Degradation and Life Prediction under Dynamic Operating Conditions: Current research predominantly focuses on evaluating catalyst performance under steady-state conditions, while the understanding of material degradation mechanisms under dynamic operating conditions such as frequent start-stop cycles and rapid power fluctuations remains limited. The lack of effective accelerated aging testing methods and precise life prediction models makes it challenging to support durability design and reliability assessment of electrolyzers under fluctuating power supply conditions.",
+        "The challenge of cross-scale integration and scaling-up effects from materials to devices: Centimeter-scale high-performance materials developed in laboratories face significant performance degradation when scaled up to meter-scale electrodes and integrated into large electrolyzers. This stems from engineering-scale amplification effects such as mass transfer limitations, heat transfer inefficiencies, and uneven current distribution. Achieving efficient and uniform loading of catalyst active sites on macroscopic electrodes while ensuring effective transport of reactants, products, and charge remains a major technical hurdle.",
+        "The immature state of system coupling and intelligent regulation technology poses significant challenges: Efficiently integrating fluctuating power sources with electrolyzers requires comprehensive system engineering solutions. Current limitations include the absence of standardized electrolyzer design criteria optimized for variable power characteristics, as well as the lack of intelligent control systems capable of real-time adaptation to power fluctuations, coordinated management of thermal, gaseous, and hydrodynamic fields, and optimal energy efficiency."
+      ]
+    },
+    {
+      "heading": "Future research directions and development prospects",
+      "paragraphs": [
+        "To address challenges in the industrialization of water electrolysis hydrogen production, future research should focus on interdisciplinary integration to drive collaborative innovation across materials, devices, and systems. At the material level, theoretical calculations and machine learning should be leveraged to rationally design and precisely synthesize next-generation low-cost, high-performance oxygen evolution catalysts such as non-ferrous metals and high-entropy alloys, while developing self-healing materials adaptable to dynamic operating conditions. At the device and system level, electrolyzer structural innovations should prioritize enhancing mass and heat transfer efficiency, with in-depth exploration of degradation mechanisms under dynamic operation and establishment of service life prediction models. Additionally, emphasis should be placed on recycling critical resources and exploring cost-reduction pathways across the entire industrial chain. Through deep integration of materials science, engineering technology, and artificial intelligence, water electrolysis hydrogen production technology is poised to overcome cost and stability bottlenecks, providing crucial support for building a clean, low-carbon energy system and achieving the “dual carbon” goals."
+      ]
+    },
+    {
+      "heading": "Conclusion",
+      "paragraphs": [
+        "This review systematically examines water electrolysis technology for hydrogen production integrated with fluctuating renewable energy sources, with particular focus on the critical bottleneck: OER anode materials. The paper establishes its foundation by exploring the fundamental principles of water electrolysis, comparing different technical approaches (ALK, PEM, AEM, SOEC), and examining their industrialization contexts. Subsequently, it provides an in-depth analysis of research advancements in core material systems for OER, covering: (1) design and optimization of anode substrates (e.g., nickel mesh, nickel foam, stainless steel); (2) classification and cutting-edge exploration of high-performance OER catalysts (based on noble metals, transition metals, carbon, and composite materials); and (3) evaluation of advanced preparation methods (including hydrothermal synthesis, electrodeposition, and 3D printing) with their respective advantages and limitations.",
+        "The central thesis of this review reveals the significant gap between laboratory research and industrial application and focuses on the multidimensional challenges in industrial-scale electrode engineering, including mass and heat transfer limitations during material scaling, batch stability and reliability of raw materials and equipment, as well as energy consumption and cost considerations. Notably, the review highlights the inherent conflict between the fluctuating output characteristics of renewable energy sources (such as photovoltaic and wind power) and the traditional electrolyzer’s pursuit of steady-state operation. Through case studies of typical test scenarios, it analyzes electrolyzer response behaviors under dynamic conditions and proposes optimization strategies. The review concludes that developing novel OER anode materials and integrated technologies with high activity, excellent stability, superior dynamic response capabilities, and low cost are crucial for achieving large-scale, economically viable green hydrogen production."
+      ]
+    }
+  ],
+  "tables": [
+    {
+      "caption": "Reaction pathways of HER in acidic and alkaline electrolytes 106",
+      "headers": [],
+      "rows": [
+        [
+          "",
+          "",
+          "Volmer reaction:",
+          "Heyrovsky reaction:",
+          "Tafel reaction: chemical"
+        ],
+        [
+          "",
+          "",
+          "electrochemical adsorption",
+          "electrochemical desorption",
+          "desorption"
+        ],
+        [
+          "",
+          "",
+          "Tafel slope:",
+          "Tafel slope:",
+          "Tafel slope:"
+        ],
+        [
+          "",
+          "",
+          "b = 2.3RT/zF≈120 mV dec−1",
+          "b = 2.3RT/zF≈40 mV dec−1",
+          "b = 2.3RT/zF≈30 mV dec−1"
+        ],
+        [
+          "Acidic solution",
+          "2H + +2e − →H 2",
+          "M + H + +e − →M–H *",
+          "M–H *  + H +  +e −  → M + H 2",
+          "2M–H *  → 2 M + H 2"
+        ],
+        [
+          "Alkaline solution",
+          "2H 2 O + 2e −  → H 2  + 2OH −",
+          "M + H 2 O + e −  → M–H *  + OH -",
+          "M–H *  + H 2 O + e −  → M + OH + H 2",
+          ""
+        ]
+      ],
+      "header_groups": [
+        {
+          "label": "Reactions",
+          "start_col": 2,
+          "end_col": 5
+        },
+        {
+          "label": "2nd step",
+          "start_col": 4,
+          "end_col": 5
+        }
+      ],
+      "table_alignment_status": "unresolved",
+      "row_provenance": [
+        [
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          },
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          },
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          },
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          },
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          },
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          },
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          },
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          },
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          },
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          },
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          },
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          },
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          },
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          },
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          },
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          },
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          },
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          },
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          },
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          },
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          },
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          },
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          },
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          },
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          }
+        ]
+      ],
+      "tbody_alignment_status": "no_headers_to_target"
+    },
+    {
+      "caption": "Reaction pathways of OER in acidic and alkaline electrolytes 106",
+      "headers": [
+        "Electrolyte",
+        "Overall reaction",
+        "Intermediate reaction steps"
+      ],
+      "rows": [
+        [
+          "Acidic solution",
+          "2H 2 O → O 2  + 4H +  +4e −",
+          "M + H 2 O → M–OH *  + H + +e -"
+        ],
+        [
+          "",
+          "",
+          "M–OH *  + OH → M–O *  + H 2 O + e -"
+        ],
+        [
+          "",
+          "",
+          "Then either"
+        ],
+        [
+          "",
+          "",
+          "2M–O *  → 2 M + O 2  or"
+        ],
+        [
+          "",
+          "",
+          "M–O *  + H 2 O → MOOH *  + H +  +e -"
+        ],
+        [
+          "",
+          "",
+          "MOOH *  + H 2 O → M + O 2  + H + +e -"
+        ],
+        [
+          "Alkaline solution",
+          "4OH → O 2  + 2H 2 O + 4e −",
+          "M + OH → M–OH *"
+        ],
+        [
+          "",
+          "",
+          "M–OH *  + OH → M–O *  + H 2 O"
+        ],
+        [
+          "",
+          "",
+          "Then either"
+        ],
+        [
+          "",
+          "",
+          "2M–O *  → 2 M + O 2  or"
+        ],
+        [
+          "",
+          "",
+          "M–O *  + OH → M–OOH * +e -"
+        ],
+        [
+          "",
+          "",
+          "M–OOH *  + OH → M + O 2  + H 2 O"
+        ]
+      ],
+      "header_groups": [
+        {
+          "label": "Reaction",
+          "start_col": 2,
+          "end_col": 3
+        }
+      ],
+      "table_alignment_status": "resolved",
+      "row_provenance": [
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 3
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 3
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 3
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 3
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 3
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 3
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 3
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 3
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 8,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 8,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 8,
+            "source_col": 3
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 9,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 9,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 9,
+            "source_col": 3
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 10,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 10,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 10,
+            "source_col": 3
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 11,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 11,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 11,
+            "source_col": 3
+          }
+        ]
+      ],
+      "tbody_alignment_status": "resolved"
+    },
+    {
+      "caption": "Different technology routes evolution, status quo, and comparison (Data sourced from IEA and IRENA 2025)",
+      "headers": [
+        "parameter",
+        "ALK 32",
+        "PEM 34",
+        "AEM 37",
+        "SOEC 38"
+      ],
+      "rows": [
+        [
+          "Electrolyte",
+          "High-concentration KOH/NaOH (20%-30%)",
+          "pure water",
+          "Low concentration KOH (1 M) or pure water",
+          "Ceramic electrolyte (high temperature)"
+        ],
+        [
+          "current density",
+          "2000–4000 A m −2",
+          "å 10000 A m −2",
+          "6000–10000 A m −2",
+          "5000–10000 A m −2"
+        ],
+        [
+          "productiveness",
+          "60–70%",
+          "70–80%",
+          "70–80%",
+          "80–90%"
+        ],
+        [
+          "response speed",
+          "Slow (minute-level)",
+          "Fast (second-level)",
+          "Faster (second-level)",
+          "Slow (hour-level)"
+        ],
+        [
+          "hydrogen purity",
+          "99.5–99.9%",
+          "99.99%",
+          "99.99%",
+          "99.99%"
+        ],
+        [
+          "prime cost",
+          "Low (about 800 $ kW −1 )",
+          "High (about 1200 $ kW −1 )",
+          "Higher (about 1000 $ kW −1 )",
+          "Maximum (about 2000 $ kW −1 )"
+        ],
+        [
+          "Industrialization stage",
+          "ripe",
+          "Commercialization Phase",
+          "R&D and demonstration phase",
+          "Lab and demo phase"
+        ]
+      ],
+      "header_groups": [],
+      "table_alignment_status": "resolved",
+      "row_provenance": [
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 5
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 5
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 5
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 5
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 5
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 5
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 5
+          }
+        ]
+      ],
+      "tbody_alignment_status": "resolved"
+    },
+    {
+      "caption": "Anode substrate material comparison",
+      "headers": [
+        "material",
+        "superiority",
+        "boundedness",
+        "Typical scenarios"
+      ],
+      "rows": [
+        [
+          "Nickel screen",
+          "Low cost and mature technology Good corrosion resistance",
+          "The catalyst should be sprayed to enhance the activity",
+          "Main current electrode of alkaline electrolytic cell (like the Boshi Lai BSL series)"
+        ],
+        [
+          "Nickel foam",
+          "Large specific surface area Multiple reaction points",
+          "Poor structural stability Cost is high",
+          "High activity demand electrode/AEM electrolyzer"
+        ],
+        [
+          "Nickelage polar plate",
+          "Strong corrosion resistance Extend substrate life",
+          "complicated technology cost increase",
+          "Corrosion protection treatment of plate surface (Hebei Heshengyuan, for example)"
+        ],
+        [
+          "Stainless steel",
+          "Low cost, good mechanical strength, in-situ formation of NiFe oxyhydroxides",
+          "Requires surface activation; lower conductivity than Ni",
+          "Large-scale alkaline electrolyzers"
+        ]
+      ],
+      "header_groups": [],
+      "table_alignment_status": "resolved",
+      "row_provenance": [
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 4
+          }
+        ]
+      ],
+      "tbody_alignment_status": "resolved"
+    },
+    {
+      "caption": "Catalyst preparation method",
+      "headers": [
+        "Preparation method",
+        "Principle",
+        "Structural characteristics",
+        "Performance impact",
+        "Advantages",
+        "Limitations",
+        "Typical applications / materials"
+      ],
+      "rows": [
+        [
+          "Flame synthesis 72",
+          "Combustion-driven rapid formation of nanoparticles from precursor solutions",
+          "Small particle size; high dispersion; relatively low crystallinity; abundant defects",
+          "High catalytic activity due to large surface area and defect sites, but limited stability",
+          "Fast production; scalable; suitable for mass production",
+          "Poor control over morphology; possible particle aggregation",
+          "IrSnSbOx catalysts; oxide nanoparticles"
+        ],
+        [
+          "Hydrothermal / solvothermal synthesis 73",
+          "Solution-phase crystal growth under high temperature and pressure",
+          "Well-defined nanostructures (nanosheets, nanorods, LDHs); tunable morphology; moderate crystallinity",
+          "High surface area and exposed active sites enhance activity; possible structural degradation during long-term operation",
+          "Good morphology control; versatile material design",
+          "Long reaction time; scale-up challenges",
+          "NiFe-LDH, CoOOH, MnOx-based catalysts"
+        ],
+        [
+          "Chemical vapor deposition (CVD) 75",
+          "Gas-phase precursor decomposition and deposition on substrates",
+          "Highly crystalline; uniform nanostructures; low defect density; strong substrate interaction",
+          "Excellent stability and conductivity; lower density of active defect sites may limit activity",
+          "High purity; precise thickness control",
+          "Expensive equipment; high temperature requirements",
+          "MoS₂, graphene-based catalysts, nanowires"
+        ],
+        [
+          "Electrodeposition 76",
+          "Electrochemical reduction of metal ions onto conductive substrates",
+          "Dense or porous films; strong adhesion; controllable thickness; limited hierarchical structure",
+          "Good electrical contact and mechanical stability; moderate activity due to limited surface area",
+          "Simple process; scalable; compatible with industrial systems",
+          "Limited control over micro/nano-structure",
+          "NiCo, NiFe coatings on electrodes"
+        ],
+        [
+          "Electrochemical etching / activation 78",
+          "Surface reconstruction via electrochemical dissolution and redeposition",
+          "Increased surface roughness; defect-rich surfaces; formation of active layers",
+          "Enhanced active site density and catalytic activity; possible stability issues",
+          "In situ activation; improves existing materials",
+          "Limited control; potential degradation over time",
+          "Activated Ni mesh, Ni-based catalysts"
+        ],
+        [
+          "3D printing (additive manufacturing) 80",
+          "Layer-by-layer fabrication of structured electrodes",
+          "Precisely designed macroscopic architectures; hierarchical porosity; integrated structures",
+          "Improved mass transport and gas diffusion; tunable performance via structure design",
+          "Customizable geometry; integration of structure and function",
+          "Limited material choices; high cost",
+          "NiFe alloy structures; 3D electrodes"
+        ],
+        [
+          "High-temperature pyrolysis / cracking 107",
+          "Thermal decomposition of precursors into carbon-supported or metallic catalysts",
+          "Formation of nanoparticles embedded in carbon matrix; defect-rich carbon; possible aggregation",
+          "High conductivity and stability; activity depends on dispersion and defect control",
+          "Suitable for large-scale production; versatile precursor selection",
+          "Particle agglomeration; energy-intensive",
+          "Ru/C catalysts; M–N–C catalysts"
+        ]
+      ],
+      "header_groups": [],
+      "table_alignment_status": "resolved",
+      "row_provenance": [
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 7
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 7
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 7
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 7
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 7
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 7
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 7
+          }
+        ]
+      ],
+      "tbody_alignment_status": "resolved"
+    },
+    {
+      "caption": "Laboratory data compiled from representative studies published in 2023–2025",
+      "headers": [
+        "Metric",
+        "Representative lab-scale result (2023–2025)",
+        "Industrial target (DOE/IEA/IRENA 2030)",
+        "Gap and implication"
+      ],
+      "rows": [
+        [
+          "Current density",
+          "1.5–3.0 A cm -2  @ 1.8 V (RDE)",
+          "2.0–3.0 A cm -2  @ <1.9 V (single cell)",
+          "30–50% efficiency loss upon MEA integration"
+        ],
+        [
+          "Degradation rate",
+          "<5 mV per 100 h (static CP)",
+          "<0.5% per 1000 h under dynamic cycling",
+          "Static protocols underestimate real decay"
+        ],
+        [
+          "PGM loading (anode)",
+          "0.3–0.5 mg~Ir~ cm -2",
+          "<0.05 mg~Ir~ cm -2",
+          "Ir capacity requires an order of magnitude loading reduction"
+        ],
+        [
+          "System cost",
+          "N/A (materials only)",
+          "<$2 per kg H₂ (LCOH)",
+          "Lab studies ignore >60% of total cost."
+        ]
+      ],
+      "header_groups": [],
+      "table_alignment_status": "resolved",
+      "row_provenance": [
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 4
+          }
+        ]
+      ],
+      "tbody_alignment_status": "resolved"
+    }
+  ]
+}

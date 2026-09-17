@@ -1,0 +1,1959 @@
+{
+  "doi": "10.1007/s44492-026-00012-2",
+  "title": "A baseline study of rare-phase detection in ultra-high carbon steel microstructures using deep learning and handcrafted texture features",
+  "abstract": "Abstract Automated microstructure classification has the potential to improve the consistency and scalability of metallurgical characterisation; however, industrial datasets frequently exhibit severe class imbalance, where safety-critical microstructures are substantially underrepresented. This study presents a baseline evaluation of rare-phase detection in ultra-high carbon steel (UHCS) microstructures using deep learning. The dataset comprised 961 scanning electron microscopy (SEM) micrographs spanning seven microstructural classes, with Martensite represented by only 36 images (3.75% of the dataset). A frozen ResNet50 transfer-learning framework was evaluated using a stratified train–test split, online data augmentation, and imbalance-aware learning strategies. The baseline model achieved 52.8% accuracy, with Martensite precision of 0.600, recall of 0.429, and F1-score of 0.500. Class-weighted loss increased Martensite recall to 0.857 but reduced overall accuracy to 29.0%, indicating a substantial increase in false-positive predictions. Focal loss achieved the strongest overall performance, with 56.0% accuracy, 36.5% balanced accuracy, and a Matthews Correlation Coefficient (MCC) of 0.388. To assess robustness, stratified five-fold cross-validation was performed, yielding a macro-F1 score of 0.133 ± 0.009 and MCC of 0.134 ± 0.029, highlighting limited multi-class generalisation under severe class imbalance. Additional analyses indicated that classification performance was influenced by class overlap and dataset characteristics, including magnification variability. Overall, the results demonstrate that meaningful microstructural information can be learned from severely imbalanced UHCS datasets; however, reliable rare-phase classification remains constrained by limited minority-class representation and substantial overlap between classes. The study establishes a reproducible baseline for rare-phase detection in UHCS microstructures and identifies key challenges for future research.",
+  "journal": "Journal of Materials Science: Metallurgy",
+  "year": "2026",
+  "sections": [
+    {
+      "heading": "Introduction",
+      "paragraphs": []
+    },
+    {
+      "heading": "Industrial motivation",
+      "paragraphs": [
+        "Microstructural characterisation is a fundamental component of metallurgical quality assurance because the morphology, distribution, and interaction of constituent phases directly influence material performance. Mechanical properties such as hardness, strength, toughness, wear resistance, and fracture behaviour are strongly dependent on microstructural evolution during processing and heat treatment. Consequently, accurate phase identification is essential for ensuring product quality, process consistency, and structural reliability.",
+        "In industrial practice, microstructural assessment is predominantly performed through manual examination of optical or scanning electron microscopy (SEM) images by experienced metallurgists. Although highly effective, this approach is inherently time-consuming, labour-intensive, and subject to inter-observer variability. The increasing volume of digital metallographic data generated in modern manufacturing environments has further intensified the need for automated analysis tools capable of providing rapid, objective, and reproducible assessments.",
+        "Recent developments in Industry 4.0, materials informatics, and artificial intelligence have accelerated interest in data-driven microstructure analysis. Automated image classification systems have the potential to support metallurgical decision-making by reducing inspection time, improving consistency, and enabling large-scale analysis of historical and newly acquired micrographs. Such capabilities are particularly attractive for quality-assurance applications where rapid screening of large image collections is required.",
+        "However, successful deployment of automated systems remains challenging because industrial microstructure datasets are often characterised by limited sample sizes, substantial variability in imaging conditions, and severe class imbalance. These factors can significantly affect model generalisation and reliability, particularly when the phases of greatest industrial importance are also the rarest. Addressing these challenges is therefore a critical step toward the development of trustworthy artificial intelligence systems for metallurgical quality assurance."
+      ]
+    },
+    {
+      "heading": "Deep learning for microstructure classification",
+      "paragraphs": [
+        "Early approaches to automated microstructure recognition relied primarily on handcrafted image descriptors combined with conventional machine-learning algorithms. Feature extraction techniques such as Gray-Level Co-occurrence Matrices (GLCM), Gabor filters, Local Binary Patterns (LBP), and Bag-of-Visual-Words representations were used to characterise microstructural textures and support phase classification tasks (Holm  13 , Bulgarevich et al.  4 , He et al.  12 , Ward and Wolff  28 ). While these methods achieved moderate success for relatively simple metallurgical systems, their performance was often limited by the need for manual feature engineering and their inability to capture hierarchical relationships across multiple spatial scales.",
+        "Nevertheless, handcrafted texture descriptors remain important benchmark methods because they provide physically interpretable representations of microstructural morphology and texture. For this reason, GLCM- and LBP-based features are included in the present study as comparative baselines against CNN-based approaches.",
+        "The emergence of deep learning has fundamentally transformed image-based materials characterisation. Convolutional Neural Networks (CNNs) automatically learn hierarchical feature representations directly from raw image data, enabling the extraction of increasingly complex morphological information through successive network layers (He et al.  12 , Goodfellow et al.  11 ). This capability is particularly advantageous for metallurgical micrographs, where phase identification frequently depends on subtle textural patterns, morphology, and spatial relationships that are difficult to represent using handcrafted descriptors alone.",
+        "Recent studies have demonstrated the effectiveness of deep learning for a wide range of materials science applications, including microstructure classification, phase segmentation, defect detection, grain-size measurement, microstructure-property prediction, and structure-property linkage analysis (Gola et al.  10 , Muñoz-Rodenas et al.  20 , Müller et al.  19 , Goodfellow et al.  11 , Cecen et al.  5 ).",
+        "Among CNN architectures, ResNet has attracted particular attention because its residual learning framework enables the training of deeper networks while mitigating degradation and vanishing-gradient problems (Maemura et al.  18 ). ResNet50 has subsequently been applied successfully to microstructure classification tasks across multiple metallic systems, demonstrating strong performance and robust feature extraction capabilities (Gola et al.  10 , Muñoz-Rodenas et al.  20 , Müller et al.  19 ).",
+        "Transfer learning has become especially important in materials informatics because labelled metallurgical datasets are typically much smaller than those available in mainstream computer vision domains. By leveraging representations learned from large-scale datasets such as ImageNet, transfer-learning approaches can significantly reduce training requirements while improving generalisation and mitigating overfitting (Pan and Yang  21 ). Consequently, transfer learning is now widely regarded as one of the most practical strategies for developing deep-learning models in data-limited materials science applications.",
+        "Despite these advances, most published studies focus on relatively balanced datasets or microstructures that are well represented within the training data. Comparatively little attention has been devoted to the problem of extreme class imbalance, particularly when the minority class represents a safety-critical microstructure whose accurate detection is of greater practical importance than overall classification accuracy. This limitation motivates the present investigation."
+      ]
+    },
+    {
+      "heading": "Rare-phase detection as a materials informatics challenge",
+      "paragraphs": [
+        "Although substantial progress has been made in automated microstructure classification, an important gap remains between conventional classification performance and practical industrial requirements. In many manufacturing environments, the phases of greatest engineering significance are not the most abundant microstructures but rather the rare microstructural constituents that may indicate processing anomalies, localised transformations, or potentially detrimental material states.",
+        "Martensite represents a particularly important example within ultra-high carbon steels (UHCS). Owing to its high hardness and limited ductility, the presence of Martensite can significantly influence fracture behaviour, toughness, and structural reliability (Roberts et al.  22 , DeCost et al.  8 ). Even small quantities of Martensite may have disproportionate effects on component performance, making reliable detection an important quality-assurance objective. Consequently, the failure to identify Martensite can be considerably more significant than the misclassification of more common phases.",
+        "From a machine-learning perspective, rare-phase detection presents a challenging imbalance problem. Standard optimisation procedures tend to favour majority classes because they contribute more strongly to the loss function during training. As a result, a classifier may achieve apparently satisfactory overall accuracy while simultaneously failing to identify the minority class of greatest practical importance. This phenomenon is particularly problematic in industrial settings where false-negative predictions may carry substantially greater consequences than false-positive predictions.",
+        "The challenge is further complicated by the intrinsic complexity of metallurgical microstructures. Unlike many computer vision tasks, phase boundaries are not always sharply defined and microstructures frequently evolve through continuous transformation pathways. For example, spheroidisation processes may produce transitional morphologies that exhibit characteristics of both Pearlite and Spheroidite, resulting in significant visual overlap between classes. Such ambiguity introduces an additional source of uncertainty beyond class imbalance alone.",
+        "Recent advances in explainable artificial intelligence (XAI) (Arrieta et al.  1 ) have provided new opportunities for investigating how deep-learning models interpret microstructural information. Techniques such as Gradient-weighted Class Activation Mapping (Grad-CAM) enable visualisation of image regions contributing most strongly to model predictions, while feature-space visualisation methods such as t-distributed Stochastic Neighbour Embedding (t-SNE) can reveal the extent to which learned representations separate different classes (Selvaraju et al.  24 , Maaten and Hinton  26 ). These approaches provide valuable tools for determining whether classification behaviour reflects genuine metallurgical information or artefacts present within the dataset.",
+        "Accordingly, the objective of this study is not to propose a novel deep-learning architecture, but to establish and critically evaluate a reproducible baseline for rare-phase detection in highly imbalanced UHCS datasets. Through the combined use of transfer learning, cross-validation, imbalance-aware learning strategies, handcrafted texture descriptors, Grad-CAM analysis, feature-space visualisation, magnification auditing, and robustness testing, the work provides a diagnostic assessment of the opportunities and limitations associated with automated detection of safety-critical microstructures under realistic industrial conditions."
+      ]
+    },
+    {
+      "heading": "Research objective and scope",
+      "paragraphs": [
+        "This study investigates automated classification of UHCS microstructures using a transfer-learning framework based on ResNet50. The work focuses specifically on the effects of severe class imbalance, with Martensite representing only 36 images (3.75%) within a seven-class dataset.",
+        "The primary contributions of this study are:",
+        "Establishment of a baseline transfer-learning framework for multi-class UHCS microstructure classification. Quantitative evaluation of severe class imbalance and its effect on minority-phase detection. Assessment of imbalance-aware learning strategies including class-weighted loss and focal loss. Binary Martensite-versus-non-Martensite analysis to investigate rare-phase detection performance under extreme class imbalance. Comparative evaluation of handcrafted texture descriptors (GLCM and LBP) using conventional machine-learning classifiers. Investigation of model interpretability using Grad-CAM visualisation and feature-space analysis using t-SNE. Analysis of magnification-related dataset bias and evaluation of magnification-only predictive performance. Border-crop robustness testing to assess potential dependence on image-edge artefacts, scale bars, or SEM annotations.",
+        "The results provide insight into both the potential and limitations of deep-learning and texture-based approaches for rare-phase detection in industrial metallurgical datasets and establish a reproducible baseline for future research on imbalanced microstructure classification."
+      ]
+    },
+    {
+      "heading": "Experimental data",
+      "paragraphs": []
+    },
+    {
+      "heading": "Dataset description",
+      "paragraphs": [
+        "The present study utilised the Ultra-High Carbon Steel (UHCS) microstructure dataset obtained from the NIST Materials Data Repository (Roberts et al.  22 ). The dataset comprises 961 scanning electron microscopy (SEM) micrographs representing seven distinct microstructural categories produced through different heat-treatment and processing conditions.",
+        "The dataset contains a diverse range of microstructural morphologies, including single-phase and transitional microstructures. These categories encompass Martensite, Network, Pearlite, Pearlite+Spheroidite, Pearlite+Widmanstätten, Spheroidite, and Spheroidite+Widmanstätten. Such diversity provides a realistic representation of the morphological complexity encountered in practical metallurgical characterisation tasks.",
+        "A detailed audit of class frequencies revealed severe imbalance across the dataset. As summarised in Table  1 , Spheroidite constitutes the majority class with 374 images (38.9%), whereas Martensite is represented by only 36 images (3.75%). This corresponds to an approximate ten-fold difference in representation between the largest and smallest classes. The resulting imbalance creates a challenging classification scenario in which conventional optimisation procedures may favour majority classes at the expense of minority-phase detection. Table 1  UHCS Dataset Distribution Microstructure Number of Images Percentage (%) Spheroidite 374 38.9 Network 212 22.1 Pearlite 124 12.9 Pearlite + Spheroidite 107 11.1 Spheroidite + Widmanstätten 81 8.4 Martensite 36 3.7 Pearlite + Widmanstätten 27 2.8",
+        "Consequently, evaluation in this study emphasises balanced accuracy, Matthews Correlation Coefficient (MCC), macro-averaged metrics, and minority-class performance in addition to overall accuracy. Unlike balanced benchmark datasets commonly used in computer vision research (Kaur et al.  14 , Wang et al.  27 ), the UHCS dataset reflects a more realistic industrial setting in which critical microstructural conditions may occur infrequently. Consequently, the dataset provides an appropriate testbed for investigating the limitations of deep-learning models under conditions of extreme class imbalance and assessing their suitability for rare-phase detection tasks.",
+        "The distribution shown in Table  1  highlights the fundamental challenge addressed in this work. Although Martensite represents the phase of greatest practical interest from a rare-phase detection perspective, it contributes only 3.75% of all available images. This imbalance substantially increases the risk of majority-class bias during training and motivates the use of specialised evaluation metrics beyond overall classification accuracy."
+      ]
+    },
+    {
+      "heading": "Representative microstructures",
+      "paragraphs": [
+        "Figure  1  presents representative examples of Spheroidite and Martensite microstructures extracted from the UHCS dataset. Fig. 1 Representative SEM micrographs from the UHCS dataset. ( a ) Spheroidite exhibiting globular carbide morphology dispersed within a ferritic matrix and ( b ) Martensite displaying characteristic acicular morphology. The substantial difference in class representation between these phases forms the basis of the rare-phase detection challenge investigated in this work",
+        "Spheroidite is characterised by the presence of globular carbide particles dispersed within a ferritic matrix. This morphology typically develops during prolonged spheroidisation treatments and is generally associated with improved machinability and ductility. In contrast, Martensite exhibits a more acicular or needle-like morphology resulting from diffusionless transformation during rapid cooling. Owing to its high hardness and limited ductility, Martensite is often considered a critical phase from a quality-assurance perspective.",
+        "The morphological differences between these microstructures are readily apparent to experienced metallurgists. However, automated classification remains challenging because the available Martensite examples are extremely limited and because several intermediate classes exhibit features that partially overlap with both parent and transformed microstructures.",
+        "The examples shown in Fig.  1  illustrate the broader challenge addressed in this study: developing automated classification systems capable of recognising safety-critical minority phases despite severe class imbalance and significant morphological variability."
+      ]
+    },
+    {
+      "heading": "Magnification audit and scale variance",
+      "paragraphs": [
+        "A detailed audit of the magnification metadata associated with the SEM micrographs revealed substantial variation in imaging scale across microstructural classes. Because SEM imaging is typically performed at magnifications selected to highlight specific morphological features, different classes may be represented at substantially different spatial resolutions.",
+        "The audit demonstrated that mean magnification varied considerably between classes. Representative values are summarised in Table  2 . Network microstructures exhibited the lowest average magnification (89×), whereas Martensite images were typically acquired at intermediate magnifications (1,020×). Pearlite micrographs were captured at substantially higher magnifications, with a mean value of 13,441×, reflecting the need to resolve fine lamellar structures.",
+        "Table 2  Mean SEM magnifications for representative UHCS microstructural classes Microstructure Mean Magnification Network 89× Martensite 1,020× Pearlite 13,441×",
+        "Figure  2  Distribution of SEM magnification across UHCS microstructural classes. Boxplots illustrate substantial variation in imaging scale between classes, with Pearlite micrographs generally acquired at substantially higher magnifications than Network and Martensitic microstructures. The observed differences highlight the potential for magnification-related confounding effects during machine-learning-based classification.",
+        "Fig. 2 Distribution of SEM magnification across UHCS microstructural classes",
+        "Boxplots illustrate substantial variation in imaging scale between classes, with Pearlite micrographs generally acquired at higher magnifications than Network and Martensitic microstructures. The wide distribution and presence of outliers highlight the heterogeneous imaging conditions within the UHCS dataset and suggest the potential for magnification-related confounding effects during machine-learning-based classification.",
+        "The results indicate that imaging scale is not uniformly distributed across classes. Consequently, magnification represents a potential confounding variable that may contribute to classification behaviour independently of microstructural morphology (Geirhos et al.  9 ).",
+        "To quantify this effect, a magnification-only classification analysis was subsequently performed using both Logistic Regression and Random Forest models. Although magnification demonstrated moderate predictive capability (Random Forest AUROC = 0.810), performance remained substantially lower than that achieved by the CNN-based binary Martensite classifier (AUROC = 0.908). These findings suggest that magnification contributes useful information but does not fully explain classification behaviour.",
+        "The observed variation spans more than two orders of magnitude and highlights the strongly multi-scale nature of the dataset. Such differences introduce the possibility that imaging scale may become correlated with class labels, potentially allowing a model to exploit magnification-related information in addition to intrinsic microstructural morphology.",
+        "This finding is particularly relevant in the context of machine-learning-based classification because scale-dependent biases can influence feature extraction and learned representations. Although deep convolutional neural networks exhibit some degree of scale invariance, substantial differences in magnification may still affect classification behaviour. Consequently, classification performance should be interpreted with awareness of potential dataset-level confounding effects.",
+        "The magnification audit therefore provides important context for interpreting both the classification results and the subsequent feature-space analyses. It further highlights the importance of developing future datasets with more consistent imaging protocols or incorporating explicit scale-aware modelling strategies (Geirhos et al.  9 )."
+      ]
+    },
+    {
+      "heading": "Dataset challenges",
+      "paragraphs": [
+        "The UHCS dataset presents several challenges that distinguish it from conventional image-classification benchmarks and make it a demanding testbed for automated microstructure recognition.",
+        "First, the dataset exhibits severe class imbalance. Martensite, the phase of greatest interest from a rare-phase detection perspective, represents only 36 images (3.75% of the dataset), whereas the majority class, Spheroidite, contains 374 images. Such imbalance can introduce significant bias during optimisation, as standard learning algorithms tend to prioritise majority-class performance over minority-class sensitivity. Consequently, conventional accuracy metrics may provide an incomplete assessment of model effectiveness.",
+        "Second, the dataset contains substantial morphological overlap between classes. Several categories correspond to transitional microstructures that arise during metallurgical transformation pathways, including Pearlite+Spheroidite and Spheroidite+Widmanstätten. These intermediate states frequently exhibit characteristics of multiple parent phases, creating ambiguity even for experienced metallurgists. As a result, classification difficulty arises not only from algorithmic limitations but also from genuine similarities in microstructural appearance.",
+        "Third, the dataset exhibits pronounced multi-scale characteristics. The magnification audit presented in Section  Magnification audit and scale variance  demonstrated substantial variation in imaging scale across classes, ranging from tens to thousands of times magnification. Consequently, the model must learn representations that are robust to variations in spatial scale while simultaneously distinguishing subtle morphological differences between classes.",
+        "Finally, the limited availability of minority-class examples restricts the diversity of observable Martensitic morphologies available during training and contributes to uncertainty in estimating generalisation performance for rare-phase detection. This limitation increases the risk of overfitting and reduces the model’s ability to generalise to unseen examples. The combination of severe class imbalance, morphological overlap, and scale variability therefore creates a particularly challenging environment for automated classification.",
+        "Taken together, these characteristics make the UHCS dataset a realistic and challenging benchmark for automated microstructure recognition. They further justify the use of transfer learning, stratified sampling, cross-validation, imbalance-aware learning strategies, handcrafted texture descriptors, explainable artificial intelligence techniques, and robustness analyses to evaluate both predictive performance and model behaviour under conditions representative of industrial practice."
+      ]
+    },
+    {
+      "heading": "Experimental design",
+      "paragraphs": [
+        "To provide a comprehensive assessment of rare-phase detection under severe class imbalance, five complementary experimental analyses were performed. First, multi-class classification was evaluated using a frozen ResNet50 transfer-learning framework with baseline, class-weighted, and focal-loss training strategies Table  3 . Second, binary Martensite-versus-non-Martensite classification was performed to assess rare-phase detection independently of multi-class ambiguity. Third, handcrafted texture descriptors based on Gray-Level Co-occurrence Matrices (GLCM) and Local Binary Patterns (LBP) were evaluated using conventional machine-learning classifiers to provide a physically interpretable baseline. Fourth, magnification-only classification was conducted to quantify potential scale-related confounding. Finally, border-crop robustness experiments were performed to investigate potential dependence on SEM annotations, image-edge artefacts, and scale-bar information. The objective of these experiments is not to establish a state-of-the-art classifier, but rather to provide a reproducible and critically evaluated baseline for rare-phase detection in highly imbalanced UHCS datasets. The experimental design therefore emphasises diagnostic analysis, robustness assessment, and identification of dataset limitations alongside predictive performance. Table 3  Comparison of Baseline, Class-Weighted, and Focal-Loss Models for Rare-Phase (Martensite) Detection in the UHCS Dataset Model Accuracy (%) Balanced Accuracy (%) MCC Martensite Precision (%) Martensite Recall (%) Martensite F1 Baseline ResNet50 52.8 33.9 0.341 60.0 42.9 0.500 Class-Weighted Loss 29.0 37.2 0.218 12.8 85.7 0.222 Focal Loss 56.0 36.5 0.388 75.0 42.9 0.545"
+      ]
+    },
+    {
+      "heading": "Methodology",
+      "paragraphs": [
+        "Figure  3  summarises the overall experimental workflow adopted in this study. The UHCS microstructure dataset was first partitioned using stratified sampling to preserve class distributions. Images were subsequently pre-processed and augmented prior to training a ResNet50-based transfer-learning model. In addition to the baseline classifier, class-weighted loss and focal-loss strategies were evaluated to investigate the influence of severe class imbalance on minority-phase detection. Additional experiments included binary Martensite-versus-non-Martensite classification, handcrafted texture-feature baselines using GLCM and LBP descriptors, magnification-only classification, and border-crop robustness testing to investigate potential confounding factors and shortcut-learning behaviour. Model performance was assessed using both global and class-specific metrics, while Grad-CAM and t-SNE analyses were employed to provide insight into model behaviour and learned feature representations. Fig. 3 Overview of the proposed workflow for automated classification of ultra-high carbon steel (UHCS) microstructures. The workflow comprises dataset preparation, stratified train–test partitioning, image preprocessing, online data augmentation, transfer learning using a ResNet50 backbone, evaluation of imbalance-mitigation strategies (baseline, class-weighted loss, and focal loss), binary Martensite-versus-non-Martensite analysis, handcrafted texture-feature baselines (GLCM and LBP), magnification-confounding analysis, border-crop robustness testing, performance assessment using multiple classification metrics, and post-hoc interpretability analyses using Grad-CAM and t-SNE"
+      ]
+    },
+    {
+      "heading": "Dataset preparation and stratified data partitioning",
+      "paragraphs": [
+        "The UHCS dataset comprised 961 scanning electron microscopy (SEM) micrographs distributed across seven microstructural classes. Because the dataset exhibited severe class imbalance, particularly for the Martensite class (36 images; 3.75% of the dataset), a stratified partitioning strategy was employed to preserve class distributions across all subsets.",
+        "The dataset was divided into training (80%) and testing (20%) partitions, resulting in 768 training images and 193 testing images. Stratification ensured proportional representation of all classes within both subsets, thereby reducing sampling bias and providing a more reliable evaluation of minority-phase detection performance. In particular, the Martensite class was represented by 29 images in the training set and 7 images in the testing set.",
+        "To improve reproducibility, a fixed random seed was used throughout the data partitioning process. This ensured that all experiments were conducted using identical train–test splits and facilitated direct comparison between the baseline, class-weighted, and focal-loss models."
+      ]
+    },
+    {
+      "heading": "Image preprocessing and data augmentation",
+      "paragraphs": [
+        "All SEM micrographs were resized to 224 × 224 pixels to match the input requirements of the ResNet50 architecture (Maemura et al.  18 ). Pixel intensities were subsequently normalised to the range [0,1] to improve numerical stability during optimisation.",
+        "Because augmentation was performed online during training, no fixed augmented dataset was generated and class frequencies remained unchanged. Consequently, Martensite continued to represent 36 images (3.75%) of the available dataset throughout all experiments.",
+        "To mitigate the effects of limited minority-class representation and improve model generalisation, real-time stochastic data augmentation was applied during training using the TensorFlow/Keras ImageDataGenerator framework Fig.  4 . Fig. 4 Examples of stochastic data augmentation applied during training. Representative transformations include rotation, horizontal flipping, width shifting, and height shifting. Augmentation was performed dynamically during training and was not applied to validation or testing images",
+        "Unlike static augmentation approaches that generate a fixed set of synthetic images, the adopted strategy applied transformations dynamically during training. Consequently, the model was exposed to multiple variations of each micrograph across successive epochs, improving robustness to variations in specimen orientation and imaging conditions while preserving the underlying metallurgical morphology. No augmentation was applied to validation or testing images to ensure unbiased performance evaluation."
+      ]
+    },
+    {
+      "heading": "Transfer learning architecture",
+      "paragraphs": [
+        "A transfer learning framework based on the ResNet50 convolutional neural network architecture was employed. ResNet50 was selected owing to its proven effectiveness in materials informatics applications and its ability to learn hierarchical visual representations from complex image data.",
+        "ResNet50 was selected owing to its residual learning architecture, which enables the training of deep neural networks through shortcut connections that mitigate degradation and vanishing-gradient effects (He et al.  12 ). Furthermore, ResNet50 has demonstrated strong performance across a wide range of computer vision and materials informatics applications, making it a suitable candidate for microstructure classification tasks.",
+        "The network was initialised using ImageNet pre-trained weights and employed as a fixed feature extractor, consistent with established transfer-learning methodologies (Pan and Yang  21 ). All convolutional layers within the ResNet50 backbone were frozen during training to retain previously learned low-level and mid-level visual representations. Only the newly added classification layers were updated during optimisation."
+      ]
+    },
+    {
+      "heading": "Training protocol and hyperparameters",
+      "paragraphs": [
+        "Model training was performed using the Adam optimiser and categorical cross-entropy loss function. A batch size of 32 was employed. Model training was extended to 30 epochs to ensure convergence and enable fair comparison between the baseline, class-weighted, and focal-loss models.",
+        "Two simple reference baselines were considered. A random classifier assigns each sample to one of seven classes with equal probability, yielding an expected accuracy of approximately 14.3%. A majority-class classifier predicts the most frequent class (Spheroidite) for all samples, producing an accuracy equal to the prevalence of the majority class (38.9%). These baselines provide reference points for evaluating whether the CNN learns meaningful microstructural representations.",
+        "To improve reproducibility, a fixed random seed was employed for model initialisation and data partitioning. Training progress was monitored using both training and validation accuracy curves, enabling assessment of convergence behaviour and potential overfitting.",
+        "Model performance was evaluated using a combination of global and class-specific metrics, including classification accuracy, precision, recall, F1-score, balanced accuracy, and Matthews Correlation Coefficient (MCC) (Chicco and Jurman  6 ). Particular emphasis was placed on class-specific performance because overall accuracy can provide an overly optimistic assessment when severe class imbalance is present."
+      ]
+    },
+    {
+      "heading": "Cross-validation analysis",
+      "paragraphs": [
+        "To evaluate robustness and reduce dependence on a single train–test partition, stratified five-fold cross-validation was performed (Kohavi  15 ). Stratification ensured that the class distribution within each fold remained representative of the overall dataset, thereby providing a more reliable assessment of model generalisation under severe imbalance conditions.",
+        "Cross-validation yielded an average accuracy of 0.412 ± 0.012, a macro F1-score of 0.133 ± 0.009, and an MCC of 0.134 ± 0.029 Table  4 . Although variability across folds was limited, the low macro F1-score indicates weak multi-class discrimination and limited generalisation under severe class imbalance. These results suggest that the principal challenge is not instability across partitions but insufficient class separability and minority-class representation. Table 4  Stratified Five-Fold Cross-Validation Results Metric Mean ± SD Accuracy 0.412 ± 0.012 Macro F1-score 0.133 ± 0.009 MCC 0.134 ± 0.029"
+      ]
+    },
+    {
+      "heading": "Class-imbalance mitigation experiments",
+      "paragraphs": [
+        "Because class imbalance was identified as the principal challenge within the dataset, additional experiments were performed to evaluate commonly used imbalance-aware learning strategies. Specifically, class-weighted loss and focal loss were investigated to determine whether minority-class sensitivity could be improved without substantially degrading overall classification performance."
+      ]
+    },
+    {
+      "heading": "Class-weighted loss",
+      "paragraphs": [
+        "Class weights were calculated inversely proportional to class frequencies and incorporated into the categorical cross-entropy objective function. This approach substantially increased Martensite recall from 42.9% to 85.7%, demonstrating improved sensitivity to the minority class. However, overall classification accuracy decreased from 52.8% to 29.0%, while balanced accuracy reached 37.2% and the Matthews Correlation Coefficient (MCC) was 0.218. Although the model became more effective at identifying Martensite samples, the large increase in false-positive predictions reduced overall classification performance. These findings indicate that inverse-frequency weighting overcompensated for the severe class imbalance present within the dataset."
+      ]
+    },
+    {
+      "heading": "Focal loss",
+      "paragraphs": [
+        "Focal loss (Lin et al.  17 ) was additionally evaluated to encourage learning from difficult and minority-class examples by reducing the contribution of easily classified majority-class samples during optimisation. The focal-loss model achieved the best overall performance, with an accuracy of 56.0%, balanced accuracy of 36.5%, and an MCC of 0.388. Martensite precision increased to 75.0%, while Martensite recall remained 42.9%, resulting in a Martensite F1-score of 0.545, compared with 0.500 for the baseline model. Unlike class-weighted loss, focal loss improved overall classification performance while maintaining minority-class detection capability, indicating a more favourable balance between global accuracy and rare-phase recognition."
+      ]
+    },
+    {
+      "heading": "Binary rare-phase detection analysis",
+      "paragraphs": [
+        "To investigate rare-phase detection independently of multi-class ambiguity, an additional binary classification experiment was performed in which Martensite samples were grouped against all remaining microstructures. The experiment employed the same ResNet50 transfer-learning framework and train-test partitioning strategy used in the multi-class analysis. Performance was evaluated using accuracy, balanced accuracy, MCC, AUROC, AUPRC, and threshold-based precision-recall analysis. This experiment was designed to determine whether the principal challenge arose from rare-phase scarcity or from overlap among multiple microstructural classes."
+      ]
+    },
+    {
+      "heading": "Handcrafted texture descriptor baselines",
+      "paragraphs": [
+        "To provide a physically interpretable benchmark, handcrafted texture descriptors based on Gray-Level Co-occurrence Matrices (GLCM) and Local Binary Patterns (LBP) were extracted from all images. GLCM features were extracted using multiple distances and orientations, while LBP descriptors were represented as normalised texture histograms. The resulting feature vectors were evaluated using Support Vector Machine (SVM) and Random Forest classifiers under stratified five-fold cross-validation. Performance was assessed using accuracy, balanced accuracy, precision, recall, F1-score, AUROC, AUPRC, and MCC. These experiments were included to determine whether conventional texture descriptors remained competitive with CNN-based representations for rare-phase detection."
+      ]
+    },
+    {
+      "heading": "Magnification and robustness analyses",
+      "paragraphs": [
+        "To assess potential confounding arising from imaging scale, magnification-only classification experiments were performed using cleaned magnification metadata as the sole predictive input. Logistic Regression and Random Forest models were evaluated under stratified five-fold cross-validation. To investigate potential shortcut learning from SEM annotations, image borders, or scale-bar information, border-crop robustness experiments were additionally conducted in which 5%, 10%, and 15% of the image perimeter were removed prior to inference using the trained binary classifier. Magnification values were cleaned and converted to numerical form prior to analysis, and logarithmic transformation was applied where appropriate to account for the wide range of imaging scales present within the dataset."
+      ]
+    },
+    {
+      "heading": "Model interpretability and feature-space analysis",
+      "paragraphs": [
+        "To investigate whether the CNN learned physically meaningful microstructural representations, Gradient-weighted Class Activation Mapping (Grad-CAM) (Selvaraju et al.  24 ) was applied to representative test images. The resulting activation maps were examined to determine whether model attention was concentrated on microstructural features or on non-metallurgical image artefacts such as image borders, scale bars, or SEM annotations.",
+        "To further explore the learned representation space, t-distributed Stochastic Neighbour Embedding (t-SNE) (Maaten and Hinton  26 ) was applied to the 2048-dimensional feature vectors extracted from the penultimate network layer. The resulting two-dimensional embedding was used to evaluate the separability of microstructural classes and the degree of overlap between Martensite and other phases."
+      ]
+    },
+    {
+      "heading": "Computational environment",
+      "paragraphs": [
+        "All experiments were executed within a GPU-accelerated Google Colaboratory environment using TensorFlow/Keras. Data processing, model training, evaluation, Grad-CAM generation, and feature-space visualisation were performed using standard open-source scientific computing libraries including NumPy, Pandas, Scikit-learn, Matplotlib, and OpenCV. Fixed random seeds were employed wherever possible to improve experimental reproducibility.",
+        "All additional experiments, including binary Martensite classification, handcrafted texture-descriptor baselines (GLCM and LBP), magnification-confounding analysis, and border-crop robustness testing, were conducted within the same computational environment and using the same reproducibility settings.",
+        "For evaluation and confusion-matrix generation, validation and test generators were created with shuffle=False to preserve the alignment between predicted labels and ground-truth labels. This ensured accurate computation of classification metrics and confusion matrices.",
+        "To support reproducibility, the complete preprocessing workflow, model architecture, train–test partitioning strategy, random seed configuration, evaluation procedures, and code implementation are documented within the supplementary materials. These resources enable independent replication of the reported experiments and facilitate future benchmarking studies using the UHCS dataset."
+      ]
+    },
+    {
+      "heading": "Results and discussion",
+      "paragraphs": []
+    },
+    {
+      "heading": "Training dynamics and convergence",
+      "paragraphs": [
+        "The training history presented in Fig.  5  demonstrates stable optimisation behaviour throughout the learning process. Categorical cross-entropy loss decreased from 1.8941 during the first epoch to 1.4711 by the final epoch, indicating effective convergence of the optimisation procedure. Fig. 5 Training and Vvalidation Aaccuracy and Lloss Ccurves for the Bbaseline ResNet50 Mmodel (Ffirst 10 Eepochs)",
+        "Validation accuracy closely tracked training accuracy and occasionally exceeded it. This behaviour is commonly observed when stochastic data augmentation is employed and suggests that the model did not simply memorise the training data. The absence of substantial divergence between the training and validation curves further indicates that severe overfitting was not observed during the training process.",
+        "Although substantial convergence was achieved within ten epochs, the final validation accuracy remained modest, reflecting the inherent difficulty of the classification task. The combination of severe class imbalance, morphological overlap between classes, and limited minority-class representation presents a substantially greater challenge than conventional balanced image-classification benchmarks.",
+        "Overall, the training dynamics suggest that the principal limitation of the model is not optimisation failure but rather the complexity and composition of the underlying dataset.",
+        "Figures  5 ,  6  and  7  presents the first 10 epochs of the baseline training history for visual clarity. Model training was continued for 30 epochs as described in Section  Training protocol and hyperparameters . The model exhibits stable convergence, with validation accuracy closely tracking training accuracy and no evidence of severe overfitting. Fig. 6  Representative Grad-CAM Visualisations Fig. 7  t-SNE Projection of CNN Feature Embeddings"
+      ]
+    },
+    {
+      "heading": "Baseline classification performance",
+      "paragraphs": [
+        "The baseline ResNet50 transfer learning model achieved a peak validation accuracy of 52.8%, exceeding both the random classification baseline (14.3%) and the majority-class baseline (38.9%). The ResNet50 model exceeded both reference baselines, indicating that the network learned discriminative microstructural representations beyond simple frequency-based prediction. The random and majority-class baselines should be interpreted as lower-bound reference benchmarks rather than competing machine-learning models.",
+        "While this result demonstrates meaningful learning beyond simple frequency-based prediction, overall accuracy alone provides an incomplete assessment of performance under severe class imbalance. Weighted metrics were dominated by majority classes such as Spheroidite, whereas minority classes contributed relatively little to aggregate performance measures.",
+        "Consequently, class-specific metrics and minority-phase performance were examined in greater detail."
+      ]
+    },
+    {
+      "heading": "Cross-validation analysis",
+      "paragraphs": [
+        "To evaluate model robustness and reduce dependence on a single train–test partition, stratified five-fold cross-validation was performed (Kohavi  15 ).",
+        "The cross-validation experiment produced:",
+        "Accuracy = 0.412 ± 0.012. Macro F1-score = 0.133 ± 0.009. Matthews Correlation Coefficient (MCC) = 0.134 ± 0.029.",
+        "Although variability across folds was limited, the low macro F1-score indicates weak multi-class discrimination and limited generalisation under severe class imbalance. These results suggest that the principal challenge is not instability across partitions but insufficient class separability and minority-class representation. The substantial difference between the best single train-test split and the cross-validation results further indicates that performance estimates are sensitive to dataset composition and minority-class sampling.",
+        "These findings demonstrate that the reported classification performance is reproducible but constrained by dataset composition.",
+        "To contextualise the present results, Table  5  compares the current study with representative steel microstructure classification investigations reported in the literature. The comparison demonstrates that, unlike many previous studies that focused primarily on overall classification performance, the present work explicitly investigates the impact of severe class imbalance and rare-phase detection within UHCS microstructures. Table 5  Quantitative comparison of machine-learning and deep-learning studies for microstructure classification Study Material System Dataset Size Classes Minority Class Proportion Model Validation Protocol Accuracy (%) F1-score/Macro-F1 Key Remarks DeCost and Holm ( 7 ) Ultra-high carbon steel (UHCS) microstructures 961 7 3.75% (Martensite) CNN-based classifier Hold-out testing ~ 64 Not reported Original UHCS benchmark dataset; significant class imbalance Azimi et al. ( 2 ) Steel microstructures 1,225 5 > 10% Deep CNN Hold-out testing 87.3 Not reported More balanced dataset with fewer classes Caggiano et al. ( 29 ) Additive-manufactured metallic microstructures > 3,000 4 Not reported Deep CNN Hold-out testing > 90 Not reported Large dataset and lower classification complexity Various recent metallography studies Steel and alloy microstructures 1,000–10,000+ 2–6 Typically > 10% CNN/ResNet variants Hold-out or cross-validation 80–95 Variable Often use larger datasets and less severe imbalance Present Study (Baseline ResNet50) UHCS microstructures 961 7 3.75% (Martensite) Frozen ResNet50 Stratified train–test split 52.8 Martensite F1 = 0.500 Baseline transfer-learning benchmark under severe imbalance Present Study (Focal Loss) UHCS microstructures 961 7 3.75% (Martensite) Frozen ResNet50 + Focal Loss Stratified train–test split 56.0 Macro-F1 = 0.378 Best overall multi-class performance Present Study (5-fold Cross-Validation) UHCS microstructures 961 7 3.75% (Martensite) Frozen ResNet50 Stratified 5-fold cross-validation 0.412 ± 0.012 Macro-F1 = 0.133 ± 0.009 Demonstrates limited generalisation under severe class imbalance Reported metrics are reproduced from the respective publications where available. Direct comparison should be interpreted cautiously because datasets, class definitions, image acquisition conditions, and validation protocols vary substantially across studies",
+        "Most published studies report overall classification accuracy as the primary performance metric. In contrast, the present study emphasises balanced accuracy, macro-F1 score, Matthews Correlation Coefficient, and minority-class detection performance because these metrics provide a more informative assessment under severe class imbalance."
+      ]
+    },
+    {
+      "heading": "Discussion of literature comparison",
+      "paragraphs": [
+        "The quantitative comparison presented in Table  5  highlights the difficulty of directly comparing classification performance across metallographic datasets. Many published studies report classification accuracies exceeding 80%–90%; however, these investigations frequently utilise larger datasets, fewer classes, more balanced class distributions, or less challenging classification tasks. In contrast, the UHCS dataset employed in the present study contains seven visually similar microstructural classes and exhibits severe class imbalance, with Martensite representing only 36 of 961 images (3.75% of the dataset). Under these conditions, conventional accuracy alone can overestimate classifier performance by masking poor minority-class recognition.",
+        "For this reason, the present study reports additional metrics including balanced accuracy, Matthews Correlation Coefficient (MCC), macro-F1 score, and class-specific precision and recall. While focal loss improved overall accuracy to 56.0%, the five-fold cross-validation results (macro-F1 = 0.133 ± 0.009; MCC = 0.134 ± 0.029) indicate that generalisation remains limited. These findings suggest that dataset imbalance, class overlap, and limited minority-class representation constitute the principal performance bottlenecks rather than deficiencies in the underlying ResNet50 architecture alone. Consequently, the present work should be interpreted as a baseline diagnostic study that establishes realistic performance bounds for rare-phase detection in UHCS microstructures and identifies directions for future research, including larger datasets, scale-normalised preprocessing, feature fusion approaches, and improved minority-class representation."
+      ]
+    },
+    {
+      "heading": "Class-imbalance mitigation experiments",
+      "paragraphs": [
+        "Given the extreme rarity of Martensite (36 images; 3.75% of the dataset), additional experiments were conducted to investigate imbalance-aware learning strategies."
+      ]
+    },
+    {
+      "heading": "Class-weighted loss",
+      "paragraphs": [
+        "The introduction of class-weighted categorical cross-entropy substantially increased Martensite recall from 42.9% to 85.7%.",
+        "Performance metrics were:",
+        "Accuracy = 29.0%. Balanced Accuracy = 37.2%. Martensite Recall = 85.7%. MCC = 0.218.",
+        "Although minority-phase sensitivity improved considerably, overall classification performance deteriorated. The large increase in Martensite recall was accompanied by a substantial reduction in global accuracy, indicating overcompensation toward the minority class and an increase in false-positive predictions."
+      ]
+    },
+    {
+      "heading": "Focal loss",
+      "paragraphs": [
+        "Focal loss (Lin et al.  17 ) was evaluated as an alternative imbalance-aware strategy designed to emphasise difficult and minority-class examples during training.",
+        "Performance metrics were:",
+        "Accuracy = 56.0%. Balanced Accuracy = 36.5%. Martensite Recall = 42.9%. MCC = 0.388.",
+        "Focal loss achieved the best overall classification performance among the evaluated approaches. While Martensite recall remained unchanged relative to the baseline model, Martensite precision increased from 60.0% to 75.0%, resulting in an improved Martensite F1-score of 0.545. These findings indicate that focal loss provides a more favourable balance between minority-phase detection and overall classification performance than class-weighted loss.",
+        "Collectively, the results demonstrate that imbalance-aware learning can improve performance on highly imbalanced metallurgical datasets. However, the persistent difficulty in detecting all Martensite samples suggests that severe minority-class scarcity and feature overlap remain important limitations that cannot be fully resolved through loss-function modifications alone.",
+        "Table  6  summarises the performance of the baseline, class-weighted, and focal-loss models. Class-weighted loss substantially improved Martensite recall, increasing sensitivity from 42.9% to 85.7%. However, this improvement was accompanied by a substantial reduction in overall classification accuracy from 52.8% to 29.0%, illustrating the trade-off between minority-class sensitivity and global performance. In contrast, focal loss achieved the best overall classification performance, increasing accuracy to 56.0% while maintaining Martensite recall at 42.9%. Furthermore, focal loss improved Martensite precision from 60.0% to 75.0% and increased the Martensite F1-score from 0.500 to 0.545. These findings suggest that focal loss provides a more favourable balance between minority-phase detection and overall classification performance than class-weighted loss, although severe minority-class scarcity remains a significant challenge. Table 6  Comparison of Imbalance-Mitigation Strategies Model Accuracy (%) Balanced Accuracy (%) MCC Martensite Precision (%) Martensite Recall (%) Martensite F1-score Baseline ResNet50 52.8 33.9 0.341 60.0 42.9 0.500 Class-Weighted Loss 29.0 37.2 0.218 12.8 85.7 0.222 Focal Loss 56.0 36.5 0.388 75.0 42.9 0.545"
+      ]
+    },
+    {
+      "heading": "Inter-class confusion and metallurgical similarity",
+      "paragraphs": [
+        "The confusion matrix reveals substantial overlap between several microstructural classes, particularly among Pearlite, Spheroidite, and transitional microstructures such as Pearlite+Spheroidite.",
+        "The confusion matrix reveals substantial overlap between Pearlite, Spheroidite, and transitional microstructures such as Pearlite+Spheroidite Table  7 . These overlaps are plausibly influenced by similarities in microstructural appearance and texture, which may reduce class separability within the learned feature space. However, because quantitative morphology measurements, heat-treatment metadata, and expert relabelling were not available, the observed confusion should not be interpreted as direct evidence of specific metallurgical transformation pathways. Class imbalance, label uncertainty, and magnification variability may also contribute to the observed overlap. Consequently, the present results should be interpreted primarily as evidence of limited visual separability within the dataset rather than confirmation of underlying transformation mechanisms.",
+        "Table 7  Confusion Matrix for the Baseline ResNet50 Classifier",
+        "Table  8  summarises the class-wise classification performance of the baseline ResNet50 model. Performance varied substantially across microstructural classes, reflecting the combined effects of class imbalance and inter-class similarity. Spheroidite achieved the highest recall (0.907), whereas Martensite achieved a recall of 0.429 despite its limited representation within the dataset. Pearlite and Pearlite+Spheroidite exhibited moderate performance, while Pearlite+Widmanstätten and Spheroidite+Widmanstätten were not successfully identified by the classifier. The overall macro-average F1-score of 0.348 highlights the difficulty of achieving balanced performance across all seven classes. These findings indicate that minority-class scarcity and limited class separability remain important challenges for automated UHCS microstructure classification. Table 8  Class-wise Precision, Recall, F1-Score, and Support for the Baseline ResNet50 Classifier Class Precision Recall F1-score Support Martensite 0.600 0.429 0.500 7 Network 0.395 0.349 0.370 43 Pearlite 0.875 0.280 0.424 25 Pearlite+Spheroidite 0.529 0.409 0.462 22 Pearlite+Widmanstätten 0.000 0.000 0.000 5 Spheroidite 0.544 0.907 0.680 75 Spheroidite+Widmanstätten 0.000 0.000 0.000 16 Macro average 0.420 0.339 0.348 193 Weighted average 0.495 0.528 0.472 193",
+        "The observed confusion therefore reflects not only algorithmic limitations but also genuine overlap in microstructural appearance. This finding suggests that classification difficulty is partially intrinsic to the material system itself.",
+        "The confusion matrix therefore provides insight into both model behaviour and the underlying metallurgical system. The majority of misclassifications were concentrated within the Spheroidite class, which accounted for a substantial proportion of incorrect predictions across multiple microstructural categories. This behaviour is consistent with the high prevalence of Spheroidite within the dataset and may also reflect morphological similarities between Spheroidite, Pearlite, and transitional microstructures.",
+        "The confusion matrix therefore provides insight into both model behaviour and dataset characteristics. The majority of misclassifications were concentrated within the Spheroidite class, which accounted for a substantial proportion of incorrect predictions across multiple microstructural categories. This behaviour is consistent with the high prevalence of Spheroidite within the dataset and may also reflect similarities in visual appearance between Spheroidite, Pearlite, and transitional microstructures. Taken together, these findings suggest that limited class separability remains an important challenge for automated UHCS microstructure classification."
+      ]
+    },
+    {
+      "heading": "Minority-phase performance: martensite detection",
+      "paragraphs": [
+        "Martensite represents the most safety-critical phase within the dataset owing to its association with increased hardness and brittleness.",
+        "For the baseline model, Martensite performance was:",
+        "Precision = 60.0%. Recall = 42.9%. F1-score = 0.500. Support = 7.",
+        "The low recall indicates that most Martensite instances remain undetected. This finding is particularly significant because false negatives are generally more consequential than false positives in quality-assurance applications involving brittle microstructures.",
+        "The poor detection performance must be interpreted in the context of severe data scarcity. With only 36 Martensite images available in the entire dataset and seven instances in the test partition, the model has limited opportunity to learn representative Martensitic features.",
+        "These results highlight the need for larger minority-class datasets and specialised rare-phase detection strategies."
+      ]
+    },
+    {
+      "heading": "Binary martensite detection analysis",
+      "paragraphs": [
+        "To investigate rare-phase detection independently of multi-class ambiguity, an additional binary Martensite-versus-non-Martensite experiment was performed. The binary classifier achieved an AUROC of 0.908, AUPRC of 0.585, and MCC of 0.527. At the default classification threshold, Martensite recall was 28.6% while precision reached 100%. Threshold optimisation improved recall to 57.1% while maintaining precision of 80.0%. These findings indicate that the classifier contains useful discriminative information for Martensite detection, although performance remains constrained by the limited number of minority-class examples.",
+        "Table  9  summarises the performance of the binary Martensite-versus-non-Martensite classifier. The binary formulation substantially improved discrimination of the minority phase relative to the multi-class classification task, achieving an AUROC of 0.908 and MCC of 0.527. At the default classification threshold, the model achieved perfect precision (100%) but detected only 28.6% of Martensite samples, indicating a conservative prediction strategy. Threshold optimisation increased Martensite recall to 57.1% while maintaining precision of 80.0%, demonstrating that the classifier contains useful discriminative information that can be exploited through application-specific threshold selection. These findings suggest that rare-phase detection in UHCS microstructures is influenced not only by class imbalance but also by ambiguity arising from the multi-class classification setting. Nevertheless, performance remains constrained by the limited number of available Martensite examples, highlighting the need for expanded minority-class datasets and specialised rare-phase learning strategies. Table 9  Binary Martensite Detection Table Metric Value AUROC 0.908 AUPRC 0.585 MCC 0.527 Precision (Default Threshold) 1.000 Recall (Default Threshold) 0.286 Precision (Optimised Threshold) 0.800 Recall (Optimised Threshold) 0.571"
+      ]
+    },
+    {
+      "heading": "Grad-CAM analysis",
+      "paragraphs": [
+        "To investigate whether the CNN learned physically meaningful features, Gradient-weighted Class Activation Mapping (Grad-CAM) (Selvaraju et al.  24 ) was applied to representative test images.",
+        "The activation maps consistently focused on microstructural regions rather than image borders, scale bars, or SEM metadata. This behaviour suggests that predictions were driven primarily by morphological information contained within the micrographs.",
+        "To further investigate potential shortcut learning, border-crop robustness experiments were performed in which 5%, 10%, and 15% of the image perimeter were removed prior to inference. Classification performance remained largely unchanged across crop levels, suggesting that predictions were not primarily driven by image borders, scale bars, or SEM annotations.",
+        "Although the activation patterns were spatially coarse, they provide evidence that the model was responding to metallurgical features rather than non-physical imaging artefacts. This finding supports the validity of the learned representations despite the modest classification performance.",
+        "The Grad-CAM results therefore provide evidence that the network is responding to physically meaningful microstructural features. Although interpretability techniques cannot establish causal relationships between image features and predictions, the observed activation patterns increase confidence that model decisions are based primarily on metallurgical morphology rather than dataset artefacts."
+      ]
+    },
+    {
+      "heading": "Feature-space analysis using t-SNE",
+      "paragraphs": [
+        "To further investigate the learned representation space, t-distributed Stochastic Neighbour Embedding (t-SNE) (Maaten and Hinton  26 ) was applied to the 2048-dimensional feature vectors extracted from the penultimate network layer.",
+        "The resulting embedding revealed substantial overlap between Martensite and other microstructural classes. No distinct Martensite cluster was observed. Instead, Martensite samples were dispersed throughout the feature space and frequently overlapped with Pearlite, Spheroidite, and Network microstructures.",
+        "This result provides one possible explanation for the poor Martensite detection performance observed during classification. The learned representation indicates that Martensite is not strongly separable from other classes within the available dataset, suggesting that classification difficulty arises from both data scarcity and intrinsic feature overlap.",
+        "Two-dimensional t-SNE projection of CNN feature embeddings extracted from the penultimate network layer. Each point represents a micrograph coloured according to its microstructural class. Martensite samples ( n  = 36) are dispersed throughout the embedding space and do not form a distinct cluster, indicating substantial overlap with other microstructural classes. This limited separability provides a plausible explanation for the low Martensite detection performance observed in the classification experiments.",
+        "The absence of a well-defined Martensite cluster provides an important explanation for the poor minority-class performance observed throughout the study. Even when imbalance-aware learning strategies were applied, the underlying feature representations remained highly overlapping. This finding suggests that the challenge extends beyond class imbalance alone and may also reflect genuine similarities in the visual characteristics of UHCS microstructures."
+      ]
+    },
+    {
+      "heading": "Magnification bias and dataset-level confounding",
+      "paragraphs": [
+        "A magnification audit identified substantial variation in imaging scales across classes Table  10 .",
+        "Mean magnifications included:",
+        "Table 10  Representative Magnification Statistics Microstructure Mean Magnification Network 89× Martensite 1,020× Pearlite 13,441×",
+        "These findings demonstrate that magnification is strongly correlated with class labels. Mean magnifications ranged from 89× for Network microstructures to 13,441× for Pearlite microstructures, indicating that imaging scale may act as a significant confounding variable during learning.",
+        "To quantify the influence of imaging scale, magnification-only classification experiments were performed using Logistic Regression and Random Forest models. Magnification demonstrated moderate predictive capability, with the Random Forest model achieving an AUROC of 0.810 and MCC of 0.224. However, performance remained substantially below that achieved by the binary CNN classifier (AUROC = 0.908; MCC = 0.527), indicating that magnification contributes useful information but does not fully explain classification behaviour. These findings suggest that imaging scale acts as a confounding variable but is unlikely to be the sole driver of model performance.",
+        "Consequently, the present results should be interpreted as baseline performance estimates rather than scale-invariant microstructure classification performance.",
+        "Future datasets should therefore seek to standardise magnification ranges or explicitly incorporate scale-aware modelling approaches to minimise dataset-level bias."
+      ]
+    },
+    {
+      "heading": "Implications for automated metallurgical quality assurance",
+      "paragraphs": [
+        "The results demonstrate that automated classification of UHCS microstructures is feasible but remains challenging under conditions of extreme class imbalance.",
+        "Although focal loss improved overall classification performance and increased Martensite precision, reliable detection of all Martensite samples remained challenging. This highlights the limitations of current approaches when minority-phase data are scarce and substantial feature overlap exists between microstructural classes.",
+        "Consequently, the present system should be regarded as a decision-support tool rather than a fully autonomous quality-assurance solution. Deployment in industrial environments would require expert review, uncertainty-aware decision thresholds, expanded minority-class datasets, and external validation across multiple SEM instruments, magnification ranges, steel compositions, and heat-treatment conditions (Tao et al.  25 ).",
+        "Nevertheless, the combined evidence from Grad-CAM visualisations, feature-space analysis, binary rare-phase detection experiments, and robustness testing suggests that the models are learning meaningful microstructural information despite the limitations imposed by severe class imbalance and dataset variability. These findings provide a foundation for future research into imbalance-aware microstructure recognition systems."
+      ]
+    },
+    {
+      "heading": "Limitations of the present study",
+      "paragraphs": [
+        "Several limitations should be considered when interpreting the results of this study.",
+        "First, the UHCS dataset exhibits severe class imbalance, with Martensite representing only 36 of 961 images (3.75% of the dataset). This limited minority-class representation restricts the model’s ability to learn robust class-specific features and contributes to reduced rare-phase detection performance.",
+        "Second, the dataset contains substantial visual overlap between several microstructural classes, particularly Pearlite, Spheroidite, and transitional microstructures. In the absence of quantitative morphological descriptors, heat-treatment metadata, or expert re-annotation, the observed confusion patterns should be interpreted as image-level classification behaviour rather than evidence of underlying metallurgical transformation pathways.",
+        "Third, the magnification audit demonstrated that magnification metadata possesses predictive value for class discrimination, indicating the presence of potential scale-related confounding effects. Although this study quantified the magnitude of the confounder, scale-normalised preprocessing and magnification-stratified validation were not performed and therefore the influence of magnification cannot be completely excluded.",
+        "Fourth, the interpretability analyses are limited to Grad-CAM visualisation and t-SNE feature-space exploration. These approaches provide qualitative insight into model behaviour but do not establish causal relationships between highlighted image regions and metallurgically meaningful features. Additional validation using expert annotations, occlusion sensitivity analysis, or alternative explainability methods would be required.",
+        "Fifth, the proposed framework employs a conventional frozen ResNet50 transfer-learning architecture and does not incorporate quantitative metallurgical descriptors such as lamellar spacing, carbide morphology statistics, phase-fraction measurements, or descriptor–CNN fusion approaches. Such information may improve discrimination between visually similar microstructures and should be investigated in future work.",
+        "Finally, the five-fold cross-validation results (macro-F1 = 0.133 ± 0.009; MCC = 0.134 ± 0.029) indicate limited generalisation performance across the full range of microstructural classes. Consequently, the present work should be interpreted as a baseline diagnostic study that establishes performance benchmarks and identifies key challenges associated with rare-phase detection in UHCS microstructures rather than as an industrially deployable classification system."
+      ]
+    },
+    {
+      "heading": "Conclusion",
+      "paragraphs": [
+        "This study investigated automated classification of ultra-high carbon steel (UHCS) microstructures using a ResNet50-based transfer learning framework under conditions of severe class imbalance. The dataset comprised 961 SEM micrographs distributed across seven microstructural classes, with Martensite representing only 36 images (3.75% of the dataset).",
+        "The baseline model achieved a peak validation accuracy of 52.8%, indicating that the network learned discriminative information beyond random and majority-class baselines. However, class-specific evaluation revealed limited Martensite detection performance, highlighting the challenges associated with rare-phase recognition in highly imbalanced datasets. Stratified five-fold cross-validation produced substantially lower performance than the single train-test split, suggesting limited multi-class generalisation and sensitivity to dataset composition. Additional imbalance-mitigation experiments demonstrated contrasting behaviour: class-weighted loss substantially increased Martensite recall but was associated with a marked increase in false-positive predictions and reduced overall classification performance, whereas focal loss preserved overall classification performance while producing more modest improvements in minority-class detection.",
+        "Additional analyses provided further insight into model behaviour and dataset characteristics. Grad-CAM visualisations and border-crop robustness experiments suggested, but did not definitively prove, that model predictions were influenced primarily by microstructural regions rather than obvious image artefacts. Feature-space analysis using t-SNE revealed substantial overlap between Martensite and other classes, while magnification-only classification experiments indicated that imaging scale contributed useful predictive information but did not fully explain classification behaviour. Binary Martensite-versus-non-Martensite classification achieved substantially stronger discrimination than the multi-class formulation, suggesting that class overlap may represent an important challenge in addition to class imbalance. Handcrafted texture descriptors based on GLCM and LBP achieved performance comparable to CNN-based representations, indicating that informative texture information is present within the dataset.",
+        "Taken together, the results suggest that rare-phase detection in UHCS microstructures is influenced by a combination of severe class imbalance, limited minority-class representation, class overlap, and dataset-level confounding factors. Although meaningful microstructural information can be learned from the available data, the findings should be interpreted as a reproducible baseline assessment rather than evidence of industrially deployable performance. Consequently, the proposed framework is best regarded as a research-oriented decision-support approach rather than a fully autonomous quality-assurance system.",
+        "Future work should focus on expanding minority-class datasets, incorporating quantitative microstructural descriptors, standardising imaging conditions, evaluating scale-aware modelling approaches, and validating performance across independent metallurgical datasets. In addition, specialised rare-phase recognition methods, including few-shot learning, anomaly detection, metric learning, and one-versus-rest classification strategies, warrant further investigation for safety-critical microstructural classification tasks."
+      ]
+    }
+  ],
+  "tables": [
+    {
+      "caption": "UHCS Dataset Distribution",
+      "headers": [
+        "Microstructure",
+        "Number of Images",
+        "Percentage (%)"
+      ],
+      "rows": [
+        [
+          "Spheroidite",
+          "374",
+          "38.9"
+        ],
+        [
+          "Network",
+          "212",
+          "22.1"
+        ],
+        [
+          "Pearlite",
+          "124",
+          "12.9"
+        ],
+        [
+          "Pearlite + Spheroidite",
+          "107",
+          "11.1"
+        ],
+        [
+          "Spheroidite + Widmanstätten",
+          "81",
+          "8.4"
+        ],
+        [
+          "Martensite",
+          "36",
+          "3.7"
+        ],
+        [
+          "Pearlite + Widmanstätten",
+          "27",
+          "2.8"
+        ]
+      ],
+      "header_groups": [],
+      "table_alignment_status": "resolved",
+      "row_provenance": [
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 3
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 3
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 3
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 3
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 3
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 3
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 3
+          }
+        ]
+      ],
+      "tbody_alignment_status": "resolved"
+    },
+    {
+      "caption": "Mean SEM magnifications for representative UHCS microstructural classes",
+      "headers": [
+        "Microstructure",
+        "Mean Magnification"
+      ],
+      "rows": [
+        [
+          "Network",
+          "89×"
+        ],
+        [
+          "Martensite",
+          "1,020×"
+        ],
+        [
+          "Pearlite",
+          "13,441×"
+        ]
+      ],
+      "header_groups": [],
+      "table_alignment_status": "resolved",
+      "row_provenance": [
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 2
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 2
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 2
+          }
+        ]
+      ],
+      "tbody_alignment_status": "resolved"
+    },
+    {
+      "caption": "Comparison of Baseline, Class-Weighted, and Focal-Loss Models for Rare-Phase (Martensite) Detection in the UHCS Dataset",
+      "headers": [
+        "Model",
+        "Accuracy (%)",
+        "Balanced Accuracy (%)",
+        "MCC",
+        "Martensite Precision (%)",
+        "Martensite Recall (%)",
+        "Martensite F1"
+      ],
+      "rows": [
+        [
+          "Baseline ResNet50",
+          "52.8",
+          "33.9",
+          "0.341",
+          "60.0",
+          "42.9",
+          "0.500"
+        ],
+        [
+          "Class-Weighted Loss",
+          "29.0",
+          "37.2",
+          "0.218",
+          "12.8",
+          "85.7",
+          "0.222"
+        ],
+        [
+          "Focal Loss",
+          "56.0",
+          "36.5",
+          "0.388",
+          "75.0",
+          "42.9",
+          "0.545"
+        ]
+      ],
+      "header_groups": [],
+      "table_alignment_status": "resolved",
+      "row_provenance": [
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 7
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 7
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 7
+          }
+        ]
+      ],
+      "tbody_alignment_status": "resolved"
+    },
+    {
+      "caption": "Stratified Five-Fold Cross-Validation Results",
+      "headers": [
+        "Metric",
+        "Mean ± SD"
+      ],
+      "rows": [
+        [
+          "Accuracy",
+          "0.412 ± 0.012"
+        ],
+        [
+          "Macro F1-score",
+          "0.133 ± 0.009"
+        ],
+        [
+          "MCC",
+          "0.134 ± 0.029"
+        ]
+      ],
+      "header_groups": [],
+      "table_alignment_status": "resolved",
+      "row_provenance": [
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 2
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 2
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 2
+          }
+        ]
+      ],
+      "tbody_alignment_status": "resolved"
+    },
+    {
+      "caption": "Quantitative comparison of machine-learning and deep-learning studies for microstructure classification",
+      "headers": [
+        "Study",
+        "Material System",
+        "Dataset Size",
+        "Classes",
+        "Minority Class Proportion",
+        "Model",
+        "Validation Protocol",
+        "Accuracy (%)",
+        "F1-score/Macro-F1",
+        "Key Remarks"
+      ],
+      "rows": [
+        [
+          "DeCost and Holm ( 7 )",
+          "Ultra-high carbon steel (UHCS) microstructures",
+          "961",
+          "7",
+          "3.75% (Martensite)",
+          "CNN-based classifier",
+          "Hold-out testing",
+          "~ 64",
+          "Not reported",
+          "Original UHCS benchmark dataset; significant class imbalance"
+        ],
+        [
+          "Azimi et al. ( 2 )",
+          "Steel microstructures",
+          "1,225",
+          "5",
+          "> 10%",
+          "Deep CNN",
+          "Hold-out testing",
+          "87.3",
+          "Not reported",
+          "More balanced dataset with fewer classes"
+        ],
+        [
+          "Caggiano et al. ( 29 )",
+          "Additive-manufactured metallic microstructures",
+          "> 3,000",
+          "4",
+          "Not reported",
+          "Deep CNN",
+          "Hold-out testing",
+          "> 90",
+          "Not reported",
+          "Large dataset and lower classification complexity"
+        ],
+        [
+          "Various recent metallography studies",
+          "Steel and alloy microstructures",
+          "1,000–10,000+",
+          "2–6",
+          "Typically > 10%",
+          "CNN/ResNet variants",
+          "Hold-out or cross-validation",
+          "80–95",
+          "Variable",
+          "Often use larger datasets and less severe imbalance"
+        ],
+        [
+          "Present Study (Baseline ResNet50)",
+          "UHCS microstructures",
+          "961",
+          "7",
+          "3.75% (Martensite)",
+          "Frozen ResNet50",
+          "Stratified train–test split",
+          "52.8",
+          "Martensite F1 = 0.500",
+          "Baseline transfer-learning benchmark under severe imbalance"
+        ],
+        [
+          "Present Study (Focal Loss)",
+          "UHCS microstructures",
+          "961",
+          "7",
+          "3.75% (Martensite)",
+          "Frozen ResNet50 + Focal Loss",
+          "Stratified train–test split",
+          "56.0",
+          "Macro-F1 = 0.378",
+          "Best overall multi-class performance"
+        ],
+        [
+          "Present Study (5-fold Cross-Validation)",
+          "UHCS microstructures",
+          "961",
+          "7",
+          "3.75% (Martensite)",
+          "Frozen ResNet50",
+          "Stratified 5-fold cross-validation",
+          "0.412 ± 0.012",
+          "Macro-F1 = 0.133 ± 0.009",
+          "Demonstrates limited generalisation under severe class imbalance"
+        ]
+      ],
+      "header_groups": [],
+      "table_alignment_status": "resolved",
+      "row_provenance": [
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 7
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 8
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 9
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 10
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 7
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 8
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 9
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 10
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 7
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 8
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 9
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 10
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 7
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 8
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 9
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 10
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 7
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 8
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 9
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 10
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 7
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 8
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 9
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 10
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 7
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 8
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 9
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 10
+          }
+        ]
+      ],
+      "tbody_alignment_status": "resolved"
+    },
+    {
+      "caption": "Comparison of Imbalance-Mitigation Strategies",
+      "headers": [
+        "Model",
+        "Accuracy (%)",
+        "Balanced Accuracy (%)",
+        "MCC",
+        "Martensite Precision (%)",
+        "Martensite Recall (%)",
+        "Martensite F1-score"
+      ],
+      "rows": [
+        [
+          "Baseline ResNet50",
+          "52.8",
+          "33.9",
+          "0.341",
+          "60.0",
+          "42.9",
+          "0.500"
+        ],
+        [
+          "Class-Weighted Loss",
+          "29.0",
+          "37.2",
+          "0.218",
+          "12.8",
+          "85.7",
+          "0.222"
+        ],
+        [
+          "Focal Loss",
+          "56.0",
+          "36.5",
+          "0.388",
+          "75.0",
+          "42.9",
+          "0.545"
+        ]
+      ],
+      "header_groups": [],
+      "table_alignment_status": "resolved",
+      "row_provenance": [
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 7
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 7
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 7
+          }
+        ]
+      ],
+      "tbody_alignment_status": "resolved"
+    },
+    {
+      "caption": "Class-wise Precision, Recall, F1-Score, and Support for the Baseline ResNet50 Classifier",
+      "headers": [
+        "Class",
+        "Precision",
+        "Recall",
+        "F1-score",
+        "Support"
+      ],
+      "rows": [
+        [
+          "Martensite",
+          "0.600",
+          "0.429",
+          "0.500",
+          "7"
+        ],
+        [
+          "Network",
+          "0.395",
+          "0.349",
+          "0.370",
+          "43"
+        ],
+        [
+          "Pearlite",
+          "0.875",
+          "0.280",
+          "0.424",
+          "25"
+        ],
+        [
+          "Pearlite+Spheroidite",
+          "0.529",
+          "0.409",
+          "0.462",
+          "22"
+        ],
+        [
+          "Pearlite+Widmanstätten",
+          "0.000",
+          "0.000",
+          "0.000",
+          "5"
+        ],
+        [
+          "Spheroidite",
+          "0.544",
+          "0.907",
+          "0.680",
+          "75"
+        ],
+        [
+          "Spheroidite+Widmanstätten",
+          "0.000",
+          "0.000",
+          "0.000",
+          "16"
+        ],
+        [
+          "Macro average",
+          "0.420",
+          "0.339",
+          "0.348",
+          "193"
+        ],
+        [
+          "Weighted average",
+          "0.495",
+          "0.528",
+          "0.472",
+          "193"
+        ]
+      ],
+      "header_groups": [],
+      "table_alignment_status": "resolved",
+      "row_provenance": [
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 5
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 5
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 5
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 5
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 5
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 5
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 5
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 5
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 8,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 8,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 8,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 8,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 8,
+            "source_col": 5
+          }
+        ]
+      ],
+      "tbody_alignment_status": "resolved"
+    },
+    {
+      "caption": "Binary Martensite Detection Table",
+      "headers": [
+        "Metric",
+        "Value"
+      ],
+      "rows": [
+        [
+          "AUROC",
+          "0.908"
+        ],
+        [
+          "AUPRC",
+          "0.585"
+        ],
+        [
+          "MCC",
+          "0.527"
+        ],
+        [
+          "Precision (Default Threshold)",
+          "1.000"
+        ],
+        [
+          "Recall (Default Threshold)",
+          "0.286"
+        ],
+        [
+          "Precision (Optimised Threshold)",
+          "0.800"
+        ],
+        [
+          "Recall (Optimised Threshold)",
+          "0.571"
+        ]
+      ],
+      "header_groups": [],
+      "table_alignment_status": "resolved",
+      "row_provenance": [
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 2
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 2
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 2
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 2
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 2
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 2
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 2
+          }
+        ]
+      ],
+      "tbody_alignment_status": "resolved"
+    },
+    {
+      "caption": "Representative Magnification Statistics",
+      "headers": [
+        "Microstructure",
+        "Mean Magnification"
+      ],
+      "rows": [
+        [
+          "Network",
+          "89×"
+        ],
+        [
+          "Martensite",
+          "1,020×"
+        ],
+        [
+          "Pearlite",
+          "13,441×"
+        ]
+      ],
+      "header_groups": [],
+      "table_alignment_status": "resolved",
+      "row_provenance": [
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 2
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 2
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 2
+          }
+        ]
+      ],
+      "tbody_alignment_status": "resolved"
+    }
+  ]
+}

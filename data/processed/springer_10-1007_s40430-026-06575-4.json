@@ -1,0 +1,2691 @@
+{
+  "doi": "10.1007/s40430-026-06575-4",
+  "title": "Multi-response optimization of ultrasonic-assisted drilling for ımproving hole quality in Al 7075 and Ti6Al4V alloys",
+  "abstract": "Abstract This study investigates the dimensional accuracy and surface integrity problems encountered during the drilling of Al 7075 and Ti-6Al-4 V alloys, which are widely used in the aerospace industry, and presents a systematic evaluation of ultrasonic-assisted drilling (UAD) under different amplitude levels (60%, 80%, and 100%) at constant frequency conditions. The experiments were conducted to compare conventional drilling and UAD in terms of hole diameter deviation, circularity, cylindricity, surface roughness, and burr formation. The results showed that UAD significantly improved hole quality for both materials. Hole diameter deviation decreased by 69% for Al 7075 and 59% for Ti-6Al-4 V compared with conventional drilling. Circularity deviation was reduced by 40% for Al 7075, while cylindricity error decreased by 34% for Al 7075 and up to 54% for Ti-6Al-4 V. Surface roughness values were improved to 0.957 μm for Al 7075 and 0.573 μm for Ti-6Al-4 V. In addition, burr formation at the hole exit was substantially suppressed; the maximum burr height in Al 7075 decreased from 1479 to 160 μm at 100% amplitude, whereas the minimum maximum burr height obtained for Ti-6Al-4 V under UAD conditions was 263 μm. Multi-response optimization using the sequential least squares programming (SLSQP) algorithm identified the parameter combinations providing the best overall performance. The optimal condition for Ti-6Al-4 V was determined as 15 m/min cutting speed, 0.06 mm/rev feed rate, and 100% amplitude, corresponding to the highest desirability value of 0.626. The results demonstrate that UAD effectively suppresses dimensional and geometric error mechanisms in difficult-to-machine aerospace alloys and provides a statistically supported optimization framework for precision drilling operations. The proposed approach offers a reliable basis for industrial process planning and future data-driven predictive modeling studies.",
+  "journal": "Journal of the Brazilian Society of Mechanical Sciences and Engineering",
+  "year": "2026",
+  "sections": [
+    {
+      "heading": "Introduction",
+      "paragraphs": [
+        "Rapid technological advancements necessitate the continuous exploration and development of novel materials. Consequently, the evolution of material science, coupled with the increasing demand for geometrically complex components, poses significant challenges for subtractive manufacturing processes. The emergence of advanced materials ranging from composites, highly ductile alloys, and brittle metals or non-metals to those exhibiting high hardness, high strength, and low thermal conductivity underscores the critical need for new investigations into their machinability. In the context of modern engineering requirements, reliance on conventional manufacturing methods often results in compromised product quality, high costs, and prolonged processing times. Specifically in small-diameter deep hole machining, the enclosed environment and the high length-to-diameter ratio of the tools often lead to significant challenges regarding chip removal and process stability [ 1 ]. Analogous to their successful implementation in other domains, ultrasonic technologies offer viable solutions to mitigate these machining-related impediments [ 2 ].",
+        "Various industrial applications utilize ultrasonic methods and components. These sectors include aerospace, space, defense, energy, automotive, food, healthcare, textile, materials, optics, and manufacturing industries [ 3 ]. In contemporary practice, ultrasonic methods are employed in the welding of metal [ 4 ] and plastic materials [ 5 ]; stitching and seaming operations in the textile and footwear sectors [ 6 ]; cutting of soft, fatty foods in the food industry [ 7 ]; chemical purification and cleaning processes [ 8 ]; processing of liquid materials in the fields of son mechanics and sonochemistry; oil and gas exploration within the energy sector [ 9 ]; various inspection and measurement operations such as damage and crack detection [ 10 ]; and studies concerning rocks in deep space exploration.",
+        "Furthermore, within the domain of machining, the proliferation of ultrasonic methods has been evident in recent years across operations such as drilling [ 11 ], milling [ 12 ], turning [ 13 ], grinding [ 14 ], honing and reaming [ 15 ], and even threading [ 16 ]. These examples clearly demonstrate the extensive application spectrum of ultrasonic methods, paralleling technological advancements.",
+        "Drilling, a critical operation in machining processes, holds particular significance due to factors that directly influence hole quality. To mitigate the challenges associated with this process, ultrasonic-assisted drilling (UAD) has garnered increasing attention in recent years. Implementing UAD on conventional machine tools requires a specialized tool holder capable of superimposing vibrations at a specific frequency and amplitude onto the cutting tool. In this context, tool holders capable of transmitting vibrations to the cutting tool based on frequency and amplitude parameters have been designed and introduced to the literature [ 17 ]. Conversely, notable studies also exist where vibration is applied directly to the workpiece rather than through a tool holder [ 18 ].",
+        "The density threshold distinguishing light metals from heavy metals is generally accepted as 5 g/cm 3  [ 19 ]. Ti6Al4V (4.43 g/cm 3 ) and Al 7075 (2.81 g/cm 3 ) alloys, which possess density values approaching this limit, rank among the highest density materials within the light metal classification. Due to these characteristics, titanium and aluminum alloys are among the most widely utilized engineering materials in the aerospace industry. Notwithstanding recent advancements in composites and other lightweight materials, aluminum alloys remain indispensable in the aerospace sector due to their superior damage tolerance and resistance to fatigue crack growth. Similarly, titanium alloys continue to be essential due to their high specific strength, fracture toughness, and resistance to both fatigue and corrosion [ 20 ,  21 – 22 ].",
+        "Regarding UAD operations performed on aluminum alloys, several studies have reported the effectiveness of the process in improving machining performance. Moghaddas [ 23 ] identified the optimum parameters for UAD of Al 6061 alloy, reporting that the lowest surface roughness was achieved through a combination of high cutting speed, low feed rate, and high ultrasonic amplitude. Li et al. [ 24 ] demonstrated a 50% reduction in burr height during the drilling of Al7075-T6 alloy, characterizing vibration amplitude as the most critical parameter influencing this outcome. Barani et al. [ 25 ] reported that UAD improved surface quality and mitigated tool wear in the machining of Al2024-T6 alloy. Furthermore, Paktinat and Amini [ 26 ] observed a 40% improvement in hole circularity and a 37% reduction in thrust force for Al 7075 alloy, corroborating their experimental findings with finite element analysis. Similarly, Chang and Bone [ 27 ] stated that UAD enhances hole quality by reducing thrust force, burr formation, and tool wear, validating their experimental results through analytical modeling. Recent research on Al 7075-T6 has further demonstrated a strong interaction between drill margin geometry and spindle speed; for instance, double-margin drills can improve hole cylindricity by 44% at low speeds but may degrade performance at higher speeds due to increased frictional heat [ 28 ].",
+        "In the context of UAD operations performed on titanium alloys, Li et al. [ 29 ] demonstrated that ultrasonic vibration transforms continuous cutting into an intermittent cutting process, thereby reducing cutting forces and enhancing the quality of the hole’s inner surface. Beyond intermittent cutting, the low thermal diffusivity of titanium alloys often leads to the formation of serrated chips, where periodic fluctuations in cutting force match the serration frequency [ 30 ]. In Ti6Al4V dry drilling, typical spiral chips evolve through four distinct regions initial cone, steady-state cone, transition, and folded long ribbon accompanied by a phase transformation from the β phase to the martensitic phase in the shear bands [ 30 ]. Pujana et al. [ 31 ] investigated the parameters of thrust force, chip formation, and tool temperature, noting that while increased amplitude resulted in reduced forces, it led to a rise in temperature. Hsu and Tsao [ 32 ] evaluated the effects of drill diameter, spindle speed, feed rate, and ultrasonic frequency on force and tool wear, revealing that appropriate parameter selection can effectively mitigate burr formation and wear. Azarhoushang and Akbari [ 33 ] reported achieving improvements of up to 60% in hole exit burrs and tool wear using ultrasonic tool holders developed for nickel and titanium-based superalloys. In another study, Li et al. [ 34 ] examined the influence of dynamic angles and cutting strain on chip morphology, reporting a 10–46% reduction in cutting forces with UAD application. Furthermore, they stated that chip length could be reduced by 26.6–43.9% through the selection of appropriate parameter values. Advanced techniques such as ultrasonic vibration–assisted drilling (CUAD) have demonstrated that the combined effect of high-frequency vibration-induced stress and reduced cutting temperature promotes a transition from ductile deformation to a quasi-cleavage mixed fracture mechanism, enabling the formation of fan-shaped chips that can be easily evacuated. Specifically, in deep-hole drilling of TC4 alloy, low-frequency vibration-assisted drilling (LFVAD) has been reported to reduce hole-wall surface roughness by 60.41% and diameter deviation by 59.23% compared with conventional drilling (CD) [ 1 ].",
+        "Concerning the drilling of stacked materials, Pecat and Meyer [ 35 ] reported that the heterogeneous structure of these materials creates significant challenges in machining; however, they found that both low and high-frequency vibration-assisted drilling reduced cutting forces and improved hole quality, particularly for structures combining titanium, aluminum, and fiber-reinforced plastics. Sanda et al. [ 36 ] showed that UAD reduced thrust forces by up to 30% during the machining of carbon fiber reinforced plastics (CFRP) and titanium alloys, improving surface roughness in both the CFRP and Ti6Al4V layers. Dahnel et al. [ 37 ] reported that, compared to conventional methods, UAD reduced tool wear, ensured consistent hole diameter, and minimized burr formation in the co-drilling of CFRP and titanium alloys. Additionally, they indicated that UAD yielded superior results regarding delamination. Pecat and Brinksmeier [ 38 ] observed that low-frequency vibration drilling in fiber-metal laminates increased tool life by up to 300%, attributing this to improvements in process stability supported by lower processing temperatures and cutting force measurements.",
+        "Tamil et al. [ 11 ] analyzed the drilling performance of Al/CFRP stacks using different strategies. They found that ultrasonic drilling reduced hole diameter deviation by 0.04–0.07 mm, while improving surface roughness by 16–30% for Al and 14–28% for CFRP. While cryogenic drilling provided greater enhancements in cylindricity (26%) and perpendicularity (99%), ultrasonic drilling still offered significant improvements of 14% and 55%, respectively. Wei and Wang [ 39 ] reported that UAD reduced chip lengths in titanium and aluminum layers by 50.6% and 22%, respectively; they attributed this to increased chip brittleness, which facilitated chip evacuation and improved hole quality. Qi et al. [ 40 ] noted that tool vibration and cutting heat influenced hole diameter in CFRP/Ti stacks, causing burrs and diameter enlargement in the CFRP layer. Finally, Zhang [ 41 ] demonstrated that UAD effectively reduced thermal stress damage at the hole exit and wall in CFRP/aluminum laminated structures, thereby improving hole quality by minimizing defects caused by thermal tension.",
+        "The literature widely reports that the frequency and amplitude parameters applied in UAD processes directly influence the chip formation mechanism, thereby yielding shorter, brittle, and discontinuous chips. This phenomenon facilitates chip evacuation from the cutting zone, resulting in a marked reduction in cutting forces. Furthermore, while the temperature in the cutting zone typically decreases, a limited number of studies have reported that this effect may conversely lead to temperature elevation. In addition to advantages such as reduced tool wear and shortened machining time, the literature also documents positive effects regarding the mitigation of delamination, particularly in multi-layered and composite materials.",
+        "However, most existing studies have examined only a single UAD parameter, frequently utilizing fixed frequency or constant amplitude values. Findings concerning the specific effects of amplitude variation on machine performance remain notably limited. In this context, there is a critical need for research that comprehensively elucidates the effects of various amplitude and frequency combinations on machinability. Such investigations could significantly contribute to the more effective and optimized deployment of UAD in industrial applications.",
+        "The novel contribution of this study lies in its comprehensive presentation of the statistical effects of amplitude variation using three distinct ultrasonic power levels at a fixed frequency on hole quality, distinguishing it from UAD research predominantly conducted under static ultrasonic parameters. Through experimental work conducted on both Al 7075 and Ti6Al4V alloys, multiple quality characteristics, including surface roughness, burr height, and geometric deviations, were simultaneously optimized, thereby enabling the scientific determination of the optimal ultrasonic parameter combinations for these difficult-to-cut alloys. Furthermore, by establishing a robust data-driven statistical foundation for advanced process modeling and industrial optimization strategies, this approach validates the performance advantages of UAD over conventional techniques in precision drilling operations through a holistic and novel perspective."
+      ]
+    },
+    {
+      "heading": "Materials and methods",
+      "paragraphs": []
+    },
+    {
+      "heading": "Experimental setup and materials",
+      "paragraphs": [
+        "In this study, the effects of UAD on hole quality were investigated in comparison to CD on Al 7075 aluminum and Ti6Al4V titanium alloys under dry cutting conditions. During the experiments, process parameters such as cutting speed, feed rate, frequency, and amplitude were varied. Both methods were evaluated based on hole diameter, circularity, cylindricity, surface roughness, and maximum burr height criteria.",
+        "The Al 7075 specimens used in the experiments were prepared with dimensions of 104 × 90 × 20 mm. Ø5 mm holes were arranged with a spacing of 8 mm along the X-axis and 10 mm along the Y-axis. A total of 96 holes were drilled into each plate, with specimen dimensions determined to accommodate the required number of experiments and replications. The Ti6Al4V alloy specimens were prepared with dimensions of Ø110 × 10 mm; using a similar layout pattern, 184 holes of Ø5 mm were drilled into each plate (Fig.  1 ). The chemical compositions of both materials are presented in Table  1 , while their physical and mechanical properties are detailed in Table  2 .",
+        "Fig. 1 Sizes of the alloys used in the experiments and hole drilling sequences: ( a ) Al 7075, ( b ) Ti6Al4V",
+        "Table 1 Chemical composition of materials (%) Al 7075 TS EN 573-3 Fe Si Mn Cr Ti Cu Mg Zn Others Al 0.5 0.4 0.3 0.28 0.20 2.0 2.9 6.1 0.15 Balanced Ti6Al4V ASTM B265 Al V Fe O C N H Ti 5.9 4 0.08 0.14 0.01 0.01 0.002 Balanced",
+        "Table 2 Physical and mechanical properties of materials Material Tensile strength (Mpa) Yield strength (Mpa) Elongation (%) Density (g/cm 3 ) Hardness Al 7075 569 488 10.5 2.81 160 HB Ti6Al4V 955 878 13.5 4.43 36 HRC",
+        "The drilling operations were conducted using a First MCV300 CNC vertical machining center. For the Al 7075 alloy, an uncoated high-speed steel (HSS) drill with a diameter of 5 mm and a point angle of 118° was utilized. Conversely, for the Ti6Al4V alloy, an uncoated carbide drill (sourced from Toolex) featuring a 5 mm diameter and a 140°-point angle was employed. The dimensional specifications of both cutting tools are presented in Fig.  2 . As illustrated in Fig.  3 , the tools were mounted in the tool holder with an overhang length of 30 mm.",
+        "Fig. 2 Cutting tool dimensions",
+        "In UAD, the Altrasonic brand BT40 ultrasonic tool holder and 500 W digital generator were used. The system operates in the frequency range of 15–21 kHz, and the ultrasonic amplitude can be adjusted by power percentage via the generator.",
+        "Fig. 3 Ultrasonic tool holder mounted on the CNC milling machine",
+        "Cutting parameters for both materials were determined because of preliminary experiments using literature and the cutting tool manufacturer’s recommended catalog values. Some information showing the process parameters determined within the scope of the experimental study and the properties of the cutting tools can be seen in Table  3 .",
+        "Table 3 Cutting tool information and cutting parameters Explanation Workpiece Al 7075 Ti6Al4V Drill bit Cutting tool material HSS Tungsten carbide Cutting tool sizes (mm) Ø5 mm–118º Ø5 mm, 140º CD parameters Cutting speed (m/min) 30–40 15–25 Feed per tooth (mm/rev) 0.06–0.12 0.06–0.12 UAD parameters Cutting speed (m/min) 30–40 15–25 Feed per tooth (mm/rev) 0.06–0.12 0.06–0.12 Ultrasonic amplitude (%) 60–80–100% 60–80–100% Frequency (kHz) 19.6 19.6",
+        "During the experiments, a total of 16 parameter changes were applied, and 32 cutting tools were used for each parameter. The cutting tools were replaced with new ones in the 1st and 49th holes in the Al 7075 material and in the 1st and 24th holes in the Ti6Al4V material. In the experimental study, a total of 96 holes were drilled in the Al 7075 material and 46 holes in the Ti6Al4V material. Twelve holes were selected from each material for measurement for each parameter set. Hole diameter, circularity deviation, and cylindricity deviation measurements were performed using the Hexagon Global S-Green brand CMM device introduced in the CAD model. Maximum burr height measurements were performed using a Dino-Lite AM4113ZT handheld digital microscope capable of up to 200× optical magnification. For surface roughness analysis, the drilled samples were cut from the exact hole centers on a wire erosion machine and measured using a Mitutoyo Surfest SJ-210 device. For surface roughness, analysis was performed using the best 12 values obtained from the four holes cut by the wire erosion method; the arithmetic mean of the remaining 10 values was taken after the extreme values were eliminated."
+      ]
+    },
+    {
+      "heading": "Statistical analysis and optimization methodology",
+      "paragraphs": [
+        "In machining processes, the simultaneous influence of multiple factors such as material type, cutting speed, feed rate, and the applied drilling method on hole quality necessitates an analytical approach that transcends simple univariate evaluations. Consequently, statistical methods employed in multi-factorial experimental designs are essential for systematically elucidating both main effects and their interactions.",
+        "In this study, a robust analytical framework comprising four fundamental statistical approaches was adopted to evaluate the experimental data. First, ANOVA was utilized to determine the statistical significance of control factors and their interactions, thereby identifying the parameters that play a dominant role in determining hole quality. Second, the LS-Means method was employed to conduct pairwise comparisons between significant factor levels. This approach provided detailed interpretations supported by confidence intervals, allowing for a precise understanding of performance differences across specific parameter settings. Third, desirability functions were applied to calculate individual desirability scores for each response variable using a “smaller-is-better” criterion. This transformation enabled a standardized quantitative assessment of factor performance across different units of measure. Finally, a multi-response optimization strategy was implemented to integrate all quality criteria using equal weighting, facilitating the determination of the global optimum process parameter set.",
+        "Through this holistic approach, rather than focusing on isolated response variables, all critical metrics defining hole quality were evaluated concurrently. This methodology ensures the derivation of reliable, optimized results that are directly transferable to industrial applications."
+      ]
+    },
+    {
+      "heading": "ANOVA",
+      "paragraphs": [
+        "ANOVA stands as one of the most widely utilized methods in multi-factorial experimental designs for partitioning the variance observed in response variables into components attributable to experimental factors and the error term. In the context of machining processes, ANOVA enables the statistical evaluation of how distinct cutting parameters influence quality criteria such as hole diameter, circularity, cylindricity, surface roughness and maximum burr height. Through this method, the significance of not only individual factors but also the interactions between them are reliably established.",
+        "Recent studies underscore ANOVA as a critical tool for parameter optimization in machining research [ 42 ,  43 ]. For instance, Belamri et al. [ 42 ] utilized AI-based models to predict surface roughness and cutting forces in turning operations, yet employed ANOVA to validate the statistical significance of the factors. Similarly, in a study on plastic injection molding, ANOVA analysis facilitated the identification of dominant parameters affecting dimensional shrinkage.",
+        "In the present study, a separate ANOVA was conducted for each response variable. The model incorporated the main factors (material, method, cutting speed, feed rate, amplitude) and their two-way interactions. A Type II sum of squares approach was adopted to evaluate the marginal effect of each factor in the presence of others. Significance levels were determined based on a 95% confidence interval, and  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\:p$$\\end{document}  values were adjusted using the Benjamini–Hochberg (FDR) correction to control for the multiple testing problem.",
+        "Furthermore, to facilitate the interpretation of effect magnitudes, eta squared ( \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\:{{\\eta}}^{2}$$\\end{document} ), and partial eta squared ( \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\:{{\\eta}}_{p}^{2}$$\\end{document} ) values were calculated. These metrics quantify not only statistical significance but also the practical importance of the factors. Consequently, the analysis moves beyond merely determining whether a factor has a significant effect on a response to quantitatively assessing the strength of that effect. The ANOVA results are corroborated by graphical analyses in subsequent sections and discussed in comparison with findings reported in the literature. This systematic approach ensures a reliable interpretation of the experimental data and establishes a robust foundation for the optimization process."
+      ]
+    },
+    {
+      "heading": "LS-Means",
+      "paragraphs": [
+        "While ANOVA effectively identifies whether factors and their interactions are statistically significant, it does not explicitly elucidate the directionality of these effects or pinpoint specific differences between factor levels. Consequently, the least squares means (LS-Means) method was employed to analyze further the factors deemed significant. LS-Means facilitates reliable comparisons even within unbalanced datasets by providing mean values for each factor level that are adjusted for the effects of other covariates in the model.",
+        "In this study, LS-Means values were computed for all factors identified as significant via ANOVA and are reported alongside their respective confidence intervals. This approach enables a comparison of effects such as those of varying cutting speeds on surface roughness that is not only statistically rigorous but also practically interpretable. Furthermore, pairwise contrasts derived via the LS-Means method elucidated the significance of differences between specific factor levels, directly informing the subsequent optimization process.",
+        "The LS-Means methodology has seen widespread adoption in recent machining literature. For instance, Somayaji et al. [ 44 ] utilized LS-Means analysis to evaluate different cooling techniques and cutting parameters in the turning of EN8 steel, subsequently determining optimal parameter combinations. Similarly, de Arriba-Pérez et al. [ 45 ] provided a detailed report on the differences between factor levels using LS-Means while assessing the impact of cutting parameters on surface roughness and tool wear during turning operations. Additionally, Bhosale and Madgule [ 46 ] leveraged LS-Means-based comparisons to support parameter optimization in advanced material selection and manufacturing processes. By highlighting both the statistical significance and the practical magnitude of factor levels, this method generates insights that are directly translatable to industrial applications."
+      ]
+    },
+    {
+      "heading": "Desirability functions",
+      "paragraphs": [
+        "In multi-response optimization, one of the most used methods for simultaneously evaluating different quality criteria is desirability functions. This approach converts each response variable into a normalized desirability score between 0 and 1, making measurements on different scales comparable. Thus, metrics as diverse as hole diameter, circularity, cylindricity, surface roughness and maximum burr height can be evaluated using a single common criterion.",
+        "In this study, the “smaller-is-better” approach was adopted for all response variables, and the desirability function for each response was defined as in Eq.  1 . 1 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\:d=\\frac{{x}_{max}-y}{{x}_{max}-{x}_{min}}$$\\end{document}",
+        "where  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\:y$$\\end{document}  is the measured value, ( \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\:{x}_{max}$$\\end{document} ) ve ( \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\:{x}_{min}$$\\end{document} ) represents the lower and upper limits in the data set. Thanks to this function, the lowest values are rewarded with desirability scores close to 1, while the highest values are penalized with scores close to 0.",
+        "The individual desirability scores obtained were combined using geometric means to calculate the composite desirability value. This method allows for balanced evaluation of all quality criteria by ensuring that poor performance in any response variable lowers the overall optimization score. By combining different quality criteria under a single objective function, this method produces practical and reliable optimization results that can be directly transferred to industrial applications."
+      ]
+    },
+    {
+      "heading": "Multi-response optimization",
+      "paragraphs": [
+        "In machining processes, the criteria defining hole quality often possess distinct measurement scales and frequently involve conflicting objectives. Consequently, it is imperative to optimize all quality criteria simultaneously rather than focusing on a single response variable. To address this, a multi-response optimization approach was adopted in this study. The methodology is founded on desirability functions. A “smaller-is-better” approach was implemented for each response variable, normalizing desirability scores between 0 and 1. Minimal response values are rewarded with desirability scores approaching 1, while maximal values are penalized with scores approaching 0. This transformation enables diverse quality criteria such as hole diameter deviation, circularity, cylindricity, surface roughness, and burr height to be evaluated via a unified common metric.",
+        "To mitigate the potential distortion of optimization results by outliers within the dataset, the lower and upper bounds of the desirability functions were defined based on percentiles (5th and 95th). This robust approach diminishes the influence of extreme values, ensuring a more reliable optimization process. The individual desirability scores calculated for each experimental run were aggregated using the geometric mean to yield a Composite Desirability value. This aggregation method ensures that poor performance in any single response variable disproportionately reduces the overall optimization score, thereby enforcing a balanced evaluation of all quality criteria. In this study, all response variables were considered of equal importance, with weights (Imp) assigned a value of 1.",
+        "The analysis extended beyond merely identifying optimum points within the discrete experimental dataset; the sequential least squares programming (SLSQP) algorithm was employed to locate the optimal solution within the continuous parameter space. By defining the combined desirability function as the objective function, this algorithm searches for the optimal parameter combination within the established lower and upper bounds of the factors. Consequently, both the optimum points derived from experimental data and the theoretical optimum values obtained from the continuous parameter space are reported."
+      ]
+    },
+    {
+      "heading": "Hole quality",
+      "paragraphs": [
+        "In today’s highly competitive environment, the implementation of effective quality control mechanisms in production and manufacturing processes is of critical importance for ensuring business sustainability and achieving profitability. In this context, achieving the required quality in a single operation and preventing unnecessary costs are possible, particularly in machining processes, through the determination of appropriate machining methods, proper cutting tool selection, process parameters, and machining conditions. Hole quality is defined by fundamental characteristics such as hole size, roundness, cylindricity, surface roughness, and the amount of burr formation at the hole entrance and exit. Achieving these characteristics at the desired level largely depends on chip formation and the effective evacuation of chips. The experimental studies were carried out on AL 7075 and Ti6Al4V alloys, and the chip morphologies obtained under different amplitude ratios and CD conditions are shown in Figs.  4  and  5 . When UAD was applied to the AL 7075 material, a significant reduction in chip length was observed, and discontinuous chip formation emerged as the amplitude increased.",
+        "Fig. 4 Chip morphology obtained from drilling Al 7075 alloy ( a ) CD, ( b ) UAD A 60%, ( c ) UAD A 80% and ( d ) UAD A 100%",
+        "In contrast, no discontinuous chip formation was observed in the Ti6Al4V material; however, a limited reduction in chip length occurred. The chip morphology varied from a spiral form to a folded ribbon chip form. In addition, under CD conditions, the chips wrapped around the cutting tool caused localized damage at the hole entrances, particularly in the Al 7075 material, thereby adversely affecting hole quality (Fig.  6 ). In contrast, no similar damage was observed at the hole entrances in the Ti6Al4V material. These results demonstrate the beneficial effect of UAD on improving hole quality, particularly for the Al 7075 alloy, by reducing chip size and promoting discontinuous chip formation. Consequently, for both materials, the transition from CD to UAD was accompanied by changes in chip morphology, which facilitated chip evacuation and, in turn, led to notable improvements in the principal hole quality indicators examined, including hole diameter, circularity, cylindricity, surface roughness, and maximum burr height.",
+        "Fig. 5 Chip morphology obtained from drilling Ti6Al4V alloy ( a ) regions of Ti6Al4V chip morphology, ( b ) CD, ( c ) UAD A%60, ( d ) UAD A%80 and ( e ) UAD A%100",
+        "Fig. 6 Entrances of holes ( a ) Al 7075-CD, ( b ) Al 7075-UAD, ( c ) Ti6Al4V-CD and ( d ) Ti6Al4V-UAD"
+      ]
+    },
+    {
+      "heading": "Results and discussion",
+      "paragraphs": []
+    },
+    {
+      "heading": "Descriptive statistics of hole quality metrics",
+      "paragraphs": [
+        "The initial evaluation of the experimental data was conducted using descriptive statistics. Table  4  presents the mean, standard deviation, minimum and maximum values, along with the coefficient of variation (CV, %) for each response variable. This summary reveals the general distribution and levels of variability within the measurements. Hole Diameter measurements are observed to be highly consistent and close to the nominal 5 mm target, characterized by a low standard deviation (0.057) and a low coefficient of variation (1.124%). Although the mean deviations for Circularity and Cylindricity are relatively low, their CV values are notably high, at 37% and 31%, respectively. This indicates that the experimental factors induce more pronounced variations in these specific response variables.",
+        "Table 4 Summary of descriptive statistics and dispersion metrics for the evaluated dimensional accuracy and surface integrity responses Response Mean Std dev Min Max CV (%) Hole diameter 5.067 0.057 5.008 5.182 1.124 Circularity 0.027 0.01 0.011 0.041 37.147 Cylindricity 0.036 0.011 0.014 0.055 31.843 Surface roughness 1.19 0.494 0.574 2.228 41.523 Max burr height 571.219 305.659 160 1479 53.51",
+        "After the descriptive statistics, a Pearson correlation analysis was conducted to evaluate the interrelationships among the measured response variables. This analysis elucidates the degree of association between the parameters defining hole quality and assists in identifying variables that covary, a critical insight for the multi-response optimization process. The resulting correlation matrix is visually presented in Fig.  7 .",
+        "Fig. 7 Pearson correlation matrix illustrating the statistical interrelationships among the evaluated hole quality metrics",
+        "According to the correlation analysis, strong positive interdependencies were identified among hole diameter, circularity, and surface roughness. This pronounced association indicates that these parameters are governed by analogous physical mechanisms during the machining process, thereby requiring simultaneous optimization. In addition, cylindricity exhibited moderate correlations with both geometric accuracy and surface quality metrics, suggesting that tool kinematics and cutting dynamics concurrently influence errors and surface characteristics of the machined holes. Conversely, maximum burr height showed weaker correlations with the other parameters."
+      ]
+    },
+    {
+      "heading": "Holistic interaction analysis via radar charts",
+      "paragraphs": [
+        "To facilitate the simultaneous evaluation of multiple quality criteria, radar charts were generated for each factor level to visually elucidate the holistic impact of experimental parameters on hole quality. These charts depict normalized performance profiles across the five fundamental response variables: hole diameter deviation, circularity, cylindricity, surface roughness, and max burr height. This visualization enables a direct comparison of different factor levels based on the area they encompass (where a smaller area indicates superior quality). The radar charts corresponding to the four primary control factors are presented in Fig.  8 . The analysis reveals the following insights:",
+        "Material type  A comparison between Al 7075 and Ti6Al4V alloys indicates distinct performance characteristics. The radar profile for Al 7075 demonstrates higher values and thus worse performance, particularly regarding surface roughness and max burr height, suggesting a disadvantage in general surface integrity. Conversely, Ti6Al4V exhibited greater consistency in geometric accuracy criteria (circularity and cylindricity).",
+        "Machining method  The comparison between CD and UAD highlights the efficacy of ultrasonic assistance. UAD demonstrated a distinct superiority in holistic performance, yielding lower deviations and enhanced quality across all measured criteria. The positive impact of UAD is particularly pronounced in the reduction of max burr height and surface roughness.",
+        "Cutting speed  An evaluation of cutting speeds (15, 25, 30, and 40 m/min) suggests that intermediate speeds (25–30 m/min) provide the most balanced results regarding both geometric accuracy and surface quality. Deviations from this range proved detrimental: the lowest speed resulted in increased burr formation, while the highest speed led to a deterioration in surface roughness.",
+        "Feed rate  A comparison of feed rates (0.06 and 0.12 mm/rev) reveals that the lower feed rate (0.06 mm/rev) yielded superior holistic performance, characterized by reduced deviations and improved surface quality across all criteria. Conversely, the higher feed rate exerted a notable negative impact, particularly increasing Max burr height and surface roughness.",
+        "Fig. 8 Radar plots illustrating the holistic effects of ( a ) feed rate, ( b ) cutting speed, ( c ) method, ( d ) material, and ( e ) amplitude percentage on normalized hole quality metrics"
+      ]
+    },
+    {
+      "heading": "Hole diameter analysis",
+      "paragraphs": [
+        "When the main effect analyses and three-way interaction plots related to hole diameter deviations presented in Figs.  9  and  10  are evaluated together with the experimental data and statistical analyses as a whole, it is evident that the UAD method has a significant effect on hole diameter stability in both material groups. Specifically, the measurements performed for the Al 7075 alloy revealed that the hole diameter deviation values exhibited a wide distribution ranging from 0.0436 to 0.1818 mm. In the CD method, the highest deviation value, Ø5.1818 mm, was recorded at a cutting speed of 40 m/min and a feed rate of 0.06 mm/rev, whereas with the activation of the UAD method at 100% amplitude and an increase in the feed rate to 0.12 mm/rev, this value decreased to Ø5.0436 mm, resulting in an improvement of 69%. In the Al 7075 alloy, the increase in cutting speed leading to hole diameter enlargement has been associated in the literature [ 22 ,  47 ,  48 ] with dimensional expansions caused by increased thermal loading, whereas the tendency of increased feed rate to reduce deviation has been explained by some researchers [ 49 ] through the optimization of chip evacuation and the balancing of vibration effects. In the Ti6Al4V alloy, diameter deviations were observed within a much narrower range of 0.0082–0.0286 mm; the lowest deviation was measured as 0.0082 mm (Ø5.0082 mm) at the combination of 25 m/min cutting speed, 0.06 mm/rev feed rate, and 60% amplitude. In the literature [ 30 ], it has been stated that the low thermal conductivity of titanium-based alloys may cause heat trapped in the cutting zone to result in transient thermal deformations, and in this study, the 59% improvement achieved through the use of UAD is anticipated to limit such adverse thermal effects owing to the intermittent cutting mechanism emphasized in the literature [ 37 ,  50 ,  51 ]. While it was determined that, in Ti6Al4V machining, the increase in feed rate in the CD method increased deviation by 56%, the more stable results obtained with the introduction of UAD, particularly at high cutting speeds, may be considered a potential contribution of the method to machining efficiency. As a result, although the application of UAD and the appropriate selection of amplitude improve the dimensional accuracy of holes in both material types, it is considered that higher amplitudes (100%) may be more effective on quality in Al 7075, whereas lower amplitude values (60%) may be more effective in Ti6Al4V.",
+        "Fig. 9 Main effects of material, method, cutting speed, and feed rate on hole diameter deviation",
+        "Fig. 10 Three-way interaction plots showing the combined effects of: ( a ) feed rate, cutting speed, and material; and ( b ) feed rate, amplitude, and material on hole diameter deviation"
+      ]
+    },
+    {
+      "heading": "ANOVA results for hole diameter",
+      "paragraphs": [
+        "The ANOVA test was conducted for the hole diameter (mm) response variable, which revealed that both main factors and two-way interactions exert statistically significant effects. The findings presented below are substantiated by both p values and effect size metrics, with significance statuses evaluated following false discovery rate (FDR) correction for multiple testing (Table  5 ).",
+        "Table 5 ANOVA summary for hole diameter evaluating main effects and two-way interactions Factor p -value η 2 η p 2 Inference Material 0.000 0.416 1.000 Dominant driver Cutting speed 0.000 0.584 1.000 Dominant driver Material: method 0.000 0.000 0.818 Dominant driver Material: feed rate 0.000 0.000 0.861 Dominant driver Material: amplitude Pct 0.000 0.000 0.920 Dominant driver Method: cutting speed 0.000 0.000 0.945 Dominant driver Method: amplitude Pct 0.000 0.000 0.905 Dominant driver Cutting speed: feed rate 0.000 0.000 0.950 Dominant driver Cutting speed: amplitude Pct 0.000 0.000 0.968 Dominant driver",
+        "The statistical analysis revealed that cutting speed emerged as the most dominant factor influencing hole diameter, with effect sizes of η 2  = 0.712 and  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\:{{eta}}_{p}^{2}$$\\end{document}  = 0.931, underscoring its critical role in the machining process (Table  6 ). In addition, the material factor demonstrated a substantial impact, as indicated by a high partial eta squared value ( \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\:{{eta}}_{p}^{2}$$\\end{document}  = 0.628). The interactions between method × cutting speed and cutting speed × feed rate further emphasized the necessity of evaluating process parameters conjointly, both interactions being notable for their considerable partial eta squared values (0.511 and 0.531, respectively). Although the material × feed rate interaction exhibited a relatively lower η 2  value (0.019), it was nevertheless deemed statistically significant after FDR correction and classified as a “Strong Effect.” Collectively, these findings highlight the importance of considering both main effects and interactions to achieve a comprehensive understanding of the factors governing hole quality in machining operations.",
+        "Table 6 LS-Means comparisons and 95% confidence intervals for the material factor regarding hole diameter deviation Material LS-Mean SE 95% CI Al 7075 0.090 0.007 [0.076, 0.104] Ti6Al4V 0.017 0.014 [−0.012, 0.046] Comparison Difference t  value p  value Al 7075–Ti6Al4V 0.073 6.717 0.000",
+        "The Al 7075 alloy exhibits a significantly higher LS-Mean value for hole diameter deviation compared to Ti6Al4V (Table  7 ). This disparity is statistically highly significant ( p  < .001), indicating that material selection has a direct implication on hole precision.",
+        "Table 7 LS-Means pairwise comparisons for the cutting speed factor detailing statistical significance across velocity levels Cutting speed (m/min) LS-Mean SE 95% CI 15.0 0.090 0.007 [0.076, 0.104] 25.0 0.092 0.009 [0.072, 0.111] 30.0 0.159 0.014 [0.130, 0.188] 40.0 0.184 0.014 [0.155, 0.213] Comparisons Difference t  value p  value 15–25 − 0.002 − 0.174 0.864 15–30 − 0.069 − 6.376 0.000 15–40 − 0.094 − 8.649 0.000 25–30 − 0.068 − 5.343 0.000 25–40 − 0.092 − 7.293 0.000 30–40 − 0.025 − 1.342 0.196",
+        "Hole diameter deviation increases markedly with cutting speed. Differences are statistically significant, particularly in comparisons between lower (15–30 m/min) and higher speeds (15–40 m/min). However, the difference between 30 and 40 m/min did not exceed the significance threshold ( \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\:p=0.196$$\\end{document} ), suggesting that deviation reaches a plateau at elevated speeds.",
+        "A substantial portion of the variance in hole diameter is explained by cutting speed and material, classifying these two factors as “dominant drivers”. The significance of the interaction terms highlights the requirement for the simultaneous optimization of process parameters. LS-Means analyses further elucidated statistically significant distinctions between levels of both material and cutting speed. Collectively, these findings suggest that optimization strategies must prioritize cutting speed and material selection to minimize dimensional deviations."
+      ]
+    },
+    {
+      "heading": "Circularity analysis",
+      "paragraphs": [
+        "In terms of roundness deviation, when the experimental results and statistical analyses presented in Figs.  11  and  12  are evaluated as a whole, it is observed that the UAD method significantly reduces roundness deviations in both alloy groups compared with the CD method. Specifically, in the data obtained for the Al 7075 alloy, the highest roundness deviation was recorded as 0.0413 mm under CD at a cutting speed of 40 m/min and a feed rate of 0.06 mm/rev, whereas this value decreased to 0.0237 mm under the combination of 100% amplitude and 0.12 mm/rev feed, providing an improvement of approximately 40%. In the analyses conducted for Al 7075, it was observed that the increase in cutting speed increased the roundness error by approximately 6%, whereas the increase in feed provided a reduction of 4%, and the amplitude parameter, with a contribution ratio of 40%, was considered to play the most significant role in roundness. For Al 7075, the improvement in roundness error when the increase in feed rate was combined with UAD has been associated in the literature with the limitation of dynamic instability of the cutting tool and the reduction of thrust forces [ 22 ,  52 ,  53 ,  54 – 55 ]. For the Ti6Al4V alloy specifically, it is seen that dimensional stability occurred within a much narrower band compared with Al 7075, with the overall deviation values ranging between 0.0082 mm and 0.0286 mm, indicating high geometric precision. It has been explained in the literature that the temperature accumulation and tool loads observed in the CD method during the machining of titanium alloys may adversely affect geometric accuracy [ 56 ,  57 ], and in this study, it is anticipated that the thermomechanical improvement provided by UAD enhances hole geometry precision in a manner consistent with the findings reported by Gupta et al. [ 58 ] and Sanda et al. [ 36 ]. In particular, although the increase in feed in Ti6Al4V machining increased the deviation by 56% under CD, it is considered that this adverse effect may be mitigated by the intermittent cutting mechanism of UAD, and that roundness errors may be minimized through the stabilization of chip flow [ 52 ,  59 ]. As a result, it may be concluded that ultrasonic vibration narrows the error dispersion in both materials; however, the attainment of very low levels such as 0.0082 mm in the Ti6Al4V alloy supports the potential of the method to improve geometric form accuracy in difficult-to-machine materials.",
+        "Fig. 11 Main effects of material, method, cutting speed, and feed rate on circularity",
+        "Fig. 12 Three-way interaction plots for circularity showing the combined effects of: ( a ) feed rate, cutting speed, and material; and ( b ) feed rate, amplitude, and material on circularity deviation"
+      ]
+    },
+    {
+      "heading": "ANOVA results for circularity",
+      "paragraphs": [
+        "Statistical analyses conducted for circularity (mm), a proxy for hole geometric accuracy, revealed that both material type and cutting speed create statistically significant effects. LS-Means comparisons further elucidate the direction and magnitude of these effects, offering results that are interpretable from an engineering perspective (Table  8 ).",
+        "Table 8 LS-Means comparisons for material factor (circularity) Material LS-Mean SE 95% CI Al 7075 0.024 0.001 [0.021, 0.027] Ti6Al4V 0.017 0.003 [0.011, 0.023] Comparison Difference t value p value Al 7075–Ti6Al4V 0.007 3.161 0.005",
+        "The Al 7075 alloy exhibits a significantly higher circularity deviation compared to Ti6Al4V. This difference is statistically significant, indicating that material type has a direct influence on hole geometry (Table  9 ). Ti6Al4V presents a more advantageous profile in terms of geometric accuracy with lower deviation values.",
+        "Table 9 LS-Means comparisons for cutting speed factor (circularity) Cutting speed (m/min) LS-Mean SE 95% CI 15.0 0.024 0.001 [0.021, 0.027] 25.0 0.027 0.002 [0.023, 0.031] 30.0 0.037 0.003 [0.031, 0.043] 40.0 0.041 0.003 [0.036, 0.047] Comparison Difference t value p value 15–25 − 0.003 − 1.867 0.077 15–30 − 0.013 − 6.090 p  < .001 15–40 − 0.018 − 8.107 p  < .001 25–30 − 0.010 − 3.868 p  < .001 25–40 − 0.014 − 5.599 p  < .001 30–40 − 0.004 − 1.191 0.248",
+        "Circularity deviation increases markedly as cutting speed increases. The differences are statistically highly significant ( \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\:p\\:<\\:0.001$$\\end{document} ), particularly in comparisons between lower (15 m/min) and higher speeds (30–40 m/min). This indicates that high cutting speeds tend to compromise hole geometry. However, the difference between 30 and 40 m/min did not exceed the significance threshold ( \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\:p\\:=\\:0.248$$\\end{document} ), suggesting that the deviation reaches a plateau at elevated speeds.",
+        "Both material type and cutting speed demonstrate significant effects on circularity. While the Ti6Al4V alloy offers lower deviation values for geometric accuracy, increases in cutting speed significantly exacerbate circularity deviation. These findings suggest that low cutting speeds and appropriate material selection are critical for optimal hole geometry. In particular, the deterioration of circularity at high speeds points to the necessity of controlling tool dynamics and cutting forces."
+      ]
+    },
+    {
+      "heading": "Cylindricity analysis",
+      "paragraphs": [
+        "When the experimental findings and three-way interaction plots related to cylindricity deviations presented in Figs.  13  and  14  are examined, and the effects of the machining parameters on hole geometry are evaluated based on the cylindricity data, it is understood that the UAD method exhibits superior performance compared with the CD method in all scenarios. For the Al 7075 alloy, the recorded deviation values exhibited a distribution between 0.0318 mm and 0.0548 mm; in particular, a value of 0.0318 mm was obtained under the combination of 40 m/min cutting speed, 0.06 mm/rev feed, and 80% amplitude, corresponding to an improvement of 34%. In this alloy, the decrease in cylindricity error by up to 11% with increasing cutting speed has been associated in the literature with the dynamic stability achieved at higher rotational speeds and the reduced tendency for vibration [ 49 ,  60 ], and the beneficial effect provided by the increase in amplitude is also considered to be consistent with similar studies [ 33 ,  61 ]. On the other hand, in the Ti6Al4V alloy, the deviation values were measured between 0.0141 mm and 0.0443 mm, and it was observed that a significant improvement of 54% was achieved by reaching 0.0141 mm under the conditions of 15 m/min cutting speed, 0.12 mm/rev feed, and 100% amplitude. It has been reported in the literature that, during the machining of titanium-based materials, increases in feed rate and cutting moments trigger cylindricity errors due to more difficult chip evacuation [ 49 ]; in this study, the findings indicating that the increase in cutting speed increased deviation by 44% and feed by 20% are anticipated to be mitigated by the high tool stability provided by UAD [ 59 ] and the reduced plastic deformation [ 56 ]. As a result, it is considered that the amplitude parameter determines hole quality with contribution ratios ranging from 1% to 54%, and that the intermittent cutting mechanism provided by UAD may play a critical role in maintaining form accuracy, particularly in materials with high temperature sensitivity such as Ti6Al4V.",
+        "Fig. 13 Main effects plots demonstrating the influence of material, method, cutting speed, and feed rate on cylindricity deviation",
+        "Fig. 14 Three-way interaction plots detailing the combined effects of ( a ) feed rate, cutting speed, and material; and ( b ) feed rate, amplitude, and material on cylindricity deviation"
+      ]
+    },
+    {
+      "heading": "ANOVA results for cylindricity",
+      "paragraphs": [
+        "Cylindricity (mm) serves as a critical quality criterion representing the axial accuracy of hole geometry. This parameter is utilized to evaluate the cylindrical form of the hole, particularly in applications requiring high precision. In this study, to determine the effects on Cylindricity, the focus was placed on the cutting speed factor, and statistical significance was evaluated using LS-Means comparisons (Table  10 ).",
+        "Table 10 LS-Means comparisons for cutting speed factor (cylindricity) Cutting speed (m/min) LS-Mean SE 95% CI 15.0 0.032 0.002 [0.028, 0.035] 25.0 0.037 0.002 [0.033, 0.042] 30.0 0.051 0.003 [0.044, 0.058] 40.0 0.048 0.003 [0.041, 0.055] Comparison Difference t value p value 15–25 − 0.006 − 2.665 0.015 15–30 − 0.020 − 7.579 p  < 0.001 15–40 − 0.016 − 6.344 p  < 0.001 25–30 − 0.014 − 4.565 p  < 0.001 25–40 − 0.011 − 3.505 0.002 30–40 0.003 0.729 0.475",
+        "The cutting speed factor was found to exert statistically significant and directional effects on cylindricity. The differences observed, particularly in the comparisons between 15 and 30 m/min and 15–40 m/min, were highly significant, indicating that the hole form tends to deviate more from ideal cylindricity as cutting speed increases. The lowest deviation value was recorded at 15 m/min (LS-Mean = 0.032 mm), demonstrating that lower cutting speeds are more favorable in terms of axial accuracy. Cylindricity deviation reached its maximum at 30 m/min (0.051 mm), followed by a slight reduction at 40 m/min. However, the difference between 30 and 40 m/min was not statistically significant, suggesting that deviation levels plateau at higher speeds. Furthermore, significant differences were also observed in the comparisons of 25–30 m/min and 25–40 m/min, implying that medium-level cutting speeds (25 m/min) provide more balanced outcomes in terms of hole form accuracy."
+      ]
+    },
+    {
+      "heading": "Surface roughness analysis",
+      "paragraphs": [
+        "When the average roughness and main effect plots presented in Figs.  15  and  16  are examined, the experimental and statistical data indicate that the UAD method significantly improves surface quality in both alloys compared with CD. In the measurements performed for the Al 7075 alloy, the highest average surface roughness was recorded as 2.227 μm under the CD method at a cutting speed of 40 m/min and a feed rate of 0.06 mm/rev; however, with the activation of UAD at the combination of 100% amplitude and 30 m/min cutting speed, this value decreased to as low as 0.957 μm, and the roughness distribution was found to vary between 0.594 μm and 3.550 μm. The surface deteriorations occurring due to the ductile nature of Al 7075 and its tendency for chip adhesion are associated in the literature with built-up edge (BUE) formation and thermal softening [ 23 ,  62 ], whereas the 6% reduction in roughness with increasing feed rate is explained by the facilitation of chip evacuation [ 27 ,  48 ]. In the UAD application, the increase in amplitude is considered to improve surface quality by causing the cutting tool to behave like a polishing or honing tool, while the reduction in tool–surface contact through vibrations is emphasized in the literature [ 25 ,  39 ,  63 ] as the main factor reducing roughness. For the Ti6Al4V alloy specifically, it is observed that the average roughness values are concentrated within a narrower range of 0.573 μm to 1.222 μm, with the lowest value of 0.573 μm obtained at a cutting speed of 15 m/min and 60% amplitude. In the machining of titanium-based materials, it has been stated in the literature [ 64 ] that increasing cutting speed suppresses BUE formation by raising the temperature and thereby improves surface quality; however, it is anticipated that an increase in feed rate may adversely affect surface integrity by increasing the tendency of chips to adhere to the tool due to the low thermal conductivity of the material [ 33 ,  65 ,  66 ]. Unlike Al 7075, the fact that lower amplitude values such as 60%, rather than high amplitudes, provide better results in the Ti6Al4V alloy indicates the necessity of preferring high-frequency but low-amplitude parameters for this material group. As a result, although UAD is seen to improve surface quality in both materials, it is considered that high amplitudes create a polishing effect in Al 7075, whereas in Ti6Al4V, controlled amplitude selection offers a more stable machining strategy in terms of dimensional integrity and smoothness.",
+        "Fig. 15 Main effects plots demonstrating the influence of material, method, cutting speed, and feed rate on surface roughness",
+        "Fig. 16 Three-way interaction plots detailing the combined effects of ( a ) feed rate, cutting speed, and material; and ( b ) feed rate, amplitude, and material on surface roughness"
+      ]
+    },
+    {
+      "heading": "ANOVA results for surface roughness",
+      "paragraphs": [
+        "Surface roughness is one of the most critical indicators of hole quality, directly influencing the performance of the machined surface from both aesthetic and functional perspectives. In this study, material type and speed factors were evaluated to determine their effects on surface roughness; statistical significance and engineering interpretations are presented via LS-Means comparisons (Table  11 ).",
+        "The Ti6Al4V alloy offers significantly lower surface roughness values compared to Al 70,759. This difference is statistically significant, indicating that material type has a direct influence on surface quality. The lower roughness values in Ti6Al4V can be attributed to more stable deformation and reduced micro-crack formation during cutting (Table  12 ).",
+        "Table 11 LS-Means comparisons for material factor (surface roughness) Material LS-Mean SE 95% CI Al 7075 1.249 0.065 [1.112, 1.386] Ti6Al4V 0.892 0.134 [0.611, 1.173] Comparison Difference t value p value Al 7075–Ti6Al4V 0.357 3.416 0.003",
+        "Table 12 LS-Means comparisons for cutting speed factor (surface roughness) Cutting speed (m/min) LS-Mean SE 95% CI 15.0 1.249 0.065 [1.112, 1.386] 25.0 1.194 0.090 [1.005, 1.383] 30.0 1.908 0.134 [1.627, 2.189] 40.0 2.197 0.134 [1.915, 2.478] Comparison Difference t value p value 15–25 0.055 0.620 0.543 15–30 − 0.659 − 6.300 p  < 0.001 15–40 − 0.948 − 9.063 p  < 0.001 25–30 − 0.714 − 5.855 p  < 0.001 25–40 − 1.002 − 8.226 p  < 0.001 30–40 − 0.289 − 1.631 0.119",
+        "The cutting speed factor exerts strong and directional effects on surface roughness, with highly significant differences observed in the comparisons between 15 and 30 m/min and 15–40 m/min. These results clearly indicate that surface quality deteriorates as cutting speed increases. The lowest roughness value was obtained at a cutting speed of 25 m/min (LS-Mean = 1.194), suggesting that medium-level speeds are particularly advantageous for achieving superior surface quality. In contrast, roughness values rose sharply at 30 and 40 m/min, reaching a peak of 2.197 at 40 m/min. This deterioration is likely attributable to tool vibration, thermal effects, and micro-crack formation at elevated speeds. However, the difference between 30 and 40 m/min was not statistically significant, indicating that the decline in surface quality reaches a plateau at higher cutting speeds. Beyond cutting speed, material type also demonstrated a significant influence on surface roughness, with Ti6Al4V showing lower roughness values and thus proving advantageous. Taken together, these findings highlight that surface roughness significantly worsens with increasing cutting speed, and therefore, low to medium cutting speeds are recommended to preserve surface integrity. Such insights are particularly critical in precision drilling applications, where maintaining optimal surface quality is essential."
+      ]
+    },
+    {
+      "heading": "Maximum burr height analysis",
+      "paragraphs": [
+        "In terms of hole exit quality and maximum burr height, when the variations in maximum burr height and the parameter interactions presented in Figs.  17  and  18  are taken into consideration, UAD is seen to provide a highly effective strategy for preventing burr formation, particularly in the Al 7075 alloy. The measurements showed that burr heights for Al 7075 varied over a wide range between 160 μm and 1479 μm; the highest burr height was recorded as 1479 μm under the CD method at a cutting speed of 30 m/min and a feed rate of 0.12 mm/rev. In contrast, the reduction of burr height to 160 μm by activating the UAD method at 100% amplitude and a cutting speed of 40 m/min reveals the improvement potential provided by the method. In the literature, it has been stated that the high ductility of the Al 7075 alloy promotes intense plastic deformation and, consequently, pronounced burr formation [ 67 ]; UAD, on the other hand, is explained to facilitate chip breakage by reducing friction through its intermittent material removal mechanism, and to provide a reduction in burr height, particularly with increasing vibration amplitude [ 27 ,  29 ,  68 ]. For the Ti6Al4V alloy specifically, burr heights were observed to be concentrated within a narrower range of 263–870 μm compared with Al 7075. In the Ti6Al4V machining processes, the lowest value, 263 μm, was obtained under the combination of 25 m/min cutting speed, 0.06 mm/rev feed rate, and 60% amplitude. Although it has been stated in the literature that, in materials with low thermal conductivity such as Ti6Al4V, the intermittent contact of UAD can control burr formation by limiting heat accumulation [ 29 ,  69 ], it is anticipated that vibration amplitudes above a certain threshold may cause partial increases in burr height due to changes in dynamic loads [ 24 ]. The finding that the increase in feed rate in both materials increased burr height up to 52% in Al 7075 and 71% in Ti6Al4V due to the thicker uncut chip is considered to be consistent with the general trends reported in the literature [ 27 ]. In addition, the comparative results presented in Fig.  19  clearly show that, although the Al 7075 alloy generally tends to produce higher maximum burr height than Ti6Al4V, the UAD method improves hole exit quality in both materials by reducing maximum burr height compared with CD. As a result, it is considered that burr formation is a complex process depending on material properties and machining parameters [ 64 ], and that the optimization of amplitude values in UAD applications according to the characteristic properties of each material is a critical requirement in terms of hole exit quality.",
+        "Fig. 17 Main effects plots demonstrating the influence of material, method, cutting speed, and feed rate on maximum burr height",
+        "Fig. 18 Three-way interaction plots detailing the combined effects of ( a ) feed rate, cutting speed, and material; and ( b ) feed rate, amplitude, and material on maximum burr height",
+        "Fig. 19 Comparative optical images of the maximum exit burr height formed at the hole exit zone after CD and UAD in Al 7075 and Ti6Al4V alloys: ( a ) Al 7075–CD, ( b ) Al 7075–UAD, ( c ) Ti6Al4V–CD, and ( d ) Ti6Al4V–UAD"
+      ]
+    },
+    {
+      "heading": "ANOVA results for maximum burr height",
+      "paragraphs": [
+        "Max burr height is a critical parameter directly influencing hole machining quality. Burr formation compromises surface integrity and necessitates secondary operations, thereby increasing manufacturing costs. In this study, the effects of cutting speed on burr height were evaluated using LS-Means comparisons (Table  13 ).",
+        "The cutting speed factor exerts strong and directional effects on burr height, with distinct speed levels significantly influencing burr formation. The lowest burr height was observed at 25 m/min (LS-Mean = 540), indicating that medium level cutting speeds are more advantageous for mitigating burr formation. In contrast, burr height reached its maximum at 30 m/min (1046), suggesting that higher speeds intensify material deformation and plastic flow, thereby promoting burr generation. At 40 m/min, burr height decreased slightly to 917; however, the difference between 30 and 40 m/min was not statistically significant, implying that burr formation reaches a plateau at elevated speeds. Moreover, the comparisons between 15 and 30 and 25–30 m/min revealed highly significant differences, underscoring the importance of low and medium speeds in controlling burr formation. Overall, burr height emerges as a quality criterion highly sensitive to cutting speed. While medium speeds, particularly 25 m/min, minimize burr formation, high speeds (30–40 m/min) lead to a marked increase. These findings highlight the necessity of carefully selecting cutting speed to ensure optimum hole quality, as effective control of burr formation is essential for preserving surface integrity and reducing secondary processing costs.",
+        "Table 13 LS-Means comparisons for cutting speed factor (max burr height) Cutting speed (m/min) LS-Mean SE 95% CI 15.0 646.242 68.951 [501.925, 790.559] 25.0 540.055 95.530 [340.108, 740.002] 30.0 1046.031 141.810 [749.220, 1342.843] 40.0 917.531 141.810 [620.720, 1214.343] Comparison Difference t value p value 15–25 106.187 1.136 0.270 15–30 − 399.789 − 3.622 0.002 15–40 − 271.289 − 2.458 0.024 25–30 − 505.977 − 3.932 p  < 0.001 25–40 − 377.477 − 2.933 0.009 30–40 128.500 0.687 0.500"
+      ]
+    },
+    {
+      "heading": "Multi-response optimization results",
+      "paragraphs": [
+        "The results obtained through the desirability function approach within the scope of multi-response optimization ensured that all criteria defining hole quality were evaluated with equal weighting. Table  14  presents the top five experimental runs ranked by their overall desirability values.",
+        "Table 14 Optimal parameter combinations for achieving balanced multi-response hole quality Material Cutting speed Feed rate Method Amplitude Hole diameter Circularity Cylindricity Surface roughness Max burr height Overall desirability Ti6Al4V 15 0.06 UAD 100 4.9704 0.0149 0.0167 0.7363 350 0.626 Ti6Al4V 15 0.06 UAD 80 4.9736 0.0167 0.0198 0.6611 413 0.584 Al 7075 30 0.06 UAD 100 4.8697 0.0334 0.0402 0.9571 192 0.567 Ti6Al4V 15 0.12 UAD 100 4.9707 0.0168 0.0141 0.9916 496 0.565 Ti6Al4V 15 0.12 UAD 80 4.9791 0.0176 0.0188 0.6750 660 0.492",
+        "The analysis of the top-ranked experiments revealed that the highest desirability value (0.626) was achieved with Ti6Al4V at a low cutting speed of 15 m/min, a low feed rate of 0.06 mm/rev, and the UAD method. This combination provided a balanced performance across all quality criteria, yielding the optimum result. The second highest desirability (0.584) was also obtained with Ti6Al4V under identical parameters but with a reduced ultrasonic amplitude (80%), underscoring the significant role of amplitude level in the optimization process. Al 7075 ranked third (0.567) with a cutting speed of 30 m/min and a low feed rate, a combination particularly notable for its exceptionally low burr height. Ti6Al4V ranked fourth at 15 m/min with a higher feed rate of 0.12; while surface roughness remained low, burr height increased to 496 under these conditions. The fifth-ranked experiment, again with Ti6Al4V, demonstrated a marked increase in burr formation due to the combination of high feed rate and lower amplitude.",
+        "Overall, Ti6Al4V combined with the UAD method emerged as the most effective configuration for achieving optimum hole quality. Low cutting speed (15 m/min) and low feed rate (0.06 mm/rev) were identified as critical parameters that elevate desirability scores, while ultrasonic amplitude proved to be a decisive factor, with 100% amplitude consistently delivering the highest performance. Although Al 7075 offered advantages in minimizing burr height, it generally lagged behind Ti6Al4V in terms of geometric accuracy, reinforcing the superiority of Ti6Al4V for precision machining outcomes.",
+        "Composite scores derived from desirability functions were further evaluated at the factor level, extending the analysis beyond individual experiments to reveal the overall performance trends of each parameter and to guide the optimization process. As illustrated in Fig.  20 , the mean desirability scores were calculated for each level of material, method, cutting speed, and feed rate. The results indicate that Ti6Al4V achieved higher mean desirability values compared to Al 7075, reflecting its ability to deliver more balanced outcomes in terms of geometric accuracy and surface quality, whereas Al 7075, despite its advantage in minimizing burr height, exhibited lower performance in other criteria. In terms of method, UAD consistently outperformed CD, producing significantly higher desirability scores and demonstrating superior performance, particularly in deformation-driven criteria such as surface roughness and burr height, thereby confirming the quality-enhancing effect of vibration-assisted cutting. Cutting speed also played a decisive role, with 15 m/min yielding the highest mean desirability value, followed sequentially by 25, 40, and 30 m/min. This distribution suggests that low to medium cutting speeds are more effective in preserving hole quality, while higher speeds tend to exacerbate geometric deviations and surface degradation. Finally, feed rate analysis revealed that 0.06 mm/rev produced higher desirability scores compared to 0.12 mm/rev, highlighting that lower feed rates enable a more controlled cutting process, thereby exerting a direct and substantial influence on both surface roughness and burr formation. Collectively, these factor-level insights provide a robust foundation for defining optimal machining strategies.",
+        "The desirability analyses conducted at the factor level clearly delineate the priority parameters for the optimization process. Specifically, the combination of Ti6Al4V, UAD, low cutting speed, and low feed rate offers balanced and high performance across all hole quality criteria. These findings play a critical role in determining the direction of the theoretical optimization performed in the continuous domain.",
+        "As shown in Fig.  20 , the distribution of mean composite desirability confirms that ultrasonic vibration assistance provides a holistic improvement in all hole quality output parameters. While material behaviors influence this improvement, Ti6Al4V shows more stable results at certain settings, and Al 7075 benefits from higher amplitudes for surface topography. The overall enhancing effect of increased amplitude is evident when both materials are evaluated holistically. Maintaining cutting speed within controlled ranges contributes to the concentration of desirability at higher levels by balancing thermal load and chip formation, whereas increasing the feed rate triggers mechanisms that limit machining quality, such as built-up edge and chip clogging, causing a downward trend in desirability.",
+        "Furthermore, considering that alloys with distinct thermomechanical properties like Al 7075 and Ti6Al4V are frequently used together in the aerospace and defense sectors where assembly is critical, ensuring optimum machinability for both materials in the same process is of high industrial importance. Therefore, it must not be overlooked that parameters such as frequency, amplitude, cutting speed, and feed rate may elicit different responses from each material in UAD operations. In conclusion, the clustering of desirability at upper levels driven by reduced geometric errors, improved surface quality, and limited burr formation strongly validates that more precise, reliable, and high-quality hole production is achievable through the determination of appropriate parameter combinations.",
+        "Fig. 20 Main effects plots of mean composite desirability scores across different levels of material, method, feed rate, cutting speed, and amplitude percentage, illustrating the overarching parameter trends for optimal machining"
+      ]
+    },
+    {
+      "heading": "Process parameter recommendations and trade-offs",
+      "paragraphs": [
+        "Based on the multi-response optimization and LS-Means analyses, recommended operating windows and associated physical trade-offs for both alloys are synthesized in Table  15 . The findings indicate that while maximum ultrasonic amplitude universally benefits the surface integrity of both materials, cutting speed must be strictly constrained depending on the specific thermal conductivity and ductility of the alloy being machined.",
+        "Table 15 Summary of recommended operating parameter windows, primary benefiting responses, and critical physical trade-offs for UAD Material Parameter window Primary benefiting responses Critical process trade-offs and physical constraints Al 7075 Speed: 30–40 m/min Feed: 0.12 mm/rev Amplitude: 100% Max burr height, hole diameter deviation Trade-off : High speeds naturally increase surface roughness Constraint : The extreme ductility of Al 7075 necessitates 100% amplitude to successfully fracture chips and suppress large burr formation Ti6Al4V Speed: 15–25 m/min Feed: 0.06 mm/rev Amplitude: 80–100% Surface roughness, circularity, cylindricity Trade-off : Exceeding 25 m/min exponentially degrades geometric accuracy due to severe thermal accumulation Constraint : Low thermal conductivity demands low feed rates to prevent catastrophic tool deflection"
+      ]
+    },
+    {
+      "heading": "Conclusions",
+      "paragraphs": [
+        "This study comprehensively evaluated the effects of UAD on hole quality in hole drilling operations performed on Al 7075 and Ti6Al4V alloys using a multi-response optimization approach. The findings revealed that both process parameters and material properties play a decisive role in hole geometry, surface quality, and burr formation. The UAD method improved hole quality by offering lower surface roughness and burr height values compared to CD in both alloys. Specifically, the Ti6Al4V alloy yielded more consistent results across geometric accuracy criteria. In contrast, while Al 7075 exhibited a significantly higher overall tendency for burr formation due to its inherent ductility, it achieved exceptionally low burr heights strictly when processed under optimized high-amplitude UAD conditions. This demonstrates that the specific thermomechanical properties of the material dictate differing baseline machinability challenges, which must be individually mitigated through targeted UAD parameter tuning. Ultrasonic amplitude levels directly affected processing performance; overall, a 100% amplitude level emerged as a common parameter in experiments that maximized desirability scores. This finding indicates that the amplitude level improved both surface quality and geometric accuracy by reducing cutting forces. Results obtained using desirability functions within the scope of multi-response optimization enabled the determination of optimal parameter combinations. The highest desirability values were achieved with Ti6Al4V material, low cutting speed (15 m/min), low feed rate (0.06 mm/rev), the UAD method, and high amplitude level (100%). The SLSQP-based theoretical optimization performed in the continuous domain produced results consistent with the experimental findings and confirmed the optimal process conditions. When evaluated for industrial applications, the UAD method should be preferred, especially in hole machining operations requiring high precision. Combinations of low cutting speed and feed rate improve both surface quality and geometric accuracy, reducing the need for reworking and increasing production efficiency. Studies on the optimization of UAD with multiple quality criteria are limited in the literature, and this study fills this gap by contributing at both experimental and theoretical levels."
+      ]
+    }
+  ],
+  "tables": [
+    {
+      "caption": "Chemical composition of materials (%)",
+      "headers": [],
+      "rows": [
+        [
+          "Al 7075 TS EN 573-3",
+          "Fe",
+          "Si",
+          "Mn",
+          "Cr",
+          "Ti",
+          "Cu",
+          "Mg",
+          "Zn",
+          "Others",
+          "Al"
+        ],
+        [
+          "",
+          "0.5",
+          "0.4",
+          "0.3",
+          "0.28",
+          "0.20",
+          "2.0",
+          "2.9",
+          "6.1",
+          "0.15",
+          "Balanced"
+        ],
+        [
+          "Ti6Al4V ASTM B265",
+          "Al",
+          "V",
+          "Fe",
+          "O",
+          "C",
+          "N",
+          "H",
+          "",
+          "Ti"
+        ],
+        [
+          "5.9",
+          "4",
+          "0.08",
+          "0.14",
+          "0.01",
+          "0.01",
+          "0.002",
+          "Balanced"
+        ]
+      ],
+      "header_groups": [],
+      "table_alignment_status": "no_header",
+      "row_provenance": [
+        [
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          },
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          },
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          },
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          },
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          },
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          },
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          },
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          },
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          },
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          },
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          },
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          },
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          },
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          },
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          },
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          },
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          },
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          },
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          },
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          },
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          },
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          },
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          },
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          },
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          },
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          },
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          },
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          },
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          },
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          },
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          },
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          },
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          },
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          },
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          },
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          },
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          }
+        ]
+      ],
+      "tbody_alignment_status": "no_headers_to_target"
+    },
+    {
+      "caption": "Physical and mechanical properties of materials",
+      "headers": [
+        "Material",
+        "Tensile strength (Mpa)",
+        "Yield strength (Mpa)",
+        "Elongation (%)",
+        "Density (g/cm 3 )",
+        "Hardness"
+      ],
+      "rows": [
+        [
+          "Al 7075",
+          "569",
+          "488",
+          "10.5",
+          "2.81",
+          "160 HB"
+        ],
+        [
+          "Ti6Al4V",
+          "955",
+          "878",
+          "13.5",
+          "4.43",
+          "36 HRC"
+        ]
+      ],
+      "header_groups": [],
+      "table_alignment_status": "resolved",
+      "row_provenance": [
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 6
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 6
+          }
+        ]
+      ],
+      "tbody_alignment_status": "resolved"
+    },
+    {
+      "caption": "Cutting tool information and cutting parameters",
+      "headers": [
+        "Explanation",
+        "Workpiece",
+        "Al 7075",
+        "Ti6Al4V"
+      ],
+      "rows": [
+        [
+          "Drill bit",
+          "Cutting tool material",
+          "HSS",
+          "Tungsten carbide"
+        ],
+        [
+          "Drill bit",
+          "Cutting tool sizes (mm)",
+          "Ø5 mm–118º",
+          "Ø5 mm, 140º"
+        ],
+        [
+          "CD parameters",
+          "Cutting speed (m/min)",
+          "30–40",
+          "15–25"
+        ],
+        [
+          "CD parameters",
+          "Feed per tooth (mm/rev)",
+          "0.06–0.12",
+          "0.06–0.12"
+        ],
+        [
+          "UAD parameters",
+          "Cutting speed (m/min)",
+          "30–40",
+          "15–25"
+        ],
+        [
+          "UAD parameters",
+          "Feed per tooth (mm/rev)",
+          "0.06–0.12",
+          "0.06–0.12"
+        ],
+        [
+          "UAD parameters",
+          "Ultrasonic amplitude (%)",
+          "60–80–100%",
+          "60–80–100%"
+        ],
+        [
+          "UAD parameters",
+          "Frequency (kHz)",
+          "19.6",
+          "19.6"
+        ]
+      ],
+      "header_groups": [],
+      "table_alignment_status": "resolved",
+      "row_provenance": [
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "carried",
+            "source_row_index": 0,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "carried",
+            "source_row_index": 2,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "carried",
+            "source_row_index": 4,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "carried",
+            "source_row_index": 4,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "carried",
+            "source_row_index": 4,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 4
+          }
+        ]
+      ],
+      "tbody_alignment_status": "resolved"
+    },
+    {
+      "caption": "Summary of descriptive statistics and dispersion metrics for the evaluated dimensional accuracy and surface integrity responses",
+      "headers": [
+        "Response",
+        "Mean",
+        "Std dev",
+        "Min",
+        "Max",
+        "CV (%)"
+      ],
+      "rows": [
+        [
+          "Hole diameter",
+          "5.067",
+          "0.057",
+          "5.008",
+          "5.182",
+          "1.124"
+        ],
+        [
+          "Circularity",
+          "0.027",
+          "0.01",
+          "0.011",
+          "0.041",
+          "37.147"
+        ],
+        [
+          "Cylindricity",
+          "0.036",
+          "0.011",
+          "0.014",
+          "0.055",
+          "31.843"
+        ],
+        [
+          "Surface roughness",
+          "1.19",
+          "0.494",
+          "0.574",
+          "2.228",
+          "41.523"
+        ],
+        [
+          "Max burr height",
+          "571.219",
+          "305.659",
+          "160",
+          "1479",
+          "53.51"
+        ]
+      ],
+      "header_groups": [],
+      "table_alignment_status": "resolved",
+      "row_provenance": [
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 6
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 6
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 6
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 6
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 6
+          }
+        ]
+      ],
+      "tbody_alignment_status": "resolved"
+    },
+    {
+      "caption": "ANOVA summary for hole diameter evaluating main effects and two-way interactions",
+      "headers": [
+        "Factor",
+        "p -value",
+        "η 2",
+        "η p 2",
+        "Inference"
+      ],
+      "rows": [
+        [
+          "Material",
+          "0.000",
+          "0.416",
+          "1.000",
+          "Dominant driver"
+        ],
+        [
+          "Cutting speed",
+          "0.000",
+          "0.584",
+          "1.000",
+          "Dominant driver"
+        ],
+        [
+          "Material: method",
+          "0.000",
+          "0.000",
+          "0.818",
+          "Dominant driver"
+        ],
+        [
+          "Material: feed rate",
+          "0.000",
+          "0.000",
+          "0.861",
+          "Dominant driver"
+        ],
+        [
+          "Material: amplitude Pct",
+          "0.000",
+          "0.000",
+          "0.920",
+          "Dominant driver"
+        ],
+        [
+          "Method: cutting speed",
+          "0.000",
+          "0.000",
+          "0.945",
+          "Dominant driver"
+        ],
+        [
+          "Method: amplitude Pct",
+          "0.000",
+          "0.000",
+          "0.905",
+          "Dominant driver"
+        ],
+        [
+          "Cutting speed: feed rate",
+          "0.000",
+          "0.000",
+          "0.950",
+          "Dominant driver"
+        ],
+        [
+          "Cutting speed: amplitude Pct",
+          "0.000",
+          "0.000",
+          "0.968",
+          "Dominant driver"
+        ]
+      ],
+      "header_groups": [],
+      "table_alignment_status": "resolved",
+      "row_provenance": [
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 5
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 5
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 5
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 5
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 5
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 5
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 5
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 5
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 8,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 8,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 8,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 8,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 8,
+            "source_col": 5
+          }
+        ]
+      ],
+      "tbody_alignment_status": "resolved"
+    },
+    {
+      "caption": "LS-Means comparisons and 95% confidence intervals for the material factor regarding hole diameter deviation",
+      "headers": [
+        "Material",
+        "LS-Mean",
+        "SE",
+        "95% CI"
+      ],
+      "rows": [
+        [
+          "Al 7075",
+          "0.090",
+          "0.007",
+          "[0.076, 0.104]"
+        ],
+        [
+          "Ti6Al4V",
+          "0.017",
+          "0.014",
+          "[−0.012, 0.046]"
+        ]
+      ],
+      "header_groups": [],
+      "table_alignment_status": "resolved",
+      "row_provenance": [
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 4
+          }
+        ]
+      ],
+      "tbody_alignment_status": "resolved"
+    },
+    {
+      "caption": "LS-Means pairwise comparisons for the cutting speed factor detailing statistical significance across velocity levels",
+      "headers": [
+        "Cutting speed (m/min)",
+        "LS-Mean",
+        "SE",
+        "95% CI"
+      ],
+      "rows": [
+        [
+          "15.0",
+          "0.090",
+          "0.007",
+          "[0.076, 0.104]"
+        ],
+        [
+          "25.0",
+          "0.092",
+          "0.009",
+          "[0.072, 0.111]"
+        ],
+        [
+          "30.0",
+          "0.159",
+          "0.014",
+          "[0.130, 0.188]"
+        ],
+        [
+          "40.0",
+          "0.184",
+          "0.014",
+          "[0.155, 0.213]"
+        ]
+      ],
+      "header_groups": [],
+      "table_alignment_status": "resolved",
+      "row_provenance": [
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 4
+          }
+        ]
+      ],
+      "tbody_alignment_status": "resolved"
+    },
+    {
+      "caption": "LS-Means comparisons for material factor (circularity)",
+      "headers": [
+        "Material",
+        "LS-Mean",
+        "SE",
+        "95% CI"
+      ],
+      "rows": [
+        [
+          "Al 7075",
+          "0.024",
+          "0.001",
+          "[0.021, 0.027]"
+        ],
+        [
+          "Ti6Al4V",
+          "0.017",
+          "0.003",
+          "[0.011, 0.023]"
+        ]
+      ],
+      "header_groups": [],
+      "table_alignment_status": "resolved",
+      "row_provenance": [
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 4
+          }
+        ]
+      ],
+      "tbody_alignment_status": "resolved"
+    },
+    {
+      "caption": "LS-Means comparisons for cutting speed factor (circularity)",
+      "headers": [
+        "Cutting speed (m/min)",
+        "LS-Mean",
+        "SE",
+        "95% CI"
+      ],
+      "rows": [
+        [
+          "15.0",
+          "0.024",
+          "0.001",
+          "[0.021, 0.027]"
+        ],
+        [
+          "25.0",
+          "0.027",
+          "0.002",
+          "[0.023, 0.031]"
+        ],
+        [
+          "30.0",
+          "0.037",
+          "0.003",
+          "[0.031, 0.043]"
+        ],
+        [
+          "40.0",
+          "0.041",
+          "0.003",
+          "[0.036, 0.047]"
+        ]
+      ],
+      "header_groups": [],
+      "table_alignment_status": "resolved",
+      "row_provenance": [
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 4
+          }
+        ]
+      ],
+      "tbody_alignment_status": "resolved"
+    },
+    {
+      "caption": "LS-Means comparisons for cutting speed factor (cylindricity)",
+      "headers": [
+        "Cutting speed (m/min)",
+        "LS-Mean",
+        "SE",
+        "95% CI"
+      ],
+      "rows": [
+        [
+          "15.0",
+          "0.032",
+          "0.002",
+          "[0.028, 0.035]"
+        ],
+        [
+          "25.0",
+          "0.037",
+          "0.002",
+          "[0.033, 0.042]"
+        ],
+        [
+          "30.0",
+          "0.051",
+          "0.003",
+          "[0.044, 0.058]"
+        ],
+        [
+          "40.0",
+          "0.048",
+          "0.003",
+          "[0.041, 0.055]"
+        ]
+      ],
+      "header_groups": [],
+      "table_alignment_status": "resolved",
+      "row_provenance": [
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 4
+          }
+        ]
+      ],
+      "tbody_alignment_status": "resolved"
+    },
+    {
+      "caption": "LS-Means comparisons for material factor (surface roughness)",
+      "headers": [
+        "Material",
+        "LS-Mean",
+        "SE",
+        "95% CI"
+      ],
+      "rows": [
+        [
+          "Al 7075",
+          "1.249",
+          "0.065",
+          "[1.112, 1.386]"
+        ],
+        [
+          "Ti6Al4V",
+          "0.892",
+          "0.134",
+          "[0.611, 1.173]"
+        ]
+      ],
+      "header_groups": [],
+      "table_alignment_status": "resolved",
+      "row_provenance": [
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 4
+          }
+        ]
+      ],
+      "tbody_alignment_status": "resolved"
+    },
+    {
+      "caption": "LS-Means comparisons for cutting speed factor (surface roughness)",
+      "headers": [
+        "Cutting speed (m/min)",
+        "LS-Mean",
+        "SE",
+        "95% CI"
+      ],
+      "rows": [
+        [
+          "15.0",
+          "1.249",
+          "0.065",
+          "[1.112, 1.386]"
+        ],
+        [
+          "25.0",
+          "1.194",
+          "0.090",
+          "[1.005, 1.383]"
+        ],
+        [
+          "30.0",
+          "1.908",
+          "0.134",
+          "[1.627, 2.189]"
+        ],
+        [
+          "40.0",
+          "2.197",
+          "0.134",
+          "[1.915, 2.478]"
+        ]
+      ],
+      "header_groups": [],
+      "table_alignment_status": "resolved",
+      "row_provenance": [
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 4
+          }
+        ]
+      ],
+      "tbody_alignment_status": "resolved"
+    },
+    {
+      "caption": "LS-Means comparisons for cutting speed factor (max burr height)",
+      "headers": [
+        "Cutting speed (m/min)",
+        "LS-Mean",
+        "SE",
+        "95% CI"
+      ],
+      "rows": [
+        [
+          "15.0",
+          "646.242",
+          "68.951",
+          "[501.925, 790.559]"
+        ],
+        [
+          "25.0",
+          "540.055",
+          "95.530",
+          "[340.108, 740.002]"
+        ],
+        [
+          "30.0",
+          "1046.031",
+          "141.810",
+          "[749.220, 1342.843]"
+        ],
+        [
+          "40.0",
+          "917.531",
+          "141.810",
+          "[620.720, 1214.343]"
+        ]
+      ],
+      "header_groups": [],
+      "table_alignment_status": "resolved",
+      "row_provenance": [
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 4
+          }
+        ]
+      ],
+      "tbody_alignment_status": "resolved"
+    },
+    {
+      "caption": "Optimal parameter combinations for achieving balanced multi-response hole quality",
+      "headers": [
+        "Material",
+        "Cutting speed",
+        "Feed rate",
+        "Method",
+        "Amplitude",
+        "Hole diameter",
+        "Circularity",
+        "Cylindricity",
+        "Surface roughness",
+        "Max burr height",
+        "Overall desirability"
+      ],
+      "rows": [
+        [
+          "Ti6Al4V",
+          "15",
+          "0.06",
+          "UAD",
+          "100",
+          "4.9704",
+          "0.0149",
+          "0.0167",
+          "0.7363",
+          "350",
+          "0.626"
+        ],
+        [
+          "Ti6Al4V",
+          "15",
+          "0.06",
+          "UAD",
+          "80",
+          "4.9736",
+          "0.0167",
+          "0.0198",
+          "0.6611",
+          "413",
+          "0.584"
+        ],
+        [
+          "Al 7075",
+          "30",
+          "0.06",
+          "UAD",
+          "100",
+          "4.8697",
+          "0.0334",
+          "0.0402",
+          "0.9571",
+          "192",
+          "0.567"
+        ],
+        [
+          "Ti6Al4V",
+          "15",
+          "0.12",
+          "UAD",
+          "100",
+          "4.9707",
+          "0.0168",
+          "0.0141",
+          "0.9916",
+          "496",
+          "0.565"
+        ],
+        [
+          "Ti6Al4V",
+          "15",
+          "0.12",
+          "UAD",
+          "80",
+          "4.9791",
+          "0.0176",
+          "0.0188",
+          "0.6750",
+          "660",
+          "0.492"
+        ]
+      ],
+      "header_groups": [],
+      "table_alignment_status": "resolved",
+      "row_provenance": [
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 7
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 8
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 9
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 10
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 11
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 7
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 8
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 9
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 10
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 11
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 7
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 8
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 9
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 10
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 11
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 7
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 8
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 9
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 10
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 11
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 7
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 8
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 9
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 10
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 11
+          }
+        ]
+      ],
+      "tbody_alignment_status": "resolved"
+    },
+    {
+      "caption": "Summary of recommended operating parameter windows, primary benefiting responses, and critical physical trade-offs for UAD",
+      "headers": [
+        "Material",
+        "Parameter window",
+        "Primary benefiting responses",
+        "Critical process trade-offs and physical constraints"
+      ],
+      "rows": [
+        [
+          "Al 7075",
+          "Speed: 30–40 m/min Feed: 0.12 mm/rev Amplitude: 100%",
+          "Max burr height, hole diameter deviation",
+          "Trade-off : High speeds naturally increase surface roughness Constraint : The extreme ductility of Al 7075 necessitates 100% amplitude to successfully fracture chips and suppress large burr formation"
+        ],
+        [
+          "Ti6Al4V",
+          "Speed: 15–25 m/min Feed: 0.06 mm/rev Amplitude: 80–100%",
+          "Surface roughness, circularity, cylindricity",
+          "Trade-off : Exceeding 25 m/min exponentially degrades geometric accuracy due to severe thermal accumulation Constraint : Low thermal conductivity demands low feed rates to prevent catastrophic tool deflection"
+        ]
+      ],
+      "header_groups": [],
+      "table_alignment_status": "resolved",
+      "row_provenance": [
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 4
+          }
+        ]
+      ],
+      "tbody_alignment_status": "resolved"
+    }
+  ]
+}

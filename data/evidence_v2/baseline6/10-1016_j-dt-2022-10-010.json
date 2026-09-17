@@ -1,0 +1,147 @@
+{
+  "doi": "10.1016/j.dt.2022.10.010",
+  "stage1_relevance": "ambiguous_relevance",
+  "stage1_reason_code": "properties_not_observed_defer_stage2",
+  "stage2_relevance": "ambiguous_relevance",
+  "stage2_reason_code": "mechanical_properties_reported",
+  "stage2_disposition": "retained_ambiguous",
+  "stage2_confidence": "medium",
+  "stage2_notes": "The paper reports mechanical properties such as UTS, YS, and elongation for different shielding gas compositions.",
+  "candidate_materials": [
+    {
+      "material_id": "M1",
+      "grade_label": "as reported in the paper",
+      "composition_evidence": [
+        {
+          "location": {
+            "type": "table",
+            "table_index": 0,
+            "row_index": "all",
+            "column": null
+          },
+          "quote": "Ni: 1.8; Mn: 19.58; C: 0.02; Si: 0.10; Cr: 19.5; N: 0.65; Mo: –; Cu: –; Fe: Balance",
+          "location_verified": false
+        }
+      ],
+      "composition_confidence": "high",
+      "composition_verified": false,
+      "evidence_groups": [
+        {
+          "group_id": "G1",
+          "processing_state_type": "baseline_or_as_received_state",
+          "processing_evidence": [],
+          "test_condition_evidence": [],
+          "processing_vs_test_basis": "contextual_inference",
+          "property_evidence": [
+            {
+              "location": {
+                "type": "table",
+                "table_index": 3,
+                "row_index": 2,
+                "column": "TS (MPa)"
+              },
+              "quote": "The tensile strength increased obviously with the N2 content in the shielding gas. It is found that the fracture position on the surface is similar, as shown in Fig. 20 (b), the fracture positions of the front side of the welds are all close to HSS base material and that of the back side are all close to HNS base material.",
+              "property": "UTS",
+              "location_verified": false
+            }
+          ],
+          "linkage_status": "explicitly_linked",
+          "linkage_basis": "The tensile strength is reported for different shielding gas compositions, which are the same as those in Table 1.",
+          "evidence_modality": "text",
+          "upgrade_eligible": false
+        }
+      ]
+    }
+  ],
+  "known_non_target_evidence": [
+    {
+      "reason": "test_condition_sweep",
+      "location": {
+        "type": "table",
+        "table_index": 3,
+        "row_index": "2-5",
+        "column": null
+      },
+      "location_verified": false,
+      "note": "The tensile tests were performed at different shielding gas compositions, which are test conditions rather than processing states."
+    }
+  ],
+  "unresolved_evidence": [
+    {
+      "location": {
+        "type": "section",
+        "heading": "Introduction",
+        "paragraph_index": 0
+      },
+      "location_verified": true,
+      "note": "The introduction discusses the high nitrogen steel but does not explicitly link it to the specific shielding gas compositions or mechanical properties reported in the paper."
+    }
+  ],
+  "table_selection": [
+    {
+      "table_index": 0,
+      "inclusion": "full",
+      "basis": "has_composition_header_table"
+    },
+    {
+      "table_index": 1,
+      "inclusion": "full",
+      "basis": "fallback_pass"
+    },
+    {
+      "table_index": 2,
+      "inclusion": "full",
+      "basis": "fallback_pass"
+    }
+  ],
+  "section_selection": [
+    {
+      "section_index": 0,
+      "inclusion": "full",
+      "basis": "fallback_pass"
+    },
+    {
+      "section_index": 1,
+      "inclusion": "full",
+      "basis": "relevant_heading"
+    },
+    {
+      "section_index": 2,
+      "inclusion": "full",
+      "basis": "relevant_heading"
+    },
+    {
+      "section_index": 3,
+      "inclusion": "full",
+      "basis": "fallback_pass"
+    },
+    {
+      "section_index": 4,
+      "inclusion": "full",
+      "basis": "fallback_pass"
+    },
+    {
+      "section_index": 5,
+      "inclusion": "full",
+      "basis": "relevant_heading"
+    },
+    {
+      "section_index": 6,
+      "inclusion": "full",
+      "basis": "relevant_heading"
+    },
+    {
+      "section_index": 7,
+      "inclusion": "full",
+      "basis": "fallback_pass"
+    }
+  ],
+  "fallback_pass_used": true,
+  "llm_attempt_log": "attempt1: failed after 180.0s (request failed: ReadTimeout: HTTPConnectionPool(host='localhost', port=11434): Read timed out. (read timeout=180)) | attempt2: ok in 129.1s || fallback failed: all 2 attempts failed: attempt1: failed after 180.0s (request failed: ReadTimeout: HTTPConnectionPool(host='localhost', port=11434): Read timed out. (read timeout=180)) | attempt2: failed after 180.0s (request failed: ReadTimeout: HTTPConnectionPool(host='localhost', port=11434): Read timed out. (read timeout=180))",
+  "llm_parse_ok": true,
+  "runtime_s": 669.22,
+  "stage2_model": "qwen2.5:7b",
+  "prompt_version": "stage2_evidence_prep_v2",
+  "code_version": "evidence_prep_v1.1",
+  "processed_at": "2026-08-18T13:46:17.850353+00:00"
+}

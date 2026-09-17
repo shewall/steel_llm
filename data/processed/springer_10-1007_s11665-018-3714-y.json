@@ -1,0 +1,3493 @@
+{
+  "doi": "10.1007/s11665-018-3714-y",
+  "title": "The Selection of Heat Treatment Parameters to Obtain Austempered Ductile Iron with the Required Impact Strength",
+  "abstract": "Abstract The effect of austempering parameters on impact energy of non-alloyed cast iron with nodular graphite was examined. The analysis involved the austenitizing temperature in the range of 830-950 °C for the time of 60 min and the austempering temperature in the range of 300-400 °C for the time of 8, 16, 32 and 64 min. The value of the impact energy KV was determined. It has been found that the austenitizing temperature and austempering conditions affect the impact energy of ADI. The conducted analytical studies helped to develop a method for the selection of heat treatment parameters to obtain the ausferritic ductile iron with appropriate impact energy KV. The applied machine learning methods included support vector machine, decision trees, artificial neural networks and the method of variational component analysis.",
+  "journal": "Journal of Materials Engineering and Performance",
+  "year": "2018",
+  "sections": [
+    {
+      "heading": "Introduction",
+      "paragraphs": [
+        "Experimental data concern of us ausferritic ductile iron, used for testing, with the using methods of machine learning. Characteristics of this material indicate that final properties of products are affected not only by the chemical composition but also by the processing mode, including heat treatment parameters. The state of knowledge in this field is rapidly corrected, considering the fact that this material is very popular in the world of science, and heavily popularized in the industry (Ref  1 ,  2 - 3 ).",
+        "Experimental studies aim to determine how different parameters of the manufacturing process affect the final results in both qualitative and quantitative manners (Ref  4 ,  5 - 6 ). Analytical modeling tools, in particular the methods of machine learning, are expected to allow users to create models of approximation of properties on the example of KV. The analysis of experimental data should lead to determination of relationships in the form of mathematical formulas, rules, regulations and finally semi-symbolic models (Ref  7 ). The range of possible tools to use in the field of statistics and data mining or machine learning is enormous, but the choice of specific methods is dictated by the nature and type of data being processed.",
+        "During the hardening of cast iron, the austenitizing treatment, consisting of heating at a temperature higher than Ac1, should enrich the austenite with carbon to the boundary defined by the E’S line and homogenize the metal matrix. During the heating of cast iron with a ferritic microstructure, only carbon atoms derived from graphite separations diffuse into the austenite.",
+        "The process of austenitizing the metal matrix and the role of graphite in its carburizing is described in (Ref  8 ).",
+        "The effect of austenitizing depends on the chemical composition, input structure, nodular graphite dispersion, temperature and time of annealing, as well as on the homogeneity of the distribution of elements in eutectic grains and grain size. A single-stage austenitizing is the classical way of austenitizing cast iron before isothermal transformation (Ref  8 ,  9 ).",
+        "The analysis of the influence of austenite fraction on the impact strength or impact energy of ADI, taking into account the austenitizing temperature, temperature and time of austempering process in the range of upper and lower ausferrite, was investigated in (Ref  8 ,  10 ).",
+        "The chemical composition of non-alloyed nodular cast iron is limited primarily to the content of C, Si, Mn, S and P. From the standpoint of austenitizing, carbon, silicon and manganese are of particular importance.",
+        "In order to extend the processing window and therefore increase the austenite fraction, the following elements were added to ADI: Mn, Mo and Cu (Ref  10 ) as well as Cu and Ni (Ref  8 ).",
+        "The article presents studies for data from experiments on cast iron ADI, which analyzed the impact of the parameters of hardening with the isothermal transformation on the impact energy. The analysis involved the austenitizing temperature in the range of 830-950 °C for 60 min and the austempering temperature in the range of 300-400 °C for 8, 16, 32 and 64 min. For the approximation of ADI properties in the form of fracture energy, an overview of machine learning algorithms applicable to this problem was made (the dependent variable of a continuous type determines the selection of models that meet the assumptions of regression analysis). The innovation and scientific novelty of the work relative to the prior studies was to develop a method for the estimation of heat treatment parameters to obtain the ausferritic ductile iron with appropriate impact energy KV with the use of machine learning methods. The acquired knowledge about the process in the form of rules can be successfully used in the construction of knowledge bases for intelligent systems in foundry applications."
+      ]
+    },
+    {
+      "heading": "The Material Experiments and Methodology",
+      "paragraphs": [
+        "Three different melts (W1, W2, W3) of ductile iron were used in the studies. Cast iron was melted in a medium frequency induction furnace of 3.5 tonne capacity. Nodularization was performed with VL53 M magnesium master alloy by a bell method in a slender ladle, while inoculation was carried out with FeSi75 ferrosilicon. The cast iron was poured in green molds to obtain YII ingots according to standard BS-EN 1563: 2012. The chemical composition of the three cast iron melts was determined by spark spectrometry. The percent content of the examined elements is shown in Table  1 . Table 1 Chemical composition of cast iron melts, wt.% Melt C Si Mn P S Mg Cu Ni W1 3.65 2.59 0.18 0.052 0.014 0.060 … … W2 3.41 2.62 0.30 0.046 0.016 0.056 0.48 … W3 3.39 2.62 0.29 0.042 0.010 0.036 0.51 0.72",
+        "The values of cast iron critical temperatures determined by dilatometry during continuous heating and cooling at a constant speed of 0.019 K/s are presented in Table  2 . Table 2 Critical temperatures of as-cast iron, °C Melt Ac 1,1 Ac 1,2 Ar 1,1 Ar 1,2 W1 820 902 800 680 W2 804 884 812 708 W3 788 862 820 729",
+        "The choice of such chemical composition of the beam-type tests pieces resulted from the verification whether non-alloyed ductile iron (W1 melt) and low-alloy cast iron (W2, W3 melts) could meet specific requirements for high-quality ADI. In order to increase processing window and hence the austenite fraction in the matrix, Cu and Ni were added into two melts (W2 and W1). A selection of the chemical composition and its impact on the breaking energy is directly related to the quality of the casting material in the manufacturing process. Adding a small amount of Ni and Cu, the mechanical properties of ADI were improved.",
+        "To obtain a fully ferritic matrix, lower part of the YII ingot was subjected to two-step ferritizing annealing. Then, the ingot was cut as shown in Fig.  1  to prepare V-notched samples of 10 × 10 × 55 mm size. The method of sampling and cutting the notch was deliberately selected to eliminate the metallurgical variations in ingots. The samples were made from a standard ingot, but their sampling is unconventional. Impact test pieces were cut vertically in relation to the test part of the ingot. The idea was for the notch to be cut at the same height. In this way, the microsegregation resulting from different heights of sampling was eliminated. Fig. 1 Schematic representation of sampling and preparation of samples (of 10 × 10 × 55 mm size) for the impact test",
+        "Samples tested for the impact strength were austempered according to the schemes given in Fig.  2  and  3 . Choice of two different thermal variants (austenitizing from top and bottom) is explained in (Ref  8 ), as well as clarification of heating to nominal temperature and cooling to intermediate temperatures. For each case of the heat treatment, toughness measurements were performed on three samples taken from a single YII ingot. Austenitizing was carried out in a chamber sillite furnace and ausferritizing in an SO140 furnace with salt bath. Fig. 2 Diagram of the ductile iron austempering treatment according to variant I.  tγ  - TA—nominal austenitizing temperature.  tγ ′ - TA2—austenitizing temperature after cooling to intermediate temperatures.  t pi  - TAF—ausferritizing temperature.  t pi  - tAF—ausferritizing time Fig. 3 Diagram of the ductile iron austempering treatment according to variant II.  tγ  - TA—nominal austenitizing temperature.  tγ ′ - TA2—austenitizing temperature after cooling to intermediate temperatures.  t pi  - TAF—ausferritizing temperature.  t pi  - tAF—ausferritizing time",
+        "The impact test was carried out on Charpy testing machine, type PSW 300, with a maximum impact energy of 300 J. The approach toughness versus temperature violations were reported in (Ref  9 ). In paper (Ref  9 ), there are two cast iron melts, but the heat treatment parameters are different. The temperature of the isothermal transformation is 300 and 400 degrees, and in the above-mentioned paper the isothermal quenching took place at 375 °C. The times of isothermal quenching in salt bath are also different: in the case of the reviewed paper it was: 8, 16, 32 and 64 min, while at paper (Ref  9 )—15, 30, 45, 60 and 90 min. The experimental data were related to the ADI production in two variants of the heat treatment and three melts with different chemical compositions. For each variant of heat treatment, three attempts to break in accordance with BS-EN ISO 148-1: 2010 were made."
+      ]
+    },
+    {
+      "heading": "Experiments Results",
+      "paragraphs": [
+        "The mechanical properties are presented in Table  3 . Three different melts (W1, W2, W3) were made that differed in their chemical composition. Specimens for mechanical properties tests were taken from test ingots in order to determine the grade of the cast iron. They were also subjected to the metallographic research. The mechanical properties were determined using the INSTRON 8501 testing machine; hardness measurements were made on metallographic specimens using a Struers Duramin 500 hardness tester machine. Metallographic evaluation was performed on the etched specimens; the microstructure was observed using Nikon MA100 reversed metallographic microscope. Table 3 Mechanical properties Melt Mechanical properties* Cast iron grade consistent with BS-EN 1563:2012 for  t  ≤ 30 mm Matrix Graphite R m ,  MPa R p 0,2,  MPa A , % HB Ferrite Pearlite % of volume Numbers of separations mm 2 W1 507 354 12.1 162 EN-GJS-500-7 99.2 0.8 11.8 94 W2 565 388 7.6 201 EN-GJS-500-7 36.5 63.5 12.7 92 W3 656 464 3.2 252 EN-GJS-600-3 16.3 83.7 13.1 89 * R m− S u  ( R m )—tensile strength (MPa);  R p 0.2 − S y  ( R p 0.2 )—yield strength (MPa);  A —elongation (%); HB—hardness Brinell",
+        "According to PN-EN 1563: 2012, there are seven cast iron grades. Three of them have a ferritic microstructure (EN-GJS 350-22, EN-GJS 400-18, EN-GJS 450-15), two of them have a ferritic–pearlitic microstructure (EN-GJS 500-7, EN-GJS 600-3), and one them pearlitic (EN-GJS 700-2). In the case of smelting number 1 (W1), the test specimens were subjected to a two-stage ferritizing annealing. Heat treatment was deliberately made to verify impact strength values depending on the type of cast iron microstructure after austempering. On the basis of present knowledge, it can be assumed that the ferritic matrix has a lower microsegregation than the ferritic–pearlitic or pearlitic matrix. Hence, it can be assumed that the microstructural differences of the matrix should influence the carburizing process. This approach to the scientific problem makes it possible to determine the suitability of a material with a ferritic matrix in the aspect of austempering when manufacturing ADI castings."
+      ]
+    },
+    {
+      "heading": "Microstructure Studies",
+      "paragraphs": [
+        "Inspections of the microstructure of cast iron test pieces following heat treatment using variant I demonstrate that austenitization for  t γ  = 830 °C occurred within a subcritical range, while for  t γ  = 860 °C within an intercritical range of Eutectoid Transformation. Therefore, as a result of isothermal transformation, both at a temperature 300 °C and 400 °C, a ferritic ( t γ  = 830 °C) or ferritic–ausferritic ( t γ  = 860 °C) matrix was obtained. Sample microstructure of cast iron subjected to heat treatment using variant I is presented in Fig.  4 .  Fig. 4 Microstructure of quenched ductile iron using variant I.  t γ  = 860 °C,  t pi  = 300 °C,  τ pi  = 8. ×1000 magnification, SEM, etched using 2% alcoholic solution of HNO 3",
+        "In variant II of heat treatment, austenite was transformed into lower austenite at a temperature  t pi  = 300 °C. On the other hand, at a temperature  t pi  = 400 °C austenite changed into upper austenite. This statement is based on hardness test results and microscopic tests. Sample microstructures are presented in Fig.  5  and  6 . Fig. 5 Microstructure of quenched ductile iron using variant II ( t γ  = 950 °C,  t γ’  = 860 °C,  t pi  = 300 °C,  τ pi  = 64). ×2000 magnification, SEM, etched using 2% alcoholic solution of HNO 3 Fig. 6 Microstructure of quenched ductile iron using variant II ( t γ  = 950 °C,  t γ’  = 860 °C,  t pi  = 400 °C,  τ pi  = 64). ×2000 magnification, SEM, etched using 2% alcoholic solution of HNO 3",
+        "Cast iron quenching using variant I and ausferritization at a temperature  t pi  = 400 °C allowed parameters corresponding to ADI to be obtained only for the highest temperature  t γ  = 900 °C. Cast iron austenitized at a temperature  t γ  = 860 °C due to the obtained values  R m ,  R p 0.2  and  A 5  met requirements for grade EN-GJS-800-8 (except for  τ pi  = 8 min). The microstructure of this cast iron not only consisted of ausferrite, as required by the definition of ADI, but it also included free ferrite. Ductile iron quenched isothermally within an intercritical range having the structure of free ferrite and ausferrite is marked in literature as FADI (Ref  11 ). The resulting microstructure corresponding to FADI cast iron is presented in Fig.  7 . Fig. 7 Microstructure of quenched ductile iron using variant I ( t γ  = 860 °C,  t pi  = 400 °C,  τ pi  = 64). ×1000 magnification, SEM, etched using 2% alcoholic solution of HNO 3",
+        "Two-phase austenitization using variant II and ausferritization at  t pi  = 300 °C resulted in ductile iron having mechanical properties ( R m ,  R p 0.2 ,  A 5 ) corresponding to standardized grades of ADI. Based on the mechanical properties, cast iron treated using variant II and ausferritized at  t pi  = 400 °C was classified as belonging to EN-GJS-800-8 grade. Regardless of the second-phase austenitization temperature, its effect on  R m  and  A 5  was negligible. On the other hand, proof stress changed depending on the cooling temperature  t γ ′  = 830 °C, 860 °C and 900 °C: the lower the temperature interval between austenitization and ausferritization, the higher proof stress. As isothermal holding time increases, so does the values  R p 0.2 ."
+      ]
+    },
+    {
+      "heading": "Data for Analysis",
+      "paragraphs": [
+        "Analyzing the test data, it can be concluded that the problem of impact energy approximation uses a regression model based on discrete signals.",
+        "The data included a spreadsheet of 146 lines and 15 columns, which compiled the results of measurements and average values calculated on three samples from each austempering treatment. The data processing and initial analysis enabled identification of the variables to be considered in further studies. The mean values and standard deviations were skipped as the data re-processed, leaving only the original raw data. By splitting the system of columnar preliminary data, 432 records were obtained and formed a set of unique samples from different melts and treatment variants. It was assumed that the following variables would be taken into account:"
+      ]
+    },
+    {
+      "heading": "Qualitative Variables",
+      "paragraphs": [
+        "Variant  Variant number collectively defining the heat treatment parameters, the domain of a variable (possible values): {V1; V2}. The qualitative variable. Melt  Melt number determining the chemical composition, the domain of a variable (possible values): {C1; C2; C3}. The qualitative variable. Sample  Sample number which, if samples are properly prepared, should have no effect; the domain of a variable: {S1; S2; S3}. The qualitative variable."
+      ]
+    },
+    {
+      "heading": "Quantitative Variables",
+      "paragraphs": [
+        "T A ( t γ ) Nominal austenitizing temperature. The domain of a variable: < 830, 950 > [°C]. T A2  ( t γ ′) Austenitizing temperature after cooling to intermediate temperatures. The domain of a variable: {830; 860; 900; null} (°C) (lack of values for processes without cooling to intermediate temperatures—variant V1); the variable can also be treated as a qualitative variable depending on the adopted method of calculation, T AF  ( t pi ) Ausferritizing temperature; the domain of a variable: {300; 400} (°C)—this variable takes only two possible values; the variable can also be treated as a qualitative variable depending on the adopted method of calculation. t AF ( τ pi ) Ausferritizing time. The domain of a variable {8; 16; 32; 64} (min). KV  The value of impact energy KV, J; the domain of a variable: < 5.4, 19.9 > (J).",
+        "It is known (or assumed) that the KV variable is a function of melt variant, heat treatment variant, ausferritizing temperature and ausferritizing time, and details of its form remain unknown. The aim of the study is therefore to determine the form of this function. 1 y n = f X 1 n , X 2 n , X 3 n , X 4 n \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$y_{n} = f\\left( {X1_{n} , \\, X2_{n} , \\, X3_{n} , \\, X4_{n} } \\right)$$\\end{document} where  y n —corresponds to the fracture energy KV, J;  X1 n —three different melts designated as W1, W2, W3, respectively,  X2 n —corresponds to the heat treatment variants WI and WII (schemes of variants given in Fig.  3 ),  X3 n —corresponds to the ausferritizing temperature  T AF1  = 300 °C or  T AF2  = 400 °C;  X4 n —corresponds to the ausferritizing time  T AF  = 8; 16; 32; 64; min.",
+        "This means that, in a model of approximation, the KV variable becomes the dependent variable. The impact energy is thus a property whose value should be determined based on the course of production parameters (Ref  12 )."
+      ]
+    },
+    {
+      "heading": "Modeling the Effect of ADI Manufacturing Conditions on Impact Energy by the Methods of Machine Learning",
+      "paragraphs": []
+    },
+    {
+      "heading": "Testing the Correlation",
+      "paragraphs": [
+        "In the first step, we want to know the strength and direction of a linear relationship between the dependent variable (KV) and other quantitative (explanatory) variables. For this purpose, we use a Pearson linear correlation coefficient (Ref  13 ).",
+        "The correlation coefficients in Table  4  clearly show a strong dependence of impact energy on the ausferritizing temperature. The austenitizing temperature and the austenitizing temperature after cooling to intermediate temperatures have much weaker influence on impact energy. The time of ausferritizing has no effect on KV in the analyzed time. Table 4 Correlations of quantitative variables with the KV variable Variable KV r p T A 0.2393 0.000 T A2 0.2994 0.000 T AF 0.8514 0.000 t AF 0.0175 0.718",
+        "In searches for a relationship, Fisher test ( F  test) is also applicable. It is used, among others, in the discussed further induction algorithms of CART decision trees. This test allows determining whether the explanatory variable (predictor) has a statistically significant effect on the dependent variable, even in situations when the predictor is of a qualitative character (Ref  14 ).",
+        "Like the melt (chemical composition), also variant has an effect on the impact energy. In this way, the assumption has been confirmed that sample composition has no effect on impact energy. Table  4  also shows that the effect of the chemical composition is less pronounced than that of the heat treatment parameters. Studies of the relationships allow capturing the bilateral systems of relationships in pairs. They allow noting that the effect of the most important predictor (T AF ) can be modified by the effect of T A  or T A2 ."
+      ]
+    },
+    {
+      "heading": "Regression Analysis. MARS",
+      "paragraphs": [
+        "The next step in the research is an attempt to build a regression model. Having identified the significant explanatory variables, a model of multiple linear regression can be constructed. The equation derived for the regression model of impact strength takes the following form: 2 KV = 0.0658 ∗ T AF + 0.004 ∗ T A2 - 0.014 ∗ T A \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${\\text{KV}} = 0.0658 \\, *T_{\\text{AF}} + 0.004*T_{\\text{A2}} - 0.014*T_{\\text{A}}$$\\end{document} The coefficient of determination  R 2  indicates an 82% fit to empirical data (Fig.  8 ), while the standard error of estimation shows that on an average the impact energy calculated from the regression equation differs from the empirical value by 1.6472 J. Fig. 8 Multiple regression: Predicted vs. observed values.  R 2  = 0.82",
+        "These results are not bad, but the linear regression does not allow for consideration of the impact of predictor variables, and also assumes a linear form of the model, what in the case under discussion has no justification (Table  5 ).  Table 5 Predictors for the quantitative dependent variable—KV Variable R 2 Value F Value  p T AF 0.72 1133.14 0.00 Variant 0.09 43.44 0.00 T A2 0.09 43.44 0.00 Melt 0.09 19.04 0.00 T A 0.07 15.72 0.00 t AF 0.01 0.99 0.40 Sample 0.00 0.00 1.00",
+        "The question remains how qualitative variables affect KV and whether this effect can be quantified. Figure  9  presents a graph of the average KV groups designated by the variables called melt and variant (chemical composition and treatment option). It is clear that variant II of the heat treatment (with cooling to intermediate temperatures) raises the average values of impact energy. It can also be noted that melts 2 and 3 have higher average values of KV, which means that, like cooling to intermediate temperatures, also the addition of Cu and Ni improves the impact energy. Fig. 9 The chart of average KV grouped in relation to variant; categories in relation to melt",
+        "The example in Fig.  9  highlights the need for the application of approximation models allowing the use of both quantitative and qualitative variables. The tool used for modeling is the MARS method, which forms a component part of the STATISTICA™ package.",
+        "Multivariate adaptive regression splines (MARS) is the implementation of a generalization of the technique, the aim of which is to find the values of the output (dependent) variables based on the input variables (predictors). MARS is a nonparametric procedure that does not require any assumptions about the functional relationship between the dependent and independent variables. The dependence is constructed of the coefficients and so-called basis functions, fully determined by the data. The general mechanism of MARS functioning can be imagined as a multiple, segmented linear regression. The borders of segments (determined on the basis of data) define the “range of applicability” of each of the linear equations. MARS is adapted to the tasks in which there are both quantitative and qualitative predictor variables (Ref  15 ,  16 - 17 ). The input space is divided into areas, which are referred to separate regression or classification functions. This approach makes MARS particularly useful when there are more dimensions in the entry (more than two variables), and when in the case of other techniques the dimensionality starts being a problem. The MARS technique is known especially in the field of data mining (Ref  18 ,  19 - 20 ), since in this technique there is no need to make any assumptions about the type of relationship between the dependent and independent variables. Very good models (giving accurate predictions) are obtained in situations where the relationships are very complicated, non-monotonic and difficult for any parametric modeling (Ref  21 ,  22 ). MARS is used successfully also in the metal processing industry (Ref  23 ,  24 ).",
+        "For MARS model, the coefficient of determination  R 2  is 0.9 (90% fit of the model to the actual data, Fig.  10 ), which gives a better result than the multiple regression. However, an improvement of the model quality means the increased level of complexity. The model below should be used directly with qualitative variables coded 0, 1. As we can see, the model allows for both quantitative ( T AF, T A2 ,  T A ) and qualitative (melt, variant) variables, which improves the quality of the prediction. The equation of MARS model of the impact energy takes the following form: 3 KV = 24.22 + 0.06 ∗ max ( 0 ; T AF - 300 ) - 14.87 ∗ max 0 ; variant _ V 1 - 2.67 ∗ max ( 0 ; melt _ C 1 ) - 0.97 ∗ max ( 0 ; melt _ C 2 ) - 0.015 ∗ max ( 0 ; T A - 830 ) - 0.012 ∗ max ( 0 ; T A2 ) \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${\\text{KV}} = 24.22 + 0.06*\\hbox{max} (0;\\;T_{\\text{AF}} - 300) - 14.87*\\hbox{max} \\left( {0;\\;{\\text{variant}}\\_V1} \\right) - 2.67*\\hbox{max} (0;{\\text{melt}}\\_C1) - 0.97*\\hbox{max} (0;{\\text{melt}}\\_C2) - 0.015*\\hbox{max} (0; \\, T_{\\text{A}} - 830) - 0.012*\\hbox{max} (0; \\, T_{\\text{A2}} )$$\\end{document} Fig. 10 MARS: predicted vs. observed values.  R 2  = 0.907"
+      ]
+    },
+    {
+      "heading": "The Variational Components of VEPAC Module",
+      "paragraphs": [
+        "As has already been stated, qualitative variables (heat treatment variant, melt) have a significant effect on impact energy. The impact strength (or rather the energy of fracture) is a continuous, quantitative variable. Other variables, although expressed in numbers of double precision, can be considered as classes of values (can take a finite number of states), and thus can be treated as categorical or qualitative variables. This enables the use of such tools as analysis of variance. In the case under discussion, the classification factors will be more numerous, and their number will correspond to the number of the important explanatory variables. The variables under control (heat treatment variant, melt, temperatures:  T A ,  T AF ,  T A2 ) are called  factors . ANOVA confirms the significance of variables, such as T AF , heat treatment variant, melt, as well as their interactions. ANOVA allows calculation of the average in each of the groups designated by relevant factors. The usefulness of factors is determined by statistical tests (Ref  22 ). As in the regression analysis, the fit of the prediction to the raw data is  R 2  = 0.9 (90%) (Fig.  11 ). Fig. 11 Observed vs. predicted values—ANOVA;  R 2  = 0.90 Fig.  12 . The dependent variable vs. output of the neural network.  R 2  = 0.93",
+        "VEPAC—Variance Estimation and Precision, is intended for the analysis of variance in research and production. It is a set of techniques used to analyze the data obtained as a result of the experiments, which are controlled by both the fixed and random effects. In the VEPAC module, analysis alternative to the ANOVA is conducted on the basis of assessments by the method of restricted maximum likelihood estimation (REML). REML, in turn, uses quadratic forms to iteratively obtain estimates of the variance components. This method gives an even better fit of the model to real data than ANOVA ( R 2  = 0.91) and is able to incorporate more complex systems (Ref  25 ,  26 ).",
+        "The variability presents various systems of factors in a manner legible to the user. It also allows drawing additional conclusions, for example: Cooling to intermediate temperatures after austenitizing raises the average impact strength. The average impact strength increases in the melts with the addition of Cu and Cu + Ni. The average impact strength is higher for the heat treatment variants where the ausferritizing temperature is 400 °C. The austenitizing temperature after cooling to intermediate temperatures is of utmost importance for the melts without the addition of Ni, particularly in the case when the ausferritizing temperature is 300 °C—the lowest impact strength is attributed to the samples for which the austenitizing temperature after cooling to intermediate temperatures is 900 °C. The austenitizing temperature strongly influences the impact strength only in special systems of parameters, e.g., for the heat treatment variant without cooling to intermediate temperatures (V1), in melts without Cu and Ni (C1), the austenitizing temperature does not affect KV, but in melts with the addition of copper and nickel (C2; C3), when the ausferritizing temperature is 400 °C, a clear influence of the austenitizing temperature is observed, and the lower is this temperature. The higher is the impact strength. Forecasting KV is possible using the table of mean values in variation groups (Tables  6  and  7 ). Table 6 Mean values in variation groups of effects—VEPAC method T A T A2 T AF Variant Melt Mean KV SD KV 830 Null 300 V1 C1 6.64 0.31 830 Null 300 V1 C2 8.42 0.49 830 Null 300 V1 C3 8.57 0.43 830 Null 400 V1 C1 13.01 2.51 830 Null 400 V1 C2 15.99 0.49 830 Null 400 V1 C3 16.60 0.53 860 Null 300 V1 C1 6.27 0.40 860 Null 300 V1 C2 7.58 0.56 860 Null 300 V1 C3 8.48 0.62 860 Null 400 V1 C1 13.15 0.96 860 Null 400 V1 C2 14.39 0.36 860 Null 400 V1 C3 14.67 0.68 900 Null 300 V1 C1 6.52 0.59 900 Null 300 V1 C2 8.03 0.29 900 Null 300 V1 C3 9.18 0.47 900 Null 400 V1 C1 12.93 1.13 900 Null 400 V1 C2 12.48 0.53 900 Null 400 V1 C3 13.30 0.71 950 900 300 V2 C1 7.30 0.45 950 900 300 V2 C2 8.75 0.36 950 900 300 V2 C3 11.68 0.62 950 900 400 V2 C1 15.57 1.03 950 900 400 V2 C2 16.76 1.01 950 900 400 V2 C3 16.97 1.73 950 860 300 V2 C1 7.39 0.53 950 860 300 V2 C2 11.02 0.82 950 860 300 V2 C3 11.87 0.60 950 860 400 V2 C1 14.51 2.91 950 860 400 V2 C2 16.73 0.51 950 860 400 V2 C3 17.20 0.70 950 830 300 V2 C1 8.63 0.77 950 830 300 V2 C2 10.08 0.60 950 830 300 V2 C3 11.63 0.35 950 830 400 V2 C1 15.45 1.54 950 830 400 V2 C2 17.55 0.34 950 830 400 V2 C3 19.26 0.33 Table 7 Summary of neural network architectures Network Id Network name Quality (training) Quality (testing) Quality (validation) Error (training) Error (testing) Error (validation) 1 MLP 15-11-1 0.96 0.98 0.96 0.56 0.48 0.63 2 MLP 15-10-1 0.96 0.97 0.96 0.59 0.52 0.63 3 MLP 15-10-1 0.96 0.97 0.96 0.53 0.56 0.59 4 MLP 15-4-1 0.97 0.97 0.97 0.45 0.57 0.48 5 MLP 15-3-1 0.96 0.98 0.96 0.52 0.50 0.60"
+      ]
+    },
+    {
+      "heading": "Artificial Neural Networks",
+      "paragraphs": [
+        "Neural networks can perform several types of tasks in the modeling of technological (production) processes, including metallurgical and casting operations, using the following tools: regression, prediction, detection of patterns. The elementary operations performed by single artificial neural networks are of no particular interest, since actual neural computing power is the effect of a combination of many neurons in a network forming different structures (Ref  27 ,  28 - 29 ). Neural networks are used in processing metals for many years, enjoying high popularity (Ref  30 ,  31 ).",
+        "The dependent variable was the impact energy (KV). The inputs to the network were:  T A ,  T AF ,  T A2 , variant, melt (the variables with fixed significance). Among the tested architectures, the best results were achieved by MLP (multilayer perceptron) networks, better than the RBF (radial networks).",
+        "For analysis, the MLP 15-4-1 network was chosen. This notation defines the network architecture, i.e., 15 input neurons (for each class of each variable—binarization—one signal); four neurons in the hidden layer and one neuron in the output specifying the KV output.",
+        "As a function of activation, the network of a given architecture uses a logistic function in the hidden and output layers, as a method for calculation of the error—the sum of squares, and as a training algorithm—the Broyden–Fletcher–Goldfarb–Shanno (BFGS) method of optimization.",
+        "Thus, designed network reflects the input data with the correlation of 0.97, which gives  R 2  = 0.93. This is a better result than the methods used previously (Fig.  12 .). Fig. 12 The dependent variable vs. output of the neural network.  R 2  = 0.93",
+        "The trained network allows making predictions for the indicated values of the input signals. The disadvantage of neural networks is, however, that they do not provide support for the understanding of dependencies operating under a given phenomenon. The notation in a semi-symbolic form is difficult to understand for the user and cannot be used outside the network model. The weights of neurons allowing approximation do not constitute a knowledge base in the traditional sense."
+      ]
+    },
+    {
+      "heading": "SVM—The Method of Support Vectors",
+      "paragraphs": [
+        "In nonlinear models (linearly non-separable), the traditional method of analysis become less accurate. In recent years, some popularity has been gaining the SVM, a method of support vectors. This method determines to which of the two classes a given set of input data should belong by determining from training data the widest possible boundary between classes. It is a linear, binary and non-probabilistic classifier, which does not mean, however, that it is not suitable for the prediction of a dependent variable which may take more than two values, or for finding solutions to the nonlinear problems. The method of support vectors, although relatively young, has already found a number of practical applications (Ref  32 ,  33 ).",
+        "A solution to the problem of nonlinearity (when the vectors in the training set are not linearly separable) is the, so-called, kernel trick—mapping of training vectors to an area of greater dimension, where one can expect them to have the linear separability. The calculations are carried out using kernel functions (Ref  34 ,  35 ).",
+        "The method of support vectors uses 91 support vectors to build a hyperplane. The weakness of this method is the inability to visualize the multidimensional problems and the lack of a model in the form of equations or rules that could be presented to the user. The vectors are presented in tabulated form, difficult to interpretation. The prediction model, however, allows forecasting the indicated values of input signals (Fig.  13 ). Fig. 13 Observed vs. predicted values for the SVM method.  R 2  = 0.85",
+        "A summary of the method of support vectors: Regression type 1 ( C  = 10.000, epsilon = 0.100), Kernel: radial basis functions (RBF) (gamma = 0.167), Number of support vectors = 91 (37 connected)."
+      ]
+    },
+    {
+      "heading": "CART",
+      "paragraphs": [
+        "Classification and regression trees (CART) are one of a number of different embodiments of the induction algorithms of decision trees. Decision trees are an advanced form of knowledge representation, which creates rich possibilities of interpretation, both at the stage of knowledge acquisition (data mining), and in the phase of its use in decision-making process (Ref  36 ,  37 - 38 ). Trees induction algorithm iteratively divides the learner data set into partitions, repeating this operation until each partition contains objects belonging to one class only (Ref  39 ,  40 ).",
+        "The tree containing 24 leaves was generated. This means that the algorithm has divided the range of KV variability into 24 classes with different averages and variances depending on the system of input variables.",
+        "Since the CART algorithm requires no initial assumptions about the significance of explanatory variables, the t AF  variable (time of ausferritizing treatment) was also introduced into the model. The visualization of trees within a small space becomes impossible and unreadable. Decision trees are a graphical representation of the rules. Hence, using a tree, one can generate decision rules allowing approximation of the value of the KV variable. Also, other mechanisms of rule induction confirm the efficacy of the steel industry (Ref  41 ,  42 ). By application of a tree or a rule, the user can estimate the value of the fracture energy for various combinations of the heat treatment parameters.",
+        "The decision algorithm of CART tree allows post hoc investigation of validity of the variables used to build the tree. The  t AF  variable has been taken into account, although other algorithms demonstrated its marginal utility.",
+        "Among the models discussed, CART model has the best fit to the actual data. The coefficient of determination  R 2  = 0.967, or nearly 97% of the model fit (Fig.  10 ). In other words, the variability of impact energy is explained in 97% by the CART model, which is a very good result, bordering overfitting the model.",
+        "Like all models, CART model also allows for the analysis of residues (deviations from the model). It can be observed that in this case the residues are, on an average, not greater than 1 J, which means that the difference between the result yielded by the model and actual KV value obtained under the preset heat treatment parameters does not exceed 1 J in the vast majority of cases. The largest deviations in predicting KV occur with the values approaching 12 and 16 (Fig.  14 ). This will be explained by indicating the strength of rules for the KV classes with these average values. Fig. 14 Observed vs. predicted values in CART.  R 2  = 0.967",
+        "Each rule in a CART model defines the class of KV values with the specified mean and variance. The variance for each class defines the quality (strength) of the rule that leads to the specified mean—in other words—a measure of confidence of the rule is usually the variance in the leaf determining the degree of deviation of individual values from the mean. The higher is the variance, the more differentiated cases hit the same class; the smaller is the variance, the more similar are the cases in a given class, or the cases with a common configuration of the heat treatment parameters.",
+        "Different classes have their mean value and variance. The higher is the peak of the class, the smaller is the variance. Some classes have been signed to make it easier to explain certain phenomena. For example, rules 36 and 37 exhibit the highest variance (greater than 1). Rule 36 reads.",
+        "This means that the samples from melt C1 (without Cu and Ni), subjected to austenitizing at a temperature of 830 or 950 °C, with the temperature and time of the ausferritizing treatment equal to 400 °C and 64 min, respectively, have the average impact energy of 11.542 J. The variance of 4.664, i.e., the standard deviation in this class, is 2.16 J, which makes this rule the “worst” one in the model. It means that this class covers all those cases (samples) which somehow have failed to find a better qualification. In a simplification, it can be said that the cases for which significant correlations could not be found were “inserted” to classes 36 and 37, thus giving the values most averaged and varied. The question is whether it would not be better to remove these rules from the model, assuming that the user would not wish to use them in the design of the heat treatment process as “unstable” configurations of parameters.",
+        "As a contrasting example, rule 44 can be given.",
+        "This means that the samples from melt C2 (containing Cu but without Ni), subjected to austenitizing at a temperature of 830 or 950 °C, subjected or not subjected to cooling to intermediate temperatures during austenitizing at a temperature of 860 or 900 °C, with the temperature of the ausferritizing treatment equal to 400 °C and the time of this treatment shorter than or equal to 32 min, have the average impact energy of 17.122 J. The variance of 0.103, i.e., the standard deviation in this class, is 0.321 J. The standard deviation so low ensures that the determination of heat treatment parameters will provide a result very close to the average obtained for this class.",
+        "A comparison of these two classes can be made by the comparison of histograms. The histogram presents a number of cases in each range of values. For class 36, the range of KV values extends from 8 to 15 J; for class 44, this range is 16.4-17.8 J.",
+        "To verify the CART model, especially in the area of concern (rules 36 and 37), it was decided to use a tool that is cluster analysis. For this purpose, the  k - means clustering algorithm was applied. Clusters obtained by this method own many similarities to the classes from CART. In the range of KV values from 5 to 10 J, very distinct and strong clusters are present. The same is true for a high range of KV values, i.e., 15-20 J. Medium KV values (11-14 J) do not have their strong representatives in the form of clusters or classes. Hence, the conclusion follows that it will be much more difficult to “target” this area of KV variability through parameter settings, while it will be relatively easy to determine how to manage the process to obtain low or high impact energy."
+      ]
+    },
+    {
+      "heading": "Conclusions and Final Remarks",
+      "paragraphs": [
+        "The analytical studies helped to develop a method for the estimation of heat treatment parameters to obtain the ausferritic ductile iron with appropriate impact energy KV. The following methods were considered: Model of multiple regression, Model of piecewise (segmented) regression by MARS algorithm, ANOVA analysis, Analysis using the VEPAC package, Model of artificial neural networks, Model based on the method of SVM support vectors, Model based on the induction of CART, Cluster analysis by  k -means clustering algorithm. All developed models are applicable in the approximation of fracture energy, yielding fairly good results. Forecasting based on each of these models will have a high reliability, and it is the user who will decide on the choice of the final tool. As part of the studies, validation and testing were performed on the developed models, and the results are shown in Tables  8  and  9 . Table 8 Summary of SVM KV The average of observed values 12.013 The average of predicted values 12.161 The standard deviation of observed values 3.830 The standard deviation of predicted values 3.514 The mean squared error 2.187 The average error − 0.148 The standard deviation of error 1.478 The mean absolute error 0.983 The ratio of standard deviations 0.386 Correlation 0.922 The coefficient of determination  R 2 0.851 Table 9 A comparative table of the quality of fit of the approximation models Regression MARS ANOVA VEPAC SVM ANN CART Mean squared error (MSE) 2.684 1.404 1.395 1.293 2.188 0.891 0.498 Mean absolute error (MAE) 1.271 0.847 0.853 0.837 0.983 0.670 0.512 Relative root-mean-square error (rRMSE)  0.021 0.008 0.009 0.009 0.013 0.006 0.004 Standard deviation 0.113 0.068 0.070 0.072 0.081 0.058 0.045 Correlation coefficient ( r ) 0.906 0.952 0.952 0.956 0.923 0.968 0.983 The coefficient of determination ( R 2 ) 0.820 0.907 0.907 0.913 0.851 0.937 0.967",
+        "These models, however, differ from each other and not only in the quality of approximation, which can be summarized in a comparison table. Each of these models offers a different way of achieving forecasts, which gives different functionalities and ease of interpretation. Table  9  presents different error measures for individual models, as well as their correlation and coefficient of determination in relation to the measurements we have. Regardless of the adopted measure, models with the use of decision trees proved to be the most precise and accurate. When evaluating analytical tools, we rely on experimental data. Measuring data is not always enough, we could always wish it was more, it was more repetitive, according to the rule: “The more can we do the better, the smaller the error will be.” According to the authors, the studies presented here show that in this specific case the best results are provided by the method of induction of CART decision trees, and this is due not only to the high quality of the obtained approximation, but also and especially to the easy use of the rule base, easy interpretation by human and potential possibility of using this method in other information technology tools. Ability to interpret the model provides the functionality in the eyes of technologists. Further studies should broaden the scope of approximation to other mechanical properties and can even take into account other parameters, e.g., the measurement data from foundry equipment (Ref  43 ). On the other hand, the acquired knowledge in the form of rules can be successfully used in the construction of knowledge bases for intelligent systems in foundry applications (Ref  44 ,  45 ,  46 ,  47 ,  48 ,  49 - 50 ).",
+        "Material experiments conducted in the conditions presented in the article (with a specific chemical composition, with specific heat treatment parameters) constitute new knowledge that may be interesting for material researchers. The microstructure research allows for a qualitative assessment of the results achieved. Creating predictive models allow the extraction of knowledge about the studied process and the impact of its individual characteristics on the properties of the material. This knowledge in the form of rules, tables and equations can be used by the material engineer in the design of new materials with the desired properties."
+      ]
+    }
+  ],
+  "tables": [
+    {
+      "caption": "Chemical composition of cast iron melts, wt.%",
+      "headers": [
+        "Melt",
+        "C",
+        "Si",
+        "Mn",
+        "P",
+        "S",
+        "Mg",
+        "Cu",
+        "Ni"
+      ],
+      "rows": [
+        [
+          "W1",
+          "3.65",
+          "2.59",
+          "0.18",
+          "0.052",
+          "0.014",
+          "0.060",
+          "…",
+          "…"
+        ],
+        [
+          "W2",
+          "3.41",
+          "2.62",
+          "0.30",
+          "0.046",
+          "0.016",
+          "0.056",
+          "0.48",
+          "…"
+        ],
+        [
+          "W3",
+          "3.39",
+          "2.62",
+          "0.29",
+          "0.042",
+          "0.010",
+          "0.036",
+          "0.51",
+          "0.72"
+        ]
+      ],
+      "header_groups": [],
+      "table_alignment_status": "resolved",
+      "row_provenance": [
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 7
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 8
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 9
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 7
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 8
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 9
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 7
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 8
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 9
+          }
+        ]
+      ],
+      "tbody_alignment_status": "resolved"
+    },
+    {
+      "caption": "Critical temperatures of as-cast iron, °C",
+      "headers": [
+        "Melt",
+        "Ac 1,1",
+        "Ac 1,2",
+        "Ar 1,1",
+        "Ar 1,2"
+      ],
+      "rows": [
+        [
+          "W1",
+          "820",
+          "902",
+          "800",
+          "680"
+        ],
+        [
+          "W2",
+          "804",
+          "884",
+          "812",
+          "708"
+        ],
+        [
+          "W3",
+          "788",
+          "862",
+          "820",
+          "729"
+        ]
+      ],
+      "header_groups": [],
+      "table_alignment_status": "resolved",
+      "row_provenance": [
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 5
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 5
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 5
+          }
+        ]
+      ],
+      "tbody_alignment_status": "resolved"
+    },
+    {
+      "caption": "Mechanical properties",
+      "headers": [
+        "Melt",
+        "R m ,  MPa",
+        "R p 0,2,  MPa",
+        "A , %",
+        "HB",
+        "Cast iron grade consistent with BS-EN 1563:2012 for  t  ≤ 30 mm",
+        "Ferrite",
+        "Pearlite",
+        "% of volume",
+        "Numbers of separations mm 2"
+      ],
+      "rows": [
+        [
+          "W1",
+          "507",
+          "354",
+          "12.1",
+          "162",
+          "EN-GJS-500-7",
+          "99.2",
+          "0.8",
+          "11.8",
+          "94"
+        ],
+        [
+          "W2",
+          "565",
+          "388",
+          "7.6",
+          "201",
+          "EN-GJS-500-7",
+          "36.5",
+          "63.5",
+          "12.7",
+          "92"
+        ],
+        [
+          "W3",
+          "656",
+          "464",
+          "3.2",
+          "252",
+          "EN-GJS-600-3",
+          "16.3",
+          "83.7",
+          "13.1",
+          "89"
+        ]
+      ],
+      "header_groups": [
+        {
+          "label": "Mechanical properties*",
+          "start_col": 2,
+          "end_col": 5
+        },
+        {
+          "label": "Matrix",
+          "start_col": 7,
+          "end_col": 8
+        },
+        {
+          "label": "Graphite",
+          "start_col": 9,
+          "end_col": 10
+        }
+      ],
+      "table_alignment_status": "resolved",
+      "row_provenance": [
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 7
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 8
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 9
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 10
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 7
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 8
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 9
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 10
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 7
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 8
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 9
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 10
+          }
+        ]
+      ],
+      "tbody_alignment_status": "resolved"
+    },
+    {
+      "caption": "Correlations of quantitative variables with the KV variable",
+      "headers": [
+        "Variable",
+        "r",
+        "p"
+      ],
+      "rows": [
+        [
+          "T A",
+          "0.2393",
+          "0.000"
+        ],
+        [
+          "T A2",
+          "0.2994",
+          "0.000"
+        ],
+        [
+          "T AF",
+          "0.8514",
+          "0.000"
+        ],
+        [
+          "t AF",
+          "0.0175",
+          "0.718"
+        ]
+      ],
+      "header_groups": [
+        {
+          "label": "KV",
+          "start_col": 2,
+          "end_col": 3
+        }
+      ],
+      "table_alignment_status": "resolved",
+      "row_provenance": [
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 3
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 3
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 3
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 3
+          }
+        ]
+      ],
+      "tbody_alignment_status": "resolved"
+    },
+    {
+      "caption": "Predictors for the quantitative dependent variable—KV",
+      "headers": [
+        "Variable",
+        "R 2",
+        "Value F",
+        "Value  p"
+      ],
+      "rows": [
+        [
+          "T AF",
+          "0.72",
+          "1133.14",
+          "0.00"
+        ],
+        [
+          "Variant",
+          "0.09",
+          "43.44",
+          "0.00"
+        ],
+        [
+          "T A2",
+          "0.09",
+          "43.44",
+          "0.00"
+        ],
+        [
+          "Melt",
+          "0.09",
+          "19.04",
+          "0.00"
+        ],
+        [
+          "T A",
+          "0.07",
+          "15.72",
+          "0.00"
+        ],
+        [
+          "t AF",
+          "0.01",
+          "0.99",
+          "0.40"
+        ],
+        [
+          "Sample",
+          "0.00",
+          "0.00",
+          "1.00"
+        ]
+      ],
+      "header_groups": [],
+      "table_alignment_status": "resolved",
+      "row_provenance": [
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 4
+          }
+        ]
+      ],
+      "tbody_alignment_status": "resolved"
+    },
+    {
+      "caption": "Mean values in variation groups of effects—VEPAC method",
+      "headers": [
+        "T A",
+        "T A2",
+        "T AF",
+        "Variant",
+        "Melt",
+        "Mean KV",
+        "SD KV"
+      ],
+      "rows": [
+        [
+          "830",
+          "Null",
+          "300",
+          "V1",
+          "C1",
+          "6.64",
+          "0.31"
+        ],
+        [
+          "830",
+          "Null",
+          "300",
+          "V1",
+          "C2",
+          "8.42",
+          "0.49"
+        ],
+        [
+          "830",
+          "Null",
+          "300",
+          "V1",
+          "C3",
+          "8.57",
+          "0.43"
+        ],
+        [
+          "830",
+          "Null",
+          "400",
+          "V1",
+          "C1",
+          "13.01",
+          "2.51"
+        ],
+        [
+          "830",
+          "Null",
+          "400",
+          "V1",
+          "C2",
+          "15.99",
+          "0.49"
+        ],
+        [
+          "830",
+          "Null",
+          "400",
+          "V1",
+          "C3",
+          "16.60",
+          "0.53"
+        ],
+        [
+          "860",
+          "Null",
+          "300",
+          "V1",
+          "C1",
+          "6.27",
+          "0.40"
+        ],
+        [
+          "860",
+          "Null",
+          "300",
+          "V1",
+          "C2",
+          "7.58",
+          "0.56"
+        ],
+        [
+          "860",
+          "Null",
+          "300",
+          "V1",
+          "C3",
+          "8.48",
+          "0.62"
+        ],
+        [
+          "860",
+          "Null",
+          "400",
+          "V1",
+          "C1",
+          "13.15",
+          "0.96"
+        ],
+        [
+          "860",
+          "Null",
+          "400",
+          "V1",
+          "C2",
+          "14.39",
+          "0.36"
+        ],
+        [
+          "860",
+          "Null",
+          "400",
+          "V1",
+          "C3",
+          "14.67",
+          "0.68"
+        ],
+        [
+          "900",
+          "Null",
+          "300",
+          "V1",
+          "C1",
+          "6.52",
+          "0.59"
+        ],
+        [
+          "900",
+          "Null",
+          "300",
+          "V1",
+          "C2",
+          "8.03",
+          "0.29"
+        ],
+        [
+          "900",
+          "Null",
+          "300",
+          "V1",
+          "C3",
+          "9.18",
+          "0.47"
+        ],
+        [
+          "900",
+          "Null",
+          "400",
+          "V1",
+          "C1",
+          "12.93",
+          "1.13"
+        ],
+        [
+          "900",
+          "Null",
+          "400",
+          "V1",
+          "C2",
+          "12.48",
+          "0.53"
+        ],
+        [
+          "900",
+          "Null",
+          "400",
+          "V1",
+          "C3",
+          "13.30",
+          "0.71"
+        ],
+        [
+          "950",
+          "900",
+          "300",
+          "V2",
+          "C1",
+          "7.30",
+          "0.45"
+        ],
+        [
+          "950",
+          "900",
+          "300",
+          "V2",
+          "C2",
+          "8.75",
+          "0.36"
+        ],
+        [
+          "950",
+          "900",
+          "300",
+          "V2",
+          "C3",
+          "11.68",
+          "0.62"
+        ],
+        [
+          "950",
+          "900",
+          "400",
+          "V2",
+          "C1",
+          "15.57",
+          "1.03"
+        ],
+        [
+          "950",
+          "900",
+          "400",
+          "V2",
+          "C2",
+          "16.76",
+          "1.01"
+        ],
+        [
+          "950",
+          "900",
+          "400",
+          "V2",
+          "C3",
+          "16.97",
+          "1.73"
+        ],
+        [
+          "950",
+          "860",
+          "300",
+          "V2",
+          "C1",
+          "7.39",
+          "0.53"
+        ],
+        [
+          "950",
+          "860",
+          "300",
+          "V2",
+          "C2",
+          "11.02",
+          "0.82"
+        ],
+        [
+          "950",
+          "860",
+          "300",
+          "V2",
+          "C3",
+          "11.87",
+          "0.60"
+        ],
+        [
+          "950",
+          "860",
+          "400",
+          "V2",
+          "C1",
+          "14.51",
+          "2.91"
+        ],
+        [
+          "950",
+          "860",
+          "400",
+          "V2",
+          "C2",
+          "16.73",
+          "0.51"
+        ],
+        [
+          "950",
+          "860",
+          "400",
+          "V2",
+          "C3",
+          "17.20",
+          "0.70"
+        ],
+        [
+          "950",
+          "830",
+          "300",
+          "V2",
+          "C1",
+          "8.63",
+          "0.77"
+        ],
+        [
+          "950",
+          "830",
+          "300",
+          "V2",
+          "C2",
+          "10.08",
+          "0.60"
+        ],
+        [
+          "950",
+          "830",
+          "300",
+          "V2",
+          "C3",
+          "11.63",
+          "0.35"
+        ],
+        [
+          "950",
+          "830",
+          "400",
+          "V2",
+          "C1",
+          "15.45",
+          "1.54"
+        ],
+        [
+          "950",
+          "830",
+          "400",
+          "V2",
+          "C2",
+          "17.55",
+          "0.34"
+        ],
+        [
+          "950",
+          "830",
+          "400",
+          "V2",
+          "C3",
+          "19.26",
+          "0.33"
+        ]
+      ],
+      "header_groups": [],
+      "table_alignment_status": "resolved",
+      "row_provenance": [
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 7
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 7
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 7
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 7
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 7
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 7
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 7
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 7
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 8,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 8,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 8,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 8,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 8,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 8,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 8,
+            "source_col": 7
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 9,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 9,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 9,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 9,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 9,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 9,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 9,
+            "source_col": 7
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 10,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 10,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 10,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 10,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 10,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 10,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 10,
+            "source_col": 7
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 11,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 11,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 11,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 11,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 11,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 11,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 11,
+            "source_col": 7
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 12,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 12,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 12,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 12,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 12,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 12,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 12,
+            "source_col": 7
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 13,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 13,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 13,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 13,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 13,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 13,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 13,
+            "source_col": 7
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 14,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 14,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 14,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 14,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 14,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 14,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 14,
+            "source_col": 7
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 15,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 15,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 15,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 15,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 15,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 15,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 15,
+            "source_col": 7
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 16,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 16,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 16,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 16,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 16,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 16,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 16,
+            "source_col": 7
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 17,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 17,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 17,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 17,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 17,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 17,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 17,
+            "source_col": 7
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 18,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 18,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 18,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 18,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 18,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 18,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 18,
+            "source_col": 7
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 19,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 19,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 19,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 19,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 19,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 19,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 19,
+            "source_col": 7
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 20,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 20,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 20,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 20,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 20,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 20,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 20,
+            "source_col": 7
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 21,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 21,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 21,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 21,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 21,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 21,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 21,
+            "source_col": 7
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 22,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 22,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 22,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 22,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 22,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 22,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 22,
+            "source_col": 7
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 23,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 23,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 23,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 23,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 23,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 23,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 23,
+            "source_col": 7
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 24,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 24,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 24,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 24,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 24,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 24,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 24,
+            "source_col": 7
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 25,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 25,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 25,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 25,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 25,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 25,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 25,
+            "source_col": 7
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 26,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 26,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 26,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 26,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 26,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 26,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 26,
+            "source_col": 7
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 27,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 27,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 27,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 27,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 27,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 27,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 27,
+            "source_col": 7
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 28,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 28,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 28,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 28,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 28,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 28,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 28,
+            "source_col": 7
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 29,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 29,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 29,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 29,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 29,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 29,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 29,
+            "source_col": 7
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 30,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 30,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 30,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 30,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 30,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 30,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 30,
+            "source_col": 7
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 31,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 31,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 31,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 31,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 31,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 31,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 31,
+            "source_col": 7
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 32,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 32,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 32,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 32,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 32,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 32,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 32,
+            "source_col": 7
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 33,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 33,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 33,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 33,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 33,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 33,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 33,
+            "source_col": 7
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 34,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 34,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 34,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 34,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 34,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 34,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 34,
+            "source_col": 7
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 35,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 35,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 35,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 35,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 35,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 35,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 35,
+            "source_col": 7
+          }
+        ]
+      ],
+      "tbody_alignment_status": "resolved"
+    },
+    {
+      "caption": "Summary of neural network architectures",
+      "headers": [
+        "Network Id",
+        "Network name",
+        "Quality (training)",
+        "Quality (testing)",
+        "Quality (validation)",
+        "Error (training)",
+        "Error (testing)",
+        "Error (validation)"
+      ],
+      "rows": [
+        [
+          "1",
+          "MLP 15-11-1",
+          "0.96",
+          "0.98",
+          "0.96",
+          "0.56",
+          "0.48",
+          "0.63"
+        ],
+        [
+          "2",
+          "MLP 15-10-1",
+          "0.96",
+          "0.97",
+          "0.96",
+          "0.59",
+          "0.52",
+          "0.63"
+        ],
+        [
+          "3",
+          "MLP 15-10-1",
+          "0.96",
+          "0.97",
+          "0.96",
+          "0.53",
+          "0.56",
+          "0.59"
+        ],
+        [
+          "4",
+          "MLP 15-4-1",
+          "0.97",
+          "0.97",
+          "0.97",
+          "0.45",
+          "0.57",
+          "0.48"
+        ],
+        [
+          "5",
+          "MLP 15-3-1",
+          "0.96",
+          "0.98",
+          "0.96",
+          "0.52",
+          "0.50",
+          "0.60"
+        ]
+      ],
+      "header_groups": [],
+      "table_alignment_status": "resolved",
+      "row_provenance": [
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 7
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 8
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 7
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 8
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 7
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 8
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 7
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 8
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 7
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 8
+          }
+        ]
+      ],
+      "tbody_alignment_status": "resolved"
+    },
+    {
+      "caption": "Summary of SVM",
+      "headers": [
+        "",
+        "KV"
+      ],
+      "rows": [
+        [
+          "The average of observed values",
+          "12.013"
+        ],
+        [
+          "The average of predicted values",
+          "12.161"
+        ],
+        [
+          "The standard deviation of observed values",
+          "3.830"
+        ],
+        [
+          "The standard deviation of predicted values",
+          "3.514"
+        ],
+        [
+          "The mean squared error",
+          "2.187"
+        ],
+        [
+          "The average error",
+          "− 0.148"
+        ],
+        [
+          "The standard deviation of error",
+          "1.478"
+        ],
+        [
+          "The mean absolute error",
+          "0.983"
+        ],
+        [
+          "The ratio of standard deviations",
+          "0.386"
+        ],
+        [
+          "Correlation",
+          "0.922"
+        ],
+        [
+          "The coefficient of determination  R 2",
+          "0.851"
+        ]
+      ],
+      "header_groups": [],
+      "table_alignment_status": "resolved",
+      "row_provenance": [
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 2
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 2
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 2
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 2
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 2
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 2
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 2
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 2
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 8,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 8,
+            "source_col": 2
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 9,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 9,
+            "source_col": 2
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 10,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 10,
+            "source_col": 2
+          }
+        ]
+      ],
+      "tbody_alignment_status": "resolved"
+    },
+    {
+      "caption": "A comparative table of the quality of fit of the approximation models",
+      "headers": [
+        "",
+        "Regression",
+        "MARS",
+        "ANOVA",
+        "VEPAC",
+        "SVM",
+        "ANN",
+        "CART"
+      ],
+      "rows": [
+        [
+          "Mean squared error (MSE)",
+          "2.684",
+          "1.404",
+          "1.395",
+          "1.293",
+          "2.188",
+          "0.891",
+          "0.498"
+        ],
+        [
+          "Mean absolute error (MAE)",
+          "1.271",
+          "0.847",
+          "0.853",
+          "0.837",
+          "0.983",
+          "0.670",
+          "0.512"
+        ],
+        [
+          "Relative root-mean-square error (rRMSE)",
+          "0.021",
+          "0.008",
+          "0.009",
+          "0.009",
+          "0.013",
+          "0.006",
+          "0.004"
+        ],
+        [
+          "Standard deviation",
+          "0.113",
+          "0.068",
+          "0.070",
+          "0.072",
+          "0.081",
+          "0.058",
+          "0.045"
+        ],
+        [
+          "Correlation coefficient ( r )",
+          "0.906",
+          "0.952",
+          "0.952",
+          "0.956",
+          "0.923",
+          "0.968",
+          "0.983"
+        ],
+        [
+          "The coefficient of determination ( R 2 )",
+          "0.820",
+          "0.907",
+          "0.907",
+          "0.913",
+          "0.851",
+          "0.937",
+          "0.967"
+        ]
+      ],
+      "header_groups": [],
+      "table_alignment_status": "resolved",
+      "row_provenance": [
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 7
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 8
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 7
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 8
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 7
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 8
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 7
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 8
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 7
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 8
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 7
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 8
+          }
+        ]
+      ],
+      "tbody_alignment_status": "resolved"
+    }
+  ]
+}

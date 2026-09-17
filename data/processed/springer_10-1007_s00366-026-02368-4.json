@@ -1,0 +1,607 @@
+{
+  "doi": "10.1007/s00366-026-02368-4",
+  "title": "Deep learning-based crystal plasticity analysis of stress field and triaxiality in dual-phase steels with varying martensite fractions",
+  "abstract": "Abstract Accurate prediction of stress state is of great importance for evaluating the plastic deformation and ductile fracture of metallic materials. This study aims at developing a deep learning framework for predicting stress field and triaxiality in dual-phase (DP) advanced high-strength steels (AHSSs). The framework is introduced via crystal plasticity-based convolutional neural network (CP-CNN) that is capable of rapidly and accurately predicting von Mises equivalent stress and stress triaxiality distributions in the generated microstructure of DP steels with varying martensite fractions. This work introduces two approaches involving unique-input and multi-input features with encoder-decoder architecture. It is found that the former approach possesses excellent agreement of stress field with CPFEM simulations, meanwhile the latter approach demonstrates a significant improvement in prediction of stress triaxiality. This study discloses that an integrated squeeze-excitation residual network (SE-ResNet) and self-attention modules together within the network enable the CP-CNN to effectively describe both local feature refinement and global feature dependencies, which are crucial in capturing stress heterogeneity in the DP steels. In particular, the stress partitioning among the constituent phases of ferrite and martensite is accurately predicted. Moreover, within the investigated synthetic DP microstructure, the predictive capability and generalizability of the developed CP-CNN are well demonstrated on various unseen conditions, such as varying grain orientations and martensite fractions, leave-one-martensite-fraction-out validation, and additional strain levels. The present findings elucidate an obvious merit of CP-CNN that the computational time is significantly reduced by ~ 2.5 orders of magnitude compared to the CPFEM simulation. The present CP-CNN framework offers significant potentials for materials design and development of AHSS.",
+  "journal": "Engineering with Computers",
+  "year": "2026",
+  "sections": [
+    {
+      "heading": "Introduction",
+      "paragraphs": [
+        "Accurate prediction of stress states in metallic materials plays a pivotal role in understanding their plastic deformation and ductile fracture behavior. The ability to reliably forecast stress distributions is essential for optimizing material performance in structural and industrial applications, particularly for advanced high-strength steels (AHSSs). Among AHSSs, dual-phase (DP) steels are widely used in automotive and aerospace industries due to their superior combination of high strength and ductility [ 1 ,  2 – 3 ]. These desirable mechanical properties arise from their characteristic microstructure, which consists of a soft ferrite matrix reinforced by a hard martensite phase. However, the mechanical response of DP steels is highly heterogeneous due to complex stress partitioning between these constituent phases [ 4 ,  5 ], necessitating advanced modeling techniques for accurate stress prediction.",
+        "Microstructure-based modeling methods have been extensively studied in the literature to investigate the mechanical responses and deformation mechanisms of polycrystalline materials. Among these approaches, the crystal plasticity finite element method (CPFEM) has emerged as one of the most widely used and versatile techniques due to its ability to accurately capture the inherent heterogeneity of polycrystalline microstructures [ 6 ,  7 ,  8 ,  9 – 10 ]. By explicitly modeling key microstructural features such as grain orientation, morphology, and intergranular interactions, CPFEM enables high-fidelity simulations of material behavior under various loading conditions. A fundamental strength of CPFEM lies in its incorporation of advanced constitutive laws that describe the anisotropic plasticity of individual grains [ 11 ]. These models account for critical deformation mechanisms, including dislocation slip [ 12 ,  13 ], twinning [ 14 ,  15 ], creep [ 16 ,  17 ] and transformation-induced plasticity [ 18 ,  19 ], thereby offering a comprehensive representation of the microstructural evolution under mechanical loads. Through homogenization schemes and advanced computational techniques, CPFEM extends its applicability to a wide range of metallic alloys, such as steel alloys [ 20 ,  21 ], aluminum alloys [ 22 ,  23 – 24 ], titanium alloys [ 25 ,  26 ] and other materials [ 27 ,  28 ]. To enhance the predictive capability of CPFEM, integration of experimental validation techniques such as in-situ electron backscatter diffraction (EBSD) and scanning electron microscopy (SEM) [ 29 ,  30 ], digital image correlation (DIC) [ 31 ,  32 ], X-ray and neutron diffractions [ 33 ,  34 ] is frequently employed. These techniques provide critical microstructural and kinematic data that help refine CPFEM models, ensuring improved accuracy in predicting deformation heterogeneities and failure mechanisms.",
+        "However, CPFEM is computationally expensive, particularly when applied to large-scale microstructural domains with high-resolution meshes. The computational burden arises from the need to solve highly nonlinear partial differential equations governing the crystal plasticity framework [ 35 ], which significantly limits its practical applications in real-time decision-making and materials design. Recent advancements in deep learning (DL) have enabled the development of data-driven models that can effectively approximate complex physical phenomena [ 36 ,  37 ,  38 ,  39 ,  40 ,  41 ,  42 ,  43 ,  44 ,  45 – 46 ], making DL as a powerful tool for accelerating CPFEM computations. Unlike conventional numerical methods that require explicit solutions to highly nonlinear partial differential equations, DL models serve as function approximation tools capable of capturing complex, nonlinear dependencies in training datasets. Once trained, these models offer near-instantaneous predictions at a fraction of the computational cost, making them particularly attractive for surrogate modeling, uncertainty quantification, and real-time microstructure evolution simulations. The integration of DL with CPFEM not only reduces computational time but also enables the exploration of broader microstructural design spaces, paving the way for data-driven materials design and optimization [ 47 ,  48 – 49 ].",
+        "Artificial neural networks (ANNs) and convolutional neural networks (CNNs) have been extensively applied in crystal plasticity to model complex deformation mechanisms, predict material behavior, and enhance computational efficiency. For example, Tran et al. [ 50 ] developed ANN model in combination with genetic algorithm to optimize the design parameters in multi-stage stamping process of ultra-thin bipolar plate for proton exchange membrane fuel cell. Ibragimova et al. [ 51 ] developed ANNs and crystal plasticity-based framework to predict stress-strain behavior and texture evolution for face-centered cubic (FCC) materials. The framework in their work demonstrates high accuracy across various loading scenarios while significantly reducing computational costs, highlighting its feasibility for predicting complex strain paths without exhaustive training on all possible loading cases. Zapiain et al. [ 52 ] introduced a data-driven framework integrating Bayesian neural network surrogate models with crystal plasticity simulations to efficiently predict plastic anisotropy from crystallographic texture. Gao et al. [ 53 ] proposed an extended multi-level CPFEM with ANN model to accurately predict the mechanical response, twinning, and texture evolution in high-entropy alloy under varying strain rates. Recently, Nguyen et al. [ 54 ] developed physics-guided neural network based on CPFEM for assessing the forming limits of three AHSSs. Their framework achieved high precision with limited data, showing a significant reduction in computational costs and providing insights into microstructural effects on formability. Keshavarz et al. [ 55 ] introduced physics-informed neural network (PINN) with an object-oriented CPFEM framework to enable precise and efficient predictions of crystalline material behavior. Ibragimova et al. [ 56 ] integrated convolutional neural network (CNN) with CPFEM to rapidly and accurately predict local stress and strain evolution in aluminum alloys under uniaxial tension based on microstructure characteristics and hardening parameters. Liu et al. [ 57 ] developed a deep learning framework by integrating the CNN and long short-term memory (LSTM) networks to predict the statistical microvoid growth in heterogeneous polycrystals, which showed excellent agreement with CPFEM simulation results. Recently, Tran et al. [ 58 ] developed multi-fidelity physics-guided graph neural networks (PGNNs) for prediction of mechanical properties and yield loci across diverse aluminum alloy microstructures that significantly reduces computational time compared to CPFEM simulations while preserving physical interpretability. Suzuki et al. [ 59 ] employed CNN based on dislocation-based CPFEM to effectively predict the maximum stress and working limit strain of DP steels with a variety of microstructures. In DP steel, variations in the spatial distribution and fraction of martensite significantly affect the heterogeneity of the stress field, leading to deformation incompatibility, and consequently ductile fracture [ 60 ]. This necessitates the development of an advanced model capable of rapidly and accurately predicting stress distribution in DP steels, considering variations in martensite characteristics.",
+        "In this study, we propose a deep learning framework, employed crystal plasticity-based CNN (CP-CNN), for rapid and accurate prediction of stress field and triaxiality in DP steels with varying martensite fractions. The CP-CNN model is trained using high-fidelity CPFEM-generated stress field data, enabling it to learn the underlying physical relationships between microstructural attributes and stress distributions. The novelty of this work is the development and systematic evaluation of the CP-CNN framework for martensite-fraction-dependent local field prediction in DP steels. Compared with previous CPFEM-CNN surrogate studies that mainly focused on stress or strain field prediction, the present work explicitly considers stress triaxiality, which is a key parameter for ductile damage and fracture analysis. Two triaxiality prediction strategies are compared: a microstructure-only model that directly predicts triaxiality from inverse pole figure and phase maps, and a CPFEM-stress-assisted model that predicts triaxiality using auxiliary information of stress state. Furthermore, within the investigated synthetic DP microstructural domain, the robustness of the framework is demonstrated through generalizability tests on various unseen conditions including varying grain orientations and martensite fractions, leave-one-martensite-fraction-out validation, and additional strain levels.",
+        "This paper is structured as follows: Sect.  2  describes the details of the CPFEM dataset used for model training and validation, along with the deep learning architecture of CP-CNN. Section  3  presents the results of stress field and triaxiality predictions, comparing CP-CNN outputs with CPFEM benchmarks and discusses the implications of the findings. Finally, Sect.  4  concludes the study by summarizing the key contributions of the present work."
+      ]
+    },
+    {
+      "heading": "Integrated crystal plasticity and deep learning models",
+      "paragraphs": [
+        "Fig. 1 Overview of the proposed CP-CNN framework for prediction of martensite fraction dependent-stress state in DP steels",
+        "Figure  1  shows an overview of the proposed CP-CNN framework for prediction of martensite fraction dependent-stress state in DP steels. The CP-CNN involves the input of microstructural attributes represented by inverse pole figure (IPF) and phase maps with different martensite fractions (M f ) to predict the outputs of von Mises equivalent stress and stress triaxiality. The generation of large dataset for the microstructure input and resultant stress state output is implemented using DREAM.3D and CPFEM, which will be described in the following sections."
+      ]
+    },
+    {
+      "heading": "Stress state",
+      "paragraphs": [
+        "In metallic materials, the von Mises equivalent stress and stress triaxiality are often used to characterize the stress state which controls the plastic deformation and ductile fracture of the material. The von Mises equivalent stress  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\:{\\stackrel{-}{\\sigma\\:}}_{eq}$$\\end{document}  is defined as: 1 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\:{\\stackrel{-}{\\sigma\\:}}_{eq}=\\sqrt{\\frac{1}{2}\\left[{\\left({\\sigma\\:}_{1}-{\\sigma\\:}_{2}\\right)}^{2}+{\\left({\\sigma\\:}_{2}-{\\sigma\\:}_{3}\\right)}^{2}+{\\left({\\sigma\\:}_{3}-{\\sigma\\:}_{1}\\right)}^{2}\\right]},$$\\end{document}  where  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\:{\\sigma\\:}_{1}$$\\end{document} ,  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\:{\\sigma\\:}_{2}$$\\end{document}  and  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\:{\\sigma\\:}_{3}$$\\end{document}  are principal stresses. The stress triaxiality  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\:\\eta\\:$$\\end{document}  is defined by the normalization of the mean stress  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\:{\\sigma\\:}_{m}$$\\end{document}  to equivalent von Mises stress  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\:{\\stackrel{-}{\\sigma\\:}}_{eq}$$\\end{document}  as: 2 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\:\\eta\\:=\\frac{{\\sigma\\:}_{m}}{{\\stackrel{-}{\\sigma\\:}}_{eq}},$$\\end{document}  where  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\:{\\sigma\\:}_{m}=\\frac{1}{3}\\left({\\sigma\\:}_{1}+{\\sigma\\:}_{2}+{\\sigma\\:}_{3}\\right)$$\\end{document} . In this work, two approaches are introduced to predict the stress triaxiality and their performance is evaluated."
+      ]
+    },
+    {
+      "heading": "Crystal plasticity simulations",
+      "paragraphs": [
+        "In this study, we implement the CPFEM simulation for the development and validation of CNN model. The CPFEM is a high-fidelity approach to simulate the mechanical properties, stress and strain partitioning and ductile fracture behavior of materials because the microstructural atributes such as grain orientation, grain morphology and grain-to-grain interaction are effectively taken into account [ 6 ,  11 ,  13 ]. The CPFEM employs the rate-dependent constitutive model to describe the plastic deformation due to the dislocation slip. The plastic velocity gradient  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\:{\\varvec{L}}^{p}$$\\end{document}  is defined as the sum of the shear strain rates on all active slip systems as: 3 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$ L^{p} = N\\sum\\limits_{{\\alpha \\: = 1}}^{N} {\\dot{\\gamma }^{{\\left( {\\alpha \\:} \\right)}} s^{{\\left( {\\alpha \\:} \\right)}} } \\otimes \\:m^{{\\left( {\\alpha \\:} \\right)}} , $$\\end{document}  where  N  denotes the number of active slip systems and equals 24 for 12{110}<111 > and 12{112}<111 > of the body-centered cubic crystals.  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\:{\\varvec{s}}^{\\left(\\alpha\\:\\right)}$$\\end{document}  and  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\:{\\varvec{m}}^{\\left(\\alpha\\:\\right)}$$\\end{document}  are the unit vectors of slip plane direction and slip plane normal, respectively. The shear strain rate  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\:{\\dot{\\gamma\\:}}^{\\left(\\alpha\\:\\right)}$$\\end{document}  of slip system  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\:\\alpha\\:$$\\end{document}  is formulated depending on the resolved shear stress  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\:{\\tau\\:}^{\\left(\\alpha\\:\\right)}$$\\end{document}  and slip system resistance  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\:{\\tau\\:}_{c}^{\\left(\\alpha\\:\\right)}$$\\end{document}  as: 4 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\:{\\dot{\\gamma\\:}}^{\\left(\\alpha\\:\\right)}={\\dot{\\gamma\\:}}_{0}^{\\left(\\alpha\\:\\right)}{\\left|\\frac{{\\tau\\:}^{\\left(\\alpha\\:\\right)}}{{\\tau\\:}_{c}^{\\left(\\alpha\\:\\right)}}\\right|}^{\\frac{1}{m}}\\text{s}\\text{g}\\text{n}\\left({\\tau\\:}^{\\left(\\alpha\\:\\right)}\\right),$$\\end{document}  where  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\:{\\dot{\\gamma\\:}}_{0}^{\\left(\\alpha\\:\\right)}$$\\end{document}  is the reference shear strain rate and  m  is the slip rate sensitivity parameter. The evolution of slip system resistance  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\:{\\tau\\:}_{c}^{\\left(\\alpha\\:\\right)}$$\\end{document}  is influenced by any slip system  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\:\\beta\\:$$\\end{document}  as: 5 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\:{\\dot{\\tau\\:}}_{c}^{\\left(\\alpha\\:\\right)}=\\sum\\limits_{\\beta\\:=1}^{N}{h}_{\\alpha\\:\\beta\\:}\\left|{\\dot{\\gamma\\:}}^{\\left(\\beta\\:\\right)}\\right|,$$\\end{document}  where  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\:{h}_{\\alpha\\:\\beta\\:}$$\\end{document}  is the hardening matrix capturing the interaction among various slip systems, which is expressed as: 6 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\:{h}_{\\alpha\\:\\beta\\:}={h}_{0}{\\left(1-\\frac{{\\tau\\:}_{c}^{\\left(\\alpha\\:\\right)}}{{\\tau\\:}_{s}}\\right)}^{a}\\left(q+\\left(1-q\\right){\\delta\\:}_{\\alpha\\:\\beta\\:}\\right),$$\\end{document}  where  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\:{h}_{0}$$\\end{document} ,  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\:{\\tau\\:}_{s}$$\\end{document}  and  a  are the initial hardening modulus, the saturated resolved shear stress, the hardening exponent, respectively.  q  and  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\:{\\delta\\:}_{\\alpha\\:\\beta\\:}$$\\end{document}  represent the latent hardening rate and Kronecker delta, respectively.",
+        "The hardening parameters of CPFEM model for the ferrite and martensite phases in DP steel are calibrated based on in-situ neutron diffraction experiment and uniaxial tensile test as given in Table  1 . The in-detail calibration procedure can be found in our previous work [ 4 ]. Thereupon, a user-material (UMAT) subroutine in Abaqus/Standard is used to implement the CPFEM calculation.",
+        "Table 1 Calibrated hardening parameters of ferrite and martensite phases in DP steel [ 4 ] \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\:{\\dot{\\gamma\\:}}_{0}$$\\end{document}  [/s]  m  q \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\:{h}_{o}$$\\end{document}  [MPa]  a \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\:{\\tau\\:}_{c}$$\\end{document}  [MPa] \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\:{\\tau\\:}_{s}$$\\end{document}  [MPa] Ferrite 0.001 0.05 1.4 10,500 1.0 168 235 Martensite 0.001 0.05 1.4 19,000 2.9 188 702"
+      ]
+    },
+    {
+      "heading": "Dataset generation",
+      "paragraphs": [
+        "To achieve accurate training, a large dataset is essentially required. However, it is a challenging task to acquire large dataset from experiment. In this study, therefore, the input data of microstructure is synthetically generated using DREAM.3D [ 61 ], meanwhile the CPFEM simulations are employed to generate the output data of stress state. The DREAM.3D enables to randomly generate grain nucleation while constant phase fraction and grain size are maintained. While the CPFEM allows to take microstructural features into account to evaluate the material flow. Thus, these two approaches are appropriate for reasonable generation of large dataset.",
+        "Fig. 2 a  Microstructure of DP780 steel showing grain orientation and crystallographic texture.  b  Synthetic microstructure generation of IPF and phase maps with varying martensite fractions",
+        "Figure  2 a shows the initial microstructure of DP780 steel, which is used to generate the IPF and phase maps for the input data of CNN. The microstructure is obtained in the normal direction (ND) plane perpendicular to the transverse direction (TD) and rolling direction (RD) planes. More details of microstructural characterization of the material are presented in our previous study [ 4 ]. It is obtained that the DP780 steel exhibits M f  = 35%. Then it is extended to two martensite fractions to generate the microstructures for M f  = 7% and M f  = 55% as shown in Fig.  2 b. For each M f , 250 images (128 × 128 µm 2 ) of IPF and phase maps are generated with a constant grain size distribution and martensite fraction. This results in 750 microstructure images and corresponding 750 unique RVE models are created. A customized script is developed to efficiently generate microstructure images and then extract features including phase fraction, grain morphology and crystallographic texture to map onto FE mesh for CPFEM simulation. The flowchart of dataset generation is shown in Fig.  3 .",
+        "Fig. 3 Flowchart of dataset generation for CNN and CPFEM models",
+        "The pseudo-3D RVEs (128 × 128 × 1 µm 3 ) are generated for the CPFEM simulations. The grain orientation, crystallographic texture and phase identification are assigned to each finite element in the RVE. The RVE is meshed with 16384 linear solid hexahedral finite elements. The ferrite and martensite phases are modelled with the material properties as given in Table  1 . The periodic boundary conditions are applied to the RVE to simulate uniaxial tension with a nominal strain of 5%. The rate-dependent crystal plasticity constitutive laws are employed to simulate the deformation behavior of each constituent phase via UMAT subroutine. A customized script is used to execute the CPFEM simulations and extract the results once the simulation is finished."
+      ]
+    },
+    {
+      "heading": "Convolutional neural networks",
+      "paragraphs": [
+        "In this work, instead of using image input, we explore the capability of CNN as a regression model to predict the resultant stress state with respect to the microstructural characteristics. The CNN with encoder-decoder type architecture is developed to predict the stress field and triaxiality in the generated microstructures as shown in Fig.  4 .",
+        "Fig. 4 Schematic of CNN architecture in the present study. The SE-ResNet blocks are introduced in both encoder, bottleneck and decoder layers, while a self-attention module is added between the decoder 4 and decoder 5 in the decoder portion",
+        "Each block of encoder comprises of a convolutional layer followed by a batch normalization and ReLU activation function. Then the layer is passed through a Squeeze-Excitation Residual Network (SE-ResNet) block and a max-pooling layer to decrease the image resolution. Similarly, each block of decoder consists of an up-sampling layer with the same properties of filters as the max-pooling layer of corresponding encoder block. The up-sampling layer is passed through a convolutional layer followed by a batch normalization and ReLU activation function. The skip connection is adopted to pass the extracted features from the encoder blocks to corresponding decoder blocks. Thus, the detail of features from low layers can be transferred to deep layers and the gradient vanishing problem can be attenuated. A SE-ResNet module is also added behind the concatenate layer in the decoder block. Introducing SE-ResNet modules in both encoder and decoder portions can enhance the predictive capability of the network. A dropout of 0.2 is considered in the first two decoder layers to prevent overfitting. The final layer is a convolution layer with linear activation, which ultimately converts the final output of the network.",
+        "As the size of the convolution kernel defines the domain where the feature is extracted, the convolution operation primarily focuses within a local region. While this is effective for local feature extraction, relying solely on convolutional layer can be inefficient for describing the long-range dependencies across an image, for example effects of non-local stress. Strategies like increasing the number of convolutional layers or enlarging the convolution kernel can enhance the ability to represent long-range dependencies, however, these approaches have notable limitation. Adding more layers significantly increases computational cost, while using larger kernels compromises statistical efficiency. An efficient alternative approach is to introduce self-attention module that simultaneously processes the entire feature map to effectively capture the global dependencies. This is achieved by computing the response at each position as a weighted sum of features across all positions, with the attention weights being calculated at a minimal computational cost.",
+        "The self-attention module computes relationships between all spatial positions of a feature map to enhance feature representations dynamically. It describes self-attention by breaking down the process into generating query, key, and value feature spaces  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\:f\\left(x\\right)$$\\end{document} ,  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\:g\\left(x\\right)$$\\end{document} , and  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\:h\\left(x\\right)$$\\end{document}  using learnable weight matrices as: 7 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\:f\\left(x\\right)={W}_{f}x,\\:g\\left(x\\right)={W}_{g}x,$$\\end{document}  where  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\:x\\in\\:{R}^{C\\times\\:H\\times\\:W}$$\\end{document}  are features input to the self-attention layer.  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\:C$$\\end{document} ,  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\:H$$\\end{document}  and  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\:W$$\\end{document}  are the number of channels width and height of the feature map, respectively.  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\:\\:N=H\\times\\:W$$\\end{document}  is used to reshape the feature  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\:x$$\\end{document}  into  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\:x\\in\\:{R}^{C\\times\\:N}$$\\end{document} . The attention scores  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\:{\\beta\\:}_{i,j}$$\\end{document}  are computed as the softmax-normalized dot-product similarity  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\:{s}_{ij}$$\\end{document}  between  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\:f\\left({x}_{i}\\right)$$\\end{document} and  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\:g\\left({x}_{j}\\right)$$\\end{document}  as: 8 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\:{\\beta\\:}_{i,j}=\\frac{\\text{e}\\text{x}\\text{p}\\left({s}_{ij}\\right)}{\\sum\\limits_{i=1}^{N}\\text{e}\\text{x}\\text{p}\\left({s}_{ij}\\right)},$$\\end{document}  where  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\:{s}_{ij}={f\\left({x}_{i}\\right)}^{T}g\\left({x}_{j}\\right)$$\\end{document} . The weighted combination of values \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\:\\:h\\left({x}_{i}\\right)$$\\end{document} , scaled by the attention map  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\:{\\beta\\:}_{i,j}$$\\end{document} , yields the output  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\:{o}_{j}$$\\end{document}  as: 9 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\:{o}_{j}=\\upsilon\\:\\left(\\sum\\limits_{i=1}^{N}{\\beta\\:}_{i,j}h\\left({x}_{i}\\right)\\right),\\:h\\left({x}_{i}\\right)={W}_{h}{x}_{i},\\:\\upsilon\\:\\left({x}_{i}\\right)={W}_{\\upsilon\\:}{x}_{i},$$\\end{document}  where  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\:{W}_{f}\\in\\:{R}^{\\stackrel{-}{C}\\times\\:N}$$\\end{document} ,  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\:{W}_{g}\\in\\:{R}^{\\stackrel{-}{C}\\times\\:N}$$\\end{document} ,  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\:{W}_{h}\\in\\:{R}^{\\stackrel{-}{C}\\times\\:N}$$\\end{document}  and  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\:{W}_{v}\\in\\:{R}^{\\stackrel{-}{C}\\times\\:N}$$\\end{document} are learnable weight matrices. The  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\:f\\left(x\\right)$$\\end{document} ,  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\:g\\left(x\\right)$$\\end{document} , and  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\:h\\left(x\\right)$$\\end{document}  implement  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\:1\\times\\:1$$\\end{document}  convolution to the feature  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\:x$$\\end{document}  resulting in a new number of channels  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\:\\stackrel{-}{C}$$\\end{document} , which is selected as  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\:\\stackrel{-}{C}=C/8$$\\end{document}  [ 62 ].",
+        "In the SE block, global average pooling is applied to the input feature map to obtain channel-wise descriptors. These descriptors are passed through two fully connected layers with a reduction ratio of  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\:8$$\\end{document} , i.e., the channel dimension is first reduced from  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\:C$$\\end{document}  to  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\:C/8$$\\end{document}  and then expanded back to  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\:C$$\\end{document} . A sigmoid activation is then used to obtain channel-wise weights, which are multiplied with the original feature map. In each SE-ResNet block, a 1  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\:\\times\\:$$\\end{document}  1 convolution is applied to the shortcut branch to match the number of output channels before residual addition.",
+        "The self-attention module uses a single-head scaled dot-product attention mechanism. For an input feature map with  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\:C$$\\end{document}  channels, the query and key feature maps are generated by 1  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\:\\times\\:$$\\end{document}  1 convolutions with  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\:C/8$$\\end{document}  channels, while the value feature map is generated by a 1  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\:\\times\\:$$\\end{document}  1 convolution with  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\:C$$\\end{document}  channels. The attention matrix is calculated from the dot product between the reshaped query and key tensors and scaled by  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\:\\sqrt{C/8}$$\\end{document}  before softmax normalization. The weighted value tensor is then reshaped to the original spatial dimensions and added to the input feature map through a residual connection. No multi-head attention is used in the present model. The self-attention module is inserted in the decoder after the 128-channel feature block, between the last two decoder stages.",
+        "Fig. 5 Two approaches of CP-CNN models with different features of input:  a  unique-input feature approach solely based on microstructural attributes for prediction of von Mises stress (NET-1) and stress triaxiality (NET-2), and  b  multi-input feature approach based on both microstructural attributes and stress states for prediction of stress triaxiality (NET-3)",
+        "In this study, we introduce two approaches with different features of input as shown in Fig.  5 . The first approach in Fig.  5 a involves a unique feature of the microstructural attributes represented by the maps of IPF and phase as an input to predict the output of von Mises stress and stress triaxiality. Meanwhile, in Fig.  5 b, the second approach involves multiple features of both the microstructures and the stress state (von Mises stress and mean stress) as an input to predict the final output of stress triaxiality. It is noteworthy that von Mises stress and stress triaxiality are independently predicted with the same architecture of CNN, hereafter the network for prediction of von Mises stress is referred as NET-1 and the networks for prediction of stress triaxiality are referred as NET-2 for the first approach, NET-3 for the second approach."
+      ]
+    },
+    {
+      "heading": "Results and discussion",
+      "paragraphs": []
+    },
+    {
+      "heading": "Model performance",
+      "paragraphs": [
+        "In this study, we define the loss function as a weighted sum of multiple loss functions as: 10 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\:{\\mathcal{L}}_{\\text{combined}}={\\lambda\\:}_{1}MSE+{\\lambda\\:}_{2}MAE+{\\lambda\\:}_{3}Huber,$$\\end{document}  where  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\:{\\lambda\\:}_{1}$$\\end{document} ,  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\:{\\lambda\\:}_{2}$$\\end{document}  and  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\:{\\lambda\\:}_{3}$$\\end{document}  are loss weights for mean squared error (MSE), mean absolute error (MAE) and Huber, respectively. MSE, MAE, and Huber loss functions are expressed as: 11 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$ \\:MSE = \\frac{1}{n}\\sum\\limits_{{i = 1}}^{n} {\\left( {\\hat{y}_{i} - y_{i} } \\right)^{2} ,} $$\\end{document} 12 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$ MAE = \\frac{1}{n}\\sum\\limits_{{i = 1}}^{n} {\\left| {\\hat{y}_{i} - y_{i} } \\right|^{2} } , $$\\end{document} 13 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$ Huber = \\frac{1}{n}\\sum\\limits_{{i = 1}}^{n} {\\left\\{ {\\begin{array}{*{20}c} {\\frac{1}{2}\\left( {\\hat{y}_{i} - y_{i} } \\right)^{2} ,\\:if\\:\\left| {\\hat{y}_{i} - y_{i} } \\right| \\le \\:\\delta \\:} \\\\ {\\:\\delta \\:\\left( {\\left| {\\hat{y}_{i} - y_{i} } \\right| - \\frac{1}{2}\\delta \\:} \\right),\\:otherwise} \\\\ \\end{array} } \\right.} , $$\\end{document}  where  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\:{\\widehat{y}}_{i}$$\\end{document}  and  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\:{y}_{i}$$\\end{document}  are the predicted and ground truth of  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\:i$$\\end{document} -th sample,  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\:n$$\\end{document}  is the number of samples.  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\:\\delta\\:$$\\end{document}  is a threshold parameter. When the absolute difference is less than or equal  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\:\\delta\\:$$\\end{document} , the function behaves like MSE, making it smooth and differentiable. However, when the absolute difference is greater than  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\:\\delta\\:$$\\end{document} , the function behaves like MAE, reducing sensitivity to outliers. By integrating multiple loss functions into a combined formulation, the advantages of each can be leveraged, providing greater flexibility and a more comprehensive evaluation of model performance. The equal weighting of MSE, MAE, and Huber losses is selected to balance sensitivity to large local errors, robustness to average absolute deviations, and stable optimization. Since the output fields are normalized before training, the Huber threshold is set to  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\:\\delta\\:$$\\end{document}  = 1. A sensitivity analysis of the loss weights and Huber threshold is provided in Table  S1  of the Supplementary material, confirming that the equal-weighted formulation with  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\:\\delta\\:$$\\end{document}  = 1 gives the best overall accuracy among the tested cases.",
+        "To assess model accuracy, both MSE and MAE are used as evaluation metrics. The model is trained with a learning rate of 0.0003 using the Adam optimizer and a batch size of 8. The dataset is randomly split into training and test sets with a 90:10 ratio. To evaluate the splitting strategy, ablation studies were performed using random 90:10, repeated random splits, and leave-one-martensite-fraction-out validation. The detailed results are summarized in Table S2 of the Supplementary material. The repeated random split gives accuracy comparable to the random split for NET-1 and NET-3, while NET-2 shows moderately increased error. In contrast, leave-one-martensite-fraction-out validation generally increases the prediction error, especially when M f  = 55% is excluded from training. The degradation is more evident for stress triaxiality prediction than for von Mises stress prediction, suggesting that triaxiality is more sensitive to the training distribution and local stress state variation.",
+        "Fig. 6 Evolution of loss function during training and testing of three architectures for prediction of von Mises equivalent stress  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\:{\\stackrel{-}{\\sigma\\:}}_{eq}$$\\end{document}  and stress triaxiality  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\:\\eta\\:$$\\end{document}",
+        "Figure  6  presents the training and test losses for the three networks, demonstrating that all models converge within 200 epochs. These results indicate that the networks are well-trained on both the training and test datasets, with no signs of overfitting. To clarify the contribution of the SE-ResNet and self-attention modules, an architectural ablation study was conducted by comparing four models: a baseline encoder-decoder U-Net, U-Net with SE blocks, U-Net with self-attention, and the proposed U-Net with both SE blocks and self-attention. As summarized in Table  2 , the proposed model achieves the lowest MAE and MSE for all three networks. For NET-1, the improvement over the baseline U-Net is relatively small but consistent, with MAE decreasing from 6.13% to 5.99% and MSE decreasing from 0.69% to 0.65%. For NET-2, the proposed model reduces MAE from 7.62% to 7.51% and MSE from 0.94% to 0.91%. A more pronounced improvement is observed for NET-3, where MAE decreases from 4.43% to 3.95% and MSE decreases from 0.48% to 0.25%. These results indicate that SE-based channel refinement and self-attention-based long-range feature interaction provide complementary benefits, particularly for stress-state-assisted triaxiality prediction.",
+        "Table 2 Architectural ablation study comparing the prediction accuracy of baseline U-Net, U-Net + SE, U-Net + attention, and the proposed U-Net + SE + attention models for NET-1, NET-2, and NET-3. MAE and MSE are reported in percent Architecture NET-1 NET-2 NET-3 MAE MSE MAE MSE MAE MSE Baseline Unet 6.13 0.69 7.62 0.94 4.43 0.48 Unet + SE 6.05 0.67 7.59 0.93 3.97 0.28 Unet+Attention 6.19 0.69 7.55 0.92 3.99 0.26 Unet + SE+Attention (Proposed) 5.99 0.65 7.51 0.91 3.95 0.25"
+      ]
+    },
+    {
+      "heading": "Prediction of martensite fraction dependent-stress state",
+      "paragraphs": [
+        "Figure  7  presents the ground truth and CP-CNN prediction results for von Mises stress and stress triaxiality in DP steels with varying M f . The left side of the figure illustrates the microstructures corresponding to three different M f  cases, highlighting variations in grain orientation and martensite fraction. On the right, the first column displays the ground truth obtained from CPFEM simulations, while the second column presents the CP-CNN predictions. The absolute error between ground truth and CP-CNN prediction is shown in the third column. The error is calculated as,  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\:error=\\:\\left|y-\\widehat{y}\\right|$$\\end{document} , where \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\:\\:y$$\\end{document}  and  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\:\\widehat{y}$$\\end{document}  are the ground truth and predicted values, respectively, for both von Mises stress and stress triaxiality. The von Mises stress is predicted using NET-1 model, while the stress triaxiality is predicted using NET-2 and NET-3 models.",
+        "Fig. 7 Comparison of CP-CNN predicted and ground truth distributions of von Mises stress  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\:{\\stackrel{-}{\\sigma\\:}}_{eq}\\:$$\\end{document} and stress triaxiality  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\:\\eta\\:$$\\end{document}  in DP steel with varying martensite fractions:  a  M f  = 7%,  b  M f  = 35% and  c  M f  = 55%",
+        "The predicted von Mises stress distributions in the DP steels with different M f  of 7%, 35% and 55% are shown in Figs.  7 a-c. The CP-CNN model effectively captures the spatial distribution of stress and its concentration. Since hard martensite grains experience higher microscopic stresses than the softer ferrite matrix, they are expected to bear the majority of the applied tensile load. Thus, the overall stress level increases with increasing M f . The predicted degree of stress level with the heterogeneous spatial distribution increases as M f  increases from 7% to 55%, which is consistent with CPFEM simulation result. The results show that for lower M f , the stress concentration is distributed at grain boundaries. However, at higher M f , stress distribution becomes more heterogeneous, with elevated stress levels observed not only at grain boundaries but also within the grain interiors due to stress partitioning. The CP-CNN model effectively predicts such variation in stress heterogeneity across different M f  values. The increasing complexity of stress distributions with higher martensite content highlights the influence of microstructure on mechanical response, reinforcing the importance of advanced predictive models in material science applications. The error map shows that most of the regions exhibit relatively low errors, with values close to zero. Overall MAE and MSE between ground truth and CP-CNN prediction for von Mises stress are equal to 5.99% and 0.65%, respectively, as given in Table  2 . The findings indicate that the predicted von Mises stress are in excellent agreement with CPFEM simulation results, which verifies the accuracy and reliability of overall predictions.",
+        "Figures  7 a-c also present the predicted stress triaxiality distributions in the DP steels with different M f  of 7%, 35% and 55%. The predictive capabilities of two networks, NET-2 and NET-3, which employ different input-feature approaches (see Fig.  5 ), are compared. Overall, both networks can capture the heterogeneous distribution of stress triaxiality across varying M f . However, NET-2 exhibits lower predictive capability, as certain hotspot zones with high stress triaxiality levels are not accurately identified. In contrast, the NET-3 model demonstrates superior prediction accuracy, successfully capturing these hotspot regions with high fidelity. The error map further supports this observation, showing that most errors are close to zero, confirming the robustness of the NET-3 model. As summarized in Table  2 , NET-3 achieves a noticeable reduction in overall MAE and MSE compared to the NET-2. These findings indicate that integrating multiple input features enhances the predictive capability of the CP-CNN model for stress triaxiality prediction. However, because the auxiliary inputs of von Mises stress and mean stress in NET-3 are obtained from CPFEM calculations, the practical usefulness of NET-3 as a stand-alone predictive model is limited. Therefore, NET-3 should not be regarded as a fully independent surrogate model for direct prediction of stress triaxiality from microstructure alone, but rather as a CPFEM-stress-assisted triaxiality prediction model.",
+        "Furthermore, Figs.  8 a-c show a quantitative comparison of von Mises stress between ground truth and CP-CNN prediction. The CP-CNN model exhibits a higher proportion of regions with low stress levels compared to the ground truth. However, it effectively captures the presence and distribution of high-stress regions, demonstrating its ability to predict stress heterogeneity and identify critical stress hotspots accurately. This suggests that the proposed CP-CNN model successfully reconstructs the stress field with a high degree of fidelity, preserving both the spatial distribution and magnitude variations in von Mises stress. In addition, Fig.  8 d illustrates the variation in von Mises stress as a function of M f , providing further validation of the model’s predictive capability. The results show that as M f  increases, the overall stress distribution shifts toward higher values, confirming a strong correlation between M f  and the magnitude of von Mises stress. This validates the model’s ability to not only capture the spatial stress distribution but also accurately reflects the influence of microstructural factors on the overall stress response, reinforcing its applicability for stress prediction in heterogeneous material systems.",
+        "Fig. 8 Comparison of CP-CNN predicted and ground truth fractions of von Mises stress distribution in DP steels with varying martensite fractions:  a  M f  = 7%,  b  M f  = 35% and  c  M f  = 55%.  d  CP-CNN prediction of martensite fraction dependent-von Mises stress",
+        "Fig. 9 Comparison of CP-CNN predicted and ground truth fractions of stress triaxiality distribution in DP steels with varying martensite fractions:  a  M f  = 7%,  b  M f  = 35% and  c  M f  = 55%.  d  CP-CNN prediction of martensite fraction dependent-stress triaxiality",
+        "Figures  9 a-c illustrate a quantitative comparison of stress triaxiality between ground truth and CP-CNN predictions using NET-2 and NET-3. The results indicate that the NET-2 model does not accurately capture variations in stress triaxiality across different M f . In contrast, NET-3 demonstrates a significantly improved predictive capability, accurately reconstructing both the magnitude and spatial distribution of stress triaxiality in DP steels with varying M f . This suggests that the proposed NET-3 model offers an improvement in stress triaxiality reconstruction, effectively preserving the local heterogeneity and magnitude fluctuations. Additionally, Fig.  9 d present the CP-CNN prediction of M f  dependent-stress triaxiality revealing that no clear correlation exists between M f  and stress triaxiality. This finding implies that stress triaxiality in DP steel is influenced by additional microstructural factors beyond M f  alone. The accurate prediction of stress triaxiality across different microstructural configurations highlights the robustness of NET-3 in capturing the complex interplay between microstructural features and stress states, making it a reliable tool for stress state quantification in AHSS. Therefore, further analysis of stress triaxiality in this work is implemented using the predicted results from NET-3.",
+        "Fig. 10 Comparison of CP-CNN predicted and ground truth distributions of von Mises stress along two representative lines in the DP steels with varying martensite fractions:  a  M f  = 7%,  b  M f  = 35% and  c  M f  = 55%",
+        "To further compare the local differences between the ground truth and predicted results, the distributions of von Mises stress and stress triaxiality along two representative lines through the microstructure of the DP steels across varying M f  are presented in Figs.  10  and  11 , respectively. As shown in Fig.  10 , the CP-CNN predictions closely follow the ground truth, but localized variations in stress values lead to some discrepancies. As the M f  increases, the stress distribution becomes more complex, with higher fluctuations observed in the M f  = 55% case. This suggests that the microstructural heterogeneity increases with higher martensite content, making stress prediction more challenging. Despite these variations, the CP-CNN model demonstrates a strong ability to capture the overall trend of stress distribution, as indicated by relatively small errors across all cases. The error remains low in comparison to absolute stress values, although slight deviations are noticeable, particularly in regions of high stress concentration. Overall, the results indicate that the CP-CNN model effectively predicts the von Mises stress distribution in DP steels with different M f . While prediction errors exist, they are generally small, and the model maintains robust performance across varying microstructural conditions.",
+        "Fig. 11 Comparison of CP-CNN predicted and ground truth distributions of stress triaxiality along two representative lines in the DP steels with varying martensite fractions:  a  M f  = 7%,  b  M f  = 35% and  c  M f  = 55%",
+        "The NET-3 predicted fluctuation of stress triaxiality across the horizontal and vertical distances is also depicted in Fig.  11 . The error remains relatively low compared to the absolute stress triaxiality values, suggesting that the CP-CNN model provides accurate predictions. As the martensite fraction increases, the complexity of the stress triaxiality distribution also increases, likely due to the increased heterogeneity in the microstructure. Despite this increased complexity, the CP-CNN model exhibits a strong predictive performance across all cases, as evidenced by the minimal errors and the close agreement between predicted and ground truth values."
+      ]
+    },
+    {
+      "heading": "Prediction of stress partitioning among the constituent phases",
+      "paragraphs": [
+        "In this section, we explore the CP-CNN’s capability for prediction of stress partitioning between ferrite and martensite phases in the DP steels as shown in Fig.  12 . At a low M f  in Fig.  12 a, the ferrite phase exhibits a well-defined grain structure with stress concentrations primarily localized at the grain boundaries. The martensite phase appears sparsely distributed, with stress localized in small regions. The predicted stress distribution from the CP-CNN model closely aligns with the ground truth, indicating that the model is capable of capturing the key stress patterns.",
+        "Fig. 12 Comparison of CP-CNN predicted and ground truth stress partitioning among ferrite and martensite in the DP steels with varying martensite fractions:  a  M f  = 7%,  b  M f  = 35% and  c  M f  = 55%",
+        "With an increased M f  to 35% in Fig.  12 b, the stress distribution in ferrite becomes more dispersed due to the greater interaction between the two phases. The CP-CNN predictions remain consistent with the ground truth, although minor variations in stress localization can be observed. The von Mises stress histogram maintains a similar peak structure, but the stress distribution in martensite is broader, indicating an increased heterogeneity in stress. This suggests that as the martensite fraction increases, stress partitioning between ferrite and martensite become more complex.",
+        "At higher M f  = 55% in Fig.  12 c, the stress distribution appears more inhomogeneous across the microstructure due to the significant presence of the hard martensite. The CP-CNN predictions continue to show high accuracy, maintaining strong agreement with the ground truth. The von Mises stress histogram exhibits a broader spread, particularly in martensite, reflecting the increasing complexity in stress partitioning at higher M f . The broader stress distribution suggests that stress variations in martensite increase as the phase fraction grows, likely due to the more interconnected network of martensite regions. For all M f  cases, despite a deviation in the sharp peak, the von Mises stress histograms also show the close agreement between ground truth and predicted values for both ferrite and martensite."
+      ]
+    },
+    {
+      "heading": "Model capability and generalizability for unseen microstructures",
+      "paragraphs": [
+        "This section further demonstrates the capability and generalizability of the proposed CP-CNN model for completely unseen microstructures with new cases of M f . As shown in Figs.  13  and  14 , the demonstration is implemented for three different M f  of 15%, 25% and 45%.",
+        "Fig. 13 Demonstration of CP-CNN predictive capability for prediction of von Mises stress at an engineering strain of 5% for unseen microstructures with new martensite fractions of M f  = 15%, 25%, and 45%",
+        "Fig. 14 Demonstration of CP-CNN predictive capability for prediction of stress triaxiality at an engineering strain of 5% for unseen microstructures with new martensite fractions of M f  = 15%, 25%, and 45%",
+        "As shown in Fig.  13 , the comparative analysis between CP-CNN predictions and CPFEM simulations of von Mises stress distribution indicates a high degree of accuracy, as reflected in the minimal error observed in the difference maps. The IPF and phase maps illustrate the grain structures and phase fractions with increasing M f . Correspondingly, the von Mises stress distributions, predicted by both CP-CNN and CPFEM, show consistent patterns, indicating that the CP-CNN model successfully captures the underlying stress response of these complex microstructures. As M f  increases, the stress fields exhibit more localized high-stress regions, which are accurately reflected in both CP-CNN and CPFEM outputs. The error maps show consistently low errors across all three M f , with slightly higher discrepancies at the highest M f , possibly due to increased microstructural heterogeneity and localized stress variations. The CP-CNN model possesses a good predictive capability, as evidenced by the excellent alignment between the histograms of von Mises stress for CP-CNN and CPFEM as shown in Figs.  15 (a 1 -a 3 ). The overlapping stress distribution curves confirm that CP-CNN successfully learns the stress characteristics without significant deviations from the CPFEM ground truth.",
+        "Fig. 15 Comparison of CP-CNN-predicted and CPFEM-calculated distribution fractions of von Mises stress and stress triaxiality at an engineering strain of 5% for unseen microstructures with new martensite fractions: ( a 1  and  b 1 ) M f  = 15%, ( a 2  and  b 2 ) M f  = 25% and (a 3  and b 3 ) M f  = 45%",
+        "Figure  14  presents the NET-3 predicted stress triaxiality distribution in the unseen microstructures with new M f . The comparison between CP-CNN predictions and CPFEM simulations highlights the model’s effectiveness in capturing the stress triaxiality distribution across different microstructural configurations. The stress triaxiality distributions predicted by CP-CNN closely resemble those obtained from CPFEM, with minimal discrepancies observed in the error maps. The stress triaxiality fields show a complex distribution with regions of high and low values, which are accurately captured by CP-CNN across all M f . The error maps indicate that the predictive discrepancies remain low, with slightly larger errors observed in more heterogeneous microstructures. This suggests that while CP-CNN is highly effective in learning the stress triaxiality patterns, increased microstructural complexity introduces slight variations in prediction accuracy. The histogram plots as shown in Figs.  15 (b 1 -b 3 ) further validate the performance of CP-CNN by comparing the fraction of elements across different stress triaxiality values. The close overlap between the CP-CNN and CPFEM distributions confirms that the CP-CNN model successfully replicates the statistical characteristics of the stress triaxiality field. The peak values remain consistent across both methods, indicating that CP-CNN maintains a high degree of accuracy in predicting stress behavior under different M f .",
+        "To further examine the strain dependence of the CP-CNN prediction, additional tests were conducted at engineering strain levels of 3% and 7% using unseen microstructures with new martensite fractions of 15%, 25%, and 45%. The detailed field maps and statistical distributions are provided in Figs.  S1–S6  of the Supplementary material. The results show that the CP-CNN can reproduce the CPFEM-predicted von Mises stress and stress triaxiality distributions reasonably well at these additional strain levels, even though the tested microstructures are different from those used in the 5% strain analysis. This suggests that the model has a certain degree of transferability to nearby strain levels within the investigated range. However, increased discrepancy is observed at 7% strain, especially for stress triaxiality at M f  = 45%, indicating that strain evolution, hardening behavior, and phase interaction effects become more difficult to capture at larger deformation. Therefore, for more general strain-dependent prediction, a strain-aware CP-CNN using strain as an additional input would be more appropriate."
+      ]
+    },
+    {
+      "heading": "Computational efficiency",
+      "paragraphs": [
+        "The predictive capability and generalizability of the proposed CP-CNN to predict von Mises stress and stress triaxiality are well demonstrated. Additionally, computational efficiency is one of the merits of CNN. CP simulations are computationally intensive, particularly in finite element applications, where the required computation time scales exponentially with the number of elements in the mesh. This rapid increase in computational demand makes large-scale simulations challenging, often necessitating the use of high-performance computing resources. In contrast, neural networks offer a more computationally efficient alternative due to their relatively simple mathematical operations compared to the highly non-linear and iterative equations solved in CP models. As a result, neural networks can rapidly approximate material deformation behavior once trained and then provide near-instantaneous predictions without the need for iterative numerical solutions. This efficiency is particularly beneficial in material design, where multiple or complex microstructures need to be evaluated simultaneously. Unlike CP simulations, which become increasingly infeasible as the number of microstructures grows, neural networks can scale efficiently, enabling high-throughput analysis without the need for extensive computational resources. As machine learning methods continue to advance and become more accessible, they present a viable and scalable alternative for accelerating material property predictions and microstructure-based analyses.",
+        "Fig. 16 Computational efficiency of CP-CNN in comparison with CPFEM simulation",
+        "Figure  16  presents a comparative analysis of the computational time required for the CPFEM simulation, CP-CNN training, and prediction. A logarithmic scale is used to clearly compare the computational costs associated with the different stages. To provide a transparent comparison, the computational cost is separated into offline dataset generation, model training, and online inference. The offline dataset generation includes microstructure generation using DREAM.3D and stress state calculation using CPFEM. The DREAM.3D microstructure generation requires approximately 15 s for each microstructure, corresponding to approximately 3.125 h for 750 microstructures. The CPFEM simulations used to generate the stress state labels require approximately 312.5 h for 750 samples. It should be noted that the reported CPFEM dataset-generation time refers only to the CPFEM simulations for generating stress state labels and does not include the DREAM.3D microstructure generation time.",
+        "Table  3  summarizes the computational time used in each stage. The CPFEM simulations are conducted using 4 CPUs per simulation on an AMD EPYC 7763 64-core workstation with 256 GB memory. In contrast, the CP-CNN model is trained using one NVIDIA GeForce RTX 4090 GPU. The CP-CNN training is completed in approximately 16 min using 675 samples for training and validation. Although the initial CPFEM-based dataset generation remains computationally expensive, this is an offline cost required only for constructing the training dataset.",
+        "Table 3 Summary of computational time comparing between CPFEM and CP-CNN Process Number of samples Time Microstructure generation using DREAM.3D 750 samples 3.125 h CPFEM dataset generation for stress state labels 750 samples 312.5 h CP-CNN training 607 training + 68 validation samples 16 min CPFEM forward prediction for one new microstructure 1 sample 25 min CPFEM forward prediction for one new microstructure 1 sample 6 s",
+        "The computational advantage of the CP-CNN is mainly realized during online inference after the dataset generation and model training stages have been completed. For a new unseen microstructure with a new martensite fraction, a CPFEM forward simulation requires approximately 25 min, whereas the trained CP-CNN predicts the stress state in approximately 6 s. This corresponds to an approximately 250-fold reduction in online prediction time, or about 2.5 orders of magnitude. The dramatic improvement in computational efficiency offered by CP-CNN highlights its potential for accelerating microstructure-based simulations while maintaining predictive accuracy. This efficiency is particularly advantageous for large-scale materials design and optimization, where CPFEM-based simulations are often prohibitively expensive in terms of computational resources.",
+        "Although the proposed CP-CNN framework demonstrates high accuracy and computational efficiency, several limitations should be acknowledged. First, the present validation is mainly performed against CPFEM-generated labels; therefore, the model should be regarded as a surrogate for CPFEM predictions. Direct validation using experimental measurements would be required to further confirm the physical accuracy of the predicted stress and triaxiality fields. Second, although unseen martensite fractions and leave-one-martensite-fraction-out validation were considered, the generated microstructures still follow the same statistical assumptions used for dataset construction. Thus, the present results demonstrate robustness within the synthetic microstructural domain rather than complete out-of-distribution generalization. Broader validation using different microstructural characteristics from other DP steels will be pursued in future work."
+      ]
+    },
+    {
+      "heading": "Conclusions",
+      "paragraphs": [
+        "In this study, a deep learning framework is developed to predict the martensite fraction-dependent stress field and triaxiality in dual-phase (DP) steels using a crystal plasticity-based convolutional neural network (CP-CNN). The CP-CNN takes microstructural attributes variation in martensite characteristics as input to predict the von Mises equivalent stress and stress triaxiality as output. The CP-CNN is designed with an encoder-decoder architecture to accurately capture stress distributions in DP steels. The main conclusions are presented as follows.",
+        "The developed CP-CNN enables rapid and accurate prediction of von Mises stress and stress triaxiality distributions in DP steels with varying martensite fractions. Compared to CP simulations, it achieves a computational speed-up of approximately 2.5 orders of magnitude, significantly enhancing efficiency in stress field analysis. Two approaches involving different input strategies are well explored in this work. The unique-feature approach, which considers only microstructural attributes, demonstrates excellent agreement with CP simulations in predicting stress fields. Meanwhile, the multi-feature approach, which incorporates both microstructural attributes and stress states, provides a significant improvement in prediction of stress triaxiality. The integration of a SE-ResNet and self-attention modules within the network enhances the CP-CNN’s ability to capture local feature refinements and global dependencies. This improvement is crucial for accurately modeling stress heterogeneity, particularly stress partitioning between ferrite and martensite in the DP steels. Within the investigated synthetic DP microstructure, the CP-CNN exhibits strong predictive capability and generalization across various unseen conditions with variation in grain orientations and martensite fractions, leave-one-martensite-fraction-out validation, and additional strain levels. This ensures high-fidelity and reliable predictions, demonstrating its potential for practical applications in materials design and development.",
+        "The findings of this work demonstrate that CP-CNN represents a significant step forward in data-driven stress analysis of DP steels. By leveraging deep learning techniques, the proposed framework offers an efficient and accurate alternative to CPFEM simulations, enabling faster and more accessible stress predictions for practical engineering applications."
+      ]
+    }
+  ],
+  "tables": [
+    {
+      "caption": "Calibrated hardening parameters of ferrite and martensite phases in DP steel [ 4 ]",
+      "headers": [
+        "",
+        "\\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\:{\\dot{\\gamma\\:}}_{0}$$\\end{document}  [/s]",
+        "m",
+        "q",
+        "\\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\:{h}_{o}$$\\end{document}  [MPa]",
+        "a",
+        "\\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\:{\\tau\\:}_{c}$$\\end{document}  [MPa]",
+        "\\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\:{\\tau\\:}_{s}$$\\end{document}  [MPa]"
+      ],
+      "rows": [
+        [
+          "Ferrite",
+          "0.001",
+          "0.05",
+          "1.4",
+          "10,500",
+          "1.0",
+          "168",
+          "235"
+        ],
+        [
+          "Martensite",
+          "0.001",
+          "0.05",
+          "1.4",
+          "19,000",
+          "2.9",
+          "188",
+          "702"
+        ]
+      ],
+      "header_groups": [],
+      "table_alignment_status": "resolved",
+      "row_provenance": [
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 7
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 8
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 7
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 8
+          }
+        ]
+      ],
+      "tbody_alignment_status": "resolved"
+    },
+    {
+      "caption": "Architectural ablation study comparing the prediction accuracy of baseline U-Net, U-Net + SE, U-Net + attention, and the proposed U-Net + SE + attention models for NET-1, NET-2, and NET-3. MAE and MSE are reported in percent",
+      "headers": [
+        "Architecture",
+        "MAE",
+        "MSE",
+        "MAE",
+        "MSE",
+        "MAE",
+        "MSE"
+      ],
+      "rows": [
+        [
+          "Baseline Unet",
+          "6.13",
+          "0.69",
+          "7.62",
+          "0.94",
+          "4.43",
+          "0.48"
+        ],
+        [
+          "Unet + SE",
+          "6.05",
+          "0.67",
+          "7.59",
+          "0.93",
+          "3.97",
+          "0.28"
+        ],
+        [
+          "Unet+Attention",
+          "6.19",
+          "0.69",
+          "7.55",
+          "0.92",
+          "3.99",
+          "0.26"
+        ],
+        [
+          "Unet + SE+Attention (Proposed)",
+          "5.99",
+          "0.65",
+          "7.51",
+          "0.91",
+          "3.95",
+          "0.25"
+        ]
+      ],
+      "header_groups": [
+        {
+          "label": "NET-1",
+          "start_col": 2,
+          "end_col": 3
+        },
+        {
+          "label": "NET-2",
+          "start_col": 4,
+          "end_col": 5
+        },
+        {
+          "label": "NET-3",
+          "start_col": 6,
+          "end_col": 7
+        }
+      ],
+      "table_alignment_status": "resolved",
+      "row_provenance": [
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 7
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 7
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 7
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 7
+          }
+        ]
+      ],
+      "tbody_alignment_status": "resolved"
+    },
+    {
+      "caption": "Summary of computational time comparing between CPFEM and CP-CNN",
+      "headers": [
+        "Process",
+        "Number of samples",
+        "Time"
+      ],
+      "rows": [
+        [
+          "Microstructure generation using DREAM.3D",
+          "750 samples",
+          "3.125 h"
+        ],
+        [
+          "CPFEM dataset generation for stress state labels",
+          "750 samples",
+          "312.5 h"
+        ],
+        [
+          "CP-CNN training",
+          "607 training + 68 validation samples",
+          "16 min"
+        ],
+        [
+          "CPFEM forward prediction for one new microstructure",
+          "1 sample",
+          "25 min"
+        ],
+        [
+          "CPFEM forward prediction for one new microstructure",
+          "1 sample",
+          "6 s"
+        ]
+      ],
+      "header_groups": [],
+      "table_alignment_status": "resolved",
+      "row_provenance": [
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 3
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 3
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 3
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 3
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 3
+          }
+        ]
+      ],
+      "tbody_alignment_status": "resolved"
+    }
+  ]
+}

@@ -1,0 +1,803 @@
+{
+  "doi": "10.1007/s43503-026-00106-9",
+  "title": "Coupling generative AI with 3D printing for historical building renovation: a case study of Lingnan stucco relief",
+  "abstract": "Abstract The accelerating digitalization of the construction sector has brought into sharp focus the inefficiencies and labor-intensive nature inherent in traditional craftsmanship for historical architecture. In response, this study proposes an AI-driven generative design workflow that translates semantic inputs into 2D imagery and 3D models, enabling the systematic learning and replication of stylistic features from a quintessential southern Chinese architectural ornament—the Lingnan stucco relief. This approach moves beyond the conventional reliance on individual expertise and heuristic empirical methods. The structural performance of the AI-generated designs was evaluated through combined material testing and numerical simulations. Concurrently, hybrid additive manufacturing techniques were explored for rapid physical prototyping. Collectively, this integrated framework illustrates the feasibility of revitalizing traditional craft practices within a contemporary intelligent paradigm, offering a technological pathway for the preservation and renovation of historic built heritage.",
+  "journal": "AI in Civil Engineering",
+  "year": "2026",
+  "sections": [
+    {
+      "heading": "Introduction",
+      "paragraphs": [
+        "Historical architecture stands as a tangible record of human civilization, encapsulating not only cultural and technological milestones but also the ingenuity of past societies. Embedded within each architectural heritage site is a constellation of intangible cultural heritage (ICH) elements, including design philosophies, construction systems, and material practices that are intrinsically tied to the restoration, renewal, and adaptive reuse of these structures (Vecco,  57 ). Yet, as modern society progresses, many of these ICH traditions have steadily lost their sustaining contexts, as contemporary technologies increasingly supplant conventional craft techniques, thereby threatening their continued transmission. Moreover, the structural and decorative components of historical buildings inevitably decay over time, compromising both their aesthetic integrity and functional performance, while the corresponding restoration methods often lag behind in efficacy and applicability. Hence, safeguarding the craft knowledge associated with historical architecture is as imperative as preserving the physical fabric of the buildings themselves.",
+        "Restoration of historic architecture is highly customized and largely reliant on the accumulated expertise of artisans. Consequently, such work is often labor-intensive and time-consuming, which in turn leads to greater energy consumption (Mazzarella,  35 ). In practice, however, these processes still heavily rely on the expertise and craftsmanship of artisans, making them inherently difficult to document and pass on to next-generation practitioners. Consequently, there is an emergent need for supplementary design and construction strategies that can support the renovation and renewal of traditional architectural ornamentation, particularly in contexts where strict adherence to heritage protocols is not mandatory. Such approaches could alleviate the pressures imposed by extended project timelines and the growing scarcity of skilled conservators.",
+        "Parallel to these challenges, the proliferation of computational tools has catalyzed a paradigm shift in architectural design and construction methodologies. Artificial intelligence (AI) and digital twin technologies are now exerting a profound influence on contemporary practice, with generative AI offering particularly promising avenues. These models, capable of producing original content, have drawn considerable attention in recent years. Large language models like ChatGPT have become enmeshed in human decision-making processes across diverse domains (Chang et al.,  7 ). Within the manufacturing sector, generative AI has demonstrated the capacity to compensate for shortages of highly trained technical personnel and master craftspeople (Ooi et al.,  40 ). By extension, these generative technologies hold considerable promise for the field of traditional architecture, especially in the documentation, reinterpretation, and restoration of historic architectural forms.",
+        "Additive manufacturing enables the production of highly customized products while simultaneously minimizing material waste, thereby reducing construction costs (Zhou et al.,  78 ). Evidently, additive manufacturing holds great promise in the cultural heritage sector (Balletti et al.,  1 ; Moga et al.,  36 ), particularly in the partial restoration of historic building components, including gypsum figures (Saha et al.,  51 ), wood (Rizzo et al.,  47 ), and rockery (Dong et al.,  10 ). These advanced design and fabrication techniques not only address the declining availability of skilled artisans in traditional craftsmanship but also enhance efficiency at restoration sites and expand the applications of cultural heritage conservation. Ultimately, a critical challenge lies in leveraging digitalization and intelligent technologies to establish an optimized restoration workflow that reduces costs and improves productivity.",
+        "In this study, we demonstrate a workflow that integrates AI-generated design, finite element method (FEM) analysis, and additive manufacturing to produce stylistic decorative components for historical buildings within a digitalized and rational framework. To validate its feasibility, our study selected a well-known local traditional craftsmanship example in Southern China, known as Lingnan stucco relief (pronounced as “Hui Su” in Chinese). With an aim of providing complementary intelligent methods to assist traditional craftsmanship within historical buildings, we established an initial mechanical model of stucco relief materials through experimental analysis and proposed an additive manufacturing based fabrication method for rapid prototyping and physical model production. Figure  1  showcases three major tasks presented in this work to preserve this regional cultural identity and to enable the reuse of ancient construction techniques. The core content of this work is presented in Sects.  4  and  5 . Section  4  introduces a generalized methodology for architectural heritage that encompasses generative design, material characterization, and additively manufactured prototyping. Section  5  then presents the detailed designs, analyses, and fabrications specific to the Lingnan stucco relief. In the design phase, we fine-tuned a Stable Diffusion model using a set of stucco relief images via Low-Rank Adaptation (LoRA), enabling the generation of stucco relief style imagery. These images were subsequently transformed into three dimensional reliefs or reconstructed into 3D models with skeletal structures. In the analysis phase, finite element analysis was employed, informed by material tests, to construct a mechanical model of the stucco relief, facilitating structural analysis and guiding the construction process. During the construction phase, AI generated stucco relief prototypes were fabricated using multiple additive manufacturing methods, and the physical structures were built using 3D printed molds and supporting frameworks. Fig. 1 Integrated design-build workflow for renovating components of historical buildings"
+      ]
+    },
+    {
+      "heading": "Literature review",
+      "paragraphs": [
+        "This section reviews existing methodologies for documenting cultural heritage and intangible cultural heritage, alongside recent advances in generative AI models and their architectural applications."
+      ]
+    },
+    {
+      "heading": "Methods for documenting architectural heritage and intangible cultural heritage",
+      "paragraphs": [
+        "Currently, the preservation and revival of ICH are receiving increasing attention. Digital technologies (Li,  29 ) constitute the primary approach for recording ICH, including virtual reality (VR) reconstructions (Skublewska-Paszkowska et al.,  55 ; Xu et al.,  69 ) that restore historical scenarios and knowledge graphs (Dou et al.,  11 ; Fan et al.,  12 ) that systematically document specific skills and expertise. For tangible cultural heritage, such as historical architecture, various digital methods are employed to model and assess existing structures to ensure their longevity, including HDR 360° images capture (Rahimi et al.,  46 ), multi-focused images reconstruction (Gallo et al.,  15 ), point cloud scanning (Huang et al.,  24 ), and Geographic Information Systems (GIS) (Campanaro et al.,  6 ; Sánchez-Aparicio et al.,  52 ). In the past decade, Historic Building Information Modeling (HBIM) has been introduced as a specialized adaptation of Building Information Modeling (BIM) for heritage applications (Murphy et al.,  37 ), finding widespread use in heritage monitoring (Palomar et al.,  41 ), parametric modeling (Xu et al.,  68 ), and restoration construction (Biagini et al.,  3 ). Nevertheless, these studies predominantly concentrate on documenting the external geometrical features of architectural heritage or monitoring structural deterioration, without addressing the actual construction and restoration processes. Reducing the time and cost associated with restoration, renovation, and redesign through modern tools remains a pressing challenge in the digital transformation of the heritage sector (Lucchi,  33 ). It is therefore imperative to explore methods that effectively leverage the digital assets of traditional architecture and apply them to the design and fabrication of traditional architectural decorative structures inspired by these assets."
+      ]
+    },
+    {
+      "heading": "Advancements and applications of generative AI models",
+      "paragraphs": [
+        "AI has entered a new era of integration in the twenty-first century. Breakthroughs in generative models, such as Generative Adversarial Networks (GAN) (Goodfellow et al.,  18 ), Variational Autoencoders (VAE) (Kingma & Welling,  26 ), and diffusion models (Ho et al.,  21 ), have demonstrated the successful application of machine learning to generative design across multiple disciplines (Noy & Zhang,  39 ; Wang et al.,  62 ). In recent years, multimodal AI has advanced rapidly, with models including CLIP (Radford et al.,  44 ), Stable Diffusion (Rombach et al.,  49 ), and Midjourney (Borji,  4 ) significantly expanding the possibilities of AI-generated content. Unlike large language models, multimodal models can generate diverse forms of content from a given input medium, including text, images, videos, and even three dimensional models, thereby forging a closer connection with the physical world. Within architectural practice, generative AI models have proven capable of handling various complex and labor intensive tasks (Li et al.,  28 ), including designing text-guided AI facade design (Ma & Zheng,  34 ), interior design (Fan et al.,  13 ), spatial composition (Zhang et al.,  76 ), interior design (Chen et al.,  8 ), architectural design (Chen et al.,  9 ), structural design (Fu et al.,  14 ; Liao et al.,  30 ), visualization (Wang et al.,  64 ), and complex 3D modeling (Wei et al.,  65 ; Zeyin et al.,  73 ). These models have shown particular strength in processing intricate design requirements and integrating natural language inputs. Moreover, generative AI has demonstrated potential applications in cultural heritage restoration (Stoean et al.,  56 ; Yao et al.,  72 ) and redesign (Liu et al.,  31 ). However, these attempts remain confined to the image level, producing outputs that cannot be directly employed for practical construction or restoration. Further exploration is therefore needed to apply multimodal generative AI models to the restoration and construction of cultural heritage, enabling the rapid extraction of design methodologies from historical precedents and their transformation into universal digital models.",
+        "With the rise of diffusion models, recent studies have explored various approaches to sparse image based 3D generation, including point clouds, meshes, signed distance function (SDF) grids, and neural fields. DreamFusion introduced Score Distillation Sampling (SDS) (Poole et al.,  42 ), achieving breakthroughs in open world 3D synthesis. Zero123 further proposed a multi view generation model (Shi et al.,  54 ), enabling the optimization process to be guided simultaneously by multiple novel views. Moreover, image annotations can be directly mapped to 3D representations using a novel Large scale Reconstruction Model (LRM) (Hong et al.,  22 ). Built upon a highly scalable Transformer architecture, LRM presents a promising direction for rapidly generating high quality 3D assets. However, the models produced by such methods are generally of low quality, and no evidence currently suggests that they can be directly used to guide the fabrication of actual structures. Furthermore, their generalization capability, particularly in generating outputs for specialized domains such as historical buildings, requires verification and enhancement to meet the requirements of digitized production and construction processes."
+      ]
+    },
+    {
+      "heading": "Background: stucco relief in Southern China",
+      "paragraphs": [
+        "Lingnan stucco relief is a traditional architectural art form featuring intricate sculptural designs (Fig.  2 a–c) commonly found on historic buildings in Guangdong and Fujian, China (Wang,  61 ). Recognized as a national intangible cultural heritage, this craft has been transmitted through generations of artisans, who create designs ranging from bas-reliefs to full sculptures based on building themes and their artistic interpretation. The primary materials include lime mixed with natural additives, while copper wire, iron nails, and bamboo nails serve as the internal reinforcement framework. This process (Fig.  2 d) demands a high level of craftsmanship, making skilled artisans relatively scarce. The craft now faces challenges from declining intergenerational transmission and labor intensity. Integrating digital and intelligent technologies offers a pathway to preserve and modernize the craft while sustaining its cultural relevance. Fig. 2 Lingnan stucco relief.  a – c  Examples of stucco sculpture, high relief, and low relief at Chen Clan Ancestral Hall in Guangzhou, China, and residential halls in Shunde, China;  d  typical fabrication process"
+      ]
+    },
+    {
+      "heading": "Materials and methods",
+      "paragraphs": [
+        "This section describes the comprehensive workflow design of the study, encompassing the selection and training of AI generative and 3D reconstruction models, the overall workflow architecture, the materials and analytical approaches used to construct the mechanical model of the stucco relief, and the construction methods and process design adopted for physical fabrication. The section establishes an AI driven generative workflow for the construction or restoration of stucco relief, distinguishing it from conventional design and construction practices."
+      ]
+    },
+    {
+      "heading": "AI-enabled generative design and 3D reconstruction of stucco relief",
+      "paragraphs": [
+        "Traditionally, the creation of stucco reliefs has relied entirely on verbal descriptions and artisan intuition. Artificial Intelligence Generated Content (AIGC) employs machine learning algorithms and deep neural networks to analyze large visual datasets, such as images and videos, generating novel artworks based on learned patterns. AI generated paintings can produce a variety of images from inputs including reference images and descriptive text. Through AI, it becomes possible to generate desired stucco relief designs directly from textual descriptions, thereby enabling rapid creation of design images in a specified stylistic idiom. Moreover, both visual documentation and descriptive texts related to stucco reliefs are readily accessible. Consequently, training and deploying a text to image model is a practical choice. By utilizing machine learning models trained on masterworks and relevant themes, it is feasible to create generative models that can produce corresponding stucco reliefs based on semantic instructions or in the style of specific artisans. Such models could also be used to repair damaged reliefs at the image level by learning and replicating the techniques of master craftspeople.",
+        "In this study, we utilized the Stable Diffusion (SD) model, which is a Latent Diffusion Model (LDM)(Rombach et al.,  49 ). Diffusion models generate images through a two-step process: Gaussian noise is first added to the input image, followed by a reverse denoising procedure via a trained U-Net (Ronneberger et al.,  50 ). LDM operates on the same fundamental principles as conventional diffusion models but introduces two key innovations: semantic conditioning and a latent space representation. Specifically, LDM compresses images into a lower dimensional latent space via an encoder, expressed as 1 z = E x # \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\begin{array}{c}z=E\\left(x\\right)\\#\\end{array}$$\\end{document} where  E \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\mathcal{E}$$\\end{document}  denotes the encoder,  x \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$x$$\\end{document}  denotes an image in RGB space, and  z \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\mathcal{z}$$\\end{document}  is its latent representation. The decoder reconstructs the image from this latent space as 2 x ~ = D z = D E x # \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\begin{array}{c}\\widetilde{x} = D\\left(\\mathcal{z}\\right)= D\\left(\\mathcal{E}\\left(x\\right)\\right)\\#\\end{array}$$\\end{document} where  x ~ \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\widetilde{x}$$\\end{document}  is the predicted image and  D \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\mathcal{D}$$\\end{document}  is the decoder. Training occurs in this latent space, which significantly reduces computational cost and improves generation efficiency.",
+        "The image synthesis process of diffusion models can be conceptualized as a sequence of denoising autoencoders, denoted as  ∈ θ x t , t , t = 1 … T \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\in_{\\theta } \\left( {x_{t} ,t} \\right), t = 1 \\ldots T$$\\end{document}  . Each autoencoder is to predict the noise component added to the input image  x \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$x$$\\end{document} , based on its noised counterpart  x t \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$x_{t}$$\\end{document}  at time step  t \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$t$$\\end{document}  . As probabilistic models, diffusion models aim to learn the data distribution  p ( x ) \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$p(x)$$\\end{document}  by progressively denoising normally distributed variables. This enables the modeling of conditional distributions of the form  p ( z | y ) \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$p(z|y)$$\\end{document} , where  y \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$y$$\\end{document}  may represent text, semantic maps, or other image-to-image transformation conditions. The conditional denoising autoencoder  ∈ θ Z t , t , y \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\in_{\\theta } \\left( {Z_{t} ,t,y} \\right)$$\\end{document}  facilitates this process, where  Z t \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$Z_{t}$$\\end{document}  denotes the noise-corrupted image in the latent space.",
+        "During the reverse diffusion process, the latent variables are progressively refined by the U-Net, which predicts the noise residuals and reconstructs the latent features from random Gaussian noise into a coherent image representation with a sampling algorithm. Textual inputs are encoded via a text encoder and integrated into the U-Net through cross attention to condition the image generation. Stable Diffusion is a widely used pretrained LDM developed by OpenAI and serves as the foundational model in this work. Retraining the full model to generate images of stucco relief would be prohibitively expensive. Therefore, model adaptation is typically achieved through fine tuning, a method that selectively updates the parameters of the pretrained model to enable domain specific generation capabilities, in this case stucco relief imagery.",
+        "A common approach to modifying generation style is through Low-Rank Adaptation (LoRA) (Hu et al.,  23 ). LoRA is a lightweight additional module designed to adapt generative models to specific styles through minimal modifications to the original checkpoint. For a pre-trained weight matrix  W 0 ∈ R d × k \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${W}_{0}\\in {R}^{d\\times k}$$\\end{document} , the model constrains its update by expressing it as a low-rank decomposition: 3 W 0 + Δ W = W 0 + B A # \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\begin{array}{c}{W}_{0}+\\Delta W={W}_{0}+BA\\#\\end{array}$$\\end{document} where  B ∈ R d × r , A ∈ R r × k \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$B\\in {R}^{d\\times r},A\\in {R}^{r\\times k}$$\\end{document} , and the rank  r ≪ m i n ( d , k ) \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$r\\ll min(d,k)$$\\end{document} .",
+        "During training, the original matrix  W 0 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${W}_{0}$$\\end{document}  is kept frozen and does not receive gradient updates, while the matrices  A \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$A$$\\end{document}  and  B \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$B$$\\end{document}  contain the learnable parameters. When fine tuning LDMs, the LoRA approach primarily targets the cross attention layers within the U-Net and text encoder, which are the layers responsible for integrating textual prompts with visual features. This modification is particularly relevant for applications such as generating images of stucco reliefs based on semantic prompts. The effectiveness of the LoRA method in adapting LDMs for domain specific generation tasks has been well validated. For style transfer tasks, LoRA models typically require as few as 15 to 20 images to achieve effective training. Given the scarcity of stucco relief image datasets, the use of a LoRA model offers the potential to obtain relatively robust generative performance with a comparatively small training set.",
+        "As shown in Fig.  3 a, 43 images of stucco reliefs sourced from the internet and supplemented with field photographs were used as the training set. These images were captured using a standard digital camera and subsequently processed into JPG format with a uniform resolution of 1,472 × 640 pixels. Most stucco relief works naturally exhibit a horizontally extended format, which aligns with their actual placement on the horizontal architectural elements of buildings. We selected 1,472 × 640 as the general resolution to preserve the horizontal aspect ratio while ensuring consistent image dimensions for batch training. The latent space of Stable Diffusion operates on compressed representations whose dimensions must be multiples of 64, ensuring compatibility with the VAE encoder and U-Net architecture without requiring padding or interpolation. We chose this specific aspect ratio rather than more common square resolutions to better preserve the authentic spatial characteristics of stucco relief compositions. These images were categorized into four themes, and we applied prompt words to each image using the CLIP model. Since the model generated prompt words may contain biases, we manually adjusted the prompts to ensure they aligned with the image descriptions and flipped the images horizontally to increase the training dataset. The processed prompts were stored as TXT files bearing the same filenames as their corresponding images. We used the SD v1.5 model as the base model for training, generating checkpoints at different training steps to identify the optimal training cycle for producing the best results. After training, pretrained prompt words were used as inputs to evaluate the effectiveness of generating different themes of stucco reliefs. The geometric characteristics of stucco relief primarily consist of low relief, high relief, and full round sculpture. Converting acquired stucco relief images into 3D models provides an extremely convenient method for recording their geometric features while also generating reusable 3D models for various applications. As shown in Fig.  3 b, for bas reliefs, a simple approach involves converting the image into a grayscale map and generating a corresponding relief model based on the grayscale values. However, for half reliefs and full round sculptures with complex geometries, extracting 3D models from images alone is not a straightforward process. Fig. 3 AI-Generated image and 3D reconstruction process for Lingnan stucco relief design.  a  Stucco relief image generation based on LoRA fine tuning;  b  3D model conversion of low relief stucco relief;  c  3D model acquisition based on single view reconstruction",
+        "The intrinsic geometric complexity of stucco reliefs renders two-dimensional imagery insufficient for effective design and documentation. The conversion of such imagery into three-dimensional models affords a far more complete representation of their morphological features. These digital assets serve a dual purpose: they not only preserve historical information but also furnish actionable reference for subsequent design and fabrication. Consequently, a robust technical framework is imperative for the reliable translation of arbitrary stucco relief images into functional 3D models that can support downstream engineering workflows. The creation of 3D models from images holds great potential for practical applications in fields such as virtual reality, industrial design, gaming, and animation. The use of modern digital techniques to preserve traditional cultural heritage models is valuable for cultural preservation and architectural documentation.",
+        "The availability of 3D models for historical architectural components substantially facilitates their application in restoration and new construction. A conventional strategy involves fabricating the physical object first and then scanning it, or alternatively, scanning and modifying existing physical models for subsequent construction. However, given the laborious and time-consuming nature of producing physical stucco relief models, constructing them solely for the purpose of scanning and digitization proves economically unjustifiable. For stucco reliefs already installed in historic buildings, spatial constraints often necessitate advanced scanning techniques, such as drone-based imaging, while the sheer number and geographical dispersion of extant examples render comprehensive surveys prohibitively resource-intensive. In response, our study introduces an AI-driven approach that generates stucco relief images and, more critically, enables the rapid derivation of corresponding 3D models during the design phase. This paradigm shifts the acquisition of digital models from a post-construction activity to a preparatory step, allowing fabrication and downstream workflows to proceed directly from the digital representation. Such a strategy aligns more closely with contemporary architectural design and construction practices, where digital models precede physical realization rather than follow it.",
+        "As illustrated in Fig.  3 c, we employed the methodology of InstantMesh (Xu et al.,  67 ) to convert a single generated 2D image into a 3D mesh model. Given an input image, InstantMesh first utilizes a multi view diffusion model to generate 3D consistent multi view images. It then employs a sparse view large scale reconstruction model to predict the 3D mesh directly, projecting image features onto three planes. Finally, the FlexiCube algorithm is used to generate a 3D mesh asset. This entire process can be completed within seconds.",
+        "Table  1  lists the software and scripts employed in the design workflow. In the overall stucco relief design process, the first step is to select a trainable Stable Diffusion base model, then prepare the training images and prompts, followed by model training using the LoRA script. Upon completion of training, the InstantMesh script was applied for 3D reconstruction, and final refinements were performed with 3D modeling software. The model and software selections listed in the table are specific to this study; in future applications, they may be substituted with other comparable scripts or software. Table 1 Script and software used in the design phase Steps Software/Scripts Basic model SD Prompt generation CLIP Model training LoRA 3D reconstruction Instantmesh 3D model adjusting Rhino/blender"
+      ]
+    },
+    {
+      "heading": "An integrated construction workflow for AI-designed stucco relief",
+      "paragraphs": [
+        "Once a reliable method for generating 3D models of stucco relief has been established, we can propose a comprehensive workflow comprising four major parts. As shown in Fig.  4 , the first part is the generation of the stucco relief model. Based on specific design intentions, the user selects a desired style and collects a set of representative stucco relief images with prompts to fine tune the generative model. Among the resulting models, the one with the most satisfactory performance is selected for subsequent use. Depending on the design goal, whether described textually or derived from an existing damaged stucco relief, the selected model generates initial images that serve as design proposals. These outputs may be iteratively reviewed, discussed, and refined by the user until a final stucco relief image is confirmed. The image is then converted into a 3D model using the method illustrated in Fig.  3 , and a structural skeleton is embedded into the geometry. The second and third parts center on structural assessment. At this stage, material tests are required for the simulation model. Should the model exhibit failure under expected loads, either the relief body or its internal support system must be strengthened to ensure safety. Upon passing the mechanical assessment, the design advances to the construction phase. Early in this phase, a prototype of the model may be fabricated for visual and functional evaluation. In full scale fabrication, the digital model informs the design of corresponding formworks and support structures. These formworks and reinforcements can be produced through additive manufacturing techniques and subsequently employed in the integral forming of the stucco relief. Final assembly, installation, and curing are then carried out on site. This end to end workflow, from design and evaluation to fabrication, is intended to enhance both the efficiency and transparency of stucco relief design. Moreover, it contributes to greater construction safety and productivity, thereby facilitating the broader integration of this traditional craft into contemporary architectural practice. Fig. 4 Integrated construction workflow for stucco relief combining AI-driven generative modeling, structural performance evaluation, and additive manufacturing assisted fabrication"
+      ]
+    },
+    {
+      "heading": "Material and specimen preparation",
+      "paragraphs": [
+        "Traditional craftsmanship may be well understood by skilled artisans, but this knowledge is gradually fading as master craftsmen pass away, necessitating efforts for rediscovery and preservation (Kloiber et al.,  27 ). Due to the absence of precise geometric information in traditional workflows before construction, designers are unable to assess the structural reliability of stucco reliefs in advance, resulting in considerable uncertainty during the building process. Stucco relief is a large scale architectural ornamentation based on lime mortars and structural reinforcement. Owing to its complex geometric properties, inexperienced artisans may struggle to determine safe design parameters. Therefore, by developing a mechanical model of the stucco relief material, it becomes possible not only to evaluate the structural safety of an existing complex geometry but also to verify its performance under typical loading conditions before fabrication. Through the methodology outlined in Sect.  4.1 , we are able to obtain the actual 3D geometry of the stucco relief. By employing the established mechanical model, the structural safety of the geometry generated through this approach can also be assessed.",
+        "Globally, pozzolanic and air-hardening limes have been employed in construction for millennia, and the mechanical properties of historic lime mortars from various regions have been extensively documented (Vejmelková et al.,  58 ). Organic additives have frequently been incorporated into lime-based binders to enhance workability (Rahim et al.,  45 ; Rodriguez-Navarro et al.,  48 ; Ventolà et al.,  59 ; Zhao et al.,  77 ). In China, in particular, the addition of organic materials such as glutinous rice has been a widespread practice (Hwang et al.,  25 ; Wang et al.,  60 ; Yang et al.,  70 ,  71 ) and continues to be used in modern historical building restoration (Shao et al.,  53 ; Wei et al.,  66 ). The lime mortar formulations used in stucco relief are no exception to this tradition. These fiber-modified lime mortars exhibit pronounced regional variations in composition and performance, necessitating systematic characterization of their mechanical properties at the material level. Such characterization underpins structural analysis of stucco relief elements, facilitating both the understanding of ancient material behavior and the improvement of restoration and construction efficiency and safety (Zhang et al.,  75 ).",
+        "Figure  5  illustrates the production process of Lingnan stucco relief materials. Traditional stucco relief construction employs three principal types of lime mortar: a straw-mixed lime mortar for the base layer, a paper-strip-mixed lime mortar for the surface layer, and a colored lime mortar derived from the paper-strip-mixed variant through the addition of pigments. The straw-mixed lime mortar constitutes the foundational layer of the stucco relief, serving as the structural interface between the internal reinforcement and the overlying paper-strip-mixed lime mortar. Fig. 5 Stucco relief materials and test specimens.  a  Preparation process of straw mixed lime mortar;  b  Preparation process of paper strip mixed lime mortar and colored lime mortar;  c  Test specimens and their dimensions",
+        "As shown in Fig.  5 a, the preparation of straw mixed lime mortar begins with medium grain sand, which is mixed with lime at a 2:1 sand to lime ratio to form lime paste. Next, dry rice straw is cut into approximately 5 cm lengths, soaked in water, and placed in a large container such as a vat or barrel. The straw is spread in layers approximately 5 cm thick, followed by an additional layer of lime paste that completely covers the straw below. This layering process continues until the required quantity for the sculpture is reached. Water is then slowly poured along the inner wall of the container until it submerges the straw and lime paste by approximately 30 cm. The mixture is sealed and left to soak and ferment for at least 15 days before opening. Over this prolonged soaking and fermentation period, the rice straw decomposes and settles with the lime. Upon unsealing, the upper layer of pale yellow, clear limewater is filtered and set aside for future use. The remaining material is then mixed at a ratio of 200 kg of straw mixed lime mortar to 0.5 kg of brown sugar. Once thoroughly mixed, the straw mixed lime mortar must be sealed to prevent drying. Paper strip mixed lime mortar is used to bond straw mixed lime mortar and colored lime mortar. As shown in Fig.  5 b, the preparation of paper strip mixed lime mortar begins with slaking lime: 100 kg of quicklime is soaked in 300 kg of clean water, then filtered through a fine sieve to remove sand and other impurities, producing a smooth lime slurry. Next, 2.5 kg of brown sugar and 3 kg of glutinous rice flour are added and thoroughly stirred to achieve a fine and smooth consistency. Following this, 15 kg of Yuan Bao paper (a type of ritual paper burned in ancestor worship) is soaked and pulped into paper fibers. The paper fibers are then mixed with the prepared lime slurry and sealed for approximately 20 days. Since the densities of the two components differ, the mixture must be thoroughly stirred with a trowel before use to ensure uniform consistency and adhesion. When pigments are added to the paper strip mixed lime mortar, it becomes colored lime mortar, which serves as the base for pigmentation in stucco relief artworks. The outermost layers of stucco relief pieces are coated with colored lime mortar, forming the foundation for painted decoration. The color selection depends on the thematic elements of the artwork, typically featuring subtle shades of red, blue, green, white, and yellow. To expand the number of test specimens, red colored lime mortar was used as a supplementary experimental group for paper strip mixed lime mortar. To investigate the time dependent strength variations of stucco relief materials over different aging periods, we designed test specimens in the following dimensions: 77 × 77 × 77 mm 3  cubic specimens for compressive strength testing and 40 × 40 × 160 mm 3  beam specimens for flexural strength testing. The actual specimen dimensions are illustrated in Fig.  5 c. The casting materials include paper strip mixed lime mortar, straw mixed lime mortar, and colored lime mortar, all of which were provided by Mr. Chengcun Shao, a Guangzhou based inheritor of the stucco relief craft. Each material type was used to produce three sets of test specimens, which were de molded after seven days of natural curing and subsequently tested for compressive and flexural strength after 14, 28, and 90 days of curing under natural conditions."
+      ]
+    },
+    {
+      "heading": "Mechanical testing and scanning electron microscopy (SEM) scanning",
+      "paragraphs": [
+        "As shown in Fig.  6 a, mechanical tests were conducted at three different curing periods to measure the compressive strength and flexural strength of the three types of specimens. These parameters will be used to build a mechanical analysis framework to better understand the mechanical response of stucco reliefs or sculptures, ensuring that our design remains safe under specified loads. A universal testing machine (CMT5105, Shenzhen SANS) was used for load application. For the 90 day strength test, digital image correlation (DIC) technology was employed to analyze the strain field during loading, enabling the observation of crack propagation and failure modes under applied loads. A 0.5 mm speckle pattern was sprayed onto the specimens, and images were captured at a frame rate of five frames per second during the loading process. The acquired images were analyzed using GOM 2019 software to assess strain distribution. The loading protocol followed the standard methods according to JGJ_T 70–2009 Standard for test method of performance on building mortar. During testing, force controlled loading was applied, with an initial loading rate of 50 N/s. However, as the load bearing capacity declined rapidly, the loading rate was adjusted to 25 N/s. For flexural strength testing, displacement controlled loading was used, with a loading speed of 1 mm/min. As shown in Fig.  6 b, owing to the limited existing knowledge of these materials, SEM analysis was conducted on the fractured specimens to examine their internal pore structure and the failure mechanisms of straw mixed lime mortar, paper strip mixed lime mortar, and colored lime mortar. Fig. 6 Loading schematic and scanning electron microscope specimens.  a  Flexural and compressive loading process;  b  Field emission scanning electron microscope and specimens"
+      ]
+    },
+    {
+      "heading": "Prototyping and fabrication via 3D printing",
+      "paragraphs": [
+        "In traditional construction practices, the fabrication of stucco reliefs often relies on the artisan's experience to iteratively shape the relief layer by layer, as the precise geometry typically remains undefined throughout the process. In contrast, within the proposed workflow, the availability of a well-defined 3D geometric model of the stucco relief enables the development of a more structured and informed construction methodology. By applying this digital model, it becomes feasible to redesign the fabrication process, thereby simplifying on site operations and reducing the reliance on labor intensive manual adjustments. With the advancement of additive manufacturing, commonly known as 3D printing, we can rapidly fabricate small scale models of the designed stucco relief geometries for reference by designers and construction personnel. Additionally, leveraging the adaptability of additive manufacturing to complex geometries, we can utilize printed formwork and structural reinforcement to simplify the construction process, reduce fabrication time, and achieve scalable production. By employing generative AI models, preliminary designs for stucco reliefs or sculptures can be obtained. To provide users with an intuitive understanding of the geometric characteristics of their designs, we explored several desktop level 3D printing techniques.",
+        "Table  2  summarizes the additive manufacturing techniques employed in this workflow, along with their corresponding printing precision, printing materials, and application directions. Given its relatively low cost, FDM printing represents an economical option for producing stucco relief molds that require substantial printing volume. In addition, full color printing based on stereolithography can provide vivid and detailed colored prototype models for users. However, both of these methods are generally limited to smaller scale production. For fabricating stucco relief molds or replicas at the meter scale, sand mold printing offers a highly suitable alternative. Table 2 Additive manufacturing techniques in the workflow Printer type Resolution Material Application FDM printer 0.1 mm PLA/TPU/PETG/… formwork/reinforcement Colored 3D printer 0.2 μm Photocurable resin prototyping Sand-mold printer 0.4 mm Sand large-scale formwork/replica",
+        "As shown in Fig.  7 a, multi-nozzle material jetting 3D printing allows for high-fidelity color reproduction of stucco relief designs on a small scale, enabling their use as decorative items. Conventional Fused Deposition Modeling (FDM) printing, while lacking color reproduction, offers lower costs and faster fabrication speeds, making it a viable alternative. Furthermore, 3D printing can assist construction personnel in fabricating stucco reliefs with complex 3D geometries. As illustrated in Fig.  7 b, low-cost FDM printing enables the fabrication of intricate structural supports and modular formwork for stucco relief construction. These modular formworks are manufactured via FDM printers, assembled on-site with the supporting reinforcement, and then filled with stucco relief materials for integral forming. Compared to traditional manual forming, this workflow eliminates the need for extensive handwork, allowing formwork to be prefabricated in a 3D printing factory and directly transported to the construction site. Once the formwork is removed, artisans can complete the finishing touches and coloring. Given the uniqueness of each stucco relief geometry, this approach aligns well with the inherent flexibility of 3D printing. For the fabrication of larger and more intricate stucco reliefs, we employed sand mold printing, as depicted in Fig.  7 c. This technique enables large scale replication of stucco relief geometries and facilitates the production of substantial stucco relief molds. Owing to material weight constraints, sand mold printing presents a promising solution for fabricating large scale stucco relief. Fig. 7. 3D printing of stucco relief.  a  Small scale stucco relief prototype fabrication;  b  FDM forming method for complex geometries in stucco relief;  c  Sand mold printing method for large scale stucco relief construction"
+      ]
+    },
+    {
+      "heading": "Results and discussions",
+      "paragraphs": [
+        "This section presents the specific parameters employed in AI model training and the corresponding training outcomes, followed by demonstrations of practical applications, including image restoration and AI driven 3D model reconstruction. It further reports the results of the stucco relief material tests and their mechanical properties, and develops finite element models to analyze the mechanical behavior of the generated stucco relief. Additionally, it describes the fabrication of stucco relief prototypes using 3D printing technology and the experimental construction of actual stucco relief works. Finally, it discusses the improvements achieved by the proposed workflow over prior approaches, as well as its remaining limitations."
+      ]
+    },
+    {
+      "heading": "Training small samples of stucco relief for new AI-enabled designs",
+      "paragraphs": [
+        "As mentioned in Sect.  4.1 , text to image generation models based on Stable Diffusion can generate corresponding images from user provided text descriptions or image inputs. In our case, we attempted to enable learning and capturing the artistic characteristics of stucco reliefs. The selected images were those that demonstrated superior visual fidelity in representing the intended designs. Our study utilized the LoRA fine tuning method to refine the Stable Diffusion v1.5 model (released in 2022) using a training set consisting of only a few dozen images. This fine-tuned model was then employed to generate new stucco relief designs tailored to specific requirements or to aid in the restoration of existing stucco relief artworks. The LoRA model training was conducted on a cloud computing platform. Most training parameters were kept at their default values, with a batch size of two and a maximum of eight epochs, saving the model every two epochs. An epoch refers to a complete pass through the entire training dataset by a machine learning model. The batch size denotes the number of training samples processed in a single forward and backward pass before the model updates its parameters through gradient computation and an optimizer step. The learning rate defines the effective magnitude of each parameter update. The learning rate was set separately for training the U-Net and text encoder. The former focuses on image generation, while the latter focuses on prompt processing. Minimal parameter adjustments were made, as their impact on the model's generative performance was relatively minor compared to the number of training iterations, which had a more significant effect. The training was run on a single workstation equipped with an RTX 3090 GPU for approximately 20 h under the parameters listed in Table  3 . Table 3 Training parameters used in LoRA training Training parameters Values Resolution \"1,472, 640\" Save Precision \"fp16\" Save every n epoch 2 Max train epochs 8 Train batch size 2 Learning rate (lr) 0.0001 Unet lr 0.0001 Text encoder lr 0.00001 Lr scheduler cosine_with_restarts Optimizer type AdamW8bit Lr scheduler num cycles 1",
+        "The model loss was computed using the mean squared error (MSE), defined as the MSE between the noise predicted by the LoRA weighted U-Net model and the ground truth noise. As shown in Fig.  8 a, the model underwent a total of 29,584 training steps, achieving an average loss reduction of 22.9%. The average loss was computed using the adjacent averaging method. Three checkpoint files were saved at 7,396, 14,972, and 22,188 training steps, respectively, and the model's generative performance was evaluated through text to image validation. For this purpose, prompts related to traditional floral bird paintings and landscape paintings were used. After 7,396 iterations, the model demonstrated an initial ability to generate stucco relief related subjects, though the overall color scheme and artistic style still exhibited significant deviations. By 14,972 iterations, the generated stucco relief images closely resembled real stucco relief artworks in terms of color and stylistic fidelity. However, after 22,188 iterations, the model exhibited poor generation quality, leading to noticeable distortion and chaotic compositions in the generated images. Consequently, the model trained for 14,972 iterations was selected as the optimal version, and all subsequent images were generated using this model. Using specific prompts to describe stucco relief themes, along with adjustments to model inference weights, we generated images of floral bird, landscape, and figurative subjects, as shown in Fig.  8 b. The output resolution of all generated images is 1,472 × 640 pixels, consistent with the training image resolution. This resolution is maintained throughout the entire generation process without upscaling, as it is sufficient for visual evaluation and subsequent 3D reconstruction. The images shown in Fig.  8 b were manually selected from approximately 20 images generated per prompt to represent the best visual quality and stylistic consistency. The prompts are annotated above the corresponding images, with a one to one correspondence. Fig. 8 AI-generated stucco relief designs.  a  Effect of different training steps;  b  Optimized model",
+        "To assess the differences between the images generated by the model and those in the training set, the Gram distance (Gatys et al.,  17 ) and the Learned Perceptual Image Patch Similarity (LPIPS) (Zhang et al.,  74 ) were employed to evaluate the degree of similarity between each generated image and its corresponding training image. LPIPS leverages pretrained deep neural networks to extract high dimensional image features and quantifies perceptual similarity by computing distances in the feature space, with values ranging from 0 to 1, where smaller values indicate greater similarity. Both metrics were computed using the skimage library in Python.",
+        "Table  4  presents the Gram distance and LPIPS values between the generated images and their corresponding original images, indicating relatively low perceptual similarity but high stylistic consistency between them. This suggests that the training set images and the generated images are not similar replicas, but rather distinct yet stylistically unified images that share a certain degree of semantic correspondence. From a visual perspective, the generated images clearly demonstrate high perceptual quality and successfully capture the characteristic features of traditional stucco relief artwork, which serves as an important basis for evaluating the training effectiveness. Table 4 Similarity between generated images and corresponding training images Prompt Training image Generated image Gram distance LPIPS A huisu painting of a mountain scene with a tower in the distance and a river running through it with rocks and trees 0.00006 0.6719 A huisu painting of birds and flowers on a black background with a white border around it 0.00013 0.7015",
+        "In addition, CLIPScore (Hessel et al.,  20 ) was employed to evaluate the semantic alignment between the generated images and the textual prompts, with results compared against the training set. CLIPScore is a reference free image text alignment metric based on the CLIP (Contrastive Language Image Pretraining) model, widely used to assess the quality of generated captions or text to image outputs. The calculations were performed using the code provided by the original authors ( https://github.com/jmhessel/clipscore ). CLIPScore ranges from 0 to 2.5, with the training set achieving a score of 0.7399 and the generated images achieving a slightly higher score of 0.7997. While this metric typically hovers around 1.0, the use of specially annotated prompts (e.g., \"huisu\") during training affected the degree of alignment between images and textual prompts. However, this value also indicates that the trained model shows an improved capacity to capture text specifically associated with traditional architecture. Nevertheless, as shown in Fig.  8 b, the model effectively recognized thematic information embedded in the prompts, demonstrating a certain level of practical applicability."
+      ]
+    },
+    {
+      "heading": "Restoration of actual stucco relief with defects",
+      "paragraphs": [
+        "In addition to generating stucco relief images from textual prompts, the SD model also supports the use of both images and prompts as inputs to guide the generation of specific image regions. This functionality presents a promising avenue for the restoration of stucco relief imagery, allowing targeted refinement or reconstruction of selected portions while preserving the overall stylistic and semantic integrity. ControlNet (Zhang et al.,  75 ) is a neural network architecture designed to enhance large scale pretrained text to image diffusion models by introducing spatially localized, task specific image conditioning. It allows for the manipulation of generation algorithms to achieve the desired output and controls the content generated in different areas of the image, reducing randomness and improving image quality. ControlNet introduces additional conditioning into the blocks of a neural network. When integrated into pretrained network blocks, ControlNet preserves the parameters of the original blocks by freezing them, while simultaneously cloning them into trainable counterparts that accept external conditioning vectors. When applied to large scale models such as Stable Diffusion, this architecture retains the production grade performance derived from training on billions of images, while the trainable copies use this robust backbone to accommodate diverse conditional inputs.",
+        "Using the built-in img-to-img module and ControlNet (Zhang et al.,  75 ), the model is able to restore stucco relief images with missing parts. As shown in Fig.  9 a, we selected an image from the training set and applied two types of defects to the image. First, we simulated the situation where parts of the stucco relief had fallen off, exposing the wall or flat surface, represented by fixed size white pixel blocks. Second, we simulated the loss of color in the stucco relief by desaturating certain areas of the image. After testing, we selected two damaged stucco reliefs from Xiuye Primary School (Huadu District, Guangzhou, China) to generate corresponding stucco relief content. The \"inpaint_only\", \"reference\", and \"recolor\" control types for image restoration were selected. For images with color removal, the Recolor method, which is based on color repainting, was used to recolor the image. This method effectively restored the images from the training set, with minimal occurrence of meaningless color blocks. The overall color distribution aligned well with the style of the image. For images with masking treatment, the \"reference\" method produced better results, as it was able to generate the boundary between the mask and the real image more accurately, resulting in higher quality generation. Other local re painting methods, while able to generate image tiles similar to the subject matter, tended to produce dissonant elements in terms of color and content. We also tested non training set images. Regardless of the ControlNet method used, the generated images often displayed dissonant color blocks at the edges or within the internal areas. We speculate that this phenomenon may be due to the limited number of training set images, as our training set was much smaller than the typical size used in LoRA models. Fig. 9 Image restoration.  a  Restoration after decolorization and covering treatment;  b  Generation in actual scenes",
+        "We also took photographs of actual damaged stucco reliefs at the same primary school and attempted to restore the images using this model. As shown in Fig.  9 b, the stucco reliefs had been cleaned and were in the process of restoration due to prolonged disrepair. Although the stucco reliefs had suffered significant color loss, the remaining traces allowed us to discern the approximate outline of the original images. After creating masks for the missing sections, the images were input into the ControlNet module for restoration. The generated images, covering the masked sections, were then produced. Using prompts such as \"bridge\" and \"landscape,\" the generated images showed very little overlap with the remaining outlines of the original stucco reliefs. This suggests that when using the LoRA model trained with the SD model, the relationship between the generated content and the prompt is more prominent. This may be due to the complexity of the image itself, which was identified as noise at the image level, leading to the filtering out of these features."
+      ]
+    },
+    {
+      "heading": "Generating 3D models of stucco relief based on 2D images",
+      "paragraphs": [
+        "Generating stucco relief designs at the image level alone is insufficient for capturing precise geometric configurations or informing subsequent construction. To overcome the challenge of directly deriving 3D models from 2D imagery, we evaluated several image-to-3D AI reconstruction models available in the Hugging Face community and selected the most performant option. For low-relief stucco designs, which essentially require only the generation of raised textures from underlying patterns, satisfactory 3D models can be achieved without resorting to AI-based reconstruction tools. Accordingly, we converted the images to grayscale maps and imported them into Blender modeling software. By employing the grayscale map as an alpha mask and adjusting the elevation of surface undulations, we obtained reasonably ideal geometric models. The exported models were saved in OBJ format and could be directly textured within the modeling environment. As shown in Fig.  10 , stucco relief compositions typically feature a prominent independent sculpture as the focal subject, with low-relief ornamentation serving as the background. We therefore extracted the primary subject from each image and converted it into a usable 3D model. The images selected for this process included both those generated by the trained model and one image drawn from the training set, covering themes such as human figures, flowers, birds, and other fauna. Among these, the figure and lion subjects were AI-generated. This selection was intended to demonstrate that the proposed method is equally effective for both synthetically generated and authentic stucco relief images. Consequently, this approach offers a viable means of reducing the reliance on costly 3D scanning and multi-view reconstruction techniques. Fig. 10 Generation process and output of the AI enabled 3D reconstruction model",
+        "Several image-to-3D generative models were used for comparative evaluation, including OpenLRM (Hong et al.,  22 ), Sf3D (Boss et al.,  5 ), Vfusion3D (Han et al.,  19 ), and Instant Mesh (Xu et al.,  67 ). Most of these models exhibited limited performance in converting generated images into 3D geometry, producing only a surface that retained the shape of the original image. InstantMesh, however, demonstrated markedly superior performance in generating coherent and structurally plausible 3D models, and was consequently adopted as a core component of the proposed workflow for stucco sculpture model generation. We used the InstantMesh (Xu et al.,  67 ) source code from GitHub ( https://github.com/TencentARC/InstantMesh ), which includes two modules: the adjusted zero123 model, responsible for generating virtual multi-view images using the diffusion model, and the LRM model, which reconstructs NERF or Mesh models from previous multi-view images. The mesh generation mode was selected for its superior compatibility with subsequent model repair and refinement operations. Prior to reconstruction, input images were preprocessed in Photoshop to isolate the subject against a plain white background, and saved in either JPG or PNG format. Using the extracted images as input, each reconstruction required approximately 30 s of computation on a workstation equipped with an RTX 3090 GPU, yielding a 3D model with vertex colors exported in OBJ format. Subsequent post-processing was performed in Blender to convert vertex colors into texture maps. Although InstantMesh includes a native texture output module, the texture alignment proved inconsistent following model repair. Re-baking the textures from vertex colors emerged as a more reliable alternative, yielding superior visual fidelity and uv coherence.",
+        "The initial 3D reconstruction exhibited several surface artifacts and insufficient thickness along the axis perpendicular to the image plane., This issue was particularly evident in the multi-view synthesis of the central bird subject, which yielded an excessively planar geometry resembling a thin sheet. Vertical scaling was consequently applied to restore the model to plausible proportional dimensions. Despite these limitations, the model required only minimal post-processing to achieve a serviceable level of quality, which constituted the primary rationale for selecting this reconstruction approach. Ultimately, the proposed method yielded a high-quality mesh-type 3D model with color textures and satisfactory topological integrity, readily compatible with mainstream modeling software."
+      ]
+    },
+    {
+      "heading": "Time-dependent compressive and flexural strengths of stucco relief materials",
+      "paragraphs": [
+        "Due to the uncertainty involved in the production of stucco reliefs, the structural safety of stucco reliefs remains unknown, making it impossible to assess the long-term safety and design feasibility of the project before construction. Although generative AI and image-based reconstruction techniques enabled the acquisition of 3D geometric models, a thorough understanding of the material's mechanical properties remains essential for subsequent finite element analysis and structural evaluation.",
+        "The primary load-bearing component of the stucco relief is the straw-mixed lime mortar core, whereas the external paper-strip-mixed and colored lime mortars function predominantly as surface layers with negligible contributions to overall structural capacity. As shown in Fig.  10 a, the straw-mixed lime mortar exhibited strong interfacial adhesion during the early curing stage (14 days). Although cracks appeared during compressive loading, the material sustained its load-bearing capacity with minimal degradation and continued to gain strength. At 28 and 90 days of curing, however, the mortar displayed brittle failure characteristics, characterized by a rapid stress drop upon reaching the ultimate load. Following near-complete loss of load-bearing capacity, the material entered a secondary strengthening phase, albeit at substantially elevated compressive strains exceeding 25%, rendering this phase structurally insignificant. Crack propagation near failure is illustrated in Fig.  11 b. Fractures primarily initiated and propagated along the block corners, with gradual spalling of the edges exposing the internal core. Based on the results in Fig.  11 c, the straw-mixed lime mortar exhibited relatively stable mechanical behavior throughout the experimental program, with mechanical properties progressively improving with extended curing duration. Since the air-hardening lime materials gain strength primarily through the reaction of calcium hydroxide in the lime slurry with carbon dioxide in the air to form calcium carbonate, we then performed electron microscopy scans of the straw-mixed lime mortar fragments after 90 days of curing (Fig.  11 d). Fig. 11 Mechanical testing results and microscopic images of straw mixed lime mortar at different curing ages.  a  Stress–strain curves of straw mixed lime mortar at different curing ages;  b  Crack propagation in compressed straw mixed lime mortar specimens at a specific strain;  c  Ultimate compressive strength of straw mixed lime mortar at different curing ages;  d  SEM image of straw mixed lime mortar at a localized region",
+        "The straw-mixed lime mortar comprises medium sand aggregates bound by a lime-based binder. SEM micrographs revealed the coexistence of amorphous calcium carbonate and crystalline calcite between the aggregates, with the amorphous phase being more abundant. These observations are consistent with findings reported in previous studies (Batool et al.,  2 ; Liu et al.,  32 ; Qian et al.,  43 ). Based on the observed failure mode, we hypothesize that the exterior layers, being more extensively exposed to atmospheric carbon dioxide, undergo greater carbonation and thus develop higher strength, whereas the interior remains less carbonated and comparatively weaker. Consequently, during compressive loading, the surface layer fractures first, while the less-reacted internal material retains sufficient cohesion to sustain load, permitting entry into a secondary strengthening phase rather than undergoing immediate brittle collapse. On a microscopic level, the bonding force between the aggregates, such as the amorphous calcium carbonate and calcite, is relatively low. Due to the characteristics of air-hardening, the material generates pores during the curing process, with a measured porosity of 34.5%, which further reduces its strength. Compared to cement mortar, the ultimate load-bearing capacity is much lower, but it is similar to other lime mortars. Significant variability was observed in the long-term mechanical properties of the paper-strip-mixed and colored lime mortars, attributable to inherent material inhomogeneity. Consequently, their contribution to structural performance was neglected in this study, as these materials are conventionally regarded by practitioners as serving primarily waterproofing and surface-finishing functions. The corresponding test data are therefore not reported herein.",
+        "Since cracking occurred during the early stages of loading, the tensile strength of the material is correspondingly low, and the incorporation of organic additives did not appreciably enhance this property. Flexural tests were conducted to determine the tensile characteristics of the material, and the resulting data were used to calibrate the mechanical model. Similar to concrete, straw-mixed lime mortar exhibited brittle failure under flexural loading. As shown in Fig.  12 a, cracks at the mid-span of the bottom gradually propagate during loading. Although its flexural strength increases with curing age (Fig.  12 b), all specimens, except one of the 14-day curing, fractured as shown in Fig.  12 c and quickly lost their load-bearing capacity after fracture. Fig. 12 Flexural testing of straw mixed lime mortar.  a  Load–displacement curve and crack propagation during the flexural test of straw mixed lime mortar;  b  Ultimate flexural strength of straw mixed lime mortar;  c  Fracture morphology of straw mixed lime mortar after failure"
+      ]
+    },
+    {
+      "heading": "Simulated responses of representative stucco relief structures",
+      "paragraphs": [
+        "Based on the experimental results, the finite element method was employed to analyze a representative stucco relief design alongside a simplified cantilever geometry to verify construction feasibility. Constitutive models for lime mortar in the literature typically adopt either viscoelastic water-hardening formulations (Garijo et al.,  16 ) or damage-based lime mortar models (Nezerka et al.,  38 ). In this study, we adopted a concrete damage plasticity-based constitutive model, with damage parameters defined according to the Chinese concrete code. Selected parameters were manually adjusted to ensure close agreement between the simulated and experimental stress–strain responses (Fig.  13 a). Fig. 13 Simulated response of a sample design.  a  Simulated and tested stress–strain compressive curve of mortar compared in 90 days;  b  Maximum principal stress and displacement of the bird shaped stucco relief;  c  Displacement field and constructible range of the cantilever unit at different lengths and inclination angles",
+        "Specifically, the elastic modulus and ultimate compressive strength obtained from the 90-day compression tests of straw-mixed lime mortar were incorporated into the constitutive model as defined in the relevant standards. Additionally, the uniaxial compressive damage evolution parameters were modified to accelerate the post-peak stress reduction. Given the difficulty of fabricating and testing tensile specimens, the ultimate tensile strength was approximated from the tensile stress at the mid-span of the beam at the onset of cracking, as derived from flexural tests. Since the experimental failure mode resembled that of concrete, and our analysis focused primarily on the pre-cracking response rather than post-failure behavior, the modified concrete damage plasticity model was adopted to simulate the mechanical behavior of straw-mixed lime mortar. To account for the characteristic rapid post-peak stress decline, the descending branch of the constitutive law was adjusted accordingly. The peak compressive stress was set to 0.5 MPa, and the elastic modulus to 16 MPa. 4 d c = 1 - ρ c n n - 1 + x n ( x ≤ 1 ) 1 - ρ c α c ( x - 1 ) 2 + x ( x > 1 ) \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$d_{c} = \\left\\{ \\begin{gathered} 1 - \\frac{{\\rho_{c} n}}{{n - 1 + x^{n} }}(x \\le 1) \\hfill \\\\ 1 - \\frac{{\\rho_{c} }}{{\\alpha_{c} (x - 1)^{2} + x}}(x > 1) \\hfill \\\\ \\end{gathered} \\right.$$\\end{document} where  d c \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${d}_{c}$$\\end{document}  represents the damage parameter,  x \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$x$$\\end{document}  denotes the ratio of the current strain to the peak compressive strain,  n \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$n$$\\end{document}  represents the ratio of the theoretical elastic peak stress to the actual peak stress, and  ρ c \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${\\rho}_{c}$$\\end{document}  denotes the ratio of the theoretical elastic strain at peak stress to the peak compressive strain. The parameter  α c \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${\\alpha}_{c}$$\\end{document} , which governs the shape of the stress–strain curve, is computed as follows, where  f c \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${f}_{c}$$\\end{document}  represents the peak compressive strength: 5 α c = 0.157 f c 0.185 - 0.905 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\alpha_{c} = 0.157f_{c}^{0.185} - 0.905$$\\end{document}",
+        "Following the attainment of peak compressive strain, the coefficient in the constitutive formulation is increased from 0.157 to 2.0, thereby inducing a sharp reduction in the descending branch of the stress–strain curve. Strain-controlled failure criteria were adopted for the elements, with the ultimate tensile and compressive strains set to 0.038 and 0.25, respectively. In actual stucco relief construction, copper wire is conventionally employed as internal reinforcement. A simple elastoplastic model was adopted to simulate the mechanical behavior of the copper wire, with an elastic modulus of 100 GPa and a yield strength of 100 MPa.",
+        "For the numerical simulation, a representative geometric model featuring a pronounced cantilever was selected from the reconstructions generated by the proposed AI-based workflow (Fig.  13 b). The model, initially generated using InstantMesh, was subsequently remeshed in Rhino and exported in IGES format for import into Abaqus. The internal reinforcement, represented as freeform curves, was imported into Abaqus and assigned cross-sectional properties prior to analysis. The material model described above was employed to evaluate structural performance under self-weight and wind loading. The internal reinforcement geometry was derived from the central axis of the model. A circular copper wire cross-section of 25 mm diameter was adopted and embedded within the stucco relief geometry. The model was discretized into 40,993 tetrahedral elements, with the base fixed as a support boundary condition. The overall height of the model is approximately 300 mm. Self-weight was calculated based on the apparent density of the test specimens, and wind loads were computed in accordance with the Chinese load code, using the eave height of traditional buildings as the reference height, consistent with the typical ridge-top placement of stucco reliefs.",
+        "The analysis was conducted using the dynamic explicit module in Abaqus, with a mass scaling factor of 2 applied to enhance computational efficiency. The results indicate that, under self-weight and wind loading, the stucco relief of this scale sustains localized damage at the corners. Additionally, some detachment is observed at the interface between the straw-mixed lime mortar and the underlying frame base. The overall stress state of the stucco relief is predominantly compressive, with localized tension occurring in certain cantilevered regions; however, the majority of the load is carried by the internal frame. Owing to the higher stiffness of the copper frame relative to the straw-mixed lime mortar, the stress levels in the frame are substantially greater than those in the mortar. Nevertheless, given the relatively low overall self-weight, the stresses remain within the elastic range. The overall structural stiffness is low, and despite the modest stress magnitudes, significant deformations occur under wind loading, particularly in the cantilevered sections. It should be noted that the finite element model established at this stage remains preliminary and has not yet been validated against on-site measurements. In practical engineering applications, phenomena such as detachment, cracking, or other forms of deterioration may occur in these regions. Nonetheless, the finite element method can assist practitioners in gaining an initial understanding of the mechanical response of a given stucco relief design, enabling assessment of structural performance under typical loading scenarios and providing guidance for safety evaluations of complex geometries during construction.",
+        "In the craftsmanship process, the available construction dimensions are often determined by experience, such as the cantilever length of a specific part, cross-sectional size, etc. To provide more systematic guidance for the construction of stucco relief cantilevers, we analyzed a vertically oriented rectangular cantilever beam (15 mm × 15 mm cross-section) to represent fine-scale protruding details. Cantilever length and tilt angle were employed as variable parameters, and the resulting displacement and deformation under self-weight and wind loading were evaluated with the support of an internal frame (circular cross-section, 6 mm diameter). This configuration was designed to simulate stucco reliefs located at door lintels and ridge positions, which are typically inclined at specific angles for optimal visual appreciation by viewers. As shown in Fig.  13 c, the overall deformation is concentrated primarily at the cantilever tip. In the absence of tilt, the cantilever can extend to 90 mm in length with the support of the internal frame. However, at a tilt angle of 15°, the maximum feasible cantilever length is reduced to 60 mm, and at 30°, structural failure occurs when the cantilever exceeds 45 mm."
+      ]
+    },
+    {
+      "heading": "Rapid prototyping of stucco relief enabled by additive manufacturing",
+      "paragraphs": [
+        "With 3D models of stucco relief designs successfully established, the application of additive manufacturing—commonly referred to as 3D printing—can be considered from two complementary perspectives. The first involves the fabrication of prototypes and design alternatives during the conceptual phase, providing tangible references for craftsmen and construction personnel. The second concerns the use of 3D-printed formwork to facilitate the construction of geometrically complex stucco relief elements.",
+        "Using additive manufacturing to create prototypes during the product design phase is a common practice in manufacturing. As briefly mentioned in Sect.  4.5 , we employed a color photopolymer material-jetting printer, the Sailner J400 PLUS. In this process, each thin layer of photosensitive resin is jetted and subsequently cured by ultraviolet light. The printer is equipped with multiple nozzles and channels comprising thousands of jets, enabling selective material deposition and full-color printing. Using this approach, we produced colored stucco relief prototypes. The design was initially generated by the pretrained AI model, then rendered with a grayscale effect to generate the relief texture. Color textures were subsequently applied to the model within Rhino using the AI-generated images. The final model, exported in OBJ format along with its corresponding texture files, was imported into the 3D printer for fabrication.",
+        "As shown in Fig.  14 a, the printed model accurately reproduced the colors generated by the AI model and exhibited a well-defined relief effect. A small-scale model (20 cm in length) was printed to serve as a reference for craftsmen and construction personnel. Given the relatively high cost of this printing technique, the use of small-scale models during the design phase enables validation of artistic effects and fabrication precision while reducing communication overhead and improving overall workflow efficiency. We also attempted to build similar large-scale stucco reliefs, as shown in Fig.  14 b, using sand-casting printing. This technology, typically used to create high-precision molds, employs sand as the base material in a binder-jetting printing process. This method was selected for its ability to maintain high accuracy and product integrity at larger scales, while offering comparatively low cost and high efficiency. The resulting printed model is typically monochrome; coarse polishing was applied to the surface to better accentuate the contours. This approach enabled the rapid production of a 1:1 scale stucco relief model. The full-scale model not only validated the artistic effects of the design at a larger scale but also served as a viable alternative to traditional stucco reliefs, suitable for non-essential traditional architectural decorations and modern replica architectural adornments. This method thus holds promise for promoting and disseminating stucco relief art. Fig. 14 Printing a planar stucco relief design.  a  Colored at a small scale;  b  Sand casted at the full scale",
+        "We also printed 3D stucco relief designs based on AI 3D reconstructed models. The meshes obtained from AI model reconstruction typically have poor quality; however, basic repairs were needed on the reconstructed model, including filling holes and smoothing the mesh with Rhino. After these operations, the model's quality was sufficient to meet 3D printing standards. To print a colored model, we exported the model with vertex colors and applied texture mapping, ultimately producing a fully textured, colored 3D model in OBJ format. This model was then manufactured using the previously mentioned color photopolymer printer. As shown in Fig.  15 , the printed model accurately restored both the color and shape of the original design. Therefore, for standalone sculptures, 3D printing remains an excellent choice for prototype fabrication. Fig. 15 Printing of stucco relief designs based on AI generated reconstructed models"
+      ]
+    },
+    {
+      "heading": "Integrally formed stucco relief designs using 3D-printed formwork",
+      "paragraphs": [
+        "In traditional stucco relief construction, artisans apply successive layers of straw-mixed lime mortar, paper-strip-mixed lime mortar, and colored lime mortar onto a reinforcement framework using a trowel, allowing each layer to harden before proceeding. This labor-intensive, craftsmanship-dependent process typically extends over months or even years, resulting in relatively low construction efficiency. To address these limitations, we tested an additive manufacturing-assisted construction method for stucco reliefs of varying complexity, leveraging 3D-printed formwork and reinforcement to facilitate the fabrication of complex geometries.",
+        "As shown in Fig.  16 a, we first conducted tests on low relief geometries. Using a desktop printer, we printed low relief formworks with two materials, PLA and TPU95A, with a model size of 15 cm. Due to the intricate geometry of the model, the printing quality of the PLA formwork was superior to that of TPU95A, which exhibited issues like stringing in finer parts. TPU was used for the softer formwork is easier to demold. After casting the paper strip mixed lime mortar into the formwork, we vibrated it on a vibration table for 30 s, then left it in a controlled indoor environment to harden for one day. After three days, it was demolded. Paper-strip-mixed lime mortar was selected for this test because it constitutes a primary component of actual stucco reliefs, forming part of the wall plaster. Given the relatively high shrinkage rate of paper-strip-mixed lime mortar upon exposure to air, demolding from the rigid PLA formwork presented no difficulty; consequently, TPU formworks offered no discernible advantage at this small scale. However, we anticipate that challenges may arise at larger scales or when the formwork surface exhibits greater roughness. Nevertheless, at the small scale tested, the molding outcome was successful, achieving fine surface details that would be difficult to replicate manually. Fig. 16 Construction of stucco relief designs using 3D printed formwork.  a  Low stucco relief made with paper strip mixed lime mortar;  b  Small scale stucco sculpture constructed using 3D printed reinforcement and modular mold;  c  Small scale stucco sculpture formed using flexible formworks",
+        "We also conducted a trial construction of a freestanding bird-shaped stucco sculpture that consists of internal reinforcement, a straw-mixed lime mortar base, and a paper strip mixed lime mortar surface layer. Our goal was to complete the first two components using modular molds and a prefabricated reinforcement, as assembling the copper reinforcement and applying large volumes of straw-mixed lime mortar are the most time-consuming steps in stucco relief construction. As shown in Fig.  16 b, we printed a 7 mm diameter support reinforcement using PETG material, integrating it with the base as a single printed component. We then printed modular, interlocking PLA molds that could be assembled onto the base and securely connected to form a complete mold. After assembling the lower mold section, the internal cavity was filled with straw-mixed lime mortar and compacted. Once a certain height was reached, the upper mold section was sealed and stored. Given the difficulty of determining the hardening state of the internal material, demolding was performed after one month, revealing a preliminary stucco relief form. Owing to internal layer stratification, some material adhered to the mold surface during vibration, resulting in a rough surface finish. However, we observed strong adhesion between the straw-mixed lime mortar and the PETG reinforcement, which provided effective structural support to the main body. By employing this method to address the bulk material application, the remaining surface treatment could still be completed by artisans. At this stage, the proposed design-build process has been successfully completed and validated through various examples.",
+        "Owing to the difficulty of demolding rigid formworks, a construction approach employing flexible molds was further explored. As shown in Fig.  16 c, a replica of the stucco sculpture was first fabricated by 3D printing and subsequently used to produce the flexible formwork. A representative stucco model was selected and replicated using a desktop FDM printer. Silicone with a Shore hardness of 20 was then cast directly into the printed replica. After curing, the mold was demolded, yielding the flexible formwork ultimately employed for stucco sculpture fabrication. Following the application of a release agent to the mold surface, paper-strip-mixed lime mortar was cast into the flexible formwork. After 24 h of curing, demolding produced a stucco sculpture with complete geometric detail. The significance of this approach lies in circumventing the material constraints inherent to 3D printing by employing it specifically for the construction of complex geometries, thereby enabling adaptability to diverse application contexts. Moreover, formwork produced via 3D printing not only accommodates intricate geometries but is also reusable, which holds considerable value in reducing the costs associated with the renovation of historic buildings. At this stage, the proposed design-build process has been successfully completed and validated through various examples."
+      ]
+    },
+    {
+      "heading": "Discussions",
+      "paragraphs": [
+        "Based on the results presented above, we preliminarily validate the feasibility of the proposed AI-enabled design and 3D printing workflow. Our approach leverages AI to learn stylistic and architectural features from readily accessible imagery of historic buildings, thereby enabling the generation of new stucco relief designs or the restoration of existing ones.",
+        "The differences between this study and previous research can be summarized as follows. First, this study does not focus on recording the comprehensive information of historic buildings. Based on the recorded image data and textual information, AI is employed to reconstruct these components, thereby capturing and utilizing, to some extent, the implicit meaning of these patterns in textual form. Furthermore, in the absence of physical references, AI enables the generation of images and 3D models with similar stylistic characteristics. Second, while prior studies have primarily concentrated on digitizing historic buildings through parametric modeling, 3D reconstruction, and related techniques, the present study emphasizes the utilization of such digital information. By leveraging 3D data, mechanical evaluation of physical models and optimization of new construction methods can improve the efficiency of on-site restoration work, thereby facilitating broader-scale maintenance of historic buildings. Our current workflow adopts a generative approach to convert a single 2D image into a 3D mesh, which is well suited for creating new designs or prototypes. However, for scenarios in which existing lime plaster ornaments on historic buildings require digital documentation followed by restoration planning, multi-view reconstruction techniques are more appropriate. This paper emphasizes the dual objectives of preserving existing lime plaster ornaments while simultaneously enriching the means of designing new ones. Therefore, the generative method and the multi-view acquisition technique are not mutually exclusive; they correspond to different application scenarios—creation versus preservation of lime plaster ornaments. Moreover, in practice, lime plaster restoration scenarios often involve severe damage, making redesign and reconstruction the most pragmatic engineering approach, whereas documenting the damaged model serves merely as a remedial measure. In addition, most existing 3D reconstruction methods have been developed and validated under relatively controlled conditions. Their data collection processes are time-consuming and highly dependent on lighting conditions and fixed camera configurations, whereas actual construction environments are highly dynamic and complex. Issues such as uneven outdoor lighting and occlusion can significantly reduce model accuracy, making it difficult to obtain a reliable 3D model in practice (Wang et al.,  63 ). Therefore, a more practical technical strategy is to systematically document and preserve restored lime plaster ornaments and those handcrafted by artisans, while concurrently leveraging generative methods to expand the design possibilities of lime plaster ornaments. Consequently, with the advancement of single-view synthesis techniques, the creation of digital twin models for both existing and newly designed lime plaster ornaments will become increasingly convenient, thereby improving the efficiency of digital heritage restoration and creation.",
+        "Furthermore, our work spans the primary phases of decorative construction in historic architecture—design, analysis, and fabrication—and proposes several simplifications to traditional construction techniques, with the aim of rendering stucco relief construction more systematic and effective in engineering practice. Table  5  presents the time reduction achieved by the proposed workflow relative to traditional construction processes across different stages. It should be noted that the values in Table  5  represent estimates for a medium-sized shallow stucco relief. The duration of traditional work was obtained through interviews with practitioners, while the time estimates for the new workflow exclude the production of formwork and supporting reinforcement, accounting solely for installation time. Even based on this rough estimation, the proposed workflow can reduce the overall duration of traditional construction by approximately 50%. Moreover, it offers artisans the possibility of parallel construction, allowing multiple molds to be installed simultaneously provided they have been pre-printed in advance. Table 5 Efficiency estimation Steps Traditional Our workflow 2D design 1 – 2 weeks 1 – 2 days Reinforcement 1 week 1 day for fabrication SMLM base 1 – 2 weeks 1 day for fabrication Surface layer, coloring 1 week 1 week Curing 2 days 2 days Total time 40 – 50 days 2 weeks",
+        "Nonetheless, our method also faces several limitations in its application. First, owing to the cultural specificity inherent in stucco relief creation, the AI-reconstructed stucco relief does not possess the same cultural value as its handcrafted counterpart. Rather, it serves as a supplementary design and construction tool to meet practical engineering demands. Given this pragmatic orientation, the evaluation of fidelity in the reconstructed stucco relief has been somewhat deemphasized. The subtle gestures, layering sequences, and material manipulations intrinsic to the craft process have not been parameterized or encoded. The additive manufacturing workflow represents a simplified replication of traditional craftsmanship, rather than a genuine translation of its complexity into digital fabrication. This is because the primary focus of this work lies in establishing a design and construction method that achieves visual stylistic similarity, rather than aiming for a total replication of the original.",
+        "Second, the effectiveness of the model training conducted in this study requires further validation, and the 3D reconstruction model necessitates additional training and refinement. During LoRA training, the loss function of the preferred model gradually stabilized around 0.14. Although the later-stage stabilization of the loss indicates that the model indeed captured the stylistic features of stucco relief images, the images generated at this loss level exhibited clear overfitting. When the initial loss declined, the model selected in the mid-training stage produced visually more reasonable results. While this phenomenon may be attributable to the limited number of training samples, there is clearly a lack of a more rational metric linking model loss to actual generative performance. In fact, the objective of the model is to generate stylized images rather than visually similar ones. Therefore, employing metrics better aligned with human perception during training, or applying scale-based selection for generated images, may be more suitable.",
+        "The use of ControlNet as an additional model for stucco relief image restoration yielded limited results. Since ControlNet remains rooted in the principles of diffusion models, it may not be ideally suited for local restoration of existing imagery. Rather, it is likely more appropriate as a reasonable reference for reconstructing missing portions of a model or for reproducing scenarios in practical applications. Furthermore, while AI-based monocular 3D reconstruction models can transform complex 2D designs into 3D models, the stability and quality of the generated results remain insufficient—particularly for intricate motifs such as human figures and foliage. This limitation arises primarily from the underperformance of the multi-view generation component. Future work may address this by refining the model architecture or training task-specific downstream models to enhance generation quality for a broader range of historical architectural features.",
+        "Third, the finite element simulations also exhibit significant limitations. We assumed isotropic mechanical behavior and isolated loading conditions. The model overestimates the compressive strength by approximately 30% compared to experimental values, thereby constraining its predictive potential. As reported in Sect.  5.4 , the standard error for the 90-day compressive strength of the straw-mixed lime mortar is ± 0.07 MPa, accounting for approximately 13% of its ultimate strength. Given the material's low tensile strength, the ultimate tensile strain at the mid-span bottom, obtained from flexural tests, was adopted as a substitute for its tensile ultimate strain. As shown in Fig.  12 b, the standard error of the flexural test results remains relatively high. Consequently, a larger number of material test specimens is necessary to better assess the variability in compressive and tensile strengths. Therefore, this constitutive model requires further refinement. Regarding future model improvements, we suggest the following. First, longer curing-age tests and a larger number of stochastic samples should be conducted to better capture the strength development and variability of the material. Second, constitutive models incorporating viscosity parameters could be adopted and further calibrated experimentally to account for the stiffness differences between the outer and inner regions. Third, more sophisticated instrumentation should be employed to perform direct tensile tests, thereby obtaining more accurate tensile parameters.",
+        "Finally, our proposed formwork-based integral forming method for stucco relief fabrication has only been validated at a small scale. The resulting structures still require additional manual finishing by skilled artisans. This limitation arises both from the need to refine procedures such as demolding and curing, and from the inherent challenge of ensuring that fine structural details remain intact after demolding. Furthermore, the lack of a systematic comparison between original craft objects and digitally fabricated results leaves geometric fidelity, surface details, porosity, structural performance, and contextual influences unexplored. When scaling up to meter-sized components, several practical challenges emerge. First, hydrostatic pressure from wet straw-mixed lime plaster—reaching approximately 18 kPa per meter of height—can cause thin-walled PLA molds to bulge outward. This can be mitigated by integrating stiffening ribs, adopting staged pouring with intermediate curing, or using sand-printed molds that offer greater inherent stiffness. Second, large-scale molds must be divided into interlocking modules; however, thermal warping of PLA during printing or outdoor storage may lead to cumulative misalignment. This can be addressed by incorporating mechanical locating pins and bolts, using fiber-reinforced filaments with low thermal expansion (e.g., PETG-CF), and performing dry pre-assembly on a flat reference surface prior to on-site installation. Third, the long joints between modules increase the risk of leakage, which can be reduced by placing flexible sealing strips along all joints, or by sealing the internal joints with a thin, fast-setting paper-reinforced lime plaster layer prior to bulk pouring. Finally, demolding forces increase with part size. As illustrated at small scale in Fig.  16 c, flexible TPU or silicone molds offer greater advantages at larger scales, while for rigid molds, strategic parting lines and water-soluble release agents (e.g., PVA films) can help reduce demolding difficulty."
+      ]
+    },
+    {
+      "heading": "Conclusions",
+      "paragraphs": [
+        "In summary, this study validates a workflow that integrates AI-driven generative design, analysis, and digitally-assisted construction for a traditional decorative structure (i.e., stucco relief) in historical buildings of Southern China. An image-based model which are capable of generating highly realistic stucco relief designs was trained. By leveraging AI-based sparse-view reconstruction techniques, we obtained high-quality 3D models, significantly lowering the barrier to designing traditional stucco relief structures. This method represents a preliminary exploration of a modernized approach that learns, simplifies, and replicates traditional craftsmanship to address the sustainability crisis of ICH crafts in the field of architectural heritage. Additionally, the material properties of stucco relief were experimentally characterized, and the structural behavior of large scale stucco relief components was simulated, thereby filling a critical gap in safety evaluation methods from a structural mechanics perspective. For construction, various additive manufacturing techniques, including material jetting, sand casting, and material extrusion, enabled the rapid and precise fabrication of both small scale and full scale stucco relief prototypes. We also explored a construction method using modular molds and 3D printed reinforcements to incorporate traditional stucco relief materials, reducing the labor intensive nature and prolonged production cycles associated with these intricate architectural decorations. This preliminary exploration contributes to the future digitalization of traditional structure construction.",
+        "The proposed workflow offers an initial foray into the digital and intelligent design, construction, and restoration of historical architecture. However, our research remains in its early stages, and several challenges must be addressed. Future work should incorporate larger datasets and more detailed classification based training to further enhance generative design quality. Concurrently, training generative models on 3D reconstructed stucco relief models derived from actual scanned artifacts holds great potential for improving AI generated reconstructions. As scanning and reconstruction technologies continue to advance, the systematic scanning and safety assessment of existing stucco relief structures will better support heritage conservation efforts by historical building management authorities. The combination of mobile robotic arms, decreasing 3D printing costs, and improvements, in printing accuracy could enable refined digital construction and on site restoration of stucco relief structures. In conclusion, we believe this framework holds significant promise for integrating digital and intelligent technologies into the preservation and continuation of traditional architectural craftsmanship, thereby contributing to the protection of architectural heritage."
+      ]
+    }
+  ],
+  "tables": [
+    {
+      "caption": "Script and software used in the design phase",
+      "headers": [
+        "Steps",
+        "Software/Scripts"
+      ],
+      "rows": [
+        [
+          "Basic model",
+          "SD"
+        ],
+        [
+          "Prompt generation",
+          "CLIP"
+        ],
+        [
+          "Model training",
+          "LoRA"
+        ],
+        [
+          "3D reconstruction",
+          "Instantmesh"
+        ],
+        [
+          "3D model adjusting",
+          "Rhino/blender"
+        ]
+      ],
+      "header_groups": [],
+      "table_alignment_status": "resolved",
+      "row_provenance": [
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 2
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 2
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 2
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 2
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 2
+          }
+        ]
+      ],
+      "tbody_alignment_status": "resolved"
+    },
+    {
+      "caption": "Additive manufacturing techniques in the workflow",
+      "headers": [
+        "Printer type",
+        "Resolution",
+        "Material",
+        "Application"
+      ],
+      "rows": [
+        [
+          "FDM printer",
+          "0.1 mm",
+          "PLA/TPU/PETG/…",
+          "formwork/reinforcement"
+        ],
+        [
+          "Colored 3D printer",
+          "0.2 μm",
+          "Photocurable resin",
+          "prototyping"
+        ],
+        [
+          "Sand-mold printer",
+          "0.4 mm",
+          "Sand",
+          "large-scale formwork/replica"
+        ]
+      ],
+      "header_groups": [],
+      "table_alignment_status": "resolved",
+      "row_provenance": [
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 4
+          }
+        ]
+      ],
+      "tbody_alignment_status": "resolved"
+    },
+    {
+      "caption": "Training parameters used in LoRA training",
+      "headers": [
+        "Training parameters",
+        "Values"
+      ],
+      "rows": [
+        [
+          "Resolution",
+          "\"1,472, 640\""
+        ],
+        [
+          "Save Precision",
+          "\"fp16\""
+        ],
+        [
+          "Save every n epoch",
+          "2"
+        ],
+        [
+          "Max train epochs",
+          "8"
+        ],
+        [
+          "Train batch size",
+          "2"
+        ],
+        [
+          "Learning rate (lr)",
+          "0.0001"
+        ],
+        [
+          "Unet lr",
+          "0.0001"
+        ],
+        [
+          "Text encoder lr",
+          "0.00001"
+        ],
+        [
+          "Lr scheduler",
+          "cosine_with_restarts"
+        ],
+        [
+          "Optimizer type",
+          "AdamW8bit"
+        ],
+        [
+          "Lr scheduler num cycles",
+          "1"
+        ]
+      ],
+      "header_groups": [],
+      "table_alignment_status": "resolved",
+      "row_provenance": [
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 2
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 2
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 2
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 2
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 2
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 2
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 2
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 2
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 8,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 8,
+            "source_col": 2
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 9,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 9,
+            "source_col": 2
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 10,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 10,
+            "source_col": 2
+          }
+        ]
+      ],
+      "tbody_alignment_status": "resolved"
+    },
+    {
+      "caption": "Similarity between generated images and corresponding training images",
+      "headers": [
+        "Prompt",
+        "Training image",
+        "Generated image",
+        "Gram distance",
+        "LPIPS"
+      ],
+      "rows": [
+        [
+          "A huisu painting of a mountain scene with a tower in the distance and a river running through it with rocks and trees",
+          "",
+          "",
+          "0.00006",
+          "0.6719"
+        ],
+        [
+          "A huisu painting of birds and flowers on a black background with a white border around it",
+          "",
+          "",
+          "0.00013",
+          "0.7015"
+        ]
+      ],
+      "header_groups": [],
+      "table_alignment_status": "resolved",
+      "row_provenance": [
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 5
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 5
+          }
+        ]
+      ],
+      "tbody_alignment_status": "resolved"
+    },
+    {
+      "caption": "Efficiency estimation",
+      "headers": [
+        "Steps",
+        "Traditional",
+        "Our workflow"
+      ],
+      "rows": [
+        [
+          "2D design",
+          "1 – 2 weeks",
+          "1 – 2 days"
+        ],
+        [
+          "Reinforcement",
+          "1 week",
+          "1 day for fabrication"
+        ],
+        [
+          "SMLM base",
+          "1 – 2 weeks",
+          "1 day for fabrication"
+        ],
+        [
+          "Surface layer, coloring",
+          "1 week",
+          "1 week"
+        ],
+        [
+          "Curing",
+          "2 days",
+          "2 days"
+        ],
+        [
+          "Total time",
+          "40 – 50 days",
+          "2 weeks"
+        ]
+      ],
+      "header_groups": [],
+      "table_alignment_status": "resolved",
+      "row_provenance": [
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 3
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 3
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 3
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 3
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 3
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 3
+          }
+        ]
+      ],
+      "tbody_alignment_status": "resolved"
+    }
+  ]
+}

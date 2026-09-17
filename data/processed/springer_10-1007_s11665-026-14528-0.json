@@ -1,0 +1,442 @@
+{
+  "doi": "10.1007/s11665-026-14528-0",
+  "title": "Computational Modeling of Dynamic Recrystallization and Strain-Induced Precipitation in C-Mn Steels by Thermomechanical Processes",
+  "abstract": "Abstract This study proposes a computational model based on the finite element method (FEM) to simulate the thermomechanical behavior of C-Mn steel under continuous cooling. Hot torsion tests were conducted at temperatures from 900 to 1100 °C, with strain rates of 0.1, 1.0, and 10 s −1 , and a strain of  ε \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\varepsilon$$\\end{document}  = 6.0, using an infrared radiation furnace, argon gas shielding, and a chromel–alumel  K -type thermocouple. The experimental data were implemented in DEFORM™3D to formulate equations for dynamic recrystallization ( ε 0.5 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${\\varepsilon}_{0.5}$$\\end{document} ,  X DRX \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${X}_{\\text{D}\\text{R}\\text{X}}$$\\end{document} ) and recrystallized grain size ( d DRX \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${d}_{\\text{D}\\text{R}\\text{X}}$$\\end{document} ), yielding good agreement with DRX kinetic models and accurate numerical predictions. The results show that recrystallization time increases as temperature decreases, while strain-induced precipitation (SIP) begins after the seventh pass. Small variations in rolling temperature altered the microstructure and average grain size, emphasizing the need for strict process control. These findings confirm that controlled rolling is essential to prevent heterogeneous grain-size distributions that may impair mechanical performance. The main contribution of this study is the development of a thermomechanical computational model capable of evaluating a wide range of processing parameter combinations with high efficiency and reduced experimental effort, enabling accurate prediction of microstructural evolution during hot rolling.",
+  "journal": "Journal of Materials Engineering and Performance",
+  "year": "2026",
+  "sections": [
+    {
+      "heading": "Introduction",
+      "paragraphs": [
+        "Grain refinement is an effective approach for enhancing the mechanical properties of structural components, increasing both strength and toughness (Ref  1 ,  2 ). In this context, C-Mn steels are of high industrial relevance, being extensively used in pipelines, automotive structures, and construction due to their favorable balance of strength, weldability, and cost (Ref  3 ). Thermomechanical treatment during hot deformation plays a fundamental role in microstructural control and, consequently, in alloy performance (Ref  4 ). During hot rolling, dynamic recrystallization (DRX), metadynamic recrystallization (MDRX), static recrystallization (SRX), and strain-induced precipitation (SIP) are governed by local thermomechanical variables, including temperature, strain, strain rate, and interpass time. These variables are inherently heterogeneous along the material (Ref  5 ,  6 ).",
+        "Recrystallization mechanisms, including DRX, MDRX, and SRX, and their interaction with SIP, are highly sensitive to interpass intervals and elevated temperatures (Ref  7 ,  8 ). These phenomena control grain refinement and microstructural stability, making precise thermomechanical control necessary to achieve high strength and toughness (Ref  9 ). However, their empirical optimization under industrial conditions remains highly complex and experimentally demanding. This difficulty arises from the continuous transient thermal gradients and heterogeneous strain distributions inherent to multi-pass hot rolling.",
+        "Thermomechanical finite element method (FEM) modeling provides an effective means of capturing thermal and mechanical gradients while linking deformation history to recrystallization and precipitation kinetics (Ref  10 ,  11 ,  12 ,  13 - 14 ). Microstructural evolution during hot deformation has commonly been incorporated into FEM simulations using constitutive formulations coupled with Avrami-type kinetic equations for DRX, as demonstrated by Gu et al. (Ref  15 ) and Giorjao et al. (Ref  16 ). Qi et al. (Ref  17 ) further implemented DRX models coupled to the thermomechanical field obtained via FEM, enabling the prediction of recrystallized fraction and grain size under isothermal compression conditions. Ahn et al. (Ref  18 ) also proposed a constitutive formulation for recrystallization-induced softening, allowing DRX-influenced flow behavior to be represented in FEM analyses.",
+        "Subsequent developments incorporated multi-pass conditions and interpass thermal histories, including SRX, MDRX, and grain growth. Integrated FEM-based microstructure models have been developed to simulate industrial rolling schedules and predict the spatial evolution of recrystallization, grain size, and phase transformations during thermomechanical processing (Ref  19 ,  20 - 21 ). Li et al. (Ref  22 ) integrated DRX and SRX models into multi-pass simulations, considering thermal history and through-thickness grain-size evolution. Shen et al. (Ref  23 ) incorporated DRX, MDRX, and grain growth models within a three-dimensional framework, enabling spatial prediction of recrystallized fraction during industrial multi-pass rolling. More recently, SIP and its interaction with recrystallization have been incorporated into microalloyed-steel models to address the kinetic competition between precipitation and recrystallization and the transition to the non-recrystallization regime (Ref  24 ).",
+        "Despite these significant advances, current models, such as those proposed by Gu et al. (Ref  16 ) and Li et al. (Ref  22 ), remain predominantly calibrated under simplified or isothermal laboratory conditions. They often do not explicitly couple DRX, MDRX, SRX, and SIP, which limits their ability to reproduce continuous multi-pass thermomechanical histories characterized by transient thermal fields and non-uniform strain states (Ref  25 ,  26 - 27 ). To address this limitation, this work proposes a 3D finite element model implemented in DEFORM™3D to simulate hot strip rolling of C-Mn steel under realistic processing conditions. The novelty and main contribution of this study lie in the development of a physically consistent computational framework that explicitly couples DRX, MDRX, SRX, and SIP under continuous multi-pass histories with controlled cooling. Calibrated and validated using hot torsion experimental data, the proposed framework more closely reproduces transient hot-rolling conditions and reduces the gap between laboratory-scale assumptions and industrial processing scenarios.",
+        "The model enables efficient numerical evaluation of processing conditions and spatial prediction of recrystallization, precipitation, and grain-size evolution under realistic C-Mn steel rolling scenarios (Ref  28 ). By reducing experimental reliance and capturing coupled thermomechanical histories, the framework supports process reliability and microstructural control, contributing to more sustainable and efficient industrial hot-rolling operations. The framework is also scalable for industrial implementation and can be extended to predictive databases and digital twins for real-time process optimization in hot rolling. The paper is organized as follows. Section  2  describes the experimental procedures and numerical modeling strategy. Section  3  presents the results and discussion, including the experimental stress–strain curves (section  3.1 ), the evolution of the softening fraction (section  3.2 ), hot torsion computational simulations (section  3.3 ), and hot-rolling computational simulations (section  3.4 ). Finally, Section  4  summarizes the main conclusions and practical implications of the proposed framework."
+      ]
+    },
+    {
+      "heading": "Material and Methods",
+      "paragraphs": [
+        "The material investigated was a C-Mn steel, whose chemical composition and mechanical properties are listed in Table  1 . This composition was selected because it represents low-carbon C-Mn steels commonly used in industrial hot rolling, particularly for pipeline and structural applications. It also allows the coupled recrystallization-precipitation mechanisms to be investigated under processing conditions sensitive to strain rate, temperature, and interpass time. A 50 kg ingot was forged between 1150 and 1250 °C, resulting in a square cross-section billet of 80 x 80 and 950 mm in length. Subsequently, the billet was hot rolled between 1180 and 1200 °C, acquiring a circular cross-section of 34.9 mm in diameter. Test specimens were machined from this section, with a diameter of 8 mm and a gauge length of 12 mm. To ensure uniform equiaxed austenitic microstructures during reheating, avoiding grain boundary pinning, the solution temperature ( T s  = 1150 °C) was determined using the Irvine method (Ref  25 ).\n Table 1 Chemical composition of the C-Mn steel (wt.%) Steel/Composition C Si Mn Cr Ni Mo Nb Co Cu Al P S N O C-Mn steel 0.076 0.49 1.36 0.07 0.19 0.01 0.04 0.01 0.03 0.011 0.005 0.005 0.004 0.001 Yield strength, MPa Tensile strength, MPa Hardness, HB Mechanical properties 350 500 150",
+        "Hot torsion tests were performed on a fully computerized horizontal torsion machine (PPGCTM/ IFMA, Brazil) equipped with an infrared radiation furnace (6 kW). The system is a custom-built thermomechanical simulator with servo-controlled drive and data acquisition unit (National Instruments, USA), enabling precise control of torque and rotational speed. Specimen temperature was monitored by a  K -type thermocouple in direct contact with the sample, calibrated using a reference furnace (±2 °C uncertainty). Cylindrical specimens with an 8 mm diameter and 12 mm gauge length were deformed under pure shear. Torque was measured using a 100 N m load cell, and rotation was recorded with an optical transducer, allowing equivalent stress and strain to be calculated according to the Fields–Backofen and Shrivastava methodology (Ref  26 ). The load cell was calibrated according to ISO 376 (±1% accuracy), and the angular displacement system was calibrated using reference standards. Tests were conducted inside a quartz tube under continuous argon flow to prevent oxidation. The thermal cycle included heating to 1200 °C at 2 °C s −1 , holding for 600 s, and controlled cooling to 900-1100 °C. Tests were performed at strain rates of 0.1, 1.0, and 10 s −1  up to  ε  = 6.0, with at least two repetitions per condition to ensure reproducibility. After deformation, specimens were water-quenched to preserve the microstructure for metallographic analysis.",
+        "The constitutive relations employed in the characterization of the C-Mn steel are presented in Table  2 . In these expressions,  σ \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\sigma$$\\end{document}  represents the instantaneous flow stress,  σ ss \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${\\sigma}_{ss}$$\\end{document}  the steady-state stress,  σ sat \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${\\sigma}_{\\text{s}\\text{a}\\text{t}}$$\\end{document}  the saturation stress,  ε \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\varepsilon$$\\end{document}  the true strain,  ε c \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${\\varepsilon}_{c}$$\\end{document}  the critical strain for the onset of DRX, and  ε 0,5 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${\\varepsilon}_{\\text{0,5}}$$\\end{document}  the strain for 50% recrystallized fraction. The parameters  c \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$c$$\\end{document} ,  c ′ \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$c^{\\prime }$$\\end{document} ,  b \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$b$$\\end{document} ,  Q DRX \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${Q}_{\\text{D}\\text{R}\\text{X}}$$\\end{document} , and  Q d DRX \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${Q}_{d\\text{D}\\text{R}\\text{X}}$$\\end{document}  are constants obtained by experimental fitting, as described in (Ref  29 ). The stress–strain curves were used to model DRX behavior and grain growth, as described in Table  2 . DRX progression was described using the Avrami equation, from which the recrystallized fraction and associated exponent were calculated. The strain for 50% softening ( ε 0.5 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${\\varepsilon}_{0.5}$$\\end{document} ) was determined for each temperature and strain-rate condition, based on ln ( ε 0.5 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${\\varepsilon}_{0.5}$$\\end{document} ) versus 1/ T  graphs. Activation energy ( Q \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$Q$$\\end{document} ) was estimated from these curves, while alloy constants were obtained by linear regression. Grain growth kinetics were analyzed based on the ln( d \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$d$$\\end{document} ) versus. ln( 1 / T \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$1/T$$\\end{document} ) relationship for different strain rates, providing the model exponent and activation energy.\n Table 2 Constitutive relations used in the characterization of C-Mn steel (Ref  29 ) Description Equation Eq No. Flow stress drop σ = σ sat - σ ss X \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\sigma =\\left[{\\sigma}_{sat}-{\\sigma}_{ss}\\right] X$$\\end{document} (1) DRX kinetics (Avrami) X = σ sat - σ σ sat - σ ss = 1 - e x p - 0.693 ε - ε c ε 0.5 n \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$X= \\frac{{\\sigma}_{sat}-\\sigma }{{\\sigma}_{sat}-{\\sigma}_{ss}}=1-exp\\left[-0.693{\\left(\\frac{\\varepsilon -{\\varepsilon}_{c}}{{\\varepsilon}_{0.5}}\\right)}^{n}\\right]$$\\end{document} (2) Strain for 50% DRX ε 0,5 = c · ε ˙ s e x p Q DRX RT \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\varepsilon _{{{\\text{0,5}}}} = c \\cdot \\dot{\\varepsilon }^{s} exp\\left( {\\frac{{Q_{{DRX}} }}{{RT}}} \\right)$$\\end{document} (3) DRX grain size d DRX = C ′ · ε ˙ b exp Q d DRX RT \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$d_{{{\\text{DRX}}}} = C^{\\prime } \\cdot \\dot{\\varepsilon }^{b} \\exp \\left( {\\frac{{Q_{{d{\\text{DRX}}}} }}{{{\\text{RT}}}}} \\right)$$\\end{document} (4)",
+        "The simulations were performed in DEFORM™3D (SFTC, USA) using user-defined FORTRAN subroutines that implemented a physically based recrystallization-precipitation interaction model (RX-SIP). A three-dimensional Lagrangian formulation with adaptive remeshing was adopted, using an initial mesh of ~ 50,000 tetrahedral elements refined in regions of high strain. Thermomechanical coupling was considered, with heat transfer coefficients calibrated from experimental conditions, and friction modeled using a shear factor  m  = 0.3. At each increment, the subroutine updated the microstructural variables using the local temperature ( T ), strain ( ε ), and strain-rate ( ε ˙ \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\dot{\\varepsilon }$$\\end{document} ) fields obtained from FEM. The model accounts for DRX ( ε  >  ε c ), MDRX/SRX during interpass times, and recrystallization suppression after SIP, with grain-size evolution defined by recrystallized fraction thresholds ( X  > 0.95). Mesh convergence was verified, with variations below 3% in predicted grain size. Simulations were performed for three rolling schedules (1000-1200 °C), comprising 8-12 passes at 1 s −1  with controlled cooling of 1 °C s −1 , and repeated under identical conditions to ensure numerical reproducibility. These conditions are consistent with multi-pass thermomechanical schedules commonly adopted to reproduce hot-rolling conditions in microalloyed steels (Ref  30 ).",
+        "The validation strategy combined hot torsion experiments under continuous cooling with DEFORM™3D simulations performed under equivalent thermomechanical conditions. The experimental stress–strain response was used to calibrate the constitutive behavior and to compare peak stress, peak strain, and softening trends with the simulated results. Grain-size evolution was assessed by comparing the predicted recrystallized grain size with post-deformation measurements and refinement trends observed during multi-pass torsion. Since strain-induced precipitation could not be directly monitored in situ during deformation, its onset was inferred from the increase in average equivalent stress between passes and then compared with the precipitation onset predicted by the RX-SIP subroutine.",
+        "To refine DRX-related microstructural parameters, a Bayesian approach based on Gaussian process regression was coupled with DEFORM 3D finite element simulations and the user-defined FORTRAN subroutine developed in this work. The constitutive and microstructural relations used in the simulation are detailed in Appendix  A . Hot torsion data obtained at 900-1100 °C and strain rates of 0.1-10 s −1  were used to calibrate the critical strain, the strain for 50% DRX, and the dynamically recrystallized grain size ( d DRX \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${d}_{\\text{D}\\text{R}\\text{X}}$$\\end{document} ). Zener–Hollomon relations provided the baseline physical model, while a Gaussian process discrepancy term as a function of ln( ε ) and 1/ T  accounted for deviations due to continuous cooling and local thermomechanical heterogeneities. The hybrid model was integrated into DEFORM™3D, enabling local updating of DRX parameters during multi-pass simulations."
+      ]
+    },
+    {
+      "heading": "Results and Discussion",
+      "paragraphs": []
+    },
+    {
+      "heading": "Stress–Strain Curves",
+      "paragraphs": [
+        "The stress–strain curves obtained from hot torsion tests of C-Mn steel, shown in Fig.  1 , exhibit typical DRX behavior characterized by a rapid stress increase up to the peak stress ( σ p ) due to work hardening (WH) from dislocation accumulation, followed by dynamic softening associated with DRX onset ( ε c ). This behavior reflects the interaction between WH, DRV, and DRX, involving dislocation rearrangement, grain nucleation, and reduced dislocation density, consistent with Saadatkia et al. (Ref  31 ). When DRX predominates ( ε  >  ε p ), stress gradually decreases as newly recrystallized grains replace highly deformed regions. The FEM-based model reproduced the experimental stress–strain behavior, including  σ p  and softening trends, with average  σ p  deviations of 5-8% and accurate prediction of  ε p  across the tested conditions. Fig. 1 Stress–strain curves obtained through continuous, isothermal hot torsion testing with strain rates of (a) 0.1, (b) 1.0, and (c) 10 s −1",
+        "The absence of steady-state plateaus at 900-1000 °C indicates incomplete DRX, as the recrystallized fraction remains below approximately 70% under limited thermal activation. This trend is consistently captured by the simulations, which predict delayed DRX onset and reduced softening under the same conditions, with deviations in  σ p  below 8%. Additionally, it is observed that at lower strain rates, the stresses are lower, and the steady-state strain ( ε ss ) occurs at higher values, especially at lower temperatures, indicating that lower strain rates allow more time for DRX, resulting in lower stresses and greater strain before stabilization. Despite variations in stress drops, the deformation mechanisms are similar across all temperatures, in agreement with previous studies on the hot deformation of microalloyed steels (Ref  32 ,  33 ). This behavior, with DRX and subsequent softening, is crucial for controlling the microstructure of steels during thermomechanical processing, directly influencing their mechanical properties.",
+        "Figure  2  shows the dependence of peak stress ( σ p ) and peak strain ( ε p ) on strain rate and temperature. The numerical model accurately reproduces the thermally activated behavior of DRX. Increasing strain rate raises  σ p , requiring higher stresses to initiate DRX, with  σ p  increasing by ~ 25-35% from 0.1 to 10 s −1 . In contrast, increasing temperature reduces  σ p  by ~ 30-40% between 900 and 1100 °C, evidencing the dominant role of thermal activation. The critical strain ( ε c ) shifts according to deformation conditions, reflecting changes in dislocation density and DRX kinetics. The resulting microstructural heterogeneity may promote mechanical anisotropy, reduced toughness, and lower fatigue resistance in partially recrystallized regions. Fig. 2 Variation of (a) peak stress (σ<sub>p</sub>)and (b) peak strain (ε<sub>p</sub>) with temperature for different strain rates",
+        "Increasing the strain rate raises both the  ε p  and  σ p , leading to greater stored energy in the steel and promoting grain refinement due to increased dislocation density. Low stacking fault energy (SFE) promotes dislocation accumulation, favoring DRX over DRV. As the accumulated energy in WH reaches a critical level, DRX initiates, since low SFE suppresses DRV and favors the retention of dislocations necessary for nucleation (Ref  34 ). In steels with high SFE, DRV predominates, reorganizing dislocations into subgrains and delaying DRX, resulting in gradual, controlled dynamic softening. Thus, SFE, along with strain rate and temperature, influences the formation of heterogeneous microstructures in steel.",
+        "At higher strain rates, the time for DRX grain growth is limited, resulting in smaller",
+        "grains due to the high nucleation rate and greater dislocation density. Conversely, at high temperatures,  ε p  is lower, and DRX occurs at smaller strains, producing larger grains. This behavior is attributed to enhanced atomic mobility and grain boundary migration at elevated temperatures, thereby accelerating DRX kinetics and promoting more efficient growth of recrystallized grains (Ref  35 ). Therefore, temperature and strain rate exert opposite effects on recrystallized grain size, which directly governs microstructural control and mechanical response.",
+        "True strain ( ε ) is a primary driving force for microstructural evolution in C-Mn steels during hot rolling, governing DRX initiation, grain refinement, and strain-induced precipitation. Increasing  ε  raises stored energy and dislocation density, accelerating DRX nucleation ( ε  >  ε c ) and promoting finer recrystallized grains, while accumulated deformation advances SIP onset, suppresses recrystallization, and stabilizes grain size. Spatial strain gradients revealed by iso-surface maps explain the heterogeneous distribution of DRX and SIP across the strip thickness, leading to partially unrecrystallized regions and mechanical anisotropy. Thus, in addition to temperature and strain rate, strain controls recrystallization kinetics, precipitation behavior, and microstructural gradients."
+      ]
+    },
+    {
+      "heading": "Evolution of the Softening Fraction ( X \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${\\varvec{X}}$$\\end{document} )",
+      "paragraphs": [
+        "The softening fraction ( X \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$X$$\\end{document} ), calculated from the difference between DRV and DRX curves, exhibited the typical sigmoidal behavior of DRX progression in C-Mn steels, as shown in Fig.  3 . The initial slow increase indicates limited nucleation at early deformation stages, whereas the rapid transition from X ≈ 0.2 to X ≈ 0.8 over Δ ε  ≈ 0.5-1.0 reflects accelerated DRX after the critical dislocation density is reached. This stage corresponds to DRX onset, with progressive nucleation and growth of recrystallized grains. Fig. 3 Evolution of the softened fraction as a function of strain for test conditions with strain rates of (a) 0.1, (b) 1.0, and (c) 10 s −1 , respectively",
+        "At 900-1000 °C, the absence of a stationary plateau indicates incomplete DRX due to insufficient thermal activation, with recrystallized fractions remaining below ~ 80%, whereas full recrystallization is achieved at 1100 °C. Increasing temperature accelerates dynamic softening, while higher strain rates delay the attainment of 50% DRX due to enhanced dislocation accumulation. The simulated softening curves closely reproduce the experimental recrystallization behavior, particularly the transition from partial to complete DRX. Delayed recrystallization at lower temperatures underscores the importance of precise temperature control to minimize microstructural heterogeneity.",
+        "Microstructural heterogeneity can affect mechanical performance by promoting direction-dependent behavior and localized hardening. Under low-temperature and/or high-strain-rate conditions, partially recrystallized regions generate gradients of grain size and dislocation density, which may reduce toughness and fracture resistance. Therefore, minimizing incomplete recrystallization is important to improve microstructural uniformity and reduce the risk of localized damage under complex thermomechanical conditions (Ref  36 ).",
+        "The strain for 50% softening ( ε 0.5 ) during the DRX stage depends on the deformation conditions, obtained from the curves of recrystallized fraction as a function of strain, as shown in Fig.  4 . The activation energy for each strain rate ( Q DRX ) was determined by the slope of the curves ln( ε 0.5 ) versus 1/ T , resulting in an average value of 62.636 kJ·mol⁻ 1 , with a coefficient of determination  R 2  > 0.98, confirming the reliability of the fitted model. The parameter  s  was obtained by the slope of the line in the relation ln( ε 0.5 ) versus ln( ε ˙ \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\dot{\\varepsilon }$$\\end{document} ), with a value of 0.158, and the constant  c  = 0.00545, corresponding to the curve’s intercept with the ordinate axis. With this data, Eq 3 was reformulated to describe the 50% recrystallization strain of C-Mn steel, used in the computational model. The methodology encompasses dynamic softening mechanisms. Additionally, the Avrami exponent ( n ) was calculated from the graphic fit of Eq 2, where log[ln(1/(1  - X \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$-X$$\\end{document} ))] is proportional to log( ε - \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$-$$\\end{document} ε c ), with  n  as the linear coefficient obtained from the curves (Fig.  4 ). Fig. 4 Curves log[ln(1/(1−<i>X</i>))] vs. log(ε−ε<sub>c</sub>) used to determine the Avrami exponent (<i>n</i>) under conditions of (a) 0.1, (b) 1.0, and (c) 10 s −1",
+        "The Avrami exponent ( n ) characterizes DRX nucleation-growth kinetics. The values obtained for C-Mn steel (1.88-3.82, average ≈ 2.68 ± 0.6) are consistent with literature data (Ref  37 ,  38 ,  39 - 40 ), indicating dislocation- and grain-boundary-controlled nucleation followed by diffusion-limited growth. Lower  n  values are associated with more homogeneous nucleation at low strain rates, whereas higher values indicate heterogeneous nucleation promoted by increased dislocation density. Incorporating these experimentally determined  n  values into the DEFORM™3D constitutive model improved the prediction of recrystallization kinetics and softening behavior, in agreement with previous simulation-based studies (Ref  8 ,  24 ).",
+        "Strain rate directly affects DRX kinetics by controlling dislocation accumulation, nucleation density, and the time available for grain growth. Higher strain rates favor finer recrystallized grains because nucleation is intensified while growth time is limited, enhancing strength through the Hall–Petch effect (Ref  41 ). Conversely, lower strain rates favor larger grains due to slower nucleation and longer growth intervals, which can increase ductility but reduce mechanical strength.",
+        "Rewriting the Avrami equation in the form applied to C-Mn steel Eq  6  and its use in the computational model allows for more precise calculations of DRX kinetics, adjusting the prediction of steel behavior during thermomechanical processing. However, the variation in  n  values over deformation passes indicates that nucleation and grain growth parameters may undergo additional influences, such as microstructural heterogeneities, stress variations, and fluctuations in strain rate. These variations alter DRX rates and influence the mechanical properties of C-Mn steel.",
+        "Based on the results obtained, Eq 2, 3, and 4 were incorporated into the equations governing the DRX kinetics of the C-Mn steel, which are given by 5 ε 0.5 = 5.45 · 10 - 3 · ε ˙ 0.158 exp 62636 RT , \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\varepsilon_{0.5} = 5.45 \\cdot 10^{ - 3} \\cdot \\dot{\\varepsilon }^{0.158} {\\text{exp}}\\left( {\\frac{62636}{{{\\text{RT}}}}} \\right),$$\\end{document} where  ε 0.5 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${\\varepsilon}_{0.5}$$\\end{document}  is the strain for 50% recrystallization,  ε ˙ \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\dot{\\varepsilon }$$\\end{document}  is the strain rate,  T \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$T$$\\end{document}  is the absolute temperature,  R \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$R$$\\end{document}  is the universal gas constant, and the activation energy is  Q \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$Q$$\\end{document}  = 62,636 J·mol⁻ 1 6 X = 1 - exp - 0.693 ε - ε c ε 0.5 2.68 , \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$X = 1 - {\\text{exp}}\\left[ { - 0.693\\left( {\\frac{{\\varepsilon - \\varepsilon_{c} }}{{\\varepsilon_{0.5} }}} \\right)^{2.68} } \\right],$$\\end{document} where  X \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$X$$\\end{document}  is the recrystallized volume fraction, ε is the true strain,  ε c \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${\\varepsilon}_{c}$$\\end{document}  is the critical strain,  ε 0.5 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${\\varepsilon}_{0.5}$$\\end{document}  is the reference strain, and the Avrami exponent is  n = \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$n=$$\\end{document}  2.68. 7 d DRX = 7.9 · 10 3 ε ˙ - 0.102 exp - 53172.1 RT , \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$d_{{{\\text{DRX}}}} = 7.9 \\cdot 10^{3} \\dot{\\varepsilon }^{ - 0.102} {\\text{exp}}\\left( {\\frac{ - 53172.1}{{{\\text{RT}}}}} \\right),$$\\end{document}",
+        "The value of the exponent  b \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$b$$\\end{document}  in Eq  7  was determined graphically based on  b = \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$b=$$\\end{document} ∂ \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\partial$$\\end{document}  ln ( d DRX )/ ∂ \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$(d_{{{\\text{DRX}}}} {\\text{)/}}\\partial$$\\end{document}  ln ( ε ˙ ) \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$(\\dot{\\varepsilon })$$\\end{document}  at constant temperature, representing the slope of the ln( d DRX \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${d}_{\\text{D}\\text{R}\\text{X}}$$\\end{document} ) versus ln ( ε ˙ ) \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$(\\dot{\\varepsilon })$$\\end{document}  plot. Consequently, the calculated value for the exponent was  b = \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$b=$$\\end{document}  −0.102. The constant  C ′ \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$C^{\\prime }$$\\end{document}  was calculated using the values of  Q d DRX \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${Q}_{d\\text{D}\\text{R}\\text{X}}$$\\end{document}  and  b , yielding a value of  C ′ = 7.9 · 10 3 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$C^{\\prime } = 7.9 \\cdot 10^{3}$$\\end{document} .",
+        "Grain growth during DRX is controlled by temperature and strain rate, as described by Eq 4 and Fig  5 . Increasing temperature enhances diffusion and grain-boundary mobility, increasing recrystallized grain size; the estimated activation energy (~53 kJ mol −1 ) is close to the 45 kJ mol −1  reported by Hodgson and Gibbs (Ref  42 ) for C-Mn steels during SRX. Conversely, higher strain rates increase dislocation density and nucleation rate, reducing recrystallized grain size, as indicated by the negative exponent  b  =  − 0.102. This refinement contributes to higher strength through the Hall–Petch effect, whereas larger grains may favor ductility but reduce strength (Ref  43 ). Therefore, temperature and strain rate must be jointly controlled to balance grain refinement and mechanical performance. Fig. 5 Dependence of dynamically recrystallized grain size (d<sub>DRX</sub>) the inverse of absolute temperature (1/ T ) for different applied (a) strain rates and (b) temperatures",
+        "These combined effects demonstrate that proper control of temperature and strain rate during DRX is essential to optimize the mechanical properties of C-Mn steel. A balance between elevated temperature, which promotes greater ductility, and controlled strain rate, which contributes to finer grain formation, is crucial for achieving a desirable combination of hardness, fatigue resistance, and ductility. By incorporating grain growth kinetics, the computational model provides a useful tool for predicting these variations and adjusting processing conditions to achieve targeted mechanical performance in structural applications."
+      ]
+    },
+    {
+      "heading": "Hot Torsion Computational Simulations",
+      "paragraphs": [
+        "The experimental conditions and parameters used to validate the physical simulation model for hot torsion testing were selected based on literature, such as Jorge Jr. and Balancin (Ref  44 ), which reproduced thick-plate hot rolling under controlled laboratory conditions. This test is suitable for monitoring DRX, SRX, and post-dynamic recrystallization (pDRX) mechanisms between passes, providing information on DRX grain nucleation and growth, as well as the extent of recrystallization. These data are essential for controlling grain refinement and tailoring the average grain size, directly affecting the ductility, toughness, and mechanical strength of the steel after continuous cooling (Ref  24 ). Direct industrial-scale measurement of these phenomena is impractical because microstructural evolution and precipitation onset cannot be monitored in situ.",
+        "To validate the model, several hot-torsion passes under continuous cooling were simulated, reproducing temperature variation and microstructural evolution according to the rule of additivity. Temperature affects the kinetics of DRX, and the simulation provided data on its relationship with recrystallization and alloy hardening. Precipitation starts at the eighth pass, consistent with reduced temperature and incomplete recrystallization, as shown in Fig.  6 (a). This prediction is consistent with experimental observations, where an increase in flow stress indicates precipitation onset at similar deformation stages. The model predicts that approximately 5% of the volume begins to nucleate precipitation, inhibiting softening. Precipitation starts at 987 °C, near the non-recrystallization temperature ( T nr \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${T}_{\\text{n}\\text{r}}$$\\end{document} ), as shown in Fig.  6 (b), supporting the model validation against established data for C-Mn steels (Ref  45 ). Fig. 6 (a) Profile of strain-induced precipitation; (b) temperature profile; and (c) recrystallized fraction profile per pass of the simulated hot torsion test",
+        "Figure  7  shows the temporal evolution of the softening fraction ( X SRX \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${X}_{\\text{S}\\text{R}\\text{X}}$$\\end{document} ) during the simulated hot torsion test, highlighting stress variations and WH resistance in each rolling pass. As temperature decreases, the time required to reach 97% recrystallization increases from 3 s in the first pass to 24 s in the seventh pass, corresponding to an eightfold increase. This trend agrees well with the experimental softening behavior, confirming the model’s predictive capability for SRX kinetics. The results are also consistent with the model proposed by Hodgson and Gibbs (Ref  42 ) for hot-rolled C-Mn and microalloyed steels, although further refinement is required for Nb steels. Fig. 7 Evolution of the softened fraction (X<sub>SRX</sub>) a function of time for the simulated hot torsion test, at point P1 indicated on the test specimen",
+        "The SIP profile at the end of the seventh pass, shown in Fig.  8 (a), indicates that precipitation initiates after recrystallization, although it was not directly detected experimentally because the adopted methodology uses the increase in average equivalent stress as an indirect indicator of strain accumulation between passes. In the first two passes, no significant grain refinement occurred because rapid recrystallization kinetics favored subsequent grain growth (Fig.  8 b). In later passes, grain size decreased to approximately 34 µm, corresponding to a reduction of about 55% relative to the initial grain size. Figure  8 (c), (d), and (e) further shows that grain size decreases at the beginning of the interpass intervals and subsequently increases during longer holding times due to enhanced grain-boundary mobility. Fig. 8 (a) Evolution of the strain-induced precipitation profile at the end of the interpass interval after the seventh pass. (b) Profile of the average grain size and (c) the SRX grain size for each pass of the simulated torsion test. (d) Evolution of strain-induced precipitation and (e) the average grain size as a function of time for the simulated hot torsion test, evaluated at point P indicated on the specimen",
+        "This non-uniform and time-dependent microstructural evolution is consistent with the numerical–experimental findings of Gu et al. (Ref  15 ), who showed that recrystallization kinetics and grain-size evolution are strongly governed by local strain history and processing parameters during hot deformation. Their numerical simulations, validated by compression tests, demonstrated that regions experiencing different deformation levels exhibit distinct recrystallization rates and grain-size evolution, reinforcing the interpretation of the multi-pass behavior observed in Fig.  8 . These results indicate that the final grain size after multi-pass deformation is governed by the dynamic balance between SRX, SIP, and subsequent grain growth during the interpass intervals, highlighting the critical role of process control in microstructural stabilization.",
+        "Figure  9 (a) shows that no strain accumulation occurs during the first seven passes because SRX produces strain-free grains. From the eighth pass onward, strain accumulation progressively increases, and the critical strain for DRX is exceeded starting from the ninth pass. Figure  9 (b) and (c) reveals higher deformation near the outer radius and lower strain-rate values close to the fixed grip region, confirming the non-uniform nature of the torsion field. The iso-surface contours in Fig.  9 (d) identify low-strain regions that are less susceptible to DRX and higher-strain regions where recrystallization may occur in later passes. These results highlight the need for temperature and strain control to reduce microstructural heterogeneity and anisotropy during thermomechanical processing. Fig. 9 (a) Effective, accumulated, and critical strains as a function of each pass of the simulated torsion test; distribution of effective strain in the (b) transverse and (c) longitudinal sectional views; and (d) strain variation represented by iso-surface contours",
+        "Variation in recrystallized fractions directly impacts microstructural evolution, and controlling these fractions allows optimization of properties such as strength, ductility, and anisotropy (Ref  46 ). During rolling, the recrystallized fraction determines the formation of strain-free new grains (SRX) or continuous WH, especially when DRX is inhibited by processes like strain-induced precipitation. Controlling these variations enables microstructure adjustment according to the s final application. Strain accumulation from the eighth pass onward indicates the need for process adjustments to avoid excessive WH or promote adequate SRX. Analysis of the iso-surface contours helps identify regions where temperature and strain control should be adjusted to improve microstructural homogeneity and reduce undesirable anisotropy. These parameters are critical for microstructural control and process optimization."
+      ]
+    },
+    {
+      "heading": "Hot-Rolling Computational Simulations",
+      "paragraphs": [
+        "The computational model based on the DRX kinetics equations was applied to hot rolling, where multi-pass schedules strongly affect flow behavior and microstructural evolution (Ref  47 ). Figure  10 (a) shows the simulated thermal evolution through the strip thickness, from the surface (P1) to the center (P6). The model predicts initially uniform temperatures followed by pronounced surface cooling during roll contact, with surface–center differences of approximately 80-120 °C in the initial passes. Fig. 10 Thermal evolution and temperature distribution for points (a) between the strip surface (P1) and center (P6), and (b) between the strip midpoint (C1, corresponding to point P6) and edge (C6) along the width direction, evaluated at six positions throughout the central region during hot rolling simulated with an initial temperature of 1100 °C",
+        "After the strip leaves the contact zone, the surface temperature increases due to adiabatic heating associated with plastic work and friction. The largest temperature drops occur in the first passes because of lower rolling speeds and longer contact times, while thermal gradients decrease as the strip becomes thinner. Figure  10 (b) shows that lower temperatures develop near the strip edges due to heat exchange with the surroundings, reducing the effectiveness of thermally activated softening mechanisms in these regions.",
+        "The strain distribution across the strip cross-section at 1100 °C, shown in Fig.  11 (a) and (b), indicates higher deformation near the surfaces and lower deformation at the center during the initial passes. Such non-uniform strain fields are consistent with previous FEM predictions for high-temperature deformation (Ref  12 ). As rolling progresses, the strain distribution becomes more uniform, favoring more balanced recrystallization and reducing the likelihood of microstructural gradients that may contribute to anisotropic mechanical response. Fig. 11 Spatial distribution of (a) strain and (b) effective strain rate across the thickness of the strip during the first hot-rolling pass at 1100 °C",
+        "As shown in Fig.  12 (a), SIP evolution during hot rolling at 1100 °C varies through the strip thickness, from the surface (P1) to the center (P6). Precipitation starts in the third pass near the surface ( T  = 1005 °C) and only in the fourth pass in the internal regions ( T  = 993 °C), as detailed in Fig.  12 (b). This delay indicates that local temperature and accumulated strain control the onset of Nb(C,N) precipitation. The formation of these precipitates partially inhibits recrystallization through solute depletion and Zener pinning, contributing to strengthening but potentially reducing ductility. This behavior is consistent with Klinkenberg et al. (Ref  48 ), who showed that strain-induced precipitation in austenite increases yield strength and that short interpass times limit excessive precipitate growth in microalloyed steels. Therefore, temperature, strain, and pass schedule must be carefully controlled to tailor the final microstructure and mechanical performance. Fig. 12 (a) Evolution and (b) spatial distribution within the strip at the onset of strain-induced precipitation during hot rolling at 1100 °C for six points on the strip, from the surface (P1) to the center (P6)",
+        "Precipitate size, distribution, and coherence must be considered when evaluating their contribution to mechanical strength. Figure  13 (a) shows that along the strip width, SIP starts in the third pass at the surface points (S1-S6), within the critical temperature range of 1005-993 °C and for local strain values above  ε  ≈ 0.8. Figure  13 (b) shows that at the central points (C1-C6), precipitation starts only in the fourth pass, reflecting the lower strain and higher temperature in this region. The delayed onset near the strip edge (C6) indicates that local deformation, strain rate, and temperature gradients control dislocation-density evolution and the kinetics of strain-induced Nb(C,N) precipitation during hot rolling (Ref  28 ). Fig. 13 Onset of SIP over time during simulated hot rolling with an initial temperature of 1100 °C in (a) S1 to S6 and (b) C1 to C6",
+        "Figure  14 (a) and (b) shows the recrystallized fraction profile during hot rolling and confirm that recrystallization is spatially controlled by temperature and strain gradients. Higher recrystallized fractions are predicted near the surface and in intermediate regions, where SRX develops during the interpass intervals before being restricted by precipitation. The onset of precipitation in the fourth pass reduces further recrystallization, supporting the transition toward a partially recrystallized microstructure. This behavior agrees with Karmakar et al. (Ref  49 ), who showed that refined Nb precipitation and pass schedule strongly influence hardness and strengthening in microalloyed steels, even when grain refinement is not the only controlling factor. Thus, Figure  14 (a) and (b) reinforces the coupled role of recrystallization, Nb precipitation, and pass schedule in controlling final mechanical performance. Fig. 14 (a) Recrystallized fraction profile within the rolled strip during the first six passes of the hot-rolling process, and (b) evolution of recrystallization and precipitation onset during the fourth interpass interval, simulated with an entry temperature of 1100 °C",
+        "The evolution of the  X SRX \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${X}_{SRX}$$\\end{document}  during hot rolling at 1100 °C is compared across different strip locations in Figure  15 (a), (b), and (c). Regions near the surface (S1-S6) exhibit higher recrystallized fractions, whereas SRX from the surface to the center (P1-P6) and along the strip length (C1-C6) progresses only up to the fourth pass before being interrupted by precipitation. The stronger gradients near the surface and edges intensify these spatial differences, leading to non-uniform recrystallization across the strip. This trend agrees with Vervynckt et al. (Ref  50 ), who showed that Nb precipitate growth during High-Strength Low-Alloy steel (HSLA) steel processing can temporarily halt recrystallization and contribute to finer microstructures. Fig. 15 Softening fraction evolution (X<sub>SRX</sub>) over time during simulated hot rolling at 1100 °C for six points in the strip thickness for (a) P1 to P6, (b) S1 to S6, and (c) C1 to C6",
+        "Figure  16  shows that accumulated strain decreases during the first three interpass intervals due to SRX, reaching a minimum in the third pass, and then remains nearly constant after the fourth pass as strain-induced precipitation limits further recrystallization. This behavior directly affects grain-size evolution, as shown in Fig.  17 , where the initial grain size of 80 µm is refined to approximately 20 µm near the surface and 22 µm at the center, followed by stabilization after the fourth pass. Figure  18 (a), (b), and (c) further reveals a through-thickness grain-size gradient at 1100 °C, with refined surface grains between 20 and 25 µm and center grains between 22 and 30 µm. The smaller surface grains result from lower temperatures and higher deformation and strain rates, whereas partial recrystallization persists longer in the internal regions before being interrupted by SIP. These coupled gradients in temperature, strain, strain rate, and grain size explain the predicted microstructural heterogeneity and its potential effects on anisotropy, fatigue response, and tensile strength. Fig. 16 Accumulated strain evolution over time during simulated hot rolling at 1100 °C for six points in the strip thickness, with P1 being the surface point and P6 the center point Fig. 17 Spatial variation of the average grain size within the rolled strip for each pass of the process and the distribution of average grain size along the thickness of the strip during the first simulated pass,  T  = 1100 °C Fig. 18 Evolution of the average grain size over time during hot rolling simulated at 1100 °C for six points in the strip thickness for (a) P1 to P6, (b) S1 to S6, and (c) C1 to C6",
+        "Figure  19  shows that at 1200 °C, SIP is delayed during the finishing passes because high temperature and low strain rate initially favor DRX and interpass softening. Precipitation starts only after the critical condition of Eq  5  is reached, progressively restricting grain-boundary mobility and suppressing further softening through Zener pinning. This trend is consistent with Gong et al. (Ref  51 ), who reported intensified NbC precipitation between 1100 and 850 °C, with maximum precipitate density at 850 °C. Fig. 19 Evolution of strain-induced precipitation over time during hot rolling simulated at 1200 °C for six points within the rolled strip",
+        "The softening-fraction profiles in Fig.  20  and the recrystallized fraction maps in Fig.  21  confirm that DRX dominates near the surface during the first pass, while MDRX and SRX become more relevant toward the center and during interpass intervals. Consequently, the grain-size evolution shown in Fig.  22  reflects spatially dependent recrystallization mechanisms: regions P1-P3 undergo stronger DRX-related refinement, P4 shows MDRX followed by growth, and P5-P6 are mainly refined by SRX. After subsequent passes, grains stabilize at approximately 18-19 µm, indicating that recrystallization, precipitation, and grain growth must be jointly controlled to obtain a uniform microstructure at high rolling temperatures. Fig. 20 Evolution of the softened fraction over time during hot rolling simulated at 1200 °C for six points within the rolled strip Fig. 21 Profile of the recrystallized fraction in the cross-section of the rolled strip for the first pass of the rolling process simulated at 1200 °C Fig. 22 Evolution of the average grain size over time during hot rolling simulated at 1200 °C for P1-P6 with spatial variation of the average grain size in the cross-section of the rolled strip during the first pass",
+        "Figure  23  shows that during hot rolling at 1000 °C, SIP initiates between 953 and 973 °C through the strip thickness, suppressing recrystallization and preserving a flattened grain structure. Figure  24  confirms that increasing temperature delays or suppresses precipitation, thereby changing the balance between recrystallization, recovery, and grain growth. This behavior agrees with Llanos et al. (Ref  52 ), who reported that Nb-induced SIP below 1000 °C retards softening while recovery remains active. The temperature comparison in Fig.  25 (a) shows that higher entry temperatures delay SIP onset, while Figure  25 (b) and (c) demonstrates the corresponding changes in recrystallized fraction and average grain size. Fig. 23 Profile of SIP onset, recrystallized fraction, grain size, and temperature in the cross-section of the rolled strip during the first pass of the rolling process simulated at 1000 °C Fig. 24 Evolution of SIP onset over time during hot rolling simulated at 1000 °C for six points along the thickness of the strip, from the surface to the center (P1-P6) Fig. 25 (a) Evolution of SIP onset, (b) recrystallized fraction, and (c) average grain size over time at the center of the rolled strip",
+        "At 1000 °C, precipitation occurs during the first pass and strongly controls the microstructure; at 1100 °C, SRX is less efficient but precipitation and strain accumulation promote grain refinement; and at 1200 °C, precipitation is delayed, allowing more extensive recrystallization before stabilization. These trends are consistent with Siciliano and Jonas (Ref  53 ), who showed that alloy chemistry affects Nb precipitation kinetics, with Mn delaying and Si accelerating SIP. Therefore, entry temperature must be selected together with pass schedule and alloy composition to optimize recrystallization, precipitation, and final grain-size distribution during hot rolling.",
+        "The model was validated using multi-pass hot torsion tests under continuous cooling, which are widely accepted as physical simulations of hot rolling for microalloyed C-Mn steels. This strategy enabled DRX-parameter calibration and assessment of recrystallization-precipitation interactions along industrial thermomechanical paths (Ref  23 ,  28 ,  30 ). Although direct industrial-scale validation was not feasible due to limitations in in situ microstructural monitoring, this torsion-based strategy provides a reliable surrogate for hot-rolling conditions. The combined experimental-numerical framework captured DRX/MDRX/SRX mechanisms, Nb(C,N)-induced recrystallization inhibition, and grain-size evolution, while FEM simulations enabled realistic prediction of temperature, strain, and strain-rate gradients as well as recrystallization and precipitation kinetics.",
+        "To further improve model accuracy, DRX microstructural parameters were refined using a Bayesian Gaussian process framework integrated with DEFORM 3D and a user-defined FORTRAN subroutine. Hot torsion data obtained at 900-1100 °C and strain rates of 0.1-10 s −1  ( ε \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\varepsilon$$\\end{document}  = 6.0) were used to calibrate  ε c \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${\\varepsilon}_{c}$$\\end{document} ,  ε 0.5 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${\\varepsilon}_{0.5}$$\\end{document} , and  d DRX \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${d}_{\\text{D}\\text{R}\\text{X}}$$\\end{document} , adopting Zener–Hollomon relations as the baseline physical model and introducing a discrepancy term to account for continuous cooling effects and local thermomechanical heterogeneities. This hybrid formulation reduced prediction residuals while preserving physically consistent trends with temperature and strain rate.",
+        "The model reproduced the increase in recrystallization time with decreasing temperature and captured the onset of strain-induced precipitation after the seventh pass, supporting the effectiveness of Gaussian process-assisted calibration for FEM-based microstructural models of C-Mn steels. The close agreement between experimental measurements and numerical predictions for stress response, recrystallization kinetics, precipitation onset, and grain-size evolution demonstrates the robustness of the proposed framework. Deviations for key parameters ( σ p , X, and  d f ) were typically below 10%, supporting the validation of both the mechanical and microstructural responses. These results provide a solid foundation for future digital twin implementations, enabling adaptive microstructural control under industrially relevant thermomechanical conditions."
+      ]
+    },
+    {
+      "heading": "Conclusions",
+      "paragraphs": [
+        "A finite element-based computational model was developed and implemented in DEFORM™3D using FORTRAN subroutines to describe the thermomechanical and microstructural evolution of C-Mn steels during hot deformation. Validation against multi-pass torsion data showed good agreement in terms of flow behavior, recrystallization kinetics, and strain-induced precipitation; Numerical simulations revealed significant gradients of temperature, strain, and strain rate along the rolled strip, directly affecting recrystallization mechanisms, precipitation onset, and grain refinement. Small variations in rolling temperature strongly impacted microstructural stability, highlighting the need for strict process control; By integrating thermal, mechanical, and microstructural fields (DRX, MDRX, SRX, grain growth, and precipitation), the proposed model enables efficient evaluation of multiple thermomechanical combinations at low computational demand. This approach allows prediction of grain-size evolution and identification of regions susceptible to heterogeneity, constituting a robust tool for process optimization; Although controlled rolling remains an effective strategy for microstructural tailoring, further improvements are required to calibrate the model under real industrial conditions. Future studies should refine input parameters and extend the model to other alloys and processing routes. This work provides a solid foundation for enhancing thermomechanical control and advancing more sustainable steel manufacturing practices."
+      ]
+    }
+  ],
+  "tables": [
+    {
+      "caption": "Chemical composition of the C-Mn steel (wt.%)",
+      "headers": [
+        "Steel/Composition",
+        "C",
+        "Si",
+        "Mn",
+        "Cr",
+        "Ni",
+        "Mo",
+        "Nb",
+        "Co",
+        "Cu",
+        "Al",
+        "P",
+        "S",
+        "N",
+        "O"
+      ],
+      "rows": [
+        [
+          "C-Mn steel",
+          "0.076",
+          "0.49",
+          "1.36",
+          "0.07",
+          "0.19",
+          "0.01",
+          "0.04",
+          "0.01",
+          "0.03",
+          "0.011",
+          "0.005",
+          "0.005",
+          "0.004",
+          "0.001"
+        ]
+      ],
+      "header_groups": [],
+      "table_alignment_status": "resolved",
+      "row_provenance": [
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 7
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 8
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 9
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 10
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 11
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 12
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 13
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 14
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 15
+          }
+        ]
+      ],
+      "tbody_alignment_status": "resolved"
+    },
+    {
+      "caption": "Constitutive relations used in the characterization of C-Mn steel (Ref  29 )",
+      "headers": [
+        "Description",
+        "Equation",
+        "Eq No."
+      ],
+      "rows": [
+        [
+          "Flow stress drop",
+          "σ = σ sat - σ ss X \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\sigma =\\left[{\\sigma}_{sat}-{\\sigma}_{ss}\\right] X$$\\end{document}",
+          "(1)"
+        ],
+        [
+          "DRX kinetics (Avrami)",
+          "X = σ sat - σ σ sat - σ ss = 1 - e x p - 0.693 ε - ε c ε 0.5 n \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$X= \\frac{{\\sigma}_{sat}-\\sigma }{{\\sigma}_{sat}-{\\sigma}_{ss}}=1-exp\\left[-0.693{\\left(\\frac{\\varepsilon -{\\varepsilon}_{c}}{{\\varepsilon}_{0.5}}\\right)}^{n}\\right]$$\\end{document}",
+          "(2)"
+        ],
+        [
+          "Strain for 50% DRX",
+          "ε 0,5 = c · ε ˙ s e x p Q DRX RT \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\varepsilon _{{{\\text{0,5}}}} = c \\cdot \\dot{\\varepsilon }^{s} exp\\left( {\\frac{{Q_{{DRX}} }}{{RT}}} \\right)$$\\end{document}",
+          "(3)"
+        ],
+        [
+          "DRX grain size",
+          "d DRX = C ′ · ε ˙ b exp Q d DRX RT \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$d_{{{\\text{DRX}}}} = C^{\\prime } \\cdot \\dot{\\varepsilon }^{b} \\exp \\left( {\\frac{{Q_{{d{\\text{DRX}}}} }}{{{\\text{RT}}}}} \\right)$$\\end{document}",
+          "(4)"
+        ]
+      ],
+      "header_groups": [],
+      "table_alignment_status": "resolved",
+      "row_provenance": [
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 3
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 3
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 3
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 3
+          }
+        ]
+      ],
+      "tbody_alignment_status": "resolved"
+    },
+    {
+      "caption": "Constitutive and microstructural relations used in the simulation (Ref  9 ,  34 ,  39 ,  42 )",
+      "headers": [],
+      "rows": [
+        [
+          "MDRX (Metadynamic Recrystallization) Roucoules et al.",
+          "X M D R X = 1 - e x p - 0.693 t t 0.5 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${{\\varvec{X}}}_{{\\varvec{M}}{\\varvec{D}}{\\varvec{R}}{\\varvec{X}}}=1-{\\varvec{e}}{\\varvec{x}}{\\varvec{p}}\\left(-0.693\\left(\\frac{{\\varvec{t}}}{{{\\varvec{t}}}_{0.5}}\\right)\\right)$$\\end{document}"
+        ],
+        [
+          "t 0.5 = 4.42 · 10 - 7 ε - 0.59 e x p 153000 R T \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${{\\varvec{t}}}_{0.5}= 4.42\\cdot {10}^{-7}{{\\varvec{\\varepsilon}}}^{-0.59}{\\varvec{e}}{\\varvec{x}}{\\varvec{p}}\\left(\\frac{153000}{{\\varvec{R}}{\\varvec{T}}}\\right)$$\\end{document}"
+        ],
+        [
+          "d MDRX = 1370 · ε - 0.13 e x p - 48750 RT \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${d}_{MDRX}= 1370\\cdot {\\varepsilon }^{-0.13}exp\\left(-\\frac{48750}{RT}\\right)$$\\end{document}"
+        ],
+        [
+          "SRX (Static Recrystallization) Hodgson & Gibbs; Sellars & Davies",
+          "X SRX = 1 - e x p - 0.693 t t 0.5 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${X}_{SRX}= 1 -exp\\left(-0.693\\left(\\frac{t}{{t}_{0.5}}\\right)\\right)$$\\end{document}"
+        ],
+        [
+          "t 0.5 = - 5.24 + 550 Nb · 10 - 18 ε - 4 + 77 Nb d 0 2 e x p 330000 RT \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$t_{{0.5}} = \\left( { - 5.24 + 550\\left[ {Nb} \\right]} \\right) \\cdot 10^{{ - 18}} \\varepsilon ^{{ - 4 + 77\\left[ {Nb} \\right]}} d_{0}^{2} exp\\left( {\\frac{{330000}}{{RT}}} \\right)$$\\end{document}"
+        ],
+        [
+          "d SRX = 1.1 d 0 0.67 ε - 0.67 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${d}_{SRX}= 1.1 {d}_{0}^{0.67}{\\varepsilon }^{-0.67}$$\\end{document}"
+        ],
+        [
+          "Grain growth hodgson & Gibbs",
+          "d 4.5 = d 0 4.5 + 4.1 · 10 23 t · e x p - 435000 RT \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$d^{{4.5}} = d_{0}^{{4.5}} + 4.1 \\cdot 10^{{23}} t \\cdot exp\\left( { - \\frac{{435000}}{{RT}}} \\right)$$\\end{document}"
+        ],
+        [
+          "Strain-induced precipitation (SIP) Dutta & Sellars",
+          "t p 0.05 = A N b - 1 ε - 1 Z - 0.5 e x p 270000 RT e x p B T 3 l n K s 2 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${t}_{p0.05}= A {\\left[Nb\\right]}^{-1}{\\varepsilon }^{-1}{Z}^{-0.5}exp\\left(\\frac{270000}{RT}\\right)exp\\left(\\frac{B}{{T}^{3}{\\left(ln {K}_{s}\\right)}^{2}}\\right)$$\\end{document}"
+        ]
+      ],
+      "header_groups": [],
+      "table_alignment_status": "no_header",
+      "row_provenance": [
+        [
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          },
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          },
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          },
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          },
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          }
+        ]
+      ],
+      "tbody_alignment_status": "no_headers_to_target"
+    }
+  ]
+}

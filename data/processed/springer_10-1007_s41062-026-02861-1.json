@@ -1,0 +1,1549 @@
+{
+  "doi": "10.1007/s41062-026-02861-1",
+  "title": "Integration of UAV-based infrared thermography with building information modeling and digital twins for infrastructure inspection: a review",
+  "abstract": "Abstract Unmanned aerial vehicle–based infrared thermography (UAV-IRT) has emerged as a promising approach for non-contact infrastructure inspection, enabling thermal diagnostics across large and difficult-to-access built-environment assets. At the same time, the Architecture, Engineering, Construction, and Facility Management (AEC/FM) industry is increasingly adopting digital technologies such as Building Information Modeling (BIM) and digital twins (DTs) to support data-driven asset management and lifecycle decision-making. However, thermal inspection outputs are often treated as isolated datasets rather than interoperable information linked with digital asset models, limiting their value for monitoring and predictive maintenance and constraining their integration into digital asset management workflows. This study presents a review of research at the intersection of UAV-IRT, BIM, and DT technologies. Based on a structured literature screening of 110 publications, this study covers UAV-enabled inspection, thermal data processing, multimodal sensing, and digital model integration. The review synthesizes research across four themes: UAV-IRT applications, thermal data processing and AI-assisted anomaly detection, BIM-based integration approaches, and digital-twin-enabled monitoring frameworks. The analysis reveals fragmentation across sensing, data processing, and integration workflows, highlighting key challenges that hinder scalable deployment in practical infrastructure inspection and management applications. The paper further discusses key directions for future research, including workflow standardization, multimodal sensing integration, AI-enabled decision support, scalable DT ecosystems, and workforce development. The findings demonstrate how UAV-IRT can support asset management by enabling proactive maintenance and improving inspection efficiency by reducing unnecessary inspection cycles and minimizing redundant field operations. These improvements lower resource consumption and operational costs while supporting more effective lifecycle management of infrastructure systems.",
+  "journal": "Innovative Infrastructure Solutions",
+  "year": "2026",
+  "sections": [
+    {
+      "heading": "Introduction",
+      "paragraphs": [
+        "Rapid advances in unmanned aerial vehicles (UAVs) and infrared thermography (IRT) have substantially expanded the capabilities of non-contact inspection and thermal diagnostics in the built environment, particularly for large-scale and hard-to-access infrastructure systems. UAV-mounted thermal sensors enable rapid, flexible, and large-area data collection while reducing the time, labor, and safety constraints associated with conventional manual inspection methods [ 26 ,  39 ,  78 ,  86 ]. In building and infrastructure applications, UAV-IRT has been used to detect thermal leakage, moisture intrusion, facade anomalies, roof defects, and subsurface deterioration, demonstrating strong potential for energy auditing, condition assessment, and defect identification and contributing to improved energy efficiency and reduced operational resource consumption in buildings and infrastructure systems [ 23 ,  24 ,  68 ,  72 ,  77 ,  111 ]. Recent review studies have highlighted the rapid development of UAV-based infrared thermography for building envelope thermal performance assessment, emphasizing its advantages in large-scale inspection, rapid data acquisition, and non-destructive evaluation of building systems (D. Zhang et al., [ 115 ]).",
+        "At the same time, the Architecture, Engineering, Construction, and Facility Management (AEC/FM) industry is undergoing a broader digital transformation driven by Building Information Modeling (BIM), digital twins (DTs), and data-centric asset management approaches. BIM has evolved from a design and coordination platform into an information-rich environment that supports inspection documentation, facility management, and lifecycle decision-making by enabling data-driven evaluation of asset conditions and prioritization of maintenance actions, while DTs further extend this capability by enabling dynamic model updating, condition monitoring, and predictive maintenance [ 63 ,  65 ,  80 ,  95 ]. As infrastructure systems become increasingly complex and performance-oriented, the ability to connect inspection data with semantically structured digital models has become a critical requirement for scalable and intelligent asset management. From an asset management perspective, integrating UAV-IRT with BIM and DTs can reduce inspection costs, enhance data traceability, and support more informed and efficient maintenance planning, thereby supporting more sustainable asset lifecycle management by reducing unnecessary material replacement and minimizing energy losses associated with inefficient maintenance strategies.",
+        "Within this context, UAV-IRT is especially promising because it provides spatially distributed thermal information that can reveal defects and performance abnormalities not easily captured through visible imaging alone [ 79 ,  90 ]. Recent studies have also shown growing interest in integrating thermal imagery with photogrammetry, 3D reconstruction, BIM environments, and DT frameworks to create more informative and operationally useful inspection workflows ([ 36 ,  52 ,  56 ,  80 ,  81 ,  87 ,  93 ]; C. Zhang et al., [ 107 ] b; [ 112 ]). Such integration can move thermal inspection beyond standalone image interpretation toward model-linked defect localization, automated documentation, and decision support across the asset lifecycle, with the potential to enhance long-term infrastructure resilience and sustainability performance.",
+        "However, despite these advances, UAV-IRT data are still frequently used as isolated inspection outputs rather than as interoperable components of a broader digital inspection ecosystem. In many applications, thermal images or orthomosaics remain detached from asset semantics, maintenance databases, and model-based management workflows, limiting their long-term value for monitoring, prioritization, and predictive analysis [ 7 ,  20 ,  71 ,  91 ]. Practical challenges such as sensor calibration, image registration, multimodal data fusion, geometric accuracy, interoperability, and semantic mapping continue to hinder the seamless integration of UAV-IRT outputs into BIM and DT environments ([ 14 ,  20 ,  35 ,  91 ]; C. Zhang et al., [ 112  ], Zhang, [ 105 ] a).",
+        "Several review studies have examined important parts of this landscape, but mostly in a fragmented manner. However, most existing reviews focus on individual components of the workflow such as UAV inspection technologies, infrared thermography applications, or BIM-based inspection systems, rather than examining how thermal sensing, multimodal data fusion, and DT ecosystems can be integrated into a unified digital inspection pipeline. Prior reviews have addressed UAV applications in the built environment [ 78 ], robotic and drone-based inspection systems [ 26 ,  41 ,  75 ], infrared thermography and thermal diagnostics for buildings (D. Zhang et al., [ 110 ], and infrastructure systems [ 44 ], thermal–3D data fusion and thermal point clouds [ 79 ,  90 ], and UAV–BIM integration for visual inspection workflows [ 10 ,  106 ]. These studies provide valuable foundations, yet they generally focus on one of three perspectives in isolation: UAV-enabled inspection, thermal sensing and analysis, or digital model integration. A comprehensive review that specifically synthesizes how UAV-based infrared thermography can be integrated into BIM and DT ecosystems for intelligent inspection and lifecycle decision support remains limited.",
+        "Accordingly, this study presents a structured review and research roadmap for UAV-IRT integration within BIM and DT workflows in the built environment. Rather than treating UAV sensing, thermal analysis, and digital asset modeling as separate research streams, this review examines their intersections across inspection applications, thermal data processing, AI-assisted anomaly detection, multimodal fusion, BIM linkage, and DT development. The goal is not only to summarize the current state of knowledge, but also to identify the key technical, analytical, and organizational barriers that must be addressed to enable scalable and operationally meaningful UAV-IRT-enabled digital inspection systems.",
+        "The main contributions of this study are summarized as follows:",
+        "to synthesize UAV-IRT applications relevant to infrastructure and building inspection to review thermal data processing and AI-based anomaly detection methods used in UAV-IRT workflows to analyze existing approaches for integrating thermal inspection outputs into BIM and DT environments to identify major research gaps related to sensing, data fusion, interoperability, and implementation to propose a future research roadmap toward scalable UAV-IRT-enabled DTs for intelligent inspection and decision support",
+        "The remainder of this paper is organized as follows. Section  2  presents the theoretical foundations of UAV-based infrared thermography, BIM, DTs, and digital inspection workflows. Section  3  describes the review methodology and literature classification framework. Section  4  summarizes UAV-IRT applications in infrastructure inspection. Sect.  5  examines integration pathways between UAV-IRT, BIM, and DTs. Section   6  provides a critical evaluation and research synthesis of the reviewed literature. Section  7  discusses current challenges and research gaps. Section  8  proposes future research directions, followed by conclusions in Sect.   9 ."
+      ]
+    },
+    {
+      "heading": "Background and theoretical foundations",
+      "paragraphs": []
+    },
+    {
+      "heading": "Principles of UAV-based infrared thermography",
+      "paragraphs": [
+        "Infrared thermography (IRT) is a non-contact and non-destructive sensing technique that detects infrared radiation emitted by an object and converts it into a thermal image representing surface temperature distribution. Because all objects above absolute zero emit infrared radiation, variations in emitted energy can be interpreted as surface temperature differences. In built-environment applications, such temperature variations are often associated with changes in heat transfer behavior, moisture accumulation, material discontinuities, or subsurface defects, making IRT a valuable diagnostic tool for condition assessment and performance evaluation and for identifying energy inefficiencies and material degradation that impact the sustainability of built systems [ 24 ,  77 ].",
+        "In infrastructure and building inspection, UAV-based infrared thermography (UAV-IRT) extends the utility of conventional thermography by enabling rapid, remote, and flexible thermal data acquisition across large, complex, or difficult-to-access assets. Compared with manual inspection or ground-based thermal surveys, UAV-mounted thermal cameras improve accessibility, reduce safety risks, and support efficient inspection of roofs, façades, bridge components, and other elevated or spatially distributed surfaces [ 78 ]. Prior studies have demonstrated the applicability of UAV-IRT for building envelope assessment, heat-loss detection, façade anomaly identification, and thermal transmittance evaluation, highlighting its growing role in building diagnostics and infrastructure inspection workflows and its potential to support energy-efficient building operation and maintenance practices [ 23 ,  39 ,  68 ,  72 ,  111 ].",
+        "The effectiveness of UAV-IRT depends not only on thermal sensing itself but also on platform characteristics and sensor deployment strategies. UAV platforms generally include multi-rotor systems, which are well suited for close-range inspection due to their maneuverability and hovering capability, and fixed-wing systems, which are more appropriate for broader-area coverage in linear or large-scale inspections [ 78 ]. In many inspection applications, thermal cameras are integrated with RGB cameras and, in some cases, LiDAR or photogrammetric systems to enable multimodal sensing and improve spatial interpretation of thermal data [ 20 ,  91 ]. The specific UAV–sensor configuration should therefore be selected according to inspection objectives, target geometry, required resolution, and site constraints to ensure both technical accuracy and efficient resource utilization in inspection processes.",
+        "Operational and environmental conditions are especially important in UAV-IRT because thermal readings are highly sensitive to data acquisition settings and external influences. Flight altitude, viewing geometry, image overlap, and temporal scheduling affect the spatial resolution and interpretability of collected thermal imagery, while solar radiation, wind speed, ambient temperature, surface emissivity, and thermal inertia can significantly influence measured temperature patterns [ 24 ,  59 ]. In quantitative applications, sensor calibration and environmental compensation become even more critical, particularly when UAV-IRT is used to estimate thermal properties such as heat-transfer performance or U-values [ 72 ,  91 ,  111 ]. These factors explain why data quality, repeatability, and measurement reliability remain central concerns in UAV-based thermal inspection research and are essential for generating reliable data to support sustainable decision-making in infrastructure management.",
+        "From a theoretical perspective, UAV-IRT should not be viewed merely as an imaging technology, but as a sensing modality whose value depends on the interaction among thermal physics, sensing geometry, environmental context, and downstream data interpretation. As illustrated in Fig.  1 , UAV-based infrared thermography can be understood as a workflow that links infrared radiation principles, UAV-based thermal sensing, environmental influences, thermal image processing, and defect detection. This is particularly relevant for review studies such as the present one, because the usefulness of UAV-IRT in digital inspection workflows depends not only on defect visibility at the image level, but also on the extent to which thermal data can be processed, spatially aligned, semantically interpreted, and integrated into broader decision-support environments that support efficient, data-driven, and sustainability-oriented infrastructure management practices.",
+        "Fig. 1 Conceptual workflow of UAV-based infrared thermography (UAV-IRT) for infrastructure and building inspection"
+      ]
+    },
+    {
+      "heading": "BIM and DTs in infrastructure management",
+      "paragraphs": [
+        "BIM represents a paradigm shift in the AEC/FM industry, moving from traditional 2D drawings to intelligent 3D models that contain rich, structured data. BIM facilitates collaborative workflows, improves project delivery, and supports lifecycle management of assets from design and construction through operation and maintenance [ 65 ,  95 ]. Its evolution has led to a more integrated and data-centric approach to managing built environments, which is essential for improving resource efficiency and supporting sustainable infrastructure development.",
+        "The emergence of DTs in infrastructure monitoring further extends the capabilities of BIM by creating a virtual replica of a physical asset, system, or process. Unlike static BIM models, DTs are dynamic virtual representations that are periodically or near-real-time updated with data from physical sensors, enabling monitoring, analysis, and predictive capabilities [ 63 ]. This allows for proactive decision-making, optimized performance, and enhanced asset longevity, which are critical for reducing lifecycle resource consumption and improving the sustainability of infrastructure systems. The key differences between BIM and DTs are summarized in Table  1 .",
+        "Table 1 Key Differences between BIM and DTs Feature BIM DTs Nature Structured digital information model Dynamic virtual representation Primary focus Design, construction, and asset information management Monitoring, analysis, and lifecycle optimization Data role Information repository and coordination platform Continuously or near-real-time updated decision-support environment Interoperability function Provides semantic and geometric asset context Integrates sensor streams and operational data Update pattern Periodic or project-based Continuous or near-real-time Typical use Documentation, coordination, facility information Condition monitoring, prediction, maintenance optimization",
+        "Although BIM and DTs are frequently discussed together in the literature, they serve different roles within digital inspection ecosystems. BIM primarily functions as a structured information repository and semantic representation of physical assets, providing geometric, material, and asset-level context [ 36 ,  63 ]. In contrast, DTs extend BIM capabilities by incorporating continuously updated sensing data, enabling condition monitoring, performance assessment, anomaly tracking, and predictive maintenance [ 81 ]. Therefore, BIM can be viewed as an important enabling foundation for DT implementation, while DTs represent a higher level of digital maturity characterized by dynamic data integration and closed-loop decision support [ 63 ,  81 ]. Within UAV-IRT workflows, BIM supports defect localization and semantic mapping, whereas DTs support temporal monitoring, model updating, and lifecycle decision-making."
+      ]
+    },
+    {
+      "heading": "Digital inspection workflows in AEC",
+      "paragraphs": [
+        "Inspection practices in the AEC industry are increasingly shifting from isolated, manual, and document-based procedures toward digital inspection workflows supported by sensing, computation, and model-based integration [ 41 ,  75 ]. This shift reflects broader changes in asset management, where the objective is no longer limited to identifying visible defects, but extends to creating traceable, analyzable, and decision-ready inspection information that can support maintenance planning and lifecycle management, thereby reducing unnecessary interventions and lowering resource use in infrastructure systems. As a result, inspection is becoming a multi-stage digital process rather than a stand-alone field activity.",
+        "A typical digital inspection workflow can be conceptualized as a four-stage pipeline consisting of: data acquisition, data processing, asset model integration, and decision support. In the first stage, sensing technologies such as UAVs, RGB cameras, thermal cameras, LiDAR, or other non-contact systems are used to collect raw inspection data. In the second stage, these raw data are processed through operations such as image correction, registration, anomaly detection, classification, and 3D reconstruction. In the third stage, processed inspection outputs are linked to asset models, such as BIM or related digital representations, to provide spatial, semantic, and operational context. Finally, in the fourth stage, integrated information is used to support maintenance prioritization, condition assessment, predictive analytics, and other decision-making tasks ([ 41 ]; [ 61 ,  104 ,  106 ]), which can contribute to more sustainable maintenance strategies and long-term infrastructure resilience. This multi-stage digital transformation process, specifically tailored for UAV-IRT integration within BIM and DT frameworks, is conceptualized and illustrated in Fig.  2 .",
+        "Fig. 2 Typical digital inspection pipeline",
+        "This pipeline is enabled by the convergence of several technologies. UAV sensing improves access and inspection efficiency; AI-based methods support automated defect detection and interpretation; photogrammetry and other reconstruction methods generate spatially explicit digital representations; BIM provides semantic and asset-level context; and DT frameworks extend these capabilities toward time-dependent monitoring and predictive maintenance [ 41 ,  52 ,  61 ,  93 ,  104 ,  106 ]. Importantly, these components should not be understood as independent tools, but as functionally connected parts of a digital inspection ecosystem, supporting integrated and sustainability-oriented asset management practices.",
+        "From a theoretical standpoint, digital inspection workflows represent a transition from data collection to information integration and, ultimately, to actionable intelligence. This perspective is especially important for the present review, because the significance of UAV-IRT lies not only in its sensing capability, but in its position within a larger workflow that transforms thermal observations into model-linked and decision-relevant asset knowledge, enabling more efficient, data-driven, and sustainable infrastructure management decisions."
+      ]
+    },
+    {
+      "heading": "Positioning UAV-IRT within BIM and DT ecosystems",
+      "paragraphs": [
+        "Within the broader digital inspection landscape, UAV-based infrared thermography occupies a strategically important but still under-integrated position. On one hand, UAV-IRT provides rich thermal diagnostic information that can reveal building envelope anomalies, heat-loss regions, moisture-related effects, and defect signatures that are difficult to identify reliably through visible inspection alone ([ 79 ,  90 ]; C. Zhang et al., [ 113 ] b). On the other hand, thermal inspection outputs are still frequently treated as isolated images, orthomosaics, or project-specific analyses, rather than as interoperable data assets that can be linked to digital asset models and maintenance systems [ 79 ,  90 ], limiting their potential to support sustainable asset management and long-term performance optimization.",
+        "This disconnect represents a central challenge in current research and practice. Thermal data often lack direct semantic association with asset components, are difficult to spatially register with model geometry, and are not consistently incorporated into maintenance workflows or lifecycle databases [ 7 ,  20 ,  35 ,  71 ,  91 ]. As a result, the practical value of UAV-IRT is often constrained to one-time diagnosis rather than continuous condition monitoring, anomaly tracking, and maintenance decision support. This limitation is particularly significant in complex infrastructure and facility management contexts, where the usefulness of inspection data depends on traceability, spatial context, temporal comparability, and decision relevance, all of which are critical for enabling efficient resource use and sustainable infrastructure management.",
+        "Integrating UAV-IRT with BIM and DT environments offers a pathway to overcome these limitations. Although BIM and DTs are often discussed together, they serve different functions within digital inspection ecosystems. In this review, BIM is treated primarily as the semantic integration layer linking UAV-derived thermal information to asset components, whereas DTs are treated as dynamic decision-support environments that utilize BIM-linked inspection information for monitoring, condition assessment, and predictive maintenance. BIM therefore provides the structured asset context necessary for organizing and contextualizing inspection data, while DTs extend this capability through continuous data updating, performance tracking, and lifecycle decision support, thereby representing a higher level of digital maturity and dynamism. Importantly, this distinction enables thermal observations to be incorporated into DT environments at a higher temporal frequency without requiring equivalent updates to the underlying BIM geometry, thereby supporting continuous condition assessment while maintaining a stable asset information model. In practice, this reflects the increasingly adopted view that BIM serves as a relatively stable semantic representation of the asset, whereas DT environments accommodate dynamic inspection and operational data streams [ 36 ,  63 ,  81 ].",
+        "First, thermal anomalies can be spatially contextualized by mapping them to corresponding building or infrastructure elements within a three-dimensional digital model, thereby improving localization, interpretation, and reporting ([ 80 ,  93 ]; C. Zhang et al., [ 107 ] b). Second, integration enables thermal observations to be linked with semantic information, inspection history, and asset metadata, creating a more structured basis for defect documentation and comparison over time [ 7 ,  56 ,  103 ]. Third, when connected to DT environments, UAV-IRT data can contribute to condition monitoring and predictive maintenance by supporting model updating, anomaly tracking, and performance-based decision-making [ 36 ,  63 ,  81 ,  87 ,  112 ]. In this way, UAV-IRT becomes more than a sensing method; it becomes a data source within a digital asset environment capable of supporting condition assessment, anomaly tracking, predictive maintenance, and lifecycle decision-making.",
+        "A typical UAV-IRT integration workflow involves several sequential steps. Following UAV-based thermal image acquisition, thermal datasets are processed through image correction, photogrammetric reconstruction, thermal analysis, and anomaly identification procedures [ 71 ,  81 ]. The resulting thermal information must then be spatially registered and semantically mapped to corresponding BIM elements to establish meaningful associations between detected anomalies and physical asset components [ 35 ,  56 ,  91 ]. Once linked to BIM, inspection information can be incorporated into DT environments together with historical inspection records, sensor measurements, and asset metadata to support condition monitoring, performance assessment, and lifecycle analysis.",
+        "Despite recent advances, several technical challenges remain. Accurate registration between thermal imagery and digital models can be difficult due to geometric distortions, varying image resolutions, and environmental influences. Additional challenges include semantic mapping consistency, automated defect-to-component association, interoperability across software platforms, and the integration of heterogeneous data formats into unified BIM- and DT-based asset management systems [ 7 ].",
+        "Recent studies have begun to demonstrate elements of this integration through image-to-BIM registration, BIM-enriched thermal mapping, thermography-supported DT workflows, and model-based defect management frameworks ([ 14 ,  36 ,  56 ,  81 ,  87 ]; C. Zhang et al., [ 109 , ], Zhang, [ 105 ] a; [ 112 ]). Nevertheless, these efforts remain fragmented, and a fully mature workflow that consistently connects UAV-IRT acquisition, data processing, semantic mapping, and lifecycle decision support has not yet been established. This unresolved integration challenge provides the conceptual basis for the present review, limiting the scalability of sustainability-oriented digital inspection practices.",
+        "Accordingly, this review positions UAV-IRT at the intersection of three converging research streams: non-contact thermal inspection, model-based digital representation, and data-driven asset management. These domains are reviewed together because the value of UAV-IRT increasingly depends not only on defect detection itself, but also on the ability to integrate inspection information into BIM-enabled asset representations and DT-enabled monitoring and decision-support environments.",
+        "As illustrated in Fig.  3 , UAV-IRT can be conceptually positioned within a hierarchical digital inspection framework that progresses from sensing and data processing to BIM-enabled semantic integration, DT-enabled monitoring and analytics, and ultimately decision-support applications. This framework highlights the fundamental connections among UAV sensing, BIM, and DT technologies and provides the conceptual basis for examining them within a unified review.",
+        "Understanding this intersection is essential for identifying not only what UAV-IRT can detect, but also how its outputs can be transformed into scalable, interoperable, and decision-supportive resources within BIM and DT ecosystems, ultimately supporting more sustainable, resilient, and resource-efficient infrastructure systems.",
+        "Fig. 3 Hierarchical framework illustrating the integration of UAV-based infrared thermography (UAV-IRT) from sensing and data processing to BIM/digital-twin-enabled decision support"
+      ]
+    },
+    {
+      "heading": "Review methodology",
+      "paragraphs": []
+    },
+    {
+      "heading": "Literature search strategy",
+      "paragraphs": [
+        "To ensure a comprehensive and transparent synthesis of existing research, a structured literature search was conducted across multiple major academic sources covering engineering, construction management, remote sensing, and computer science research. The search was conducted without an explicit lower year limit and covered publications available up to March 2026. Scopus and Web of Science were used as the primary indexing databases, while publisher platforms and digital libraries, including ScienceDirect, IEEE Xplore, SpringerLink, and Wiley Online Library, were used for supplementary searches to improve coverage of relevant journal articles and conference proceedings. Because many publications are indexed in multiple databases, records retrieved from different sources were consolidated prior to screening to remove potential duplicates.",
+        "The search strategy was designed to capture studies addressing the intersection of UAV-based sensing, infrared thermography, and digital asset modeling within the context of infrastructure inspection and building performance analysis, with particular attention to applications related to energy performance, resource efficiency, and sustainable infrastructure management. To achieve this objective, a set of keyword combinations and Boolean search operators was developed to identify relevant publications while maintaining sufficient breadth to avoid excluding emerging research topics.",
+        "The primary Boolean search strings used in the database queries included the following:",
+        "(UAV OR drone OR UAS) AND thermography AND building inspection. (UAV OR drone) AND “thermal imaging” AND building energy. (UAV OR drone) AND thermography AND BIM. (UAV OR drone) AND thermography AND “digital twin”. thermal imaging AND BIM AND building inspection. drone AND thermal imaging AND building envelope.",
+        "These search queries were intentionally formulated to capture a wide range of studies spanning multiple research domains, including UAV–enabled inspection technologies, thermal imaging analysis, BIM-based data integration, and DT–supported infrastructure monitoring, as well as studies relevant to improving energy efficiency and supporting sustainability-oriented building and infrastructure practices. This broad search strategy helped ensure that the review encompassed both foundational research and recent advances related to UAV-IRT applications and their integration into digital infrastructure management environments.",
+        "The search process focused primarily on peer-reviewed journal articles and conference proceedings, which represent the dominant publication formats in engineering and construction technology research, ensuring the inclusion of high-quality studies relevant to both technical development and sustainability-related applications."
+      ]
+    },
+    {
+      "heading": "Screening and selection process",
+      "paragraphs": [
+        "The screening process follows a structured and transparent filtering procedure inspired by PRISMA principles and adapted for engineering and construction review studies. Following the literature search, the identified publications were subjected to a multi-stage screening and selection procedure designed to refine the dataset and ensure relevance to the research scope. This process followed a structured filtering procedure commonly adopted in engineering and construction review studies to enhance transparency and reproducibility in literature selection. The initial database search yielded 353 publications. These records were then evaluated through three successive screening stages."
+      ]
+    },
+    {
+      "heading": "Title screening",
+      "paragraphs": [
+        "In the first stage, article titles were reviewed to remove publications clearly unrelated to the review scope. Studies that did not involve UAV technologies, infrared thermography, building or infrastructure inspection, or digital modeling environments such as BIM or DTs were excluded at this stage."
+      ]
+    },
+    {
+      "heading": "Abstract screening",
+      "paragraphs": [
+        "In the second stage, the abstracts of the remaining publications were examined to evaluate their relevance to the thematic focus of the review. Articles were retained if they addressed at least one of the following aspects:",
+        "UAV-based inspection or sensing technologies. infrared thermography applied to buildings or infrastructure. integration of inspection data with BIM or digital models. DT–based monitoring or asset management in contexts relevant to efficient lifecycle management and sustainability-oriented applications.",
+        "Publications that focused on unrelated sensing domains or applications outside the built environment were excluded."
+      ]
+    },
+    {
+      "heading": "Full-text evaluation",
+      "paragraphs": [
+        "In the final stage, the full texts of the remaining publications were carefully reviewed to confirm their relevance and to extract detailed information regarding methodologies, application contexts, data processing approaches, and integration strategies. Studies were retained if they provided meaningful insights into UAV-based infrared thermography (UAV-IRT), thermal data interpretation, or the integration of inspection data with BIM and DT environments. To be included in the final dataset, studies were required to address at least one of the following aspects: UAV-IRT inspection applications, thermal data processing or anomaly interpretation, BIM-based integration of inspection outputs, or DT–enabled monitoring and asset management, particularly where these contribute to improved resource efficiency and long-term infrastructure performance. The inclusion and exclusion criteria applied throughout the screening process are summarized in Table  2 .",
+        "Table 2 Summary of Literature Selection Criteria Inclusion criteria Exclusion criteria Studies involving UAV-based inspection or sensing technologies Studies not involving UAV technologies Infrared thermography applications for buildings or infrastructure Studies not involving infrared thermography BIM-based integration of inspection data Studies unrelated to BIM or DT environments DT-enabled monitoring and asset management applications Studies focused on unrelated sensing domains Research relevant to the built environment Studies outside the built environment Studies reporting applications, methodologies, frameworks, or reviews relevant to UAV-IRT, BIM, or DT integration Publications outside the thematic scope of the review",
+        "After applying the inclusion and exclusion criteria summarized in Table  2  and completing the multi-stage screening process, a final dataset of 110 publications was identified as sufficiently relevant for detailed qualitative synthesis and thematic analysis. The final dataset includes journal articles, conference papers, and a small number of book chapters, covering research related to UAV inspection, thermal imaging, BIM integration, and DT–based infrastructure monitoring, including studies addressing energy performance, maintenance efficiency, and sustainability-related outcomes in built environments. Figure  4  further illustrates the annual distribution of the reviewed publications. The temporal trend shows that research on UAV-based infrared thermography and its integration with BIM and DT environments has grown substantially in recent years, with a particularly notable increase after 2021. This pattern indicates that the topic has evolved into an active and expanding research area, especially in relation to multimodal sensing, AI-assisted analysis, and digital asset integration, with increasing relevance to sustainability-driven digital transformation in the AEC industry.",
+        "Figure  5  illustrates the literature screening workflow used to identify the final dataset of publications included in this review. Table  3  summarizes the composition of the final dataset according to publication format. Table  4  further presents the broad classification of the selected studies according to research type, providing an overview of the dominant methodological approaches represented in the reviewed literature.",
+        "Fig. 4 Annual distribution of the reviewed publications by year",
+        "Fig. 5 PRISMA-inspired literature screening workflow",
+        "Table 3 Composition of the final literature dataset Category Count Percentage Journal articles 87 79.1% Conference papers / proceedings 22 20% Book chapters 1 0.9% Total 110 100%",
+        "Table 4 Broad study-type composition of the final dataset Study type Count Percentage Review / scoping / systematic review studies 24 21.8% Empirical application studies 26 23.6% Methodological / technical studies 32 29.1% Conceptual / framework / integration studies 28 25.5% Total 110 100%"
+      ]
+    },
+    {
+      "heading": "Statement on AI assistance in manuscript preparation",
+      "paragraphs": [
+        "During the development of this manuscript, the authors utilized a large language model (Generative Pre-trained Transformer - GPT) specifically for linguistic refinement, proofreading, and improving the grammatical flow of the text. It is important to note that the AI tool was not used to conduct the literature search, perform the screening of the 110 identified publications, or generate the conceptual frameworks (such as the thematic classification in Sect.   3.3 ). All search strategies, data extraction, and synthesis of findings were performed by the human authors, who maintain full responsibility for the accuracy and integrity of the final content."
+      ]
+    },
+    {
+      "heading": "Literature classification framework",
+      "paragraphs": [
+        "To facilitate structured analysis of the selected literature, a classification framework was developed to organize the identified studies according to their primary research focus. This framework enables comparative analysis across different research directions and helps identify major technological developments, methodological patterns, and remaining research gaps within the field, including those related to improving resource efficiency and supporting sustainable infrastructure management.",
+        "Based on thematic analysis of the selected publications, the literature was grouped into four main research categories representing the dominant research streams in UAV-IRT–related infrastructure inspection studies:",
+        "UAV-IRT inspection applications – studies focusing on the practical use of UAV-based infrared thermography for defect detection, condition assessment, and infrastructure diagnostics. Thermal data processing and analysis – studies addressing thermal image processing, anomaly detection algorithms, machine learning techniques, and automated interpretation of thermal inspection data. BIM integration approaches – research investigating the registration, mapping, and semantic integration of UAV inspection outputs within BIM environments. DT frameworks – studies exploring dynamic monitoring, model updating, predictive maintenance, and lifecycle asset management using DT systems linked with inspection data, with increasing emphasis on enabling efficient resource use and sustainable asset lifecycle optimization.",
+        "This classification framework allows the literature to be analyzed along a progressive technological pipeline, moving from data acquisition and sensing technologies toward digital model integration and decision-support applications. Such a structured categorization also provides the conceptual basis for organizing the thematic discussions presented in the subsequent sections of this review, highlighting how different technological components contribute to more efficient and sustainability-oriented infrastructure management workflows. Table  5  summarizes the classification framework used to organize the reviewed studies and guide the thematic analysis presented in the following sections.",
+        "Table 5 Literature classification framework Category Research focus UAV-IRT inspection applications Infrastructure and building defect detection using UAV thermography Thermal data processing Thermal anomaly detection, image processing, and machine learning methods BIM integration Registration and mapping of thermal inspection data to BIM models DT frameworks Dynamic monitoring, predictive maintenance, and lifecycle asset management",
+        "This classification framework serves as the analytical basis for the thematic discussions presented in the subsequent sections of the paper. Table  6  further summarizes the dominant research themes identified in the reviewed literature and illustrates how these themes correspond to the classification framework described above, providing a foundation for understanding how UAV-IRT integration can support data-driven and sustainability-oriented decision-making in the built environment.",
+        "Table 6 Research themes in UAV-IRT integration studies Research direction Typical methods Main objectives UAV-IRT inspection applications Thermal imaging surveys, aerial thermography mapping Defect detection and infrastructure diagnostics Thermal data processing Image segmentation, machine learning, deep learning models Automated thermal anomaly detection BIM integration Image-to-BIM registration, thermal point cloud mapping Spatial localization of defects DT frameworks Sensor integration, model updating, monitoring platforms Predictive maintenance and lifecycle management"
+      ]
+    },
+    {
+      "heading": "UAV-IRT applications in infrastructure inspection",
+      "paragraphs": [
+        "Unmanned aerial vehicle–based infrared thermography (UAV-IRT) has emerged as an effective non-contact sensing approach for infrastructure inspection, enabling rapid, non-contact thermal diagnostics across a wide range of built-environment assets [ 78 ]. Compared with conventional inspection approaches that rely on manual surveys or ground-based instruments, UAV-IRT provides improved accessibility, faster data acquisition, and spatially continuous thermal information over large areas [ 26 ,  78 ]. These capabilities have enabled UAV-IRT to support condition assessment, defect detection, and performance evaluation in multiple infrastructure domains, including transportation systems, bridges, and building envelopes ([ 72 ,  77 ]; C. Zhang et al., [ 113 ] b; [ 111 ]), thereby supporting more efficient inspection practices and contributing to reduced resource consumption in infrastructure management. In addition to building and transportation infrastructure, UAV-based thermography has also been explored in other inspection contexts such as industrial facilities, heritage structures, and energy systems ([ 6 ,  12 ,  18 ,  57 ,  70 ,  73 ,  74 ,  89 ,  96 ]; S. Zhang et al., [ 114 ]. This section synthesizes representative application areas identified in the reviewed literature and discusses how UAV-IRT contributes to defect detection and infrastructure diagnostics in ways that support sustainable and data-driven asset management practices."
+      ]
+    },
+    {
+      "heading": "Pavements and road infrastructure",
+      "paragraphs": [
+        "UAV-IRT has been increasingly explored for the inspection of pavements and road infrastructure, where thermal imaging can assist in identifying subsurface defects and pavement distress [ 26 ,  113 ]. Thermal anomalies captured by UAV platforms may indicate the presence of subsurface voids, moisture intrusion, delamination, or material deterioration that are not easily detectable through visual inspection alone. These early-stage defects often represent precursors to more severe structural failures and therefore provide valuable information for preventive maintenance strategies, helping to extend pavement lifespan and reduce material consumption associated with large-scale repairs.",
+        "In addition to pavement monitoring, recent studies have also investigated how environmental and climatic conditions influence the thermal detectability of defects in transportation infrastructure, particularly in concrete bridge decks. These studies highlight the importance of considering regional climate zones and environmental conditions when interpreting UAV-based thermographic inspection results [ 2 ,  3 ,  4 ].",
+        "The non-contact and mobile nature of UAV platforms enables efficient scanning of large pavement surfaces, including highways and airport runways, with minimal disruption to traffic operations. By analyzing spatial temperature variations across pavement surfaces, inspectors can identify areas exhibiting abnormal heat transfer behavior that may correspond to structural weaknesses or moisture-related damage. Such capabilities have demonstrated potential for improving the efficiency of pavement monitoring and supporting targeted maintenance interventions in transportation infrastructure systems, thereby reducing unnecessary maintenance activities and improving resource efficiency in transportation infrastructure management."
+      ]
+    },
+    {
+      "heading": "Bridges and structural systems",
+      "paragraphs": [
+        "Bridge inspection represents another important application area for UAV-IRT. Many bridge components, particularly bridge decks and supporting structural elements, are susceptible to deterioration processes such as concrete delamination, cracking, and moisture penetration. Infrared thermography can reveal these defects by detecting localized temperature differences caused by variations in thermal conductivity, material bonding conditions, or internal voids associated with subsurface delamination in concrete bridge decks [ 4 ,  26 ,  76 ].",
+        "UAV platforms enable inspectors to access hard-to-reach structural components, including bridge undersides, deck surfaces, and elevated structural members. Thermal imagery collected during UAV flights can be used to generate spatial thermal maps that highlight temperature gradients associated with potential structural anomalies. These thermal patterns can indicate subsurface delamination, debonding, or moisture accumulation within concrete bridge decks, which are critical indicators of structural degradation [ 2 ,  3 ,  4 ,  16 ,  76 ,  113 ].",
+        "By facilitating rapid inspection and improved spatial coverage, UAV-IRT supports more proactive bridge maintenance practices and contributes to early defect identification. Such capabilities are particularly valuable for aging bridge networks where frequent monitoring is required to ensure structural safety and serviceability [ 26 ], while also enabling more efficient maintenance planning by facilitating early detection of structural defects, thereby reducing resource-intensive repair interventions over the asset lifecycle."
+      ]
+    },
+    {
+      "heading": "Buildings and energy diagnostics",
+      "paragraphs": [
+        "Among the various application domains, building inspection and energy diagnostics represent one of the most extensively studied uses of UAV-IRT [ 78 ]. Thermal imaging is widely applied for building envelope inspection, where it can reveal heat loss, insulation deficiencies, air leakage pathways, and moisture-related defects. Because thermal radiation patterns directly reflect heat transfer behavior across building surfaces, UAV-IRT provides an effective means of evaluating building energy performance and identifying envelope failures, thereby reducing building energy losses associated with envelope defects and contributing to improved energy efficiency, which is critical for supporting sustainable building operation.",
+        "Numerous studies have demonstrated the capability of UAV-IRT to detect thermal bridges, facade degradation, insulation discontinuities, and air leakage in building envelopes. These defects often result in significant energy losses and reduced thermal comfort if left unaddressed, leading to increased energy consumption and reduced sustainability performance of buildings. UAV-based thermographic surveys allow inspectors to capture comprehensive thermal views of building facades and roof systems, enabling more efficient energy audits compared with traditional handheld thermography approaches ([ 15 ,  37 ,  50 ,  54 ,  77 ]; R. Wang et al., [ 100 ]; C. Zhang et al., [ 107 ] b; [ 111 ]). These approaches have also been applied to façade defect inspection, 3D thermal mapping, and building-envelope performance analysis in a range of recent studies [ 5 ,  13 ,  28 ,  31 ,  117 ], demonstrating their potential to support energy-efficient building management and sustainability-oriented retrofit strategies.",
+        "In addition to energy auditing, UAV-IRT has also been used to detect facade defects such as material degradation, delamination, or moisture accumulation within wall assemblies. When combined with photogrammetry or 3D reconstruction techniques, UAV-IRT can further support spatial mapping of thermal anomalies across entire building envelopes, enabling improved documentation and diagnosis of envelope performance issues, which can inform targeted interventions that reduce material waste and improve long-term resource efficiency [ 50 ,  80 ]."
+      ]
+    },
+    {
+      "heading": "Limitations of standalone UAV-IRT workflows",
+      "paragraphs": [
+        "Despite the significant advantages offered by UAV-IRT in infrastructure inspection, many existing workflows remain limited by the isolated use of thermal data [ 79 ,  90 ]. In numerous applications, thermal imagery or orthomosaics are analyzed independently from digital asset models or facility management systems. As a result, thermal inspection outputs often remain detached from the semantic and geometric information required for comprehensive infrastructure management, limiting their effectiveness in supporting efficient decision-making.",
+        "One key limitation is the difficulty of spatially contextualizing detected thermal anomalies within the broader structure of an infrastructure asset. Without integration with structured digital models such as BIM or DTs, thermal observations cannot be easily linked to specific building components, structural elements, or asset inventories. This limitation reduces the usefulness of UAV-IRT data for maintenance planning and long-term asset management ([ 79 ]; [ 80 ,  90 ]), and constrains their ability to support resource-efficient lifecycle management strategies.",
+        "Another challenge involves the lack of automated semantic interpretation of detected anomalies. In many workflows, thermal anomalies are identified visually by inspectors, but they are not automatically translated into meaningful defect categories or severity levels. Consequently, the interpretation process remains heavily dependent on expert judgment and manual analysis, limiting scalability and operational efficiency [ 62 ], which can hinder the broader adoption of efficient and sustainability-driven inspection practices.",
+        "Furthermore, standalone UAV-IRT workflows often exhibit limited integration with maintenance planning systems or lifecycle management platforms. Without connection to digital asset models or monitoring systems, thermal inspection results cannot be readily incorporated into predictive maintenance strategies. These limitations highlight the growing need to integrate UAV-IRT data with structured digital environments such as BIM and DTs, where inspection outputs can be linked with asset information, maintenance histories, and operational monitoring systems to support more intelligent and data-driven infrastructure management workflows, ultimately enabling more sustainable, efficient, and resilient infrastructure systems. Accordingly, recent research has increasingly focused on integrating UAV-IRT data with BIM and DT environments to overcome these limitations."
+      ]
+    },
+    {
+      "heading": "Integrating UAV-IRT with BIM and DTs",
+      "paragraphs": [
+        "The integration of UAV-based infrared thermography with BIM and DT ecosystems represents a critical step toward intelligent infrastructure inspection and asset management. While UAV-IRT enables efficient thermal data acquisition, its full value can only be realized when inspection outputs are integrated with structured digital models that support spatial analysis, data management, and lifecycle decision-making, thereby enabling more efficient use of resources in infrastructure management. Recent studies increasingly emphasize linking UAV-derived thermal data with BIM environments and DT frameworks to enable more comprehensive monitoring, defect localization, and predictive maintenance capabilities ([ 80 ]; [ 81 ,  93 ]; C. Zhang et al., [ 113 ] b), which are essential for reducing unnecessary interventions and improving long-term asset performance. This section synthesizes the key stages involved in this integration pipeline, including data acquisition and preprocessing, thermal data analysis, multimodal data fusion, and model integration within BIM and DT environments (Fig.  6 ), with a focus on how these stages contribute to efficient and sustainable infrastructure management workflows.",
+        "Fig. 6 Integrated UAV-IRT workflow for BIM and DT–enabled infrastructure inspection"
+      ]
+    },
+    {
+      "heading": "UAV-IRT data acquisition and pre-processing",
+      "paragraphs": [
+        "The initial stage of integrating UAV-IRT data into BIM and DT workflows involves careful mission planning and data acquisition procedures designed to ensure data quality and spatial accuracy. Flight planning and mission design must consider several parameters, including flight altitude, sensor resolution, image overlap, viewing geometry, and environmental conditions. These factors directly influence the spatial accuracy and reliability of thermal mapping results obtained from UAV surveys ([ 21 ,  24 ,  27 ,  42 ,  101 ]; C. Zhang et al., [ 108 ]; X. Zhang et al., [ 115 ], and play an important role in ensuring efficient data collection and minimizing redundant inspection efforts.",
+        "Sensor calibration is another essential step in ensuring the reliability of thermal measurements. Thermal cameras must be calibrated to account for factors such as surface emissivity, atmospheric attenuation, and sensor drift, all of which may influence temperature measurements obtained from aerial surveys [ 24 ,  91 ]. Without appropriate calibration procedures, thermal measurements may lead to inaccurate interpretation of structural defects or energy performance conditions, potentially resulting in inefficient maintenance decisions and increased resource use.",
+        "Following data acquisition, thermal orthomosaics are typically generated through photogrammetric processing techniques. In this process, individual thermal images are aligned and stitched together to produce a georeferenced thermal map of the inspected infrastructure asset. These orthomosaics provide a spatially continuous representation of surface temperature patterns and enable efficient visualization and analysis of large infrastructure components [ 20 ], supporting more effective identification of defects and reducing the need for repeated inspections.",
+        "Additional preprocessing steps are often required to normalize thermal data and reduce environmental influences. Variations in solar radiation, wind speed, and ambient temperature may significantly affect recorded surface temperatures and potentially obscure defect signatures. Data normalization and correction techniques are therefore applied to improve dataset consistency and reliability prior to subsequent analysis or integration into digital modeling environments [ 35 ], thereby improving data quality for downstream decision-making and enabling more reliable and resource-efficient maintenance planning."
+      ]
+    },
+    {
+      "heading": "Thermal data analysis and AI approaches",
+      "paragraphs": [
+        "Once UAV-IRT data have been acquired and preprocessed, the next stage involves thermal data analysis aimed at identifying potential anomalies or defects. Thermal anomaly detection is typically based on identifying spatial temperature variations that deviate from expected thermal patterns within the inspected structure. Such anomalies may indicate moisture intrusion, insulation deficiencies, delamination, or other performance issues in building envelopes and infrastructure components [ 77 ], which are directly related to energy inefficiencies and long-term sustainability performance of built systems.",
+        "Image segmentation techniques are commonly used to isolate regions of interest within thermal imagery, separating anomalous thermal patterns from surrounding background areas. These segmentation procedures enable more precise defect localization and support automated inspection workflows, thereby improving efficiency and reducing the need for resource-intensive manual inspections.",
+        "Recent advances in artificial intelligence and computer vision have significantly enhanced UAV-IRT data analysis. Similar trends toward AI-assisted decision support and data interpretation have also been observed in broader construction engineering contexts, where AI tools are increasingly used to support data-driven workflows and improve analytical efficiency [ 64 ,  116 ]. Deep learning techniques including convolutional neural networks (CNNs) and other deep learning architectures have been widely applied to thermal imagery for automated anomaly detection and defect classification in building inspection scenarios ([ 8 ,  11 ,  43 ,  45 ,  48 ,  51 ,  60 ,  98 ,  99 ,  101 ,  104 ]; X. Zhang et al., [ 112 ]. These algorithms can learn characteristic thermal signatures associated with different defect types, thereby reducing the need for manual interpretation and enabling scalable inspection workflows. Thermal imagery has also been incorporated into object detection pipelines to improve automated anomaly identification in aerial inspection scenarios [ 32 ,  113 ]. Recent advances in attention-enhanced object detection architectures have further improved the capability of UAV-based inspection systems to identify small and difficult-to-detect defects. For example, Yang and Mat Isa , [ 102 ] proposed YOLOv10-MsA, which integrates a Manhattan Self-Attention mechanism into the YOLOv10 framework to improve defect detection accuracy while maintaining real-time processing performance for UAV imagery [ 102 ]. Similarly, recent studies have demonstrated the effectiveness of optimized YOLO architectures and multi-stage CNN frameworks for object detection and structural health monitoring in UAV-enabled inspection applications [ 19 ,  25 ]. For instance, UAV-based infrared imagery combined with deep learning techniques has been used to automatically detect and quantify bridge deck delamination, demonstrating the potential of AI-assisted UAV-IRT workflows for large-scale infrastructure inspection [ 2 ,  113 ].",
+        "Table 7 Comparative synthesis of representative AI approaches for UAV-IRT thermal data analysis AI approach Typical application Performance / validation evidence in reviewed studies Robustness considerations Generalizability considerations Strengths Limitations CNN-based models Thermal anomaly classification and defect recognition Frequently used as baseline deep learning models for thermal defect classification and segmentation; generally effective when sufficient annotated thermal images are available Performance may be affected by weak thermal contrast, environmental variability, class imbalance, and image-quality inconsistency Often trained and validated on specific defect types, materials, or inspection scenarios; cross-material and cross-asset transferability remains insufficiently demonstrated Mature architecture; widely validated in infrastructure inspection studies Limited ability to capture long-range contextual relationships YOLO-based object detectors Real-time defect detection and localization in UAV imagery Suitable for fast inference and real-time UAV deployment; recent UAV-based detection studies show strong potential for locating visible or thermally distinguishable defects Detection performance may decrease for small, subtle, low-contrast, partially occluded, or scale-varying defects Generalizability depends on target-defect annotation quality and training diversity; validation across different infrastructure types remains limited Fast inference speed; suitable for real-time UAV deployment Performance may decrease for small or subtle defects Transformer-based architectures Feature extraction and anomaly recognition Promising for capturing global feature relationships and complex spatial patterns in inspection imagery High computational demand and large training-data requirements may limit field deployment and increase risk of overfitting when datasets are small Broader applicability to UAV-IRT remains emerging because large, diverse, and well-labeled thermal inspection datasets are still limited Improved global feature representation and contextual understanding High computational demand and large training data requirements Multimodal AI frameworks Fusion of thermal, RGB, and LiDAR datasets Can improve defect characterization and spatial interpretation by combining thermal signatures with visual and geometric context Robustness depends heavily on cross-modal calibration, registration accuracy, data synchronization, and fusion quality Transferability is constrained by platform-specific sensing configurations, heterogeneous data formats, and the lack of standardized multimodal benchmarks Enhanced defect characterization and spatial interpretation Increased data integration complexity and computational cost Authors’ synthesis based on the reviewed literature [ 8 ,  11 ,  19 ,  25 ,  102 ,  113 ]",
+        "Table  7  provides a comparative synthesis of representative AI approaches used in UAV-IRT thermal data analysis. Overall, the reviewed studies suggest that no single AI architecture consistently outperforms others across all UAV-IRT inspection scenarios. CNN-based models remain widely used because of their maturity and suitability for thermal anomaly classification and segmentation, whereas YOLO-based detectors are increasingly relevant for real-time UAV inspection due to their fast inference capability. Transformer-based architectures and multimodal AI frameworks show potential for improving contextual understanding and feature representation, but they generally require larger datasets, greater computational resources, and more complex implementation workflows.",
+        "However, direct numerical comparison of AI model performance across the reviewed studies remains difficult because datasets, defect types, infrastructure materials, sensing conditions, validation environments, and evaluation metrics vary substantially. As a result, robustness and generalizability remain important unresolved issues. In particular, AI models trained on a specific asset type, material system, or defect category may not perform equally well when applied to different infrastructure types, environmental conditions, or thermal acquisition settings. This limitation is especially important for UAV-IRT because thermal signatures are affected not only by defect characteristics, but also by surface emissivity, solar loading, ambient temperature, wind conditions, sensor resolution, and image-registration quality. Therefore, future AI-assisted UAV-IRT studies should place greater emphasis on cross-site validation, cross-material testing, standardized benchmark datasets, and transparent reporting of model performance under different field conditions.",
+        "Another emerging direction is the use of edge computing to support near-real-time UAV-IRT analysis during inspection missions. Rather than transmitting all raw thermal imagery to remote servers for post-processing, edge-enabled UAV workflows could perform preliminary anomaly detection, image-quality screening, data filtering, or compression onboard the UAV or through nearby edge devices [ 84 ,  88 ]. This capability could allow inspectors to identify suspicious thermal patterns during flight, adjust flight paths, recapture low-quality images, and reduce unnecessary data transmission. Such functionality is particularly relevant for large infrastructure assets where inspection efficiency and timely feedback are important. However, edge-enabled UAV-IRT also introduces challenges related to onboard computational capacity, battery consumption, payload constraints, model compression, thermal-image reliability, and the need for lightweight yet accurate AI models. Therefore, edge computing should be viewed as a promising but still emerging pathway for improving the operational efficiency and responsiveness of UAV-IRT inspection workflows. AI-driven analysis frameworks also enable automated defect classification and prioritization. Detected anomalies can be categorized according to defect type, severity, and potential structural implications. Deep learning models have also been applied to identify thermal anomalies related to moisture infiltration and seepage in infrastructure systems [ 46 ,  62 ]. Such automated interpretation supports faster inspection workflows and improves consistency in defect assessment, thereby enabling more efficient maintenance planning."
+      ]
+    },
+    {
+      "heading": "Multimodal data fusion and 3D reconstruction",
+      "paragraphs": [
+        "To enhance defect interpretation and spatial understanding of inspection results, many recent studies employ multimodal data fusion strategies. These approaches combine thermal imagery with additional sensing modalities such as RGB imagery and LiDAR point clouds to produce more informative datasets for infrastructure inspection ([ 10 ,  21 ,  22 ,  27 ,  40 ,  53 ,  90 ,  101 ]; X. Zhang et al., [ 112 ], enabling more comprehensive condition assessment and reducing uncertainty in inspection outcomes.",
+        "RGB imagery provides high-resolution visual information and geometric context, while thermal imagery captures temperature distribution and heat transfer behavior across infrastructure surfaces. LiDAR data contribute highly accurate geometric measurements that enable precise spatial modeling of infrastructure components.",
+        "Photogrammetry techniques are widely used to generate detailed three-dimensional models from overlapping UAV imagery, enabling the spatial integration of thermal and geometric datasets in building and infrastructure inspection workflows [ 1 ,  11 ,  17 ,  20 ,  34 ,  43 ,  48 ,  67 ,  92 ,  98 ]. The transition from raw thermal images to thermal point clouds or textured meshes generally requires several processing steps. First, thermal images are corrected and calibrated to improve radiometric consistency and reduce sensor- or acquisition-related distortion. Second, overlapping UAV images are aligned through photogrammetric reconstruction procedures, such as structure-from-motion and multi-view stereo workflows, often supported by RGB imagery because thermal images typically have lower spatial resolution and fewer stable visual features for image matching. Third, thermal and RGB datasets are co-registered using camera calibration parameters, shared control points, image features, or estimated camera poses so that temperature values can be accurately associated with reconstructed geometry. Finally, thermal information can be projected onto three-dimensional meshes as thermal textures or converted into thermal point clouds, followed by georeferencing or coordinate transformation to support integration with BIM and DT environments. This process is technically demanding because calibration errors, weak thermal features, resolution differences between RGB and thermal imagery, and registration inaccuracies can directly affect the reliability of defect localization and subsequent asset-level interpretation. For example, recent studies have demonstrated that fusing UAV-based thermal imagery with visible photogrammetric data can generate high-resolution thermal point clouds for building roof inspection and energy performance analysis [ 21 ], supporting more accurate identification of energy-related deficiencies and performance issues.",
+        "Several workflow-oriented studies have proposed integrated drone-based survey pipelines that combine photogrammetry and thermography to improve the spatial mapping of building defects and energy anomalies [ 71 ]. For example, time-lapse drone thermography has been used to generate thermal orthomosaics and point clouds that support building envelope anomaly characterization and integration with building energy modeling environments [ 77 ]. These integrated workflows enable thermal inspection results to be spatially aligned with three-dimensional models, thereby supporting more accurate defect localization and infrastructure condition assessment, which can inform targeted interventions that reduce material waste and improve lifecycle efficiency.",
+        "Thermal texture mapping is commonly applied to project thermal data onto reconstructed 3D models. This process creates thermal-textured models in which temperature information is directly associated with the geometry of the inspected asset. Such models provide improved spatial context for identifying and interpreting thermal anomalies within infrastructure components ([ 10 ,  90 ]; C. Zhang et al., [ 113 ] b), enhancing decision-making accuracy and reducing the likelihood of unnecessary maintenance actions.",
+        "Advanced reconstruction workflows may further combine photogrammetry and LiDAR datasets to produce accurate multimodal models suitable for integration with BIM and DT platforms. The fusion of geometric and thermal information significantly enhances the interpretability of inspection results and supports more informed infrastructure assessment and management decisions [ 10 ,  20 ,  90 ], thereby contributing to more efficient, data-driven, and sustainable infrastructure management practices."
+      ]
+    },
+    {
+      "heading": "Integration into BIM and DT platforms",
+      "paragraphs": [
+        "While Sect.   5.3  focuses on multimodal sensing and 3D reconstruction processes, the ultimate objective of UAV-IRT data processing is the integration of inspection results into BIM and DT environments. Through this integration, raw inspection data can be transformed into structured information that supports asset management and infrastructure monitoring workflows, thereby enabling more efficient decision-making by linking inspection results with asset information and reducing unnecessary maintenance interventions.",
+        "One key step in this process is the mapping of detected thermal anomalies to BIM elements. By associating thermal observations with specific building components such as walls, roofs, structural members, or façade elements, inspection results can be spatially contextualized within a digital building model ([ 80 ,  93 ]; C. Zhang et al., [ 113 ] b). This mapping process enables precise localization of defects and facilitates targeted maintenance planning by enabling early identification of affected components and reducing unnecessary interventions.",
+        "The integration of thermal inspection data also enables semantic enrichment of BIM models. Thermal anomalies can be linked with additional metadata, including material properties, construction details, inspection records, and maintenance history. Such enriched datasets improve the interpretability of inspection findings and support more informed infrastructure management decisions by enabling more accurate assessment of defect severity and prioritization of maintenance actions [ 62 ].",
+        "Within DT frameworks, BIM models enriched with inspection data can be dynamically updated to reflect the current condition of the physical infrastructure asset. DT environments allow inspection results to be continuously incorporated into a virtual representation of the infrastructure system, enabling ongoing condition monitoring and performance evaluation [ 63 ]. Recent research has also explored advanced neural rendering techniques, such as Neural Radiance Fields (NeRF), to enhance DT representations and improve the integration of multimodal sensing data within dynamic infrastructure models [ 36 ], thereby enabling more accurate tracking of asset condition changes over time and supporting timely maintenance decisions.",
+        "Ultimately, integrating UAV-IRT data with BIM and DT platforms supports more advanced asset management strategies by establishing a clearer pathway from thermal observation to maintenance decision-making. In this pathway, (1) thermal anomalies are first detected from UAV-IRT data and screened with attention to uncertainty caused by acquisition conditions, environmental effects, and sensor limitations; (2) confirmed or suspected anomalies are spatially registered and mapped to corresponding BIM elements or asset components; (3) these records are enriched with metadata such as inspection date, sensor settings, environmental conditions, material type, component location, and maintenance history; (4) the integrated information is interpreted in terms of defect severity, asset criticality, recurrence, and potential performance impact; and (5) the resulting component-level information supports maintenance prioritization, repair planning, inspection scheduling, and feedback into DT-based monitoring systems. Through continuous monitoring and model updating, stakeholders can identify emerging issues earlier and support predictive maintenance by reducing large-scale corrective interventions [ 63 ]. In this way, UAV-IRT outputs can move beyond isolated thermal images and become traceable, model-linked, and decision-relevant information for lifecycle asset management.",
+        "Beyond technical performance, the integration of UAV-IRT with BIM and DT systems also has important environmental and economic implications. By enabling non-contact inspection and reducing reliance on manual access methods such as scaffolding or rope-based inspection, UAV-IRT may reduce equipment requirements, field operations, and associated resource consumption during inspection activities [ 90 ]. In addition, the ability to detect defects at an early stage supports predictive maintenance strategies, which reduce large-scale repair interventions, minimize material waste, and improve lifecycle resource efficiency [ 63 ,  80 ,  81 ]. Furthermore, integrating thermal inspection data with BIM and DT environments improves maintenance planning, supports more informed decision-making, and reduces unnecessary inspection cycles, contributing to more efficient allocation of labor, time, and financial resources throughout the asset lifecycle [ 63 ,  80 ,  81 ]."
+      ]
+    },
+    {
+      "heading": "Critical evaluation and research synthesis",
+      "paragraphs": [
+        "This section provides a critical synthesis of the reviewed studies by comparing major UAV-IRT integration approaches, evaluating differences in validation and deployment maturity, and identifying cross-cutting trends across literature. Rather than summarizing studies individually, the section synthesizes the reviewed work across levels of digital integration, from standalone UAV-IRT inspection to BIM- and DT-enabled asset management workflows."
+      ]
+    },
+    {
+      "heading": "Comparative evaluation of existing approaches",
+      "paragraphs": [
+        "Table  8  provides a comparative synthesis of representative UAV-IRT integration approaches based on the reviewed literature, highlighting key trade-offs in strengths, limitations, scalability, and sustainability performance across sensing, data processing, and model integration dimensions.",
+        "Table 8 Comparison of UAV-IRT integration approaches (synthesized from reviewed studies) Approach Strength Limitation Scalability Sustainability impact Standalone UAV-IRT inspection Rapid deployment; high accessibility; low operational complexity Limited integration with asset models; lack of semantic context; manual interpretation High (easy to deploy across projects) Improves inspection efficiency but limited long-term impact on resource optimization UAV-IRT + photogrammetry / 3D reconstruction Enhanced spatial visualization; improved defect localization Computationally intensive; requires data processing expertise Medium Supports targeted interventions, reducing unnecessary repairs and material waste UAV-IRT + AI-based analysis Automated anomaly detection; reduced manual labor; scalable analysis Limited training datasets; generalization issues; potential false positives Medium to high Enables efficient large-scale inspection, reducing redundant inspections and operational costs UAV-IRT + BIM integration Semantic mapping of defects; improved asset-level context; better maintenance planning Interoperability challenges; manual mapping efforts Medium Supports informed decision-making, improving maintenance efficiency and reducing resource use UAV-IRT + Digital Twin (DT) integration Dynamic monitoring; predictive maintenance; lifecycle optimization High implementation complexity; data integration challenges; cost Low to medium (currently limited to pilot applications) Strong potential to reduce lifecycle costs, minimize material waste, and enable sustainable infrastructure management Authors’ synthesis based on the reviewed literature [ 7 ,  20 ,  36 ,  56 ,  63 ,  80 ,  81 ,  93 ]",
+        "The comparison presented in Table  8  suggests that the maturity and deployment readiness of UAV-IRT applications vary considerably across different levels of digital integration. Standalone UAV-IRT inspection, photogrammetric reconstruction, and AI-assisted defect detection have achieved relatively higher levels of validation and practical deployment due to their lower implementation complexity and more established processing workflows. In contrast, BIM- and particularly DT-enabled implementations remain largely limited to pilot studies, prototype workflows, and proof-of-concept demonstrations. This gap appears to be driven not only by technical integration challenges, but also by interoperability constraints, data management requirements, and the organizational complexity associated with lifecycle-scale digital asset management [ 7 ,  80 ,  81 ]. Consequently, significant challenges remain before widespread operational adoption can be achieved.",
+        "While Table  8  compares UAV-IRT approaches at the integration-workflow level, Table  9  provides a more detailed methodological comparison of the sensing platforms, defect targets, processing methods, and validation contexts reported across the reviewed literature.",
+        "Table 9 Evidence-based methodological synthesis of reviewed UAV-IRT approaches Sensing Platforms Targeted Defect Types Processing & Analysis Methods Validation Outcomes & Environments Multi-rotor UAVs (e.g., Quadcopters, Hexacopters with uncooled IR payloads) Concrete delamination; Subsurface voids; Bridge deck deterioration Manual radiometric analysis; Supervised Machine Learning (e.g., SVM, Random Forest) Primarily validated through field inspections of bridges, pavements, and buildings Fixed-wing UAVs Large-scale road pavement distress; District-level rooftop insulation gaps Thermal orthomosaic stitching; Automated thresholding segmentation Applied in large-area monitoring and infrastructure-scale field surveys UAV-IRT + Micro-sensors (AI-focused platforms) Subsurface concrete cracks; Early-stage moisture intrusion Deep Learning pipelines (e.g., CNNs, YOLO variants, SegNet) Frequently validated using laboratory datasets or controlled outdoor experiments Multimodal UAV Platforms (IRT + RGB + LiDAR Fusion) 3D structural defect mapping; Building envelope asset damage Spatial photogrammetry; Thermal point-cloud registration; Dynamic coordinate mapping (IFC) Mainly demonstrated through pilot studies and prototype integration workflows synthesized from representative studies [ 8 ,  11 ,  36 ,  63 ,  81 ,  93 ,  98 ,  113 ]",
+        "By mapping the literature across these granular technical parameters, Table  9  reveals a significant divergence between high-level analytical performance and practical operational readiness [ 8 ,  11 ,  99 ]. While advanced processing methods such as Deep Learning pipelines demonstrate promising validation results within laboratory-scale or controlled testing, their transition to uncontrolled field environments remains constrained by environmental artifacts and sensor uncertainty. Conversely, standard multi-rotor deployments achieve extensive field-scale validation but continue to rely on lower-level radiometric analysis that lacks automated asset-model synchronization [ 63 ,  81 ,  93 ,  113 ]. This evidence highlights that the path toward fully mature infrastructure inspection requires harmonizing robust field-validated platforms with generalizable processing and multimodal digital integration workflows."
+      ]
+    },
+    {
+      "heading": "Validation and research maturity",
+      "paragraphs": [
+        "The reviewed studies also vary considerably in their validation approaches. Many standalone UAV-IRT and AI-assisted studies have been evaluated through field inspections and comparisons with established inspection methods, whereas BIM- and DT-enabled studies are more frequently reported as pilot implementations, prototype workflows, or proof-of-concept demonstrations [ 20 ,  36 ,  56 ,  63 ].",
+        "As a result, although the feasibility of BIM- and DT-based integration has been increasingly demonstrated, current evidence remains concentrated on pilot-scale implementations and proof-of-concept applications rather than long-term operational deployment [ 80 ,  81 ]. Consequently, the operational readiness of these approaches has not yet reached the level of more established standalone UAV-IRT inspection workflows, highlighting a need for larger-scale validation and real-world deployment studies.",
+        "In addition, the methodological rigor of validation also differs across the reviewed UAV-IRT literature. While some studies compare thermal inspection results against established ground-truth methods such as visual inspection, hammer sounding, impact echo, or in-situ measurements [ 11 ], others primarily demonstrate technical feasibility without extensive quantitative validation [ 36 ,  63 ,  81 ]. Consequently, the reported performance and maturity of UAV-IRT approaches should be interpreted in the context of their underlying validation methodologies [ 11 ,  43 ,  99 ]."
+      ]
+    },
+    {
+      "heading": "Cross-cutting research trends",
+      "paragraphs": [
+        "Across the reviewed studies, a clear maturity gradient is evident across different levels of UAV-IRT research. Sensing technologies, thermal anomaly detection, and AI-assisted analysis have achieved comparatively high levels of technical maturity and validation. In contrast, BIM- and DT-enabled approaches remain constrained by challenges related to interoperability, semantic mapping, workflow automation, lifecycle data management, and the practical implementation of scalable integration frameworks [ 7 ,  80 ,  81 ]. Consequently, the major research bottleneck is no longer the acquisition of thermal information itself, but the ability to consistently transfer, update, and integrate inspection outputs within operational digital asset management environments. This recurring pattern suggests that future advances will depend increasingly on interoperability, workflow automation, and lifecycle information management rather than sensing technologies alone.",
+        "Another important cross-cutting observation is that a substantial proportion of the reviewed UAV-IRT literature focuses on concrete-based infrastructure systems, including bridge decks, pavements, and reinforced concrete components [ 98 ]. While many AI-assisted thermal anomaly detection approaches have demonstrated promising performance in these applications, their transferability across other material systems remains insufficiently validated. Thermal signatures are influenced by material-specific properties such as thermal conductivity, heat capacity, emissivity, and moisture behavior, which can vary considerably among concrete, steel, masonry, and composite structures. As a result, defect manifestations and thermal anomaly characteristics may differ across material systems, affecting the transferability of AI-assisted detection approaches [ 33 ,  94 ]. Consequently, AI models and thermal interpretation frameworks developed for one material class may not necessarily achieve comparable performance when applied to different infrastructure systems without additional calibration, retraining, or validation [ 33 ,  94 ]. This limitation highlights the need for broader cross-material validation and more generalized AI-assisted inspection frameworks in future research."
+      ]
+    },
+    {
+      "heading": "Challenges and research gaps",
+      "paragraphs": [
+        "Despite significant progress achieved in UAV-based infrared thermography and its integration with BIM and DT environments, several technical, analytical, and organizational challenges remain. These challenges limit the large-scale deployment of integrated UAV-IRT inspection workflows in practical infrastructure management scenarios, and constrain their potential to support efficient infrastructure management practices. Addressing these limitations is essential for enabling more reliable, scalable, and automated inspection systems in the built environment, as well as for improving long-term infrastructure performance."
+      ]
+    },
+    {
+      "heading": "Technical challenges",
+      "paragraphs": [
+        "Technical challenges primarily arise from the limitations of current sensing technologies and the complexity of collecting reliable thermal data under real-world environmental conditions. One key limitation relates to sensor resolution and measurement accuracy. Although UAV-mounted thermal cameras have improved significantly in recent years, their spatial resolution is often lower than that of conventional RGB sensors, which can restrict the detection of small or subtle defects in infrastructure systems [ 78 ,  90 ]. Achieving high spatial resolution while maintaining accurate temperature measurements remains a challenge, particularly when inspecting large structures from aerial platforms, which may lead to missed early-stage defects and reduced efficiency in preventive maintenance strategies [ 78 ]. Previous review studies have similarly noted that defect detectability depends on the interaction among sensor characteristics, acquisition conditions, and target defect properties, making universally applicable hardware selection benchmarks difficult to establish across different infrastructure inspection scenarios. In addition, sensor selection should be aligned with inspection objectives and target defect characteristics, as smaller defects generally require higher spatial resolution, while quantitative thermographic assessments benefit from improved thermal sensitivity and measurement accuracy [ 33 ,  94 ].",
+        "Flight operations themselves also impose practical constraints on UAV-IRT deployment. Factors such as limited battery endurance, flight range restrictions, regulatory requirements, line-of-sight operation rules, and site accessibility can affect inspection planning and coverage, particularly for large-scale infrastructure systems [ 26 ,  78 ]. These operational constraints may increase inspection complexity and should be considered when evaluating the practical applicability of UAV-based thermographic inspection workflows [ 62 ].",
+        "Environmental influences also introduce substantial uncertainty in thermal data acquisition. Surface temperatures measured through infrared thermography can be significantly affected by solar radiation, wind conditions, humidity, and ambient temperature variations [ 24 ]. Solar radiation plays a critical role in generating thermal contrasts that enable defect detection in many UAV-IRT applications [ 4 ,  16 ]. However, variations in solar loading associated with acquisition timing, surface orientation, shading conditions, and weather fluctuations can significantly influence observed temperature distributions and affect the consistency of thermal interpretation [ 59 ]. Wind conditions can accelerate convective heat transfer and reduce thermal contrasts between defective and non-defective regions, making thermal anomalies more difficult to identify under certain conditions [ 33 ,  94 ]. Thermal measurements may also be influenced by variations in surface emissivity associated with different materials, surface conditions, coatings, and moisture content, which can alter the apparent temperatures recorded by infrared sensors and introduce additional uncertainty into defect interpretation [ 24 ]. Differences in emissivity may cause similar surfaces to exhibit different apparent temperatures even when their actual temperatures are comparable, potentially leading to misinterpretation of thermal signatures if emissivity effects are not properly considered. These observations are consistent with previous review studies identifying environmental conditions, surface properties, and sensor performance as major factors affecting the reliability and detectability of infrared-based defect assessment [ 33 ,  94 ].",
+        "As a result, thermal inspections may occasionally produce false-positive indications, while subtle, deeply embedded, or thermally inactive defects may remain undetected, resulting in missed defects or false-negative assessments ([ 33 ]; [ 94 ]). In addition, adverse weather conditions such as strong winds and precipitation may reduce flight stability and further affect the quality and consistency of acquired thermal data (Y. Ma et al., [ 54 ]. Consequently, reliable thermal inspection requires careful mission planning, controlled acquisition conditions, and robust correction algorithms, as well as careful interpretation of thermal signatures to reduce uncertainty in defect assessment [ 71 ,  81 ]. These measures are essential for ensuring accurate decision-making and avoiding inefficient or unnecessary maintenance actions [ 61 ].",
+        "Another technical challenge involves calibration consistency across different UAV-IRT systems. Variations in sensor calibration, radiometric correction procedures and atmospheric compensation methods can affect the comparability of thermal measurements obtained from different inspection campaigns or equipment configurations [ 92 ]. In addition, inconsistencies in assumed emissivity values during temperature calibration and data processing may introduce systematic measurement errors across datasets [ 58 ]. Ensuring consistent calibration procedures and standardized acquisition protocols remains essential for achieving reliable quantitative thermography results [ 72 ], particularly for supporting large-scale, data-driven, and resource-efficient infrastructure management workflows. Poor calibration consistency may also reduce the reliability of comparisons across different inspection campaigns, limiting the effectiveness of long-term condition monitoring and trend analysis [ 7 ,  92 ]."
+      ]
+    },
+    {
+      "heading": "Data integration challenges",
+      "paragraphs": [
+        "Another important challenge relates to standards, data formats, and interoperability across UAV-IRT, BIM, and DT environments. While BIM platforms commonly rely on interoperability standards such as Industry Foundation Classes (IFC) to exchange geometric and asset information, thermal imagery, thermal point clouds, orthomosaics, and sensor-derived condition data are often generated and stored in heterogeneous formats ([ 7 ]; [ 80 ,  81 ]). As a result, transferring thermal inspection information between UAV processing software, BIM platforms, and DT environments frequently requires custom workflows, manual data conversion, or project-specific integration solutions. These interoperability limitations can reduce data consistency, hinder automation, and constrain the scalability of UAV-IRT-enabled asset management systems. Future research should focus on developing standardized data structures, interoperable workflows, and open integration frameworks that facilitate seamless information exchange across digital inspection and asset management platforms.",
+        "Beyond sensing limitations, significant challenges also arise when integrating UAV-IRT datasets into BIM and DT environments. One major issue involves interoperability between UAV-derived datasets and BIM models. Differences in software platforms, data formats, and coordinate systems can complicate the integration of thermal inspection outputs into existing digital models, often requiring manual processing or customized workflows [ 52 ,  106 ], which reduces scalability and limits the efficiency of digital inspection systems.",
+        "Another related challenge concerns the lack of standardized metadata for thermal inspection datasets. Information such as emissivity parameters, environmental conditions, sensor calibration settings, and flight acquisition parameters is frequently inconsistently recorded across studies. This lack of standardized metadata can hinder reliable interpretation and reuse of thermal inspection datasets in BIM-based asset management systems [ 58 ], thereby limiting the potential for consistent, data-driven, and sustainability-oriented decision-making across infrastructure lifecycles.",
+        "Long-term data archiving and version control represent additional challenges for UAV-IRT-enabled DT implementation. For thermal inspection data to support multi-year condition monitoring, raw thermal images, processed orthomosaics, thermal point clouds, textured meshes, anomaly labels, and BIM-linked component records must be stored in a traceable and retrievable manner. Each inspection dataset should ideally be associated with inspection date and time, sensor calibration settings, environmental conditions, coordinate reference information, processing workflow version, and linked asset or component identifiers. Without such data governance, it becomes difficult to compare thermal inspection results across time, reproduce prior analyses, or distinguish actual deterioration from changes caused by sensor settings, environmental variability, or data-processing procedures. This issue is particularly important for DT environments, where long-term value depends on maintaining reliable links among historical inspection records, model versions, and decision-support outputs [ 63 ,  83 ].",
+        "Model updating also presents a significant challenge for DT environments. DTs are intended to provide continuously updated virtual representations of physical assets, yet incorporating new inspection data into these models remains computationally and methodologically complex. Efficiently updating DTs with UAV-IRT datasets while maintaining model consistency and accuracy continues to be an important research topic [ 63 ], particularly for enabling real-time monitoring and sustainable lifecycle management of infrastructure systems."
+      ]
+    },
+    {
+      "heading": "Analytical challenges",
+      "paragraphs": [
+        "Analytical challenges are largely related to the interpretation and automated analysis of thermal data, particularly with the increasing use of artificial intelligence techniques. One key limitation is the lack of sufficiently large and well-labeled ground truth datasets for thermal anomaly detection. Developing reliable training datasets that contain accurately annotated defect examples is both time-consuming and resource intensive [ 62 ], which can limit the scalability of AI-driven inspection systems and their potential to support efficient, large-scale infrastructure monitoring.",
+        "As a consequence, AI models trained on limited datasets may exhibit poor generalization when applied to different infrastructure types or environmental conditions. Models that perform well in controlled experimental settings may struggle when applied to complex real-world inspection scenarios, where environmental variability and structural diversity introduce additional uncertainty [ 8 ,  11 ,  32 ,  43 ,  45 ,  46 ,  48 ,  62 ,  98 ,  99 ], potentially leading to inaccurate assessments and inefficient allocation of maintenance resources.",
+        "Furthermore, many proposed AI-based defect detection methods have been evaluated only through small-scale experiments or limited case studies. The lack of large-scale validation across diverse infrastructure systems restricts the practical applicability of these methods and highlights the need for broader experimental validation and benchmarking in real inspection environments, particularly for enabling reliable, data-driven, and sustainability-oriented infrastructure management practices."
+      ]
+    },
+    {
+      "heading": "Organizational barriers",
+      "paragraphs": [
+        "In addition to technical and analytical challenges, several organizational barriers also hinder the widespread adoption of integrated UAV-IRT inspection workflows in the AEC/FM industry. One major barrier is the cost associated with deploying advanced sensing technologies, including UAV platforms, thermal imaging sensors, specialized processing software, and data management infrastructure. For many organizations, particularly small and medium-sized enterprises, these investments may present significant financial obstacles [ 75 ], which can limit the adoption of efficient and sustainability-enhancing inspection technologies.",
+        "The economic value of UAV-IRT should therefore be understood as a context-dependent trade-off rather than as a universally lower-cost alternative to conventional inspection. Compared with scaffolding, lifts, or rope-access methods, UAV-IRT can reduce access-equipment requirements, mobilization time, worker exposure, and disruption to traffic or building operations, particularly for large, elevated, difficult-to-access, or repeatedly inspected assets [ 26 ,  78 ,  86 ]. However, these benefits must be weighed against the costs of UAV platforms, thermal sensors, pilot training, regulatory compliance, specialized software, data processing, calibration, and long-term data management. As a result, UAV-IRT is likely to provide the strongest economic justification in high-risk, large-scale, recurrent, or access-constrained inspection scenarios, whereas its cost-effectiveness may be less evident for small, simple, or one-time inspection tasks. More empirical cost-benefit studies are still needed to quantify these trade-offs across different infrastructure types and operational contexts.",
+        "Another important challenge is the shortage of technical expertise required to operate UAV inspection systems and process thermographic datasets in digital inspection workflows [ 9 ,  29 ,  38 ,  47 ,  49 ,  66 ,  69 ,  75 ,  82 ,  97 ]. Successful implementation of UAV-IRT workflows often requires interdisciplinary expertise in remote sensing, thermography, photogrammetry, and BIM technologies, which may not yet be widely available within the construction and facility management workforce [ 75 ], thereby slowing the transition toward more digitalized and sustainability-oriented asset management practices.",
+        "Finally, the lack of standardized industry guidelines for UAV-IRT inspection procedures and data integration workflows presents an additional barrier. Without widely accepted standards for data acquisition, processing, and model integration, organizations often adopt fragmented or inconsistent approaches when implementing these technologies. Establishing clearer methodological guidelines and industry standards will therefore be essential for supporting broader adoption of UAV-IRT-enabled digital inspection systems [ 75 ] and for enabling scalable, consistent, and sustainability-driven implementation across the AEC industry.",
+        "Legal, regulatory, and privacy considerations also represent important practical barriers to the deployment of thermal-equipped UAVs, particularly in dense urban areas or occupied building environments. In addition to aviation rules, site-specific flight permissions, and operational safety requirements, UAV-IRT inspections may raise privacy concerns because thermal imagery can incidentally capture information from adjacent properties, occupied spaces, or human activity patterns. Although infrastructure inspection does not typically aim to collect personal information, organizations should consider data minimization, secure data storage, access control, retention policies, and clear communication with affected stakeholders. These governance practices are important for maintaining public trust and ensuring that UAV-based inspection workflows remain aligned with broader legal, ethical, and privacy expectations for civil UAV applications [ 30 ,  85 ]."
+      ]
+    },
+    {
+      "heading": "Future research roadmap",
+      "paragraphs": [
+        "Building upon the challenges and research gaps identified in the previous section, this section outlines a future research roadmap aimed at advancing the integration of UAV-based infrared thermography with BIM and DT ecosystems. Existing studies have demonstrated promising progress in UAV-enabled inspection, thermal data processing, and BIM-based integration workflows ([ 80 ,  81 ,  93 ]; C. Zhang et al., [ 113 ] b). However, further research is required to develop more scalable, standardized, and intelligent inspection systems capable of supporting infrastructure monitoring and lifecycle management in complex built environments, particularly in ways that improve resource efficiency and support sustainability-oriented asset management practices. Ultimately, the convergence of UAV sensing, AI-driven analytics, and DT platforms may enable the development of autonomous infrastructure inspection ecosystems, where sensing, diagnosis, and maintenance decision-making are increasingly automated, leading to more efficient, resilient, and sustainable infrastructure systems.",
+        "To make the roadmap more actionable, the future research directions can be prioritized into near-term needs and longer-term opportunities. In the near term, research should focus on issues that directly affect reliability, reproducibility, and implementation readiness, including standardized UAV-IRT acquisition protocols, consistent thermal metadata, benchmark datasets with ground-truth validation, interoperable BIM/DT data exchange workflows, and explainable AI methods for engineering decision support. In the longer term, research can move toward more advanced capabilities, including multimodal sensing ecosystems, edge-enabled real-time inspection, autonomous UAV monitoring, scalable DT platforms, and predictive maintenance across infrastructure networks. This prioritization suggests that reliable data acquisition, validation, and interoperability should be addressed first, because they provide the foundation for more advanced DT-enabled monitoring and lifecycle asset management."
+      ]
+    },
+    {
+      "heading": "Workflow standardization",
+      "paragraphs": [
+        "One important research direction involves the development of standardized workflows for integrating UAV-IRT datasets with BIM and DT environments. Current studies often employ customized processing pipelines, resulting in fragmented workflows and limited interoperability between different platforms and software environments. For example, UAV–BIM integration studies have proposed conceptual frameworks and automated inspection workflows, but these approaches remain largely project-specific and lack standardized implementation guidelines ([ 93 ]; [ 106 ]), which limits scalability and reduces the efficiency of digital inspection processes.",
+        "Future research should therefore focus on establishing standardized pipelines that connect UAV data acquisition, thermal data processing, and BIM-based model integration. Standardization efforts may include defining recommended flight acquisition parameters, developing consistent thermal data preprocessing procedures, and establishing interoperable data exchange formats that enable seamless communication between UAV platforms, photogrammetric software, BIM systems, and DT platforms. Such efforts would significantly reduce manual processing requirements and improve the reliability and reproducibility of UAV-enabled inspection workflows, while also supporting more efficient use of resources and enabling broader adoption of sustainability-oriented digital inspection practices.",
+        "For example, future studies may develop standardized semantic mapping schemas and interoperable data exchange protocols to enable seamless integration between UAV platforms, BIM systems, and DT environments. In addition, current workflows still often lack automated mapping protocols between UAV-derived thermal data (e.g., temperature matrices or thermal images) and BIM elements defined in IFC standards, which limits semantic alignment and seamless interoperability across digital inspection workflows. This limitation also constrains the automated updating of sustainability-related indicators such as energy performance and carbon emissions in BIM- and DT-based asset management systems."
+      ]
+    },
+    {
+      "heading": "Multimodal sensing integration",
+      "paragraphs": [
+        "Another important research direction involves the integration of UAV-based thermography with additional sensing modalities to enhance infrastructure inspection capabilities. Several studies have explored the combination of thermal imagery with RGB imagery, photogrammetric models, and LiDAR-based datasets to improve the spatial interpretation of inspection results [ 10 ,  20 ,  90 ]. More recent research has further investigated multimodal reconstruction techniques that fuse thermal imagery with RGB and LiDAR data to generate thermally enriched three-dimensional models of infrastructure assets, enabling improved defect localization and spatial analysis ([ 1 ,  17 ,  21 ,  22 ,  27 ,  34 ,  40 ,  48 ,  53 ,  67 ,  92 ,  98 ,  101 ]; X. Zhang et al., [ 112 ], supporting more comprehensive and accurate assessment of infrastructure condition.",
+        "Multimodal sensing approaches allow complementary information to be extracted from different sensor types. RGB imagery provides high-resolution visual information and geometric context, while thermal imagery captures temperature distributions associated with heat transfer behavior and potential structural anomalies. LiDAR datasets contribute highly accurate geometric measurements that support precise spatial modeling of infrastructure components and facilitate the registration of inspection datasets.",
+        "Future research should focus on developing more advanced data fusion algorithms capable of integrating these heterogeneous datasets into unified digital models. Improved fusion strategies could significantly enhance defect localization accuracy, support more reliable condition assessment, and enable more comprehensive infrastructure monitoring workflows, thereby reducing uncertainty in inspection outcomes and improving the efficiency of maintenance planning and resource allocation. For example, integrated pipelines could be developed to automatically fuse thermal, RGB, and LiDAR data into unified 3D models for infrastructure inspection and defect localization."
+      ]
+    },
+    {
+      "heading": "AI-enabled decision support",
+      "paragraphs": [
+        "Artificial intelligence represents another critical research direction for advancing UAV-IRT-enabled infrastructure inspection. While recent studies have demonstrated the use of machine learning and deep learning techniques for thermal anomaly detection and automated defect classification [ 60 ,  62 ,  104 ], current approaches remain largely focused on defect detection rather than decision support.",
+        "Future research should extend AI applications beyond anomaly detection toward predictive maintenance and infrastructure management applications. Machine learning models could be developed to predict defect progression based on historical inspection datasets and thermal anomaly patterns. Recent studies have applied AI-based thermal image analysis for defect detection and infrastructure condition assessment [ 11 ,  43 ,  48 ,  98 ], suggesting the potential to extend these approaches toward predictive maintenance and deterioration modeling [ 8 ,  32 ,  45 ,  46 ,  51 ,  99 ]. For instance, predictive models that integrate historical thermal inspection data with environmental conditions could help estimate deterioration trends and infrastructure risk over time. Such predictive models could help infrastructure managers prioritize maintenance interventions and allocate resources more efficiently, thereby reducing unnecessary maintenance actions and improving lifecycle resource efficiency.",
+        "In addition, integrating AI outputs with BIM and DT platforms could enable more advanced decision-support systems that assist engineers in evaluating infrastructure risk, planning maintenance schedules, and optimizing lifecycle performance. However, the practical adoption of AI-enabled decision-support systems may be constrained by the limited interpretability of some advanced machine learning and deep learning models. Because infrastructure managers and engineers are often required to justify maintenance decisions and allocate substantial resources based on inspection results, explainability, transparency, and user trust remain important considerations for operational deployment. Future research should therefore investigate explainable AI (XAI) approaches capable of providing interpretable insights and supporting engineering judgment alongside automated predictions. These developments can facilitate more efficient resource allocation and risk-informed decision-making in infrastructure asset management, ultimately supporting more sustainable, resilient, and data-driven infrastructure systems. Future studies should also evaluate the robustness and transferability of AI-enabled inspection frameworks across diverse material systems, including steel, masonry, and composite infrastructure, to improve the generalizability of UAV-IRT-based decision-support applications."
+      ]
+    },
+    {
+      "heading": "Scalable DT ecosystems",
+      "paragraphs": [
+        "Most current DT implementations in infrastructure inspection focus on individual assets or localized case studies. However, the long-term potential of DT technologies lies in their ability to support interconnected infrastructure monitoring systems across larger spatial scales. Several studies have highlighted the importance of DT frameworks for infrastructure monitoring and lifecycle management [ 63 ], particularly in enabling data-driven and system-level decision-making across infrastructure networks.",
+        "Future research should therefore explore the development of scalable DT ecosystems capable of integrating inspection data from multiple infrastructure assets within a unified monitoring framework. Such systems could enable coordinated monitoring of buildings, bridges, and transportation infrastructure across urban environments, supporting more efficient management of infrastructure systems at the city scale.",
+        "Achieving this vision will require advances in large-scale data management, interoperability between heterogeneous digital models, and visualization tools capable of supporting complex infrastructure systems. These developments would support broader smart city initiatives and enable more proactive infrastructure resilience strategies, while also improving resource efficiency and reducing lifecycle costs across interconnected infrastructure systems. For example, future research may focus on developing cloud-based DT platforms capable of integrating multi-asset inspection data across urban infrastructure systems in real time."
+      ]
+    },
+    {
+      "heading": "Workforce and education development",
+      "paragraphs": [
+        "Beyond technical advancements, workforce development will play a critical role in enabling the practical adoption of UAV-IRT-enabled inspection systems. The transition from traditional manual inspection to digital, UAV-centric workflows requires several specific skill sets: (1) UAV operation and safety competencies, including flight planning, site risk assessment, regulatory compliance, line-of-sight operation, and mission documentation; (2) thermography-specific competencies, including emissivity selection, sensor calibration, environmental compensation, thermal contrast interpretation, and recognition of possible false positives or missed defects; (3) digital integration competencies, including photogrammetric reconstruction, RGB–thermal registration, thermal point-cloud or mesh generation, BIM element mapping, metadata management, and DT model updating; and (4) data analytics and decision-support competencies, including AI-output interpretation, uncertainty assessment, visualization of inspection results, and translation of thermal anomalies into maintenance priorities. However, the current AEC/FM workforce often lacks interdisciplinary training that integrates these skill sets [ 75 ], which may slow the adoption of efficient and sustainability-oriented digital inspection practices.",
+        "Future research should therefore investigate educational frameworks and professional training programs that prepare engineers and technicians to work across both field inspection and digital asset management environments. Such training should combine UAV flight exercises, thermography calibration and interpretation, photogrammetric processing, BIM/DT integration, data-governance practices, and AI-assisted decision-support case studies. Rather than treating UAV operation as a stand-alone technical skill, future curricula and certification programs should emphasize the full inspection-to-decision workflow, from data acquisition and quality control to model integration, anomaly interpretation, and maintenance planning.",
+        "Strengthening workforce capabilities will be essential for enabling broader adoption of UAV-IRT-based inspection systems and for supporting the transition toward more intelligent and sustainable infrastructure management practices. These educational and technological priorities collectively form the future research roadmap summarized in Fig.  7 , highlighting the importance of aligning technological innovation with workforce readiness to achieve scalable and sustainable infrastructure systems. For example, interdisciplinary training programs and simulation-based learning environments could be developed to train engineers in UAV operation, thermography, BIM, and AI-enabled inspection workflows.",
+        "Collectively, these research directions point toward an integrated and sustainability-oriented digital inspection workflow in which UAV-based sensing, multimodal data fusion, BIM/DT integration, and AI-enabled decision support are seamlessly connected to enable efficient, predictive, and resource-aware infrastructure management.",
+        "Fig. 7 Future research roadmap for UAV-IRT integration with BIM and DT ecosystems"
+      ]
+    },
+    {
+      "heading": "Conclusion",
+      "paragraphs": [
+        "This study presented a structured review of the integration of how UAV-based infrared thermography can be integrated with BIM and DT workflows to support infrastructure inspection, monitoring, and management. The reviewed literature demonstrates that UAV-IRT has significantly expanded the scope and efficiency of infrastructure inspection by enabling rapid, non-contact thermal diagnostics across diverse built-environment assets, including transportation infrastructure, bridges, and building envelopes ([ 26 ,  77 ]; C. Zhang et al., [ 113 ] b). Compared with traditional inspection approaches, UAV-IRT provides improved accessibility, faster data acquisition, and spatially continuous thermal information that can support more efficient defect detection and condition assessment, thereby reducing inspection effort and lowering resource consumption.",
+        "However, the central findings of this review is that the full value of UAV-based thermal inspection can only be realized only when inspection outputs are integrated into structured digital environments such as BIM and DT platforms. Integrating thermal inspection data with digital models provides important advantages by enabling the spatial contextualization of detected anomalies, improved defect localization, and enhanced support for infrastructure monitoring and maintenance planning ([ 80 ,  93 ]; C. Zhang et al., [ 113 ] b), and lifecycle decision-making. Multimodal data fusion approaches combining thermal imagery with RGB imagery, photogrammetry, and LiDAR further enhance the interpretability and spatial mapping of inspection results [ 10 ,  20 ,  90 ]. These integrated workflows enable the creation of richer and more actionable digital representations of infrastructure assets, thereby forming a foundation for more advanced, data-driven asset management systems, which support more efficient maintenance strategies by enabling predictive maintenance and reducing unplanned repairs and material waste.",
+        "Despite these promising developments, several barriers still limit the transition from one-off thermal defect detection toward continuous monitoring and predictive maintenance. Technical barriers include sensor-resolution constraints, environmental sensitivity, calibration inconsistency, and uncertainty in thermal interpretation, all of which can affect the reliability of UAV-IRT inspection results [ 90 ,  91 ]. Data-integration barriers also remain significant, including inconsistent thermal metadata, interoperability limitations, heterogeneous data formats, and the difficulty of updating BIM and DT environments with recurring inspection data [ 52 ,  106 ]. Analytical barriers include the limited availability of ground-truth datasets, insufficient validation across different infrastructure materials and field conditions, and the need for more explainable AI outputs that can support engineering judgment [ 62 ]. In addition, organizational barriers such as implementation cost, regulatory constraints, data governance requirements, and the shortage of interdisciplinary expertise continue to restrict large-scale adoption within the AEC/FM industry [ 75 ]. These barriers indicate that future UAV-IRT research should move beyond defect detection alone and focus on producing reliable, interoperable, and decision-ready inspection information for lifecycle asset management.",
+        "To address these challenges, this review proposed a future research roadmap intended to guide the continued development of UAV-IRT with BIM and DT ecosystems. The roadmap highlights several key research priorities, including the development of standardized UAV-IRT inspection workflows, improved multimodal sensing integration, AI-enabled decision support systems, the expansion of DT applications toward larger infrastructure ecosystems, and stronger workforce training and education in digital inspection technologies. Progress in these areas will help enable more scalable and intelligent infrastructure monitoring systems capable of supporting predictive maintenance and lifecycle asset management, while also contributing to reduced resource consumption, lower lifecycle costs, and enhanced infrastructure resilience.",
+        "Overall, the integration of UAV-based thermographic inspection with BIM and DT technologies represents a promising pathway toward more intelligent, interoperable, and data-driven infrastructure management. Continued research and interdisciplinary collaboration will be essential for transforming UAV-enabled inspection from isolated thermal observations into actionable knowledge that supports safer, more efficient, and more resilient built environments, ultimately advancing sustainable infrastructure systems and long-term asset performance."
+      ]
+    }
+  ],
+  "tables": [
+    {
+      "caption": "Key Differences between BIM and DTs",
+      "headers": [
+        "Feature",
+        "BIM",
+        "DTs"
+      ],
+      "rows": [
+        [
+          "Nature",
+          "Structured digital information model",
+          "Dynamic virtual representation"
+        ],
+        [
+          "Primary focus",
+          "Design, construction, and asset information management",
+          "Monitoring, analysis, and lifecycle optimization"
+        ],
+        [
+          "Data role",
+          "Information repository and coordination platform",
+          "Continuously or near-real-time updated decision-support environment"
+        ],
+        [
+          "Interoperability function",
+          "Provides semantic and geometric asset context",
+          "Integrates sensor streams and operational data"
+        ],
+        [
+          "Update pattern",
+          "Periodic or project-based",
+          "Continuous or near-real-time"
+        ],
+        [
+          "Typical use",
+          "Documentation, coordination, facility information",
+          "Condition monitoring, prediction, maintenance optimization"
+        ]
+      ],
+      "header_groups": [],
+      "table_alignment_status": "resolved",
+      "row_provenance": [
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 3
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 3
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 3
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 3
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 3
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 3
+          }
+        ]
+      ],
+      "tbody_alignment_status": "resolved"
+    },
+    {
+      "caption": "Summary of Literature Selection Criteria",
+      "headers": [
+        "Inclusion criteria",
+        "Exclusion criteria"
+      ],
+      "rows": [
+        [
+          "Studies involving UAV-based inspection or sensing technologies",
+          "Studies not involving UAV technologies"
+        ],
+        [
+          "Infrared thermography applications for buildings or infrastructure",
+          "Studies not involving infrared thermography"
+        ],
+        [
+          "BIM-based integration of inspection data",
+          "Studies unrelated to BIM or DT environments"
+        ],
+        [
+          "DT-enabled monitoring and asset management applications",
+          "Studies focused on unrelated sensing domains"
+        ],
+        [
+          "Research relevant to the built environment",
+          "Studies outside the built environment"
+        ],
+        [
+          "Studies reporting applications, methodologies, frameworks, or reviews relevant to UAV-IRT, BIM, or DT integration",
+          "Publications outside the thematic scope of the review"
+        ]
+      ],
+      "header_groups": [],
+      "table_alignment_status": "resolved",
+      "row_provenance": [
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 2
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 2
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 2
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 2
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 2
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 2
+          }
+        ]
+      ],
+      "tbody_alignment_status": "resolved"
+    },
+    {
+      "caption": "Composition of the final literature dataset",
+      "headers": [
+        "Category",
+        "Count",
+        "Percentage"
+      ],
+      "rows": [
+        [
+          "Journal articles",
+          "87",
+          "79.1%"
+        ],
+        [
+          "Conference papers / proceedings",
+          "22",
+          "20%"
+        ],
+        [
+          "Book chapters",
+          "1",
+          "0.9%"
+        ],
+        [
+          "Total",
+          "110",
+          "100%"
+        ]
+      ],
+      "header_groups": [],
+      "table_alignment_status": "resolved",
+      "row_provenance": [
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 3
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 3
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 3
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 3
+          }
+        ]
+      ],
+      "tbody_alignment_status": "resolved"
+    },
+    {
+      "caption": "Broad study-type composition of the final dataset",
+      "headers": [
+        "Study type",
+        "Count",
+        "Percentage"
+      ],
+      "rows": [
+        [
+          "Review / scoping / systematic review studies",
+          "24",
+          "21.8%"
+        ],
+        [
+          "Empirical application studies",
+          "26",
+          "23.6%"
+        ],
+        [
+          "Methodological / technical studies",
+          "32",
+          "29.1%"
+        ],
+        [
+          "Conceptual / framework / integration studies",
+          "28",
+          "25.5%"
+        ],
+        [
+          "Total",
+          "110",
+          "100%"
+        ]
+      ],
+      "header_groups": [],
+      "table_alignment_status": "resolved",
+      "row_provenance": [
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 3
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 3
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 3
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 3
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 3
+          }
+        ]
+      ],
+      "tbody_alignment_status": "resolved"
+    },
+    {
+      "caption": "Literature classification framework",
+      "headers": [
+        "Category",
+        "Research focus"
+      ],
+      "rows": [
+        [
+          "UAV-IRT inspection applications",
+          "Infrastructure and building defect detection using UAV thermography"
+        ],
+        [
+          "Thermal data processing",
+          "Thermal anomaly detection, image processing, and machine learning methods"
+        ],
+        [
+          "BIM integration",
+          "Registration and mapping of thermal inspection data to BIM models"
+        ],
+        [
+          "DT frameworks",
+          "Dynamic monitoring, predictive maintenance, and lifecycle asset management"
+        ]
+      ],
+      "header_groups": [],
+      "table_alignment_status": "resolved",
+      "row_provenance": [
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 2
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 2
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 2
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 2
+          }
+        ]
+      ],
+      "tbody_alignment_status": "resolved"
+    },
+    {
+      "caption": "Research themes in UAV-IRT integration studies",
+      "headers": [
+        "Research direction",
+        "Typical methods",
+        "Main objectives"
+      ],
+      "rows": [
+        [
+          "UAV-IRT inspection applications",
+          "Thermal imaging surveys, aerial thermography mapping",
+          "Defect detection and infrastructure diagnostics"
+        ],
+        [
+          "Thermal data processing",
+          "Image segmentation, machine learning, deep learning models",
+          "Automated thermal anomaly detection"
+        ],
+        [
+          "BIM integration",
+          "Image-to-BIM registration, thermal point cloud mapping",
+          "Spatial localization of defects"
+        ],
+        [
+          "DT frameworks",
+          "Sensor integration, model updating, monitoring platforms",
+          "Predictive maintenance and lifecycle management"
+        ]
+      ],
+      "header_groups": [],
+      "table_alignment_status": "resolved",
+      "row_provenance": [
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 3
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 3
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 3
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 3
+          }
+        ]
+      ],
+      "tbody_alignment_status": "resolved"
+    },
+    {
+      "caption": "Comparative synthesis of representative AI approaches for UAV-IRT thermal data analysis",
+      "headers": [
+        "AI approach",
+        "Typical application",
+        "Performance / validation evidence in reviewed studies",
+        "Robustness considerations",
+        "Generalizability considerations",
+        "Strengths",
+        "Limitations"
+      ],
+      "rows": [
+        [
+          "CNN-based models",
+          "Thermal anomaly classification and defect recognition",
+          "Frequently used as baseline deep learning models for thermal defect classification and segmentation; generally effective when sufficient annotated thermal images are available",
+          "Performance may be affected by weak thermal contrast, environmental variability, class imbalance, and image-quality inconsistency",
+          "Often trained and validated on specific defect types, materials, or inspection scenarios; cross-material and cross-asset transferability remains insufficiently demonstrated",
+          "Mature architecture; widely validated in infrastructure inspection studies",
+          "Limited ability to capture long-range contextual relationships"
+        ],
+        [
+          "YOLO-based object detectors",
+          "Real-time defect detection and localization in UAV imagery",
+          "Suitable for fast inference and real-time UAV deployment; recent UAV-based detection studies show strong potential for locating visible or thermally distinguishable defects",
+          "Detection performance may decrease for small, subtle, low-contrast, partially occluded, or scale-varying defects",
+          "Generalizability depends on target-defect annotation quality and training diversity; validation across different infrastructure types remains limited",
+          "Fast inference speed; suitable for real-time UAV deployment",
+          "Performance may decrease for small or subtle defects"
+        ],
+        [
+          "Transformer-based architectures",
+          "Feature extraction and anomaly recognition",
+          "Promising for capturing global feature relationships and complex spatial patterns in inspection imagery",
+          "High computational demand and large training-data requirements may limit field deployment and increase risk of overfitting when datasets are small",
+          "Broader applicability to UAV-IRT remains emerging because large, diverse, and well-labeled thermal inspection datasets are still limited",
+          "Improved global feature representation and contextual understanding",
+          "High computational demand and large training data requirements"
+        ],
+        [
+          "Multimodal AI frameworks",
+          "Fusion of thermal, RGB, and LiDAR datasets",
+          "Can improve defect characterization and spatial interpretation by combining thermal signatures with visual and geometric context",
+          "Robustness depends heavily on cross-modal calibration, registration accuracy, data synchronization, and fusion quality",
+          "Transferability is constrained by platform-specific sensing configurations, heterogeneous data formats, and the lack of standardized multimodal benchmarks",
+          "Enhanced defect characterization and spatial interpretation",
+          "Increased data integration complexity and computational cost"
+        ]
+      ],
+      "header_groups": [],
+      "table_alignment_status": "resolved",
+      "row_provenance": [
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 7
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 7
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 7
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 7
+          }
+        ]
+      ],
+      "tbody_alignment_status": "resolved"
+    },
+    {
+      "caption": "Comparison of UAV-IRT integration approaches (synthesized from reviewed studies)",
+      "headers": [
+        "Approach",
+        "Strength",
+        "Limitation",
+        "Scalability",
+        "Sustainability impact"
+      ],
+      "rows": [
+        [
+          "Standalone UAV-IRT inspection",
+          "Rapid deployment; high accessibility; low operational complexity",
+          "Limited integration with asset models; lack of semantic context; manual interpretation",
+          "High (easy to deploy across projects)",
+          "Improves inspection efficiency but limited long-term impact on resource optimization"
+        ],
+        [
+          "UAV-IRT + photogrammetry / 3D reconstruction",
+          "Enhanced spatial visualization; improved defect localization",
+          "Computationally intensive; requires data processing expertise",
+          "Medium",
+          "Supports targeted interventions, reducing unnecessary repairs and material waste"
+        ],
+        [
+          "UAV-IRT + AI-based analysis",
+          "Automated anomaly detection; reduced manual labor; scalable analysis",
+          "Limited training datasets; generalization issues; potential false positives",
+          "Medium to high",
+          "Enables efficient large-scale inspection, reducing redundant inspections and operational costs"
+        ],
+        [
+          "UAV-IRT + BIM integration",
+          "Semantic mapping of defects; improved asset-level context; better maintenance planning",
+          "Interoperability challenges; manual mapping efforts",
+          "Medium",
+          "Supports informed decision-making, improving maintenance efficiency and reducing resource use"
+        ],
+        [
+          "UAV-IRT + Digital Twin (DT) integration",
+          "Dynamic monitoring; predictive maintenance; lifecycle optimization",
+          "High implementation complexity; data integration challenges; cost",
+          "Low to medium (currently limited to pilot applications)",
+          "Strong potential to reduce lifecycle costs, minimize material waste, and enable sustainable infrastructure management"
+        ]
+      ],
+      "header_groups": [],
+      "table_alignment_status": "resolved",
+      "row_provenance": [
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 5
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 5
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 5
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 5
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 5
+          }
+        ]
+      ],
+      "tbody_alignment_status": "resolved"
+    },
+    {
+      "caption": "Evidence-based methodological synthesis of reviewed UAV-IRT approaches",
+      "headers": [
+        "Sensing Platforms",
+        "Targeted Defect Types",
+        "Processing & Analysis Methods",
+        "Validation Outcomes & Environments"
+      ],
+      "rows": [
+        [
+          "Multi-rotor UAVs (e.g., Quadcopters, Hexacopters with uncooled IR payloads)",
+          "Concrete delamination; Subsurface voids; Bridge deck deterioration",
+          "Manual radiometric analysis; Supervised Machine Learning (e.g., SVM, Random Forest)",
+          "Primarily validated through field inspections of bridges, pavements, and buildings"
+        ],
+        [
+          "Fixed-wing UAVs",
+          "Large-scale road pavement distress; District-level rooftop insulation gaps",
+          "Thermal orthomosaic stitching; Automated thresholding segmentation",
+          "Applied in large-area monitoring and infrastructure-scale field surveys"
+        ],
+        [
+          "UAV-IRT + Micro-sensors (AI-focused platforms)",
+          "Subsurface concrete cracks; Early-stage moisture intrusion",
+          "Deep Learning pipelines (e.g., CNNs, YOLO variants, SegNet)",
+          "Frequently validated using laboratory datasets or controlled outdoor experiments"
+        ],
+        [
+          "Multimodal UAV Platforms (IRT + RGB + LiDAR Fusion)",
+          "3D structural defect mapping; Building envelope asset damage",
+          "Spatial photogrammetry; Thermal point-cloud registration; Dynamic coordinate mapping (IFC)",
+          "Mainly demonstrated through pilot studies and prototype integration workflows"
+        ]
+      ],
+      "header_groups": [],
+      "table_alignment_status": "resolved",
+      "row_provenance": [
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 4
+          }
+        ]
+      ],
+      "tbody_alignment_status": "resolved"
+    }
+  ]
+}

@@ -1,0 +1,896 @@
+{
+  "doi": "10.1007/s11665-026-14581-9",
+  "title": "Mechanical Property Prediction of Laser-Processed H13 Tool Steel Informed by Phase Composition and Grain Morphology via Machine Learning",
+  "abstract": "Abstract Process-structure-property relationships are highly nonlinear, multiscale, and difficult to capture with traditional analytical models. Yet tools that harness these relationships can address the increasingly demanding needs of modern manufacturing, where rapid and reliable assessment of material performance is essential. This potential has intensified interest in data-driven approaches capable of inferring mechanical behavior without protracted inspection or costly destructive testing. Here, machine-learning models are used to predict the mechanical properties of laser-processed H13 tool steel by drawing on microstructure-property relationships. Firstly, published results and data from samples produced by Directed Energy Deposition were compiled into datasets. Phase recognition capabilities were then developed through a deep learning, Convolutional Neural Network scheme that was applied to obtain the phase composition of each sample. Due to their high strength and hardness, the phase fraction of martensite or tempered martensite was used as an indicator of mechanical performance. Grain morphology data were also extracted from processed microstructural images. Finally, a custom Artificial Neural Network, designed to balance the influence of phase fraction and grain morphology, was trained and validated for mechanical property prediction. Correlation coefficients exceeding  R 2  = 0.939 were achieved for Ultimate Tensile Strength, Yield Strength, and Elongation, with root mean square testing errors of 36, 42 MPa, and 0.6%, respectively. These results demonstrate the predictive power of machine learning-driven microstructural analysis and its potential to complement existing inspection techniques.",
+  "journal": "Journal of Materials Engineering and Performance",
+  "year": "2026",
+  "sections": [
+    {
+      "heading": "Introduction",
+      "paragraphs": [
+        "The AISI H-series of hot work tool steels maintain their excellent hardness, strength, and fatigue resistance during prolonged exposure to elevated temperatures. Of these alloys, H13 is one of the most widely produced and is used extensively for light metal extrusion, casting, and press forging dies (Ref  1 ). Therefore, many studies have focused on improving the performance of this chromium-based tool steel, particularly within the laser-based manufacturing community. Laser surface hardening was shown to improve strength, wear resistance, and corrosion resistance without sacrificing ductility (Ref  2 ,  3 ). Additionally, additively manufactured (AM) H13 has achieved higher microhardness and better thermal fatigue resistance than wrought H13 (Ref  4 ,  5 ). The unique design flexibility of AM has also been utilized to manufacture die components with small internal cooling channels, reducing cycle time and improving longevity (Ref  6 ).",
+        "Like all metals, the mechanical properties and performance of H13 are dependent on its microstructure, the microscopic arrangement of phases, grains, precipitates, and defects within a material. This dependency is especially relevant in laser-based manufacturing, which produces notoriously inhomogeneous microstructures that can be defect-prone, resulting in a wide range of possible mechanical properties (Ref  7 ). Quality control and the high cost associated with certification are therefore the largest barriers to the widespread implementation of laser-based manufacturing in industry. This is especially true in additive manufacturing, where the time and expense required to perform iterative cycles of production and destructive testing are prohibitive for most applications despite the known benefits of AM (Ref  8 ). Therefore, integrating predictive tools that leverage microstructure-property relationships into existing inspection workflows can enhance confidence in part compliance and streamline the qualification process by reducing the need for trial-and-error evaluation.",
+        "However, exact microstructure-property relationships remain elusive due to their complex and multi-scale nature. Many experimental studies that claim to establish such relationships only discuss the effects of various processing parameters on the microstructure and report loose process-microstructure-property correlations (Ref  9 ,  10 - 11 ). While these can be insightful, they are not true input-output relationships between microstructure and properties. Mechanical performance is ultimately governed by numerous nonlinear variables, unlikely to be captured by a handful of descriptors such as the laser parameters (Ref  12 ) or quenching temperature (Ref  13 ), especially in a way that scales across multiple processes and post-processes.",
+        "Physics-based models offer an alternative means of exploring process-structure-property relationships. Joshi et al. (Ref  14 ) validated a thermofluidic model with single-track experiments and then used the predicted thermal history from a multi-track, multi-layer AM simulation to calculate the thermal gradient and solidification rate of H13, two important factors that affect microstructural evolution. Bailey and Shin (Ref  15 ) simulated the entire AM processes–from the melting of the powder to the phase distribution in the final microstructure–by feeding the thermal history from a multiphase heat transfer model to a hybrid solidification model to predict the microhardness of H13. However, high-fidelity models may require weeks to simulate a few laser tracks, making them too computationally expensive for macroscopic, part-scale analysis.",
+        "The objective of this work is to establish an efficient, data-driven predictive framework based on the microstructural features of laser-processed H13. Data-driven models are trained on large quantities of data to minimize error by iteratively updating their internal parameters as they process batches of input-output data. During training, some data is withheld for validation and evaluated periodically to monitor performance and prevent overfitting. Fully trained models are then tested with new input-output sets for generalizability and accuracy.",
+        "A variety of machine learning models have been developed, but Convolutional Neural Networks (CNNs), which recognize spatial features from image data and perform classification tasks, are of interest here. Similarly, Artificial Neural Networks (ANNs) are powerful regression tools capable of mapping complex, nonlinear relationships. Thus, data-driven models have the potential to evaluate microstructures, extract their features, and predict mechanical properties. Moreover, they are better suited for multi-variable dependencies than experimental approaches and make predictions much faster (a few seconds) than high-fidelity models once trained.",
+        "Several studies have already explored process-structure-property relationships using data-driven approaches. Popova et al. (Ref  16 ) used process-structure linkages obtained through the Potts-Kinetic Monte Carlo algorithm to predict the chord lengths of synthetic microstructures from laser parameters. Similarly, Wang et al. (Ref  17 ) developed a surrogate model for a medium fidelity thermal-solidification model and was able to predict the grain length-to-width ratio of Ti6Al4V (Ti64) microstructures. These methods can reduce the computational expense of cellular automata or phase field solidification models but lack the property prediction capabilities that are of interest in this work.",
+        "Other studies have sought to predict mechanical properties directly from the laser processing parameters. Liu et al. (Ref  18 ) collected publicly available data on Ti64 and used a Bayesian model to correlate these parameters with density and hardness. They also developed a genetic algorithm capable of identifying printing parameters that yielded the desired density and hardness outcomes on a new machine. Other studies on Inconel alloys used experimentally measured or simulated thermal histories as inputs to machine learning algorithms to predict strength and other properties (Ref  19 ,  20 - 21 ). Scime et al. (Ref  22 ) performed an extensive data-driven study that used geometry information and laser parameters to predict the mechanical properties of AM 316L Stainless Steel. Predictive accuracy was significantly improved when common irregularities in Laser Powder Bed Fusion (LPBF) prints were identified with a trained CNN and considered by the larger model.",
+        "Structure-property relationships have also been explored by Herriot and Spear (Ref  23 ), who used a medium fidelity model to generate the thermal history of an additive process and varied grain nucleation parameters to obtain different microstructures. Microstructural features were then quantified and used as inputs to different machine learning models to predict yield strength, with a CNN achieving the highest accuracy. Likewise, Sadeghpour and Nonn (Ref  24 ) varied grain morphology constants to generate microstructures and trained several algorithms to predict the mechanical performance of 316L. Zhao et al. (Ref  25 ) were able to predict the plastic response of several heat-treated Titanium alloys by training a CNN to classify microstructural images into broad categories (equiaxed, duplex, laminar, basketweave, etc). The learned feature maps were then spliced into a neural network that also considered alloy composition, testing temperature, and the strain rate of the tensile test to predict the material response.",
+        "Liu et al. (Ref  26 ) used both processing parameters and microstructural features to predict the performance of LPBF AlSi10Mg. Their data-driven model used the laser parameters and molten pool dimensions obtained through a medium-fidelity model as process inputs. The microstructural inputs included porosity, grain size, and cell size, which were determined empirically.",
+        "However, many of these studies suffer from low generalizability (Ref  20 ,  22 ,  26 ) or poor testing accuracy (Ref  19 ,  21 ,  25 ). Others rely on synthetic microstructures and validate their results against crystal plasticity simulations, not tensile test results (Ref  23 ,  24 ). It also seems desirable to move away from dependencies on costly physics-based models or in-situ monitoring setups (Ref  19 ,  20 ,  21 ,  22 - 23 ,  25 ,  26 ). Given these limitations, there is a clear need for straightforward data-driven workflows that offer both improved predictive accuracy and the ability to generalize across a broader range of real-world samples. To achieve universal predictive models, the structure of the algorithm and input data must reflect the reality that microstructure is the ultimate determinant of mechanical performance.",
+        "One effective and scalable way to capture microstructural information is through imaging. Porro et al. (Ref  27 ) established a method of processing microstructural images of 17-4 PH Stainless Steel to generate weighted grain size distribution histograms. Grains were binned according to their area rather than their frequency, and the resulting histograms were used as inputs for an ANN that achieved strong predictive accuracy. This performance was realized by capitalizing on the well-established understanding that grain size, shape, and orientation play a central role in determining the mechanical properties of metal alloys. A smaller average grain size correlates with strength and hardness (Ref  28 ) and mechanical anisotropy can stem from elongated grain morphology (Ref  29 ) or a strong crystallographic texture (Ref  30 ). As seen in Fig.  1 , the grains of laser-processed H13 are typically non-equiaxed and vary greatly in size and orientation. In this Direct-Energy-Deposited (DED) sample, smaller grains have formed near the molten pool boundaries and lean towards the maximum temperature gradient. Fig. 1 Grain morphology of direct-energy deposited H13",
+        "Our approach, which continues to rely only on easily obtainable microstructural images, is expanded in this work through the integration of phase fraction inputs. Phase composition is a critical aspect of microstructure, known to significantly contribute to the mechanical performance of multi-phase alloys (Ref  31 ,  32 - 33 ). Despite its importance, it is often overlooked in data-driven models, with Wang (Ref  34 ) making the sole attempt to account for phase effects, though this effort was only partial. In their study on Ti64, the alpha phase percentage was measured for 30% of the dataset and the average value was applied to the remaining samples. This expediency may explain why their more complex model performed worse than Porro et al.’s (Ref  27 ,  34 ). Grain morphology and phase composition are not the only microstructural features that govern the mechanical properties of steels. The distribution or re-distribution of alloying elements via solid solution strengthening or precipitation strengthening can positively influence strength (Ref  35 ). Conversely, defects such as pores and cracks degrade performance (Ref  36 ). These aspects of microstructure are not explicitly accounted for here and left for future studies.",
+        "The three primary phases in H13 are martensite, austenite, and tempered martensite. When a laser is used to heat the tool steel above its austenitization or even melting temperature, the rapid cooling that occurs once the laser passes results in a high concentration of martensite. In conventional processing, this desirable outcome is achieved through quenching. Martensite has a strained body-centered tetragonal structure (BCT) with carbon atoms occupying interstitial sites (Ref  37 ). It is significantly stronger, harder, and less ductile than other steel phases, so the volume fraction of martensite plays a vital role in determining the mechanical properties of the material (Ref  38 ). Some austenite is also retained during cooling. When hardened H13 is tempered, alloying elements diffuse and agglomerate while martensite compresses into a body-centered cubic (BCC) lattice. The resulting ferritic matrix interspersed with carbides also has good strength and hardness with improved toughness, so it is referred to as tempered martensite (Ref  37 ). In scanning electron microscopy (SEM), martensite and tempered martensite look darker with elongated lath features. Austenite is less abundant and appears brighter, while carbides appear as bright white spheres.",
+        "These distinct phase features, which shape mechanical response, need to be incorporated into data-driven models of microstructure-property relationships. Yet their consideration is currently absent in the open literature. None of the above works have completely incorporated phase effects into their predictive models, nor have they applied their models to a multi-phase tool steel such as H13. Therefore, this work establishes an accurate and generalizable mechanical property prediction scheme for H13 using two machine learning models. Firstly, a CNN was trained to recognize and segment the dominant constituent phases in high magnification SEM images. Medium magnification optical images or Inverse Pole Figures were also processed to extract grain morphology features and create area-weighted histograms. Mechanical property prediction was achieved through a second, custom ANN designed to learn microstructure-property relationships from the phase composition and grain morphology input data. Predictions were evaluated against the mechanical properties such as Yield Strength, Ultimate Tensile Strength, and Elongation values obtained via tensile testing."
+      ]
+    },
+    {
+      "heading": "Experimental Procedures",
+      "paragraphs": []
+    },
+    {
+      "heading": "Sample Preparation",
+      "paragraphs": [
+        "An Optomec LENS 750 system and H13 powder from Carpenter Additive with a size distribution of 45-150  µ m were used to prepare the tensile coupons for this study. Powder of this size is appropriate for this DED system. A 150 × 17 × 11 mm rectangular prism was deposited on a 12.7 mm thick low-carbon steel substrate with the experimentally-determined optimal build parameters for H13 given in Table  1  (Ref  39 ). Stress-relieving post-heat treatment was performed in a TF1400 tube furnace at 500 °C to prevent cracking during secondary machining. Nine 1 mm-thick ASTM-E8 Subsize Specimens (Ref  40 ) were then cut from the build with an EDMMax 434 Fast Wire EDM.\n Table 1 H13 build parameters Laser power 350, W Laser scanning speed 14.8 mm/s Powder feed rate 8.5 g/min Hatch spacing 0.3 mm",
+        "The coupons were numbered in the order that they were sliced from the build and grouped into three sets of three for different heat treatments. The first group consisted of samples 1, 4, and 7, the second group consisted of samples 2, 5, and 8, and the third group consisted of samples 3, 6, and 9. The build was sliced from the top down, so lower numbered coupons contain layers deposited near the top of the print. Every third coupon was placed in the same group to account for any microstructural variations along the build direction (Ref  41 ). The first group was kept in the stress-relieved state while the second and third groups were tempered for two hours at 620 and 590 °C, respectively.",
+        "These heat treatment parameters were selected after tempering six 10 mm cubes at 500, 520, 560, 590, 620, and 650 °C. In this study, all holding times were two hours and the heating rate was 5 °C/min. The samples were allowed to cool to room temperature inside the furnace. The average microhardness of the tempered cube-shaped samples is plotted as a function of holding temperature in Fig.  2 . The average microhardness of the material prior to tempering (56.7 HRC) is also marked on the figure at 20 °C for reference. Note that there is no noticeable difference between the microhardness of the as-built material and that of H13 tempered at 500 °C for two hours (56.4 HRC), suggesting that the heat treatment did not induce significant microstructural change. In tool steels, it is generally desirable to perform stress-relieving heat treatment just below the recrystallization temperature, which is why the material used for tensile testing was held at 500 °C for two hours before EDM (Ref  1 ). Fig. 2 DED H13 hardness curve for 2 hour holding time",
+        "However, at the next holding temperature of 520 °C, the material underwent secondary hardening, which is consistent with other reports on laser-processed H13 (Ref  42 ,  43 - 44 ). The increase in hardness is due to the precipitation of ultrafine carbides and the transformation of retained austenite into martensite (Ref  1 ). From the secondary hardening peak of 58.9 HRC, the microhardness gradually falls to 55.6 HRC, 51.7 HRC, 48.2 HRC, and 42.7 HRC as higher holding temperatures produce coarser carbides. The maximum standard deviation of the microhardness measurements was 1.77 HRC across all samples, indicating that the material reached a homogeneous internal temperature within the two-hour holding time. The cubes were manufactured with the same powder and laser parameters as the tensile coupons.",
+        "Tensile testing was performed with an MTS-858 Mini Bionix II Universal Testing Machine utilizing a crosshead speed of 0.48 mm/min and a maximum load of 25 kN. The mechanical properties were obtained from the true stress and strain values, which were calculated from the crosshead displacement and force outputs using a MATLAB script. The maximum true stress value was taken as the Ultimate Tensile Strength (UTS) and the Strain at UTS ( ε UTS ) was used for elongation. Yield Strength (YS) was determined through the 0.2% offset method (Ref  40 ).",
+        "For microstructural analysis, samples were initially polished with 300- and 600-grit abrasive discs, and then finely polished with 6 and 1  µ m diamond pastes. The microhardness of each surface was measured five times using a Phase II Microhardness Tester with a 500 g load and 15 s dwell time prior to etching in Nital. Medium magnification images of grain boundaries were taken with a Nikon Eclipse LV150 optical microscope, while high-magnification images of the constituent phases were captured with a JEOL 6400 SEM. For the tensile coupons, microstructural analysis was performed after tensile testing in the gripped region where strain was assumed to be zero."
+      ]
+    },
+    {
+      "heading": "Data-Driven Modeling",
+      "paragraphs": []
+    },
+    {
+      "heading": "Datasets and Preprocessing",
+      "paragraphs": [
+        "Two mutually exclusive datasets were compiled to train the machine learning models for microstructural analysis and property prediction. The first, the CNN dataset, comprises 122 high magnification SEM images, including 116 sourced from the literature and six acquired from the experiments done for this study (Ref  3 ,  4 ,  5 - 6 ,  10 ,  11 ,  12 - 13 ,  36 ,  42 ,  45 ,  46 ,  47 ,  48 ,  49 ,  50 ,  51 ,  52 ,  53 ,  54 ,  55 ,  56 ,  57 ,  58 ,  59 ,  60 ,  61 ,  62 ,  63 ,  64 ,  65 - 66 ). These images contain multiple constituent phases of H13 and were used to train the CNN for phase recognition. The microhardness of the imaged material was also recorded when available. The ANN dataset consists of 55 image-property sets, 46 of which were gathered from published articles on laser-processed H13 (Ref  5 ,  9 ,  42 ,  43 ,  45 ,  46 ,  47 ,  48 - 49 ,  52 ,  53 ,  62 ,  63 ,  67 ,  68 ,  69 ,  70 ,  71 ,  72 ,  73 ,  74 - 75 ). The remaining nine sets were constructed using the microstructure and properties of the DED tensile coupons manufactured for this study. Each image-property set was used to train for mechanical property prediction and contains a medium magnification grain image, a high magnification phase image, and the mechanical properties (UTS, YS, or  ε UTS ) of an H13 sample. The paired grain and phase images capture microstructures formed under diverse laser processing and post-heat-treatment conditions, resulting in a wide range of mechanical properties that represent all performance outcomes. Property prediction was informed by the morphology data extracted from the grain image and a phase distribution obtained from the high magnification image. In nineteen instances where a phase image was unavailable, phase fractions obtained through Electron Backscattered Diffraction (EBSD) phase analysis or the Rule of Mixtures (ROM) were used instead. The complete preprocessing and prediction sequence is depicted in Fig.  3  and described in the following paragraphs. Fig. 3 Workflow for the mechanical property prediction of laser-processed H13",
+        "Images in the CNN dataset were first converted to greyscale and cropped to remove any overlays or labels. Eighteen images (15% of the dataset) were then randomly selected from the pool of forty images with known microhardness and set aside for testing the CNN. Since the remaining data is insufficient for training and validating a reliable model, additional steps were needed to increase the size of the dataset. In work on other metal alloys, phase classification tasks have been aided by sub-imaging techniques that expanded similarly sized datasets of microstructure images (Ref  38 ,  76 ). Therefore, subimages were cropped with a square sliding window whose side length was equal to one-third of the shortest dimension of the full image. Each subimage was resized to 224 × 224 pixels and randomly flipped or rotated for further augmentation. Through these steps, approximately 2750 subimages were generated from 104 images designated for training and validating the CNN. The subimages were randomly partitioned 82%/18% for training and validation, respectively.",
+        "The grain images in the ANN database were first processed with ImageJ/Fiji to produce 8-bit segmented grain boundary images with white grains and black grain boundaries. Grain morphological features such as area, equivalent diameter, circularity, and axis length were then found by analyzing the connected components in the processed image, like in Porro et al. (Ref  27 ). To increase the size of the ANN dataset, subimages were cropped from the segmented grain images with a 50% overlap. The centroid of each grain, which was determined from the full image, was compared to the bounding box of the sliding cropping window to determine if a grain lay within the current subimage. An area-weighted histogram was then created for each subimage. Grains were binned according to their equivalent diameter, with each bin containing the total area fraction of its grains. The bin width was set to 0.25 on the log scale out of respect for the Hall-Petch relationship (Ref  28 ) and fourteen bins between − 1.75 and 1.75 were needed to span the range of observed grain diameters (29 nm to 47  µ m). However, 99% of the grains have diameters between 0.18 and 17.8  µ m and are placed within bins five through twelve. The smallest grains are likely noise generated during the image processing or carried over from the original image. Three parameters were also calculated from each subimage to further capture grain morphology: the mean grain perimeter to diameter ratio, mean grain axis ratio, and mean grain circularity. The mechanical properties used with each area-weighted histogram were taken from its full-sized image. This approach succinctly characterizes key microstructural features–grain size, area, and shape–while preserving local inhomogeneities by minimizing the use of averaged metrics. Tying multiple local microstructures to the overarching mechanical response allows the ANN to learn and account for the effects of structural heterogeneity when making predictions, thereby enhancing generalizability."
+      ]
+    },
+    {
+      "heading": "Convolutional Neural Network for Phase Recognition",
+      "paragraphs": [
+        "The relatively small size of the processed CNN dataset, coupled with the fine morphological features of retained austenite, complicates machine-learning-based phase recognition in laser-processed H13. U-Net, a CNN capable of pixel-level classification, was selected as the phase recognition model because of its effectiveness in addressing these issues. U-Net was originally developed for segmenting medical images, where it performed well on small, heavily augmented SEM datasets (Ref  77 ). This model has been widely used in the medical field due to its speed, accuracy, and ability to generalize (Ref  78 ) and has recently been adopted for autonomous driving (Ref  79 ,  80 ). Pixel-level classification, or semantic segmentation, is achieved through the symmetric encoder-decoder architecture. A series of 3 × 3 convolution layers are used to compress the input image to a 32 × 32 pixel representation before the image is expanded back to its original resolution with individually labeled pixels. A conventional CNN would only compress the image and output a single label, likely missing the less prevalent retained austenite that typically forms thin dendrites or cell-like structures that surround martensitic regions.",
+        "Therefore, pixel-labeled copies of each subimage in the CNN dataset were needed as training outputs. Annotated subimages were obtained by applying a binary threshold to each of the full-sized phase images using Otsu’s method (Ref  81 ). The threshold level used to segment the phases was set empirically and additional operations were performed before or after thresholding if the outcome was favorable. The white regions of the resulting mask correspond with retained austenite, and the black areas with martensite and tempered martensite. Each mask was cropped and augmented identically to its full image copy to obtain the labeled subimages, with an example subimage set shown in Fig.  3 .",
+        "Martensite and tempered martensite are assigned the same label because of their visual similarity, which makes them difficult to distinguish without prior knowledge of the heat treatment history. This grouping is justified because the carbides in tempered martensite, which are not explicitly accounted for in this work, help preserve hardness and strength despite the increase in ductility that accompanies the transformation of martensite to ferrite. As a result, the contrast in mechanical performance is relatively minor compared to the difference between martensite and other common steel phases (Ref  82 ). Note that it is also challenging to distinguish between martensite (BCT) and tempered martensite (BCC) using EBSD analysis without advanced methods due to their similar diffraction patterns (Ref  83 ,  84 ). Because of their comparable features and properties, the procedural simplicity of treating martensite and tempered martensite as a single phase outweighs the marginal benefits that could be gained by developing and training a model with greater complexity and computational cost capable of recognizing three or more phases.",
+        "Training was performed with the subimage data for eighteen epochs using the Adaptive Moment Estimation (Adam) solver. A learning rate of 10 −5  and a minibatch size of five minimized training time and maximized accuracy on an Nvidia Quadro P2500 GPU. Training took two and a half hours when the validation data was checked four times every epoch. The CNN was evaluated after training. The testing images that had been set aside were cropped into subimages, which were resized and labeled by the trained CNN. Each testing image was then reconstructed from its labeled subimages. The martensite volume fraction prediction was obtained by dividing the number of pixels labeled as martensite by the total number of pixels in the full-size image. The phase images in the ANN dataset were processed using the same procedure.",
+        "Transfer learning was attempted at the beginning stages of the work with U-Net (Ref  85 ,  86 ). The transferred filters were originally learned on RGB images containing subjects with features unrelated to those analyzed in this work. Due to the disparate image formats and learned features, transfer learning ultimately made training for phase recognition less efficient. Parameters were randomly initialized instead. We are not aware of publicly available databases or similar phase-recognition works on H13 that could be used to augment the training data or apply transfer learning."
+      ]
+    },
+    {
+      "heading": "Artificial Neural Network for Mechanical Property Prediction",
+      "paragraphs": [
+        "The custom ANN is a multi-input, single-output feedforward neural network designed to predict the UTS, YS, or  ε UTS  of an H13 sample from its grain morphology and phase composition. The architecture used to train each property-specific model is pictured in Fig.  4 . Two hidden layers with fifteen neurons each are connected in series, followed by an output layer. The first layer receives the seventeen grain morphology features as inputs, while the martensite phase fraction from the CNN is sent directly to the second layer as an eighteenth input. This design is intended to assign approximately equal importance to the grain morphology and phase composition inputs. The hidden layers use the hyperbolic tangent sigmoid transfer function, and the output layer uses the linear activation function. Fig. 4 Custom network structure where the grain morphology inputs are sent to the first layer and the phase prediction is fed directly to the second layer",
+        "The preprocessing steps described in Section  3.1  produced 1961 input-output sets, although not all three mechanical properties were reported in every source. Of the processed data, 1853 sets could be used to train for UTS prediction, 1833 for YS prediction, and 1620 for  ε UTS  prediction. However, prior to training, 15% of the data (eight of the fifty-five full-sized sets) were randomly selected for testing. Like the CNN, the ANN was trained and validated with subimage data but tested with only full-sized images and their histograms. The non-testing histograms were then shuffled and partitioned so that the available data was split roughly 70%/15%/15%. Hence, approximately 1300 input-output sets were used to train for UTS and YS, and 250 to validate. For ε UTS , about 1100 sets were used for training and 240 for validation. With this approach, area-weighted histograms originating from the same full image may be designated for both training and validation, but never for testing. Likewise, the eight full images selected for testing were not used for training or validation, and their subimage histograms were not used at all. The same rules were enforced when partitioning the CNN dataset.",
+        "Normalizing input and output training data is known to improve ANN performance (Ref  87 ,  88 ). Therefore, martensite phase fraction prediction and the mean grain perimeter to diameter ratio, mean grain axis ratio, and the mean grain circularity inputs were normalized between 0.1 and 0.9 before training. The mechanical property values were also normalized between 0.25 and 0.75. Weights and biases were randomly initialized before the network was trained with the Levenberg-Marquardt backpropagation algorithm for up to 500 epochs. Mean squared error was used as the loss metric. The entire training process takes seconds."
+      ]
+    },
+    {
+      "heading": "Results & Discussion",
+      "paragraphs": []
+    },
+    {
+      "heading": "Microhardness and Tensile Properties",
+      "paragraphs": [
+        "This section presents the mechanical properties of DED H13 samples that were manufactured to expand the databases compiled from the literature. The phase composition of the samples can be obtained from the Rule of Mixtures, which states that the hardness of a multiphase alloy is the weighted average of the volume fraction and hardness of each constituent phase (Ref  39 ). Since a binary phase composition of austenite and martensite is assumed in this work, the volume fraction of martensite can be estimated using 1 f α ′ = H - H γ H α ′ - H γ \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${f}_{\\alpha {\\prime}}=\\frac{H-{H}_{\\gamma }}{{H}_{\\alpha {\\prime}}-{H}_{\\gamma }}$$\\end{document} where  f α ′ \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${f}_{\\alpha {\\prime}}$$\\end{document}  is the phase fraction of martensite and  H \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$H$$\\end{document}  is the measured microhardness. In this study, 64 HRC was used as the microhardness of martensite and tempered martensite  H α ′ \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${H}_{\\alpha {\\prime}}$$\\end{document}  and 17 HRC was used for austenite  H γ \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${H}_{\\gamma }$$\\end{document}  (Ref  82 ). The phase fraction of tempered martensite in the stress-relieved (SR) material is therefore about 80%. Recall that the second and third sets of tensile coupons were tempered at 620 and 590 °C after secondary machining to introduce greater variability in the training data. The martensitic phase fractions of these coupons are approximately 65 and 75%, respectively. The measured hardness, estimated martensite fraction ( α ′%), and tensile properties of all nine coupons are shown in Table  2 .\n Table 2 Mechanical properties of the tensile coupons Sample Temper, 2 hrs UTS, MPa YS, MPa ε UTS , % E, GPa Hardness, HRC α′ % by ROM 1 SR 1556 941 3.81 105 54.0 79% 4 SR 1546 937 3.76 106 54.8 80% 7 SR 1553 933 3.86 104 55.9 83% 2 620 °C 1312 1104 2.10 114 47.3 65% 5 620 °C 1350 1059 2.27 113 48.9 68% 8 620 °C 1293 1023 2.55 107 46.3 62% 3 590 °C 1473 1090 2.27 109 52.4 75% 6 590 °C 1381 1209 1.72 112 51.6 74% 9 590 °C 1462 1130 2.18 110 52.5 75%",
+        "The SR samples had the highest UTS, ranging from 1546 to 1556 MPa, but exhibited the lowest YS, between 933 and 941 MPa. The  ε UTS \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${\\varepsilon}_{\\text{U}\\text{T}\\text{S}}$$\\end{document}  of the SR coupons also surpassed those of the tempered coupons and was between 3.76 and 3.86%. The high hardness of the SR samples anticipated good strength, but their superior elongation and lower YS are surprising since tempering is expected to improve ductility and reduce strength (Ref  43 ,  44 ). The low YS, high UTS, and high  ε UTS \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${\\varepsilon}_{\\text{U}\\text{T}\\text{S}}$$\\end{document}  outcome is a result of the high toughness of the SR samples, whose larger plastic region is evident in the true stress-strain curves in Fig.  5 . There, the calculated values of true stress and strain are plotted for samples 1, 2, and 3, representing all three heat treatment conditions. Only three curves are shown to avoid overcrowding the plot. At this time, it is unclear why the stress-relieved DED H13 samples exhibit greater toughness than the tempered samples. Fig. 5 True stress-strain curve of three DED H13 samples after different heat treatments",
+        "The samples tempered at 590 °C were stronger than those tempered at 620 °C on average. The latter had a UTS of 1319 MPa, YS of 1062 MPa, and  ε UTS \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${\\varepsilon}_{\\text{U}\\text{T}\\text{S}}$$\\end{document}  of 2.31% on average, while the former had a UTS of 1438 MPa, YS of 1143 MPa, and  ε UTS \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${\\varepsilon}_{\\text{U}\\text{T}\\text{S}}$$\\end{document}  of 2.06% on average. This finding is in line with the expectation that a higher martensite percentage will correlate with greater hardness and strength, but reduced ductility and toughness. Nevertheless, brittle fracture was consistently observed due to the high concentration of martensite in all nine coupons, with little evidence of necking before sudden failure.",
+        "It should be noted that these mechanical properties are within the range of published values for laser-processed H13, falling near the middle. Reported yield strengths are 500-1800 MPa, ultimate tensile strengths are 780-2300 MPa, elongations are 1-15%, and hardnesses are 48-57 HRC."
+      ]
+    },
+    {
+      "heading": "CNN Phase Recognition",
+      "paragraphs": [
+        "The pixel label classification accuracies of the fully trained and validated U-Net model were 92% and 86%, respectively. These metrics were calculated by comparing each CNN output pixel with its annotated copy, which was taken as ground truth. The good agreement demonstrates that the U-Net learned to recognize the texture and features of both phases and applied that knowledge to perform reliable segmentation. Note, however, that a global threshold can only partially highlight austenitic regions based on their pixel intensity, which hinders the precision of the ground truth labels. Hence, the thin austenitic features in the manually annotated copies are captured with a smooth globular texture and consistent width, both of which are unrealistic (Fig.  6 a-b). Fig. 6 Comparison of (a) original SEM micrograph, (b) manually thresholded image to evaluate phase segmentation, (c) CNN output",
+        "Therefore, some of the discrepancy between the ground truth and U-Net predictions is due to the limitations of manual thresholding and the improved precision of the CNN. This is evident in Fig.  6 , which shows a full-size testing image, the manually thresholded copy of the image used for training in the event the image is not selected for testing, and the reconstructed CNN output of that image. In the U-Net output images, red coloring indicates a retained austenite prediction, while blue coloring represents a martensite prediction. In Fig.  6 b-c, it is apparent that the CNN reduced speckling and enhanced the sharpness of the segmentation. Such visual comparisons between the input and output versions of the testing images consistently point to the superior or comparable performance of semantic segmentation despite the uncertainty in the training data. This is not surprising, as semantic CNNs are known to perform well with coarse ground truth labels (Ref  89 ,  90 ).",
+        "To complement the visual comparisons, the predicted phase fractions were benchmarked against Rule of Mixtures estimates to obtain a second, quantitative basis for assessing the CNN accuracy. In Fig.  7 , the martensite area fraction predictions obtained from the CNN are plotted alongside their martensite phase fraction estimations obtained through Eq  1  for all eighteen testing images. Both area-based measurements and the Rule of Mixtures are established methods for estimating the overall volume fraction of a phase in a bulk material, each relying on distinct microscopic data to do so (micrographs versus microhardness) (Ref  15 ,  91 ). Neither method is absolute, but it is reassuring that there is good agreement between the estimates, with a maximum difference of 10% and an average difference of 4.2%. Fig. 7 Comparing the phase fractions of martensite obtained from the CNN and the Rule of Mixtures for the testing images",
+        "In addition to fine and accurate segmentation, machine-learning-based labeling tools offer the advantage of greater long-term efficiency. Although the constituent phases of H13 can be easily identified with the eye, deriving phase fractions from these qualitative observations can be challenging. Several standards have been developed to help guide this process, but manual methods (Ref  92 ) are tedious and time-consuming, and it is difficult to develop automated or semi-automated approaches (Ref  91 ) that work well on large batches of images with varying brightness, contrast, and illumination. While machine learning models rely on manual or semi-automated annotation techniques to label training data, the burden of this work is confined to the pre-training stage. In contrast with the other approaches, a fully trained model can quickly and accurately segment new images with a wide range of lighting conditions. Of course, if thresholding or other image processing techniques could perform phase segmentation efficiently and accurately, there would be no need to implement machine learning or semantic segmentation to obtain the phase fractions of laser-processed H13."
+      ]
+    },
+    {
+      "heading": "ANN Mechanical Property Prediction",
+      "paragraphs": [
+        "Figure  8 ,  9 ,  10  display the training, validation, and testing parity plots for the UTS, YS, and  ε UTS  predictions. To obtain a property prediction based on the overall microstructure, predictions obtained from subimages cropped from the same full image are averaged and plotted against the true mechanical property in the training and validation plots. For each full image, local microstructure-property relationships are still captured through symmetric error bars with a length equal to twice the standard deviation of the subimage prediction. On a well-performing model, a higher standard deviation indicates a more inhomogeneous microstructure. Because subimages cropped from the same image can be designated for training or validation, both plots usually have the same number of points. In the testing plots, the full image prediction is plotted against the ground-truth. Fig. 8 UTS training, validation, and testing results Fig. 9 YS training, validation, and testing results Fig. 10 ε UTS  training, validation, and testing results",
+        "The custom ANN achieved excellent predictive accuracy from the martensite phase fraction and grain morphology inputs. The UTS model achieved  R 2  values of 0.996, 0.956, and 0.993 for training, validation, and testing. The average root mean square errors (RMSE) for training and validation are 24 and 85 MPa, while the maximum errors are 80 and 267 MPa. The maximum error and RMSE for the testing predictions are 77 and 36 MPa. The lowest observed  R 2  was 0.939 for the elongation training data, with a maximum and average error of 2 and 0.9%. The remaining error statistics, including the RMSE, maximum error, and mean absolute percent error (MAPE), are shown in Table  3  for each result.\n Table 3 Error statistics from training, validation, and testing each mechanical property UTS YS ε UTS RMSE, MPa Max Error, MPa MAP, % RMS, MPa Max Error, MPa MAP, % RMS, % Max Error, % MAPE, % Training 24 80 1.1 32 77 2.0 0.9 2 12 Validation 85 267 4.4 54 179 3.6 1.3 3 16 Testing 36 77 2.0 42 96 2.6 0.6 1 4",
+        "Across all three mechanical properties, the validation predictions have the greatest error and variance. Because the testing accuracies fall between those of training and validation, there is no evidence of overtraining. Rather, it is likely that the larger quantity of validation data, which was generated through augmentation and subimaging, resulted in more modest performance compared to testing. Validating with full-sized images may improve results, and the accuracy of the entire model is expected to improve with more full-sized images. This, however, would come at the expense of compiling a larger database for a marginal performance gain. The maximum MAPE was 16% when validating elongation at UTS, which had the highest MAPE of the three material properties due to its smaller physical value. The robust performance on the training, validation, and testing data signals that the custom ANN was able to learn microstructure-property relationships and accurately predict the mechanical properties of laser-processed H13 without sacrificing generalizability.",
+        "Researchers have long sought to understand these microstructure-property relationships, recognizing that a statistically significant number of microscopic measurements were required to accurately determine macroscopic values (Ref  91 ,  93 ). In other words, the fundamental basis of traditional quantitative microstructural analysis is that as the number of measurements increases, their average converges to an accurate value. Multiple measurements were not taken in this study, but subimaging may function as a sort of measurement multiplier. In Fig.  8 ,  9 ,  10 , the error bars in the training and validation plots indicate the presence of outliers, but the averaged predictions are always accurate. It is also possible that the large number of learnable parameters in machine learning models effectively reduce statistical requirements. The simple ANN used in this work still had 571 learnable parameters spread between the input weights, layer weights, and biases. This allows the model to detect patterns and make connections that humans cannot. In contrast, standardized methods for determining the average grain size used in various grain-size strengthening equations have a single parameter: the number of grains in the image or the number of times an overlain test line of known length intercepts a grain boundary (Ref  28 ,  93 ).",
+        "Thus, machine learning appears to reduce or even eliminate the need to take multiple measurements from each sample, even in laser-processed materials with notoriously inhomogeneous microstructures. This may not be possible for more complex geometries, but it is nevertheless remarkable that predictions based on the relatively small ANN dataset were able to achieve such accuracies using only one set of phase composition and grain morphology inputs per sample. Each pair of images captured less than 12.5x10 −2  mm 2  of surface area but was sufficient for accurately predicting the UTS, YS, and  ε UTS  of fifty five H13 samples. Note that these were manufactured by (1) nineteen individuals from around the world, (2) who in twenty two studies used their own machines and operating parameters and (3) tempered their samples differently to (4) produce diverse microstructures with a wide range of properties all while (5) never meeting or collaborating on this project. The reported UTS of laser-processed H13 spans from 780 to 2300 MPa, yet the ANN was able to predict the strength of each testing sample within 77 MPa of its true value. Likewise, the yield strength predictions have a maximum error of only 96 MPa when the reported strengths span from 500 to 1800 MPa. In terms of generalizability, this is a significant step forward. Previous authors have exclusively used their own machines and samples to train and validate their data-driven models (Ref  19 ,  20 ,  21 - 22 ,  24 ,  26 ). Even in an instance where external data was used (Ref  34 ), there was still limited property variability and predictions were validated across a range of just a few hundred megapascals. Despite the wider range of possible outcomes, the accuracy of this predictive model meets or exceeds that of the previous works. The RMSE of the UTS, YS, and ε UTS  testing predictions were 36, 42 MPa, and 0.6%. Likewise, the lowest R 2  obtained on the testing data was 0.973 and the maximum MAPE was only 4%.",
+        "A major drawback of machine learning models is that they require several thousand training samples to make reliable predictions. This work again demonstrates our subimaging technique’s ability to compromise between dataset size and practicality, as the cost of compiling a database containing thousands of micrographs and properties of individual tensile coupons is prohibitive. We have found that a dataset of approximately 50 tensile coupons captures a sufficient range of microstructures and mechanical properties. Subimaging introduced additional input variability and produced the appropriate number of non-repetitive training samples, expanding the 122 phase images in the CNN dataset to 2750 inputs. About 1850 inputs were likewise generated from the 55 grain images in the ANN dataset. We have shown that with careful augmentation, predictive reliability can be achieved from a small number of tensile samples.",
+        "This accuracy, generalizability, and reliability were direct outcomes of the physics-based decisions made throughout this work. Martensite was identified as the key phase due to its high strength and hardness, grains were binned according to their equivalent diameter on the logarithmic scale because of the Hall-Petch relationship, and the phase and grain data are inputted into the model separately to reflect their distinct and important effects on mechanical performance. As a result, the ANN learned real microstructure-property relationships that it could deploy for mechanical property prediction."
+      ]
+    },
+    {
+      "heading": "Conclusions",
+      "paragraphs": [
+        "In this work, a data-driven approach for predicting the ultimate tensile strength, yield strength, and elongation at UTS of laser-processed H13 tool steel was presented. Predictions were based on grain morphology and phase composition inputs gathered from published microstructural images and micrographs of DED samples manufactured for this study. A CNN, U-Net, was trained and validated for phase recognition, and a custom ANN model capable of learning complex microstructure-property relationships was developed. The conclusions of this work are: Coupons tempered at 620 °C display lower strength and higher ductility than those tempered at 590 °C. Stress-relieved samples exhibited enhanced strength, ductility, and toughness. A secondary hardening peak occurs when tempering H13 at 520 °C. Of the prevalent steel phases, martensite and tempered martensite play an outsized role in determining mechanical performance due to their high strength and hardness. Consequently, accurate estimations of their phase fractions are critical for predicting the properties of laser-processed H13. U-Net can recognize the distinctive features of metallic phases and perform accurate segmentation. The predicted phase composition is within 10% of estimates from the Rule of Mixtures. Physics-based modeling approaches enabled the custom ANN to make predictions with excellent accuracy and generalizability. The model achieved testing correlation coefficients of  R 2  = 0.993, 0.973, and 0.987 on new UTS, YS, and  ε UTS  data. The RMSE of these predictions were 36, 42 MPa, and 0.6%, respectively."
+      ]
+    }
+  ],
+  "tables": [
+    {
+      "caption": "H13 build parameters",
+      "headers": [
+        "Laser power",
+        "350, W"
+      ],
+      "rows": [
+        [
+          "Laser scanning speed",
+          "14.8 mm/s"
+        ],
+        [
+          "Powder feed rate",
+          "8.5 g/min"
+        ],
+        [
+          "Hatch spacing",
+          "0.3 mm"
+        ]
+      ],
+      "header_groups": [],
+      "table_alignment_status": "resolved",
+      "row_provenance": [
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 2
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 2
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 2
+          }
+        ]
+      ],
+      "tbody_alignment_status": "resolved"
+    },
+    {
+      "caption": "Mechanical properties of the tensile coupons",
+      "headers": [
+        "Sample",
+        "Temper, 2 hrs",
+        "UTS, MPa",
+        "YS, MPa",
+        "ε UTS , %",
+        "E, GPa",
+        "Hardness, HRC",
+        "α′ % by ROM"
+      ],
+      "rows": [
+        [
+          "1",
+          "SR",
+          "1556",
+          "941",
+          "3.81",
+          "105",
+          "54.0",
+          "79%"
+        ],
+        [
+          "4",
+          "SR",
+          "1546",
+          "937",
+          "3.76",
+          "106",
+          "54.8",
+          "80%"
+        ],
+        [
+          "7",
+          "SR",
+          "1553",
+          "933",
+          "3.86",
+          "104",
+          "55.9",
+          "83%"
+        ],
+        [
+          "2",
+          "620 °C",
+          "1312",
+          "1104",
+          "2.10",
+          "114",
+          "47.3",
+          "65%"
+        ],
+        [
+          "5",
+          "620 °C",
+          "1350",
+          "1059",
+          "2.27",
+          "113",
+          "48.9",
+          "68%"
+        ],
+        [
+          "8",
+          "620 °C",
+          "1293",
+          "1023",
+          "2.55",
+          "107",
+          "46.3",
+          "62%"
+        ],
+        [
+          "3",
+          "590 °C",
+          "1473",
+          "1090",
+          "2.27",
+          "109",
+          "52.4",
+          "75%"
+        ],
+        [
+          "6",
+          "590 °C",
+          "1381",
+          "1209",
+          "1.72",
+          "112",
+          "51.6",
+          "74%"
+        ],
+        [
+          "9",
+          "590 °C",
+          "1462",
+          "1130",
+          "2.18",
+          "110",
+          "52.5",
+          "75%"
+        ]
+      ],
+      "header_groups": [],
+      "table_alignment_status": "resolved",
+      "row_provenance": [
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 7
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 8
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 7
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 8
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 7
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 8
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 7
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 8
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 7
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 8
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 7
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 8
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 7
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 8
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 7
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 8
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 8,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 8,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 8,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 8,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 8,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 8,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 8,
+            "source_col": 7
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 8,
+            "source_col": 8
+          }
+        ]
+      ],
+      "tbody_alignment_status": "resolved"
+    },
+    {
+      "caption": "Error statistics from training, validation, and testing each mechanical property",
+      "headers": [
+        "",
+        "RMSE, MPa",
+        "Max Error, MPa",
+        "MAP, %",
+        "RMS, MPa",
+        "Max Error, MPa",
+        "MAP, %",
+        "RMS, %",
+        "Max Error, %",
+        "MAPE, %"
+      ],
+      "rows": [
+        [
+          "Training",
+          "24",
+          "80",
+          "1.1",
+          "32",
+          "77",
+          "2.0",
+          "0.9",
+          "2",
+          "12"
+        ],
+        [
+          "Validation",
+          "85",
+          "267",
+          "4.4",
+          "54",
+          "179",
+          "3.6",
+          "1.3",
+          "3",
+          "16"
+        ],
+        [
+          "Testing",
+          "36",
+          "77",
+          "2.0",
+          "42",
+          "96",
+          "2.6",
+          "0.6",
+          "1",
+          "4"
+        ]
+      ],
+      "header_groups": [
+        {
+          "label": "UTS",
+          "start_col": 2,
+          "end_col": 4
+        },
+        {
+          "label": "YS",
+          "start_col": 5,
+          "end_col": 7
+        },
+        {
+          "label": "ε UTS",
+          "start_col": 8,
+          "end_col": 10
+        }
+      ],
+      "table_alignment_status": "resolved",
+      "row_provenance": [
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 7
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 8
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 9
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 10
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 7
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 8
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 9
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 10
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 7
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 8
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 9
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 10
+          }
+        ]
+      ],
+      "tbody_alignment_status": "resolved"
+    }
+  ]
+}

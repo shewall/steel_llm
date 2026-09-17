@@ -1,0 +1,495 @@
+{
+  "doi": "10.1038/s41524-026-01980-8",
+  "title": "Computational design of materials for nuclear reactors",
+  "abstract": "Abstract Computational design for fission reactor materials is ready to accelerate the development and qualification of nuclear materials. This review is primarily aimed at computational materials scientists that seek to apply ICME to the development of fission reactor materials. We summarize reactor materials and technology, discuss reactor material development and qualification today, show how ICME is being applied to the unique requirements of reactor materials, and provide a future vision.",
+  "journal": "npj Computational Materials",
+  "year": "2026",
+  "sections": [
+    {
+      "heading": "Introduction",
+      "paragraphs": [
+        "As the world’s appetite for electricity continues to grow exponentially, driven by global technological innovation and the proliferation of digital technologies, the demand for reliable, secure and economical energy sources of power with a high capacity factor (actual output divided by maximum output) has become increasingly pressing. Nuclear fission reactors, with their high energy density and extremely high capacity factor, have immense potential to meet the burgeoning energy needs of data centers and the broader technological landscape 1 , 2 . However, the development of materials capable of withstanding the extreme operating conditions encountered in various reactor technologies remains a critical challenge 3 ,  4 – 5 .",
+        "The harsh environments within nuclear fission reactors, including high temperatures, intense radiation fields, corrosive coolants, and complex thermomechanical stresses, can severely degrade the performance and useful life of materials used in fuel, structural components, and coolant systems 3 ,  4 ,  5 – 6 . New reactor technologies currently under development often have even more extreme conditions 4 , 6 , making materials challenges even larger. In addition, reactor materials must perform not only during normal operation but also under rapid transients and design-basis accident conditions 7 . Overcoming these material-related challenges is essential to unlock the full potential of nuclear power and support the energy-intensive demands of technological development and modern computing.",
+        "Traditionally, the design and qualification of nuclear materials have relied heavily on extensive experimental testing and evaluation 8 ,  9 – 10 . This approach, while robust, is time-consuming, resource-intensive, and incompatible with the rapid development and deployment required to meet the evolving needs of the nuclear industry 9 , 10 . To overcome the limitations of the traditional approach, computational design methodologies can be used as a complementary tool to accelerate the development, optimization, and qualification of materials 9 , 10 .",
+        "Computational materials design techniques 11 ,  12 ,  13 ,  14 – 15  and Integrated Computational Materials Engineering (ICME) 16 ,  17 – 18 , powered by advancements in high-performance computing, multiscale modeling, and data-driven methods, can greatly improve the understanding of material behavior under extreme conditions, predict performance, and guide the design of novel materials with improved properties. Incorporating these tools into the development and qualification of nuclear materials allows researchers to accelerate qualification, explore wider design spaces, identify promising candidates, and optimize performance, ultimately enabling more efficient and cost-effective reactor systems to meet the growing demands of the digital age 9 , 10 , 19 .",
+        "This review article aims to provide an overview of the current state of computational design approaches for materials in nuclear fission reactors. Unlike past work focused on presenting similar visions to the nuclear community 9 , 19 , here we focus on presenting the unique aspects of nuclear reactor materials to the computational materials community. We begin by summarizing the material requirements of the different components of a nuclear reactor in section “Reactor material types” and the key reactor technologies in section “Summary of nuclear reactor technologies”, followed by a discussion of nuclear material qualification in section “Nuclear reactor material qualification in the US” and the traditional nuclear material design approach and its limitations in section “Traditional nuclear material design”. In section “Integrated computational materials engineering for accelerated materials development” we then delve into the principles and applications of ICME. We discuss unique complications for ICME with nuclear materials and highlight specific examples where these techniques have been successfully applied to the development of materials for nuclear fission reactors in section “Applications of computational materials design to nuclear materials”. Finally, in section “Future vision”, we explore the future vision further integrating computational design into the nuclear materials landscape, paving the way for the next generation of advanced reactor systems that can power the technological advancements of the 21st century."
+      ]
+    },
+    {
+      "heading": "Reactor material types",
+      "paragraphs": [
+        "Generally, a nuclear reactor generates electricity from heat using turbines much like coal or natural gas plants. The major difference is in how the heat is generated; in a nuclear reactor, the heat is generated by splitting fissile isotopes (isotopes that undergo fission when hit by low-energy neutrons) such as uranium-235 (235U), plutonium-239 (239Pu), and uranium-233 (233U). Once fission occurs, heat, gamma rays, and excess neutrons are released, and new elements are left behind, typically called fission products. The heat then has to be transported by the coolant to the turbines to generate electricity. For a nuclear reactor to complete these functions, various materials are needed, each with specific roles and unique operating conditions. These types of materials are summarized in the following subsections and in Fig.  1 . Note that the figure highlights their relative temperature and neutron flux, but also the physical layers of defense preventing the release of radioactive material from the fuel. These layers reflect the safety functions that ultimately govern material requirements and qualification, and they shape why each material class must meet specific performance criteria under normal, transient, and accident conditions. Fig. 1 Schematic of the types of reactor materials. It shows general reactor positioning, interaction with coolant, and temperature and neutron flux ranges for the different types. Note that this figure also highlights the positioning of the material types as layers of defense against release of radioactive material from the fuel."
+      ]
+    },
+    {
+      "heading": "Fuel",
+      "paragraphs": [
+        "The fuel material must contain fissile atoms and fission products, and sustain a controlled chain reaction. It must also withstand high-energy fission fragments and neutrons, as well as extreme temperatures and possible coolant interactions 20 . Efficient fuels should have a high fissile atom density, good thermal conductivity for heat transfer to the coolant, maintain dimensional stability under radiation damage, and have good chemical compatibility with the cladding.",
+        "The most widely used nuclear fuel worldwide is uranium dioxide (UO 2 ). However, UO 2  has some drawbacks in terms of efficiency, namely low thermal conductivity 21  and low uranium density 5 . Despite these limitations, UO 2  offers excellent safety characteristics: a stable crystal structure resistant to significant radiation damage, compatibility with water, and a high melting temperature 5 , 20 , 22 . Mixed oxide fuels, which contain both uranium and plutonium, are also used in some reactors and share similar properties with UO 2 5 , 23 . Metallic alloy fuels, such as uranium-zirconium (U-Zr) 24 ,  25 – 26 , uranium-plutonium-zirconium (U-Pu-Zr) 26 , and uranium-molybdenum (U-Mo) 27 , 28 , have been extensively used in test and demonstration reactors. Compared to UO 2 , these alloys provide much higher thermal conductivity and uranium density, but lower melting temperatures and greater swelling. They are incompatible with water coolants, but can be used with liquid metals such as lead or sodium. Other uranium compounds have also been considered, including uranium carbides 29 , 30 , oxycarbides 31 ,  32 – 33 , nitrides 34 ,  35 – 36 , silicides 37 ,  38 – 39 , borides 30 , and hydrides 40 . These compounds typically offer higher thermal conductivity and uranium density than UO 2 , as well as higher melting temperatures than uranium alloys. However, they often have less stable structures than UO 2  and react unfavorably with water-based coolants."
+      ]
+    },
+    {
+      "heading": "Coated particle fuels",
+      "paragraphs": [
+        "Coated particle fuels, such as TRISO (Tristructural-Isotropic) fuel, have a unique composite structure that fills the roles of several reactor material types. They feature a multilayered coating around small fuel kernels, typically made of uranium oxycarbide (UCO) or UO 2 41 . The coatings, which include layers of pyrolytic carbon and silicon carbide, provide an additional barrier to the release of fission products and enhance the fuel’s performance under high-temperature and radiation conditions. Coated particle fuels are designed to withstand extreme environments encountered in advanced reactor designs, such as high-temperature gas-cooled reactors (HTGRs) and do not require a separate cladding 41 ,  42 – 43 . The primary benefit of these fuels is their safety due to excellent fission product retention even at very high temperatures, while their main weakness is their low uranium density since the fuel kernel is only a portion of the overall volume of the particle.",
+        "Coated particle fuels have been successfully employed in HTGRs and are being considered for implementation in other advanced reactor concepts 44 , where their enhanced safety and performance characteristics can contribute to the overall reliability and efficiency of the nuclear power system. They are even being considered for use in LWRs 45 . There is also a topical report from the US Nuclear Regulatory Commission (NRC) 46  on the fuel, lowering the barrier to their use. The development of TRISO fuel is summarized section “TRISO particle development”."
+      ]
+    },
+    {
+      "heading": "Cladding",
+      "paragraphs": [
+        "The cladding material serves as a critical barrier between the fuel and the coolant. It prevents the fuel and fission products from escaping the fuel and entering the coolant, while also efficiently transferring heat from the fuel to the coolant. It must be able to withstand high temperatures, intense radiation fields, and potential chemical interactions with both the fuel and coolant. Ideal cladding materials should have low neutron absorption, good corrosion resistance, and sufficient mechanical strength to maintain fuel integrity under normal and accident conditions. Cladding is typically selected to match the fuel type. ensuring chemical and mechanical compatibility under reactor conditions.",
+        "The most widely used cladding materials in light water reactors (LWRs) are Zr-based alloys due to their low thermal neutron absorption cross section, good corrosion properties, and their compatibility with UO 2 47 . The development of Zr alloys for cladding is a good example of traditional nuclear material development and is summarized in section “Development of zirconium alloy cladding”. However, Zr alloys have problems at the high temperatures that can occur during accidents: they can undergo rapid oxidation when exposed to steam or other oxidizing environments 48 ,  49 – 50  and their mechanical properties can significantly degrade 51 , 52 . The development of accident-tolerant cladding materials, such as coated Zr alloys 53 , 54 , iron-chromium-aluminum (FeCrAl) alloys 55 ,  56 – 57  and silicon carbide (SiC) composites 58 ,  59 – 60 , is an ongoing effort. With fuel types other than UO 2 , such as metallic fuels, stainless steels such as 316 or 304 have been used due to their good compatibility with metallic fuels, high-temperature strength, and reasonable resistance to liquid metal coolants like sodium 61 , 62 . However, their susceptibility to dimensional changes and hardening under irradiation makes them unattractive. Ferritic/martensitic steels, such as HT-9, are now preferred for metallic fuels in fast reactors due to their greater radiation tolerance and improved high temperature properties 61 ,  62 ,  63 ,  64 – 65 ."
+      ]
+    },
+    {
+      "heading": "Structural materials",
+      "paragraphs": [
+        "Structural materials are used for various components within the reactor, such as the core internals, control rods, and other support structures. These materials must be able to withstand the high temperatures, intense radiation fields, and mechanical stresses present in the reactor environment. Ideal structural materials should possess high strength, good corrosion resistance, and sufficient radiation tolerance to maintain their integrity over reactor lifetime 6 , 66 , 67 .",
+        "Common structural materials include stainless steels, nickel-based alloys, and advanced ferritic/martensitic steels. The specific composition and processing of these materials are tailored to optimize their performance in harsh reactor conditions, balancing factors such as mechanical properties, corrosion resistance, and radiation tolerance. This is especially important for advanced reactor designs that have harsher conditions than in LWRs 3 , 68 ,  69 – 70 . Concrete 71 , 72  and graphite 73 ,  74 – 75  are also used as structural materials in some reactor designs."
+      ]
+    },
+    {
+      "heading": "Pressure vessel material",
+      "paragraphs": [
+        "The reactor pressure vessel (RPV) is a critical component for some reactors that contains the reactor core and coolant. It also serves as the ultimate barrier to the release of radioactive material. The RPV material must be able to withstand high pressures and temperatures, as well as the cumulative effects of radiation damage over reactor lifetime. The exact conditions vary depending on the type of reactor. Ideal RPV materials should exhibit high strength, toughness, and resistance to radiation embrittlement 76 .",
+        "Typical RPV materials are low-alloy steels, with the specific composition and heat treatment optimized to provide the necessary mechanical properties and radiation resistance 77 . The development and testing of advanced RPV materials is ongoing, as engineers strive to enhance the safety and reliability of nuclear reactor designs 78 ,  79 – 80 ."
+      ]
+    },
+    {
+      "heading": "Moderator materials",
+      "paragraphs": [
+        "Moderator materials slow down fast neutrons produced during fission to thermal energies where the probability of further fission is much higher for 235U. For a material to be an effective moderator, it must be able to efficiently slow neutrons without significantly capturing them (high neutron scattering cross-section and a low neutron absorption cross-section) 81 . Moderator materials may be exposed to high temperatures, intense radiation fields, and direct contact with water, steam, or other coolants. Ideal moderators combine moderation effectiveness with resistance to radiation damage, dimensional and chemical stability under operational conditions, and minimal introduction of impurities or activation products to the reactor environment 82 , 83 .",
+        "The most commonly used moderator materials are light water (ordinary H 2 O), heavy water (D 2 O) 84 , graphite 74 , 85 , and in some advanced concepts, beryllium 86  or zirconium hydride 82 , 87 . Graphite was historically used in early reactor designs and remains essential in some HTGRs due to its excellent moderation properties and high operating temperature tolerance."
+      ]
+    },
+    {
+      "heading": "Summary of nuclear reactor technologies",
+      "paragraphs": [
+        "In the development of advanced materials for nuclear fission reactors, the context of the diverse range of reactor technologies currently in use or under development must be considered. Each reactor type presents unique operating conditions and material requirements that must be carefully addressed. Models and data for one reactor type are often not applicable to others due to their different conditions and materials. In this section, we provide a summary of the key reactor technologies and their associated materials challenges."
+      ]
+    },
+    {
+      "heading": "Light water reactors (LWRs)",
+      "paragraphs": [
+        "LWRs, including pressurized water reactors and boiling water reactors, represent the dominant commercial nuclear power technology worldwide 88 . These reactors use light water as both coolant and moderator, operating at a temperature range of 300–350 °C 88 . All operating LWRs use UO 2  fuel and Zr-alloy cladding, though accident-tolerant cladding concepts, like FeCrAl 55  and SiC composites 58 , and fuel concepts, like doped UO 2 89  and UN 35 , are being considered. Major companies developing new LWR designs include GE Hitachi, NuScale, Westinghouse, Framatome, Holtec, EDF, and Rolls-Royce 90 ."
+      ]
+    },
+    {
+      "heading": "CANDU reactors",
+      "paragraphs": [
+        "CANDU (CANada Deuterium Uranium) reactors form a significant class of commercial nuclear reactors that use D 2 O as both moderator and coolant 91 . Their unique design features allow the use of natural uranium fuel without enrichment 92 . CANDU reactors typically operate at moderate temperatures (~300 °C), similar to LWRs, but have distinct material challenges due to D 2 O chemistry and the use of pressure tubes instead of a large RPV. They use UO 2  fuel and Zr-alloy cladding, like LWRs. Material challenges include managing deuterium-induced corrosion and hydriding. The major producer and operator of CANDU reactors is Candu Energy (a division of SNC-Lavalin), and CANDU reactors are in service in Canada, South Korea, Romania, India (as PHWRs), and several other countries."
+      ]
+    },
+    {
+      "heading": "Metallic fuel fast reactors",
+      "paragraphs": [
+        "Metallic fuel fast reactors (MFRs), such as sodium-cooled fast reactors (SFRs) or lead-cooled fast reactors (LFRs), utilize a fast neutron spectrum and metallic alloy fuels to achieve high breeding ratios and efficient fuel utilization 93 , 94 . These reactors operate at high temperatures (typically 400–550 °C) and employ liquid sodium or lead as the primary coolant, which presents unique materials challenges related to chemical compatibility, corrosion, and structural integrity 95 . The development of advanced fuel forms, cladding materials, and robust structural alloys is a critical area of research. Typical designs use U-Zr 24 ,  25 – 26  or U-Pu-Zr 26  fuel with HT-9 cladding 61 ,  62 ,  63 ,  64 – 65 . Because they operate with fast neutrons, a moderator is not required. TerraPower 96 , 97 , Oklo, and ARC 98  are examples of companies developing SFRs."
+      ]
+    },
+    {
+      "heading": "Ceramic fuel fast reactors",
+      "paragraphs": [
+        "Ceramic fuel fast reactors (CFRs), such as oxide-fueled sodium-cooled fast reactors (oxide SFRs) and lead-cooled fast reactors (oxide LFRs), use ceramic forms of nuclear fuel (e.g., UO 2 , MOX, mixed actinide oxides, or UN) and operate with a fast neutron spectrum 99 ,  100 – 101 . These reactors use liquid sodium or lead as coolant and operate at high temperatures (400–600 °C). The use of ceramic fuels offers greater chemical and dimensional stability at high temperatures and under irradiation compared to metallic fuels, but lower thermal conductivity and uranium density. Cladding materials must also resist attack by both the fuel and coolant; HT-9 is a common cladding material. Research focuses on advanced fuel forms such as minor-actinide-rich mixed oxides 102  and high-performance cladding 103 . Well-known designs include the BN-800 (Russia) 104 , 105  and ASTRID (France) 106 ,  107 – 108 ."
+      ]
+    },
+    {
+      "heading": "High-temperature gas-cooled reactors (HTGRs)",
+      "paragraphs": [
+        "HTGRs use helium as the primary coolant and operate at temperatures up to 700–950 °C 109 , 110 . These designs promise improved thermal efficiency and the possibility of supplying high-temperature process heat for applications such as hydrogen production. Materials must be capable of withstanding extreme temperatures, a chemically inert helium environment, and intense radiation 111 . Graphite compacts shaped as pellets or spheres containing TRISO particles are used as the fuel form 43 . Developers include China National Nuclear Corporation 112 , X-Energy 113 , General Atomics, and Japan Atomic Energy Agency 114 , 115 ."
+      ]
+    },
+    {
+      "heading": "Molten salt reactors (MSRs)",
+      "paragraphs": [
+        "MSRs utilize a molten fluoride or chloride salt as coolant and, in some designs, as a solvent for the nuclear fuel 116 , 117 . They operate at elevated temperatures (typically 600–800 °C). The use of molten salt fuel allows for continuous refueling, efficient fission product removal, and elimination of traditional radiation damage concerns. Molten salts offer high boiling points, low vapor pressures, and excellent heat transfer, but also introduce major challenges in terms of corrosion and structural performance 118 , 119 . Notable developers include Kairos Power (fluoride salt-cooled high-temperature reactor using TRISO fuel compacts) 120 , Natura Resources (molten fluoride fuel and coolant), TerraPower (molten chloride fuel and coolant) 118 , ThorCon (molten fluoride fuel and coolant) 121 , Terrestrial Energy (molten fluoride fuel and coolant) 122 , and Flibe Energy (molten fluoride fuel and coolant) 123 ."
+      ]
+    },
+    {
+      "heading": "Small modular reactors and microreactors",
+      "paragraphs": [
+        "Small modular reactors (SMRs) 124 ,  125 – 126  and microreactors 127 ,  128 – 129  represent a new generation of compact, factory-fabricated nuclear power plants that offer enhanced safety, reduced capital cost, and deployment flexibility. These designs use a range of coolants, such as light water, gas, or molten salt, and thus inherit the material challenges described previously for each respective coolant type. However, there are also some unique components and challenges for each design, for example microreactors are often cooled with a heat pipe 130 , 131 . Materials must be tailored to the specific reactor concept and operating conditions, with a particular focus on safety, reliability, and manufacturability. Most new reactor designs under development are in the SMR or microreactor category."
+      ]
+    },
+    {
+      "heading": "Reactor operating conditions",
+      "paragraphs": [
+        "The diverse range of nuclear fission reactor technologies, each with its unique normal operating conditions and material requirements (summarized in Table  1 ), presents a significant challenge in the development of advanced reactor materials. However, these materials also need to function in even more extreme conditions than the normal, steady operating conditions. They also need to maintain their required safety functions during transient and accident conditions. Table 1 Summary of reactor technologies, showing the type, the coolant, the fuel material, the cladding material, and typical steady operating temperatures Type Coolant Fuel Cladding Temperatures LWR H 2 O UO 2 Zr alloys 300–350 °C CANDU D 2 O UO 2 Zr alloys 300 °C MFR Liquid Na or Pb U-Zr or U-Pu-Zr HT-9 400–550 °C CFR Liquid Na or Pb UO 2 , MOX, or UN HT-9 400–600 °C HTGR He gas TRISO N/A 700–950 °C MSR Molten salt TRISO or Molten salt N/A 600–800 °C",
+        "Reactors are designed to experience three types of transient behavior 132 . Power transients are short-term, controlled departures from steady power, such as reactor startup or shutdown, power ramps, or load following (changing power during the day to follow power demand). The change in power results in changes in temperature, causing thermal stresses that can result in some fracture and fatigue without crossing into damage criteria if managed properly. Anticipated operational occurrences (AOOs) are disturbances expected to happen occasionally over a plant’s life (e.g., a turbine trip or brief loss of feedwater). The reactor is designed to handle these automatically and return to a safe state without fuel damage or releasing radioactive material. Materials experience bounded, short-lived excursions in temperature, stress, and chemistry that the design accommodates. Design basis accidents (DBAs) are credible, low frequency “worst-case” events the plant is explicitly designed to withstand (e.g., large coolant pipe break, control rod ejection) and still keep the core cooled and radioactivity contained. Materials are assessed under extreme conditions (high temperatures, rapid cooling, elevated oxidation or embrittlement) against acceptance criteria that ensure cladding retains fission products, core structures maintain coolable geometry, and the pressure boundary remains intact.",
+        "The difficulty in testing materials in extreme reactor environments for the large lengths of time they will likely be in steady operation, as well as the short-term exposure to even more extreme transient conditions, is a large challenge. The need for materials capable of withstanding reactor-specific extreme environments while maintaining safety, reliability, and cost-effectiveness drives the growing use of computational materials design in the nuclear field. As these new reactor concepts are actively pursued, accelerating the development and qualification of suitable new materials is a critical priority for the nuclear industry."
+      ]
+    },
+    {
+      "heading": "Nuclear reactor material qualification in the US",
+      "paragraphs": [
+        "In the US, the NRC governs which materials are used in safety-related reactor structures, systems, and components, primarily through Title 10 of the Code of Federal Regulations (CFR). The NRC also uses consensus codes and standards, like the American Society of Mechanical Engineers (ASME) Boiler and Pressure Vessel Code. Companion guidance covers ASME nuclear quality assurance (NQA-1), the assessment process for code verification, validation, and uncertainty quantification (V&V/UQ) in safety analyses, as well as environmental fatigue for new reactors and embrittlement correlations and surveillance. These regulations ensure that material behavior is acceptable during steady, transient, AOO, and DBA conditions.",
+        "Recent changes aim to create clearer, faster pathways to qualify new fuels and advanced structural materials without reducing safety margins. For fuels and cladding, the NRC has moved from zirconium-specific assumptions toward performance-based criteria and has supported staged deployment of accident-tolerant fuel via lead test rods and assemblies, plant-specific license amendments, and topical reports that establish generic methods and limits. For non-LWRs, the agency has endorsed a technology-inclusive, risk-informed, performance-based licensing framework that ties requirements to functions and risk significance rather than material pedigree, as outlined in NUREG-2246 for solid fuels 133  and NUREG/CR-7299 for molten salt technologies 134 . While these frameworks are independent and not cross-referencing; together they illustrate how the NRC is beginning to adapt, laying the groundwork for more flexible fuel qualification. Increased acceptance of mechanistic models to interpolate between accelerated testing and prototypical conditions is underway to make computational evidence a more integral part of the licensing basis 135 . This regulatory trajectory should favor performance-based demonstrations anchored by high-quality models linked directly to safety-relevant limits and degradation mechanisms."
+      ]
+    },
+    {
+      "heading": "Traditional nuclear material design",
+      "paragraphs": [
+        "The traditional approach to designing and qualifying new materials for nuclear fission reactors has been predominantly empirical and experimental, as described by Crawford et al. 8 , Karoutas et al. 47 , and Terrani et al. 9  for fuel development, and Murty and Charit 68 , Yvon and Carr´ 69 , and Chant and Murty 3  for structural material development. This methodology centers on comprehensive testing of candidate materials under realistic reactor conditions, including irradiation, mechanical loading, corrosion exposure, and other degradation mechanisms, to rigorously evaluate their performance and long-term suitability.",
+        "Historically, reactor material development followed an iterative, trial-and-error process. Researchers systematically varied composition, processing, and heat treatment, relying on repeated laboratory testing, in-reactor campaigns, and post-irradiation examinations 8 , 47 . Limited test reactor availability and the challenges of handling radioactive materials further complicated progress. As qualification requirements became more stringent, the time to develop new reactor materials increased significantly. Extended irradiation testing, lifetime performance data, accident scenario validation, and strict traceability requirements increased both time and cost. While general material development timeline is 10–20 years 136 , nuclear material often require more than 25 years 8 .",
+        "Although the empirical approach produced today’s reactor materials, it was tightly coupled to a regulatory system that increasingly required prescriptive demonstrations. Since the late 1970s, NRC’s reliance on deterministic assumptions, extensive in-reactor data, and prescriptive code cases (for example, ASME’s multi-decade effort to admit Alloy 617) has exposed the limitations of trial-and-error development. Recent shifts toward performance-based and technology-inclusive frameworks, as reflected in NUREG-2246 and NUREG/CR-7299, underscore the motivation for computationally guided design and accelerated qualification approaches. To illustrate the evolution, strengths, and weaknesses of traditional nuclear material development, we briefly review three representative examples: zirconium alloy cladding, Inconel 617, and TRISO fuel particles. Summarized development timelines for these materials are shown in Fig.  2 . Fig. 2 Development timelines for the example materials developed using the traditional approach. Timelines are shown for the development of Zr alloy cladding, Inconel 617, and TRISO fuel particles. Major reactor accidents are shown on the timeline to provide some context."
+      ]
+    },
+    {
+      "heading": "Development of zirconium alloy cladding",
+      "paragraphs": [
+        "The traditional material development approach prior to today’s qualification frameworks is well exemplified by the development of Zr-based alloys for LWR cladding. Initial development in the late 1940s and 1950s 47 , 137  saw the selection of commercially pure Zr for its low neutron absorption, but at the cost of poor corrosion resistance. Metallurgists responded by empirically alloying Zr with tin (Sn), and later with small additions of Fe, Cr, and nickel (Ni), culminating in the introduction of the optimized Zircaloy-2 in the 1950s. This alloy, joined by Zircaloy-4 in the 1960s 138 , dramatically improved corrosion resistance and mechanical integrity, facilitating longer fuel lifetimes and reliable operation in LWRs. Incremental improvements were made in the 1970s and 1980s, resulting in proprietary alloys such as ZIRLO 139  developed by Westinghouse, and M5 140  developed by Framatome.",
+        "Further advances in Zr alloys have proven far more challenging. Major accidents, notably Three Mile Island and Fukushima, exposed their vulnerability to high-temperature oxidation and hydrogen production in accident conditions. As a result, current development of so-called accident tolerant cladding, even those based on incremental chemistry changes or addition of coatings 141 , 142 , face protracted, decade(s)-long qualification cycles involving extensive irradiation and accident testing."
+      ]
+    },
+    {
+      "heading": "Development and qualification of Inconel 617 for nuclear reactors",
+      "paragraphs": [
+        "The development of Inconel 617 for high-temperature nuclear reactor applications offers another example of traditional nuclear materials. Inconel 617 is a wrought, nickel-chromium-cobalt-molybdenum alloy developed in the late 1960s 143 , 144 . Originally tailored for use in high-temperature petrochemical processing and gas turbine components, Alloy 617 combined exceptional strength 144 , oxidation resistance, and stability at temperatures exceeding those of traditional stainless steels and earlier nickel-base alloys.",
+        "With the rise of interest in high-temperature reactor concepts like HTGRs during the 1970s and 1980s, Inconel 617 became a prime structural material candidate. Its suitability stemmed from its ability to maintain mechanical robustness and corrosion resistance in both high-temperature helium and impure process environments 143 , 144 . Early testing programs demonstrated Alloy 617’s excellent thermal and irradiation stability up to temperatures of 950 ∘  C 143 , 145 . Laboratory mechanical and corrosion testing, along with in-reactor irradiation studies, built a substantial database and confidence in Alloy 617’s performance 145 . However, it was not officially qualified for commercial nuclear deployment.",
+        "With renewed interest in high-temperature reactor systems in the 2000s, the process to formally qualify Alloy 617 for nuclear reactor components was revitalized. Comprehensive test campaigns, especially under the Generation IV Very High Temperature Reactor (VHTR) Materials Program, addressed critical questions on creep-rupture, long-term oxidation, weldability, and environmental effects 146 , 147 . These efforts culminated in 2019 with the successful ASME Boiler and Pressure Vessel Code approval of Alloy 617 for nuclear components operating at temperatures up to 950 °C, following more than four decades of incremental testing and code development."
+      ]
+    },
+    {
+      "heading": "TRISO particle development",
+      "paragraphs": [
+        "The development trajectory of TRISO fuel particles provides another instructive example. Conceived in the 1960s 148 , 149 , TRISO fuels were empirically optimized for HTGR and other advanced reactors 41 . Extensive international testing throughout the 1970s and 1980s (including operation in the US’s Peach Bottom and Fort St. Vrain reactors, and in German programs) enabled improvement in fabrication methods, defect reduction, and fission product retention 41 , 42 . The German TRISO program was particularly influential, producing particles with low defect fractions and high coating quality, setting performance benchmarks that later U.S. development programs such as DOE Advanced Gas Reactor (AGR) program sought to match 42 . However, qualification standards demanded decades-long irradiation campaigns, post-irradiation examinations, and accident simulations, most notably under the AGR program in the 2000s–2010s 44 . Taken together, TRISO fuel development has spanned more than five decades, highlighting the long timelines inherent to traditional qualification. Only after meeting these requirements, did the NRC approve a topical report on AGR TRISO fuel 150 . While this was a major milestone, acceptance of a topical report does not itself constitute full fuel qualification for commercial use; rather, it establishes a reviewed body of data and methods that can be referenced in licensing for specific applications.",
+        "The NRC topical report underpins why advanced reactor developers now favor TRISO fuel: its qualification legacy circumvents the need for additional decades-long, high-cost development cycles. It is being considered for various reactor types beyond HTGRs 44 , including MSRs 120 , LWRs 45 , microreactors 151 , 152 , and even reactors for nuclear thermal propulsion in space 153 . TRISO particles are potentially over-designed for some of these other reactor applications but are being considered primarily to speed up qualification.",
+        "AGR TRISO is generally produced under stringent specifications, such as high kernel purity and low defect rates. While this quality underpinned the NRC’s review, replicating it at scale, or with modest changes in kernel chemistry, would likely trigger new qualification campaigns. The challenge grows if recycled material is used as the uranium source for kernel fabrication, since isotopic composition and impurities can differ from AGR specifications; such differences would require new characterization and potentially additional qualification testing. This distinction is important: -œTRISO-refers to a class of designs, not a single fuel form, and AGR data are only directly applicable to AGR-quality TRISO produced to their specifications.",
+        "While TRISO fuels have the advantage of a rich qualification history, they also have notable drawbacks. For example, TRISO was not designed for recycling, and while recycling pathways are being explored, the economics are currently unfavorable: large fractions of fissile material remain unused at discharge 154 , resulting in a larger disposal burden per unit of energy produced 155 . Furthermore, TRISO fabrication is an order of magnitude more expensive than conventional UO 2  fuel. Thus, it has significantly higher fuel cost per MWh. These drawbacks create an economic model that could be difficult to justify for wide-scale deployment outside HTGRs or MSRs.",
+        "Ultimately, TRISO’s case illustrates how the perception of qualification advantage can overshadow considerations such as cost, waste generation, and reactor requirements. These lessons underscore the need for new paradigms in materials development and qualification, motivating the potential value of computational materials design."
+      ]
+    },
+    {
+      "heading": "Summary",
+      "paragraphs": [
+        "Traditional nuclear material design has historically depended on a combination of empirical iteration and experimental validation. Materials developed before regulatory tightening in the late 1970s, such as Zircaloy cladding, benefited from relatively streamlined and pragmatic qualification pathways. In contrast, materials developed or modified since then face a much higher regulatory burden, with qualification cycles stretching to 20 years and beyond. This time and expense severely constrain the development of needed nuclear materials."
+      ]
+    },
+    {
+      "heading": "Integrated computational materials engineering for accelerated materials development",
+      "paragraphs": [
+        "ICME is a modern approach that unifies materials science, engineering, and computational modeling in a systematic, iterative framework for the accelerated discovery, design, optimization, qualification, and deployment of new materials. Unlike the traditional method discussed in the previous section, ICME leverages multi-scale modeling, informatics, and high-throughput experimentation to predict how changes in materials and processing affect microstructure and properties, ultimately shortening development cycles and reducing cost and risk. In nuclear materials, where qualification alone can cost hundreds of millions of dollars and take decades, ICME offers a pathway to drastically compress timelines and reduce costs while maintaining safety margins. Here, we provide an overview of the ICME approach and then give examples of ICME success stories."
+      ]
+    },
+    {
+      "heading": "Overview of the ICME approach",
+      "paragraphs": [
+        "ICME integrates computational models and experimental validation to enable the rapid design of materials and fabrication processes 16 ,  17 – 18 . ICME builds on many years of development of computational materials capability, but was formally defined in 2008 in a US National Academies report 156 . The U.S. Materials Genome Initiative, launched in 2011, has been a major force in promoting ICME to speed discovery and reduce the average 10–20 year timeline traditionally required for new material deployment 136 , 157 , 158 .",
+        "The core ICME philosophy is to replace expensive, slow, empirical testing with targeted, model-driven workflows that enable engineers to design from first principles for specific application requirements 16 . These workflows are organized around the concept of the materials tetrahedron, illustrating the connection in materials between the fabrication process, resultant structure, material properties, and the performance as summarized in Fig.  3 . In ICME, detailed process-structure-property-performance relationships are constructed with a combination of multiscale modeling and high throughput experiments. By bridging atomistic, microscale, mesoscale, and macroscale phenomena, ICME enables a holistic understanding of how complex processing variables and microstructural features influence component-level behavior. This multiscale integration is essential for designing advanced materials with enhanced properties, optimizing manufacturing routes, tailoring performance for specific applications, and accelerating qualification and deployment to those applications. For nuclear materials, this means moving from decades of sequential irradiation campaigns to integrated model-experiment loops that can anticipate failure modes, optimize compositions, and justify performance within years rather than decades. Fig. 3 Materials tetrahedron driving ICME workflows. Questions that are answered during the ICME development process are included. The connections are made using data from modeling and simulation and experiments.",
+        "A typical ICME workflow begins with atomic-scale models such as density functional theory (DFT) 11 , 16  and molecular dynamics (MD) 16  that predict fundamental interactions, stability, and properties. These predictions inform mesoscale and continuum-scale simulations, including phase-field (PF) modeling 159 , 160 , CALPHAD-based thermodynamic calculations 161 , and computational mechanics 16 , 17 , to connect microstructure evolution with macroscopic properties and in-service performance. Increasingly, data science and machine learning (ML) methods are being incorporated into ICME frameworks to accelerate materials exploration and optimize processing pathways, leveraging high-throughput simulations and large materials databases 18 .",
+        "Despite its promise, ICME also faces challenges 158 , 162 , especially in ensuring model fidelity across scales, integrating diverse types of data, and quantifying the uncertainties inherent in both simulation and experimentation 163 . Nevertheless, the growing adoption of ICME by industry and academia is enabling a new era of rational materials design, as illustrated by recent high-profile successes, described in the following subsections."
+      ]
+    },
+    {
+      "heading": "Ferrium S53, M54, and C64 steels for aerospace",
+      "paragraphs": [
+        "A prominent ICME success story is the accelerated development of the Ferrium family of precipitation-strengthened steels (S53, M54, and C64) used in aerospace landing gear and transmission applications 164 ,  165 – 166 . High-performance steels are critical for demanding aerospace applications, where components such as landing gear and transmission gears must combine exceptional strength, toughness, fatigue resistance, and corrosion resistance.",
+        "Northwestern University and QuesTek Innovations applied ICME to design the Ferrium S53, M54, and C64 alloys to address the needs of the aerospace industry 167 , 168 . Researchers leveraged CALPHAD thermodynamic modeling to explore multi-component alloy systems and accurately predict phase stability, precipitation behavior, and processability 169 , 170 . This modeling helped identify alloy compositions most likely to create fine, stable precipitates in a tough martensitic matrix, while minimizing detrimental phases. Kinetic simulations and property modeling detailed the influence of heat-treatment schedules, enabling virtual optimization of processing routes to further reduce experimental costs and time 164 , 167 . Experimental validation was tightly integrated throughout development, confirming predicted properties, resolving discrepancies, and refining both the alloy design and computational models 167 . These efforts resulted in the Ferrium S53 development taking 8.5 years 164 , 165  and M54 development just 6 years 171 .",
+        "Ferrium S53, M54, and C64 have transitioned successfully from the laboratory to qualification and commercial release. S53 is available for critical landing gear components in military and commercial aircraft 172 , as is M54 173 . C64 is available for demanding gearbox and transmission applications 174 . The success of these alloys exemplifies the power of ICME: leveraging computational tools to accelerate development, tightly integrating modeling and experiment, and rapidly delivering transformational materials solutions that meet stringent real-world demands. This case also demonstrates how ICME can reduce development timelines from decades to under a decade, an acceleration highly relevant to nuclear materials."
+      ]
+    },
+    {
+      "heading": "Nickel-based alloy 718Plus (IN718+)",
+      "paragraphs": [
+        "Alloy 718 (IN718), a nickel-based superalloy, has been a workhorse material in aerospace engines for decades due to its outstanding combination of strength, toughness, and processability. However, as NASA and industry partners pushed for higher engine efficiency and operating temperatures, IN718’s temperature limit of 650 °C became a constraint. The need for a next-generation superalloy capable of retaining strength, manufacturability, and cost advantages up to 700 °C motivated the integrated development of IN718+ by ATI Allvac.",
+        "Using CALPHAD modeling, researchers rapidly explored the effects of minor alloying additions, boosting  γ ′ \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\gamma {\\prime}$$\\end{document} -phase stability without causing the formation of detrimental phases 175 . Kinetic modeling predicted precipitation behavior and phase transformations during realistic thermal cycles, guiding the optimization of heat treatment procedures 176 . Experimental feedback cycles validated and refined model predictions 177 . This integrated design significantly reduced the typical development timeline for superalloys. Alloy IN718+ has been successfully qualified and deployed in next-generation turbine engine components, including disks, fasteners, and hot-section hardware, operating at temperatures up to 700 °C 178 . As with the Ferrium steels, the development of IN718+ highlights how ICME approaches can balance composition, processing, and performance requirements in a fraction of the traditional time, a lesson directly translatable to nuclear fuels and cladding."
+      ]
+    },
+    {
+      "heading": "Applications of computational materials design to nuclear materials",
+      "paragraphs": [
+        "Just as the ICME approach is proving transformational in the development of new materials for more traditional applications, it can also transform the development of nuclear reactor materials. The use of materials informatics and multiscale modeling with integrated experimental validation and process modeling could enable an application-driven approach that will reduce the development time from 20 to 25 years to less than 10 years. This is similar to the approach suggested by Terrani et al. 9  and Aguiar et al. 19 , which make similar claims of reduced development time. However, there are unique aspects of nuclear reactor materials that necessitate changes to the typical ICME framework. This work is already underway, though it is still early and no nuclear materials have yet completed development and qualification under an ICME paradigm. In this section, we first summarize the changes required in the ICME approach then review current ICME efforts that are already underway to model steady, transient, and accident behavior in the specific areas of reactor fuel, cladding, RPV material development, and additive manufacturing for reactor materials. We focus on these four areas as examples, but substantial modeling and simulation efforts are also ongoing in other nuclear materials domains, including radiation-tolerant structural alloys such as ODS steels, coolant compatibility with molten salts, and TRISO particle fuels."
+      ]
+    },
+    {
+      "heading": "Changes to the ICME approach",
+      "paragraphs": [
+        "The harsh reactor environment during normal and accident conditions necessitates some changes to the standard ICME approach summarized in section “Integrated computational materials engineering for accelerated materials development”. These changes include adding microstructure and chemistry evolution to the standard materials tetrahedron, expanding experimental validation to include separate-effects testing of extreme environments, and embedding qualification requirements (including V&V/UQ) directly into the development process.",
+        "The standard ICME approach uses multiscale modeling to establish process-structure-property-performance relationships. These relationships enable the design of specific processing pathways that create a material microstructure that provides the necessary properties to ensure the required material performance for the application. However, in harsh reactor environments, the chemistry and microstructure evolves continuously over the reactor lifetime 179 . This evolution varies with the material and operating conditions: e.g., defect accumulation in structural materials, hydride formation in cladding, and fission product buildup in fuels. The evolution of the chemistry and microstructure drives changes in properties, which in turn alter performance. While such evolution occurs in other extreme environments, the scale and complexity in nuclear materials is unique. Thus, it is not enough to ensure acceptable initial performance; materials must maintain functionality during steady and transient operation. Because materials must meet acceptance criteria during AOOs and DBAs, not just steady operation, ICME workflows must explicitly model accident-condition behavior, including rapid temperature excursions, time-dependent degradation, and transient microstructure evolution that strongly influence safety margins.",
+        "Accordingly, when applying ICME to nuclear materials, the materials tetrahedron of process, structure, properties, and performance is not sufficient. A fifth aspect must be included: microstructure and chemical evolution during operation as shown in Fig.  4 . This evolution must be explicitly considered across the ICME workflow. Multiscale modeling must therefore address not only initial structure-property relationships but also their time-dependent evolution. In fact, modeling this evolution has long been a focus of nuclear materials. Initially, empirical fits to experimental data were used to define changes in material properties with time, but more recently mechanistic models of chemistry and microstructure evolution and evolving properties have been developed for various materials 180 . Empirical models are specific to given materials and conditions that vary between reactor types, while mechanistic models are applicable as long as the fundamental mechanisms governing the behavior are the same and the specific material properties for the conditions are known. Fig. 4 Modified materials tetrahedron for nuclear materials. It includes chemistry and microstructure evolution that occurs during reactor operation.",
+        "The second change to the ICME approach is expanding validation through separate effects tests. Reactor environments combine multiple extremes: high temperature, radiation, stress, corrosive coolants, and rapid transients, yet very few facilities can expose materials to all extremes simultaneously, and such integral tests are rare, expensive, and time-consuming. While some integral test data are essential for model validation, data that includes separate effects or combinations of a few effects plays a critical role in accelerating and reducing the cost of validating nuclear material simulations 9 , 181 . In these tests, one or a subset of operating conditions is applied and material behavior is measured and/or characterized. For example, a material can be tested just at the operating temperature to observe the material behavior. The separate effect validation test is then simulated and the predicted behavior is compared to measured data. Multiple effects can also be included, in what are sometimes called “few effects tests”, and again the validation test is simulated and the predicted behavior compared with the data. For example, a test can be carried out at high temperature with the sample exposed to the coolant. It is critical to conduct few effects testing to identify potential interactions between effects. The iterative application of separate and few effects tests and modeling and simulation must be a critical part of ICME for reactor materials, and should include much more than the comparison of data points. Simulation and experimental UQ need to be carried out so that uncertainty ranges are compared directly, and uncertainty is systematically reduced with each iteration.",
+        "Radiation testing merits special discussion. Structural, RPV, and cladding materials are all exposed to neutron radiation, while fuels are exposed to neutrons, gamma rays, and fission fragments. The only way to obtain neutrons for radiation testing is from nuclear reactors. However, test reactors are fairly rare and can be difficult and expensive to access. The radiation rates are also limited, requiring long times to reach high radiation dose. The time required for reactor testing for fuel development can be reduced with accelerated burnup testing 182  and using different neutron spectra 183 ; combining these approaches with modeling and simulation can help to maximize its impact 183 . Other types of radiation can be used for separate effects radiation testing, including electron, ion, and proton radiation 184 . The most common tool is ion/proton irradiation, though ions/protons do not interact with materials in the same manner as neutrons; neutrons penetrate deeply and uniformly while ions/protons produce shallow damage layers, the PKA energy spectrum of ion/proton and neutron irradiation are different, and neutron’s cause transmutation while ions/protons do not except at very high energy 185 . This results in challenges for using ion irradiation to emulate neutron damage. Even so, ion irradiation remains indispensable for nuclear materials development: it enables rapid, low-cost screening of compositions and microstructures, controlled single-variable testing, and access to extreme doses and temperatures that are impractical or impossible to achieve in test reactors. It can also be combined with neutron irradiation to accelerate the data collection required for material qualification, as presented by Taller et al. 186 . Finally, modeling and simulation can play a critical role in transitioning ion radiation data to predict material behavior under neutron radiation 187 . A validated model that accounts for radiation type can demonstrate how behavior observed in ion radiation experiments would differ under neutron exposure.",
+        "The third change needed in the ICME approach for nuclear materials arises from the rigorous qualification requirements for reactor deployment that ensure adequate performance during steady, transient, AOO, and DBA conditions. Since any new material must be qualified by the NRC or an NRC-approved agency such as ASME, these requirements should be embedded into the development process from the outset 187 . The qualification requirements are unavoidable and should be included in the ICME approach to accelerate eventual deployment. Therefore, the V&V/UQ standards required by the NRC should be applied to the full suite of multiscale modeling and simulation approaches applied to the system. Integration of V&V/UQ throughout the materials design process results in higher quality materials developed more quickly 163 , 188 ,  189 ,  190 – 191 . This also requires regulatory acceptance of modeling be more fully integrated into the qualification process 187 . At present, however, NRC guidance on V&V/UQ leaves room for interpretation, and there is still ambiguity in how different forms of uncertainty should be treated across scales and models. As a result, while modeling and simulation are increasingly accepted as complementary evidence, NRC is not yet prepared to rely on them in lieu of experimental data for material qualification."
+      ]
+    },
+    {
+      "heading": "ICME of reactor fuel",
+      "paragraphs": [
+        "Here, we provide an overview of the application of ICME approaches to model nuclear reactor fuel. We start by highlighting a small fraction of the papers modeling UO 2  and then summarize the modeling efforts for other fuel types. In Fig.  5 a we plot the cumulative number of papers we cite per their publication year for the various fuel types to provide a general timeline of the modeling efforts. Fig. 5 Cumulative number of papers cited in this work that present ICME approaches applied to nuclear material types. a  is for fuel materials (with d/c UO 2  representing doped or composite UO 2 ),  b  for cladding materials,  c  for RPV steels, and  d  for AM applied to reactor materials. Note that these numbers only include work cited here and are not a comprehensive count of all modeling and simulation work related to these material types.",
+        "The properties 192 ,  193 – 194  and macroscale performance 195  of UO 2  have been modeled for many years. Fuel performance models have been developed worldwide to predict the macroscale thermomechanical behavior of UO 2  during reactor operation 196 ,  197 ,  198 ,  199 – 200 . MD simulations were first applied to UO 2  in the early 1980s 201 , but were not widely applied until the 2000s 202 ,  203 ,  204 ,  205 ,  206 ,  207 ,  208 ,  209 ,  210 ,  211 – 212 . Around 2010, the U.S. Department of Energy’s Nuclear Energy Advanced Modeling and Simulation (NEAMS) program set out to replace empirical materials models for UO 2  used in LWR fuel performance codes with mechanistic models that capture the co-evolution of microstructure and properties 180 . The program adopted a multiscale strategy in which DFT and MD identified fundamental mechanisms and supplied key material parameters, while mesoscale PF simulations resolved microstructural evolution and its impact on effective properties. These physics-based results were distilled into mechanistic constitutive models intended to supplant empirical correlations within engineering-scale fuel performance tools such as BISON 213 , 214 , with validation against the extensive historical UO 2  database built over decades of fuel development.",
+        "From 2010 to 2020, NEAMS sponsored targeted modeling to clarify microstructure evolution in UO 2 , including grain growth 215 ,  216 – 217 , defect transport 218 ,  219 – 220 , fission-gas bubble nucleation and growth 221 ,  222 – 223 , and recrystallization, as well as structure-property relationships for thermal conductivity 224 ,  225 ,  226 – 227 , fracture strength 228 ,  229 – 230 , and creep 231 , 232 . These insights informed the development of mechanistic materials models for BISON 180 . While the net gain in code-level predictive accuracy was incremental, the work substantially deepened scientific understanding of UO 2  behavior and established a robust toolchain for modeling reactor fuel. The mechanistic modeling of UO 2  is now being extended to high burnup 233 ,  234 ,  235 ,  236 ,  237 ,  238 – 239 , as well as modeling transient and accident behavior such as fuel fracture, fragmentation, relocation, and dispersal 240 ,  241 ,  242 ,  243 ,  244 ,  245 ,  246 – 247  and transient fission gas release 248 ,  249 – 250 .",
+        "Beginning around 2015, these methods were generalized to accelerate development of advanced fuel forms. The first applications focused on doped UO 2 , which exhibits accelerated sintering, larger as-fabricated grain sizes, improved fission-product retention, and better mechanical performance relative to standard UO 2 251 . DFT and MD clarified dopant-controlled defect chemistry and transport 252 ,  253 – 254 , feeding mesoscale simulations of sintering 255  and macroscale BISON analyses 256 . Atomistic studies identified a key mechanism for the improved behavior: an elevated concentration of negatively charged U vacancies induced by positively charged dopants 252 . This mechanism guided proposals for new dopants such as Mg and V 252  and culminated in a patent on Mg-doped UO 2 257 . The same multiscale approach has been applied to UO 2  composites to quantify conductivity gains from high-thermal-conductivity additives 258 ,  259 – 260  and potential degradation via fission-gas segregation 261 . Uranium silicide has been explored for its higher uranium density and thermal conductivity relative to UO 2 262 ,  263 – 264 , balanced against concerns about its reactivity with water 265 . Uranium carbide modeling has emphasized atomistic treatments of bonding, defects, and thermodynamics 266 ,  267 ,  268 ,  269 ,  270 – 271 . Uranium mononitride has become a major focus, including interatomic potential development and assessment for MD 272 , 273 , first-principles studies of fundamental behavior 274 , defect diffusion 275 , 276 , thermophysical properties 277 , fabrication routes via CALPHAD 278 , and integrated fuel performance projections 279 . Together, these efforts have laid the groundwork to move multiple fuel candidates more rapidly toward advanced reactor deployment.",
+        "In parallel, multiscale modeling of metallic fuels has progressed across U-Zr and U-Mo systems. System-level performance models for U-Zr date to the 1960s and continue to evolve 280 ,  281 ,  282 ,  283 ,  284 ,  285 – 286 . Around 2010, atomistic studies of U-Zr addressed defects and diffusion 287 ,  288 ,  289 – 290  and phase stability 291 ,  292 – 293 , which informed mesoscale simulations of phase transformations 294 ,  295 – 296  and, ultimately, macroscale constituent-redistribution models 297 ,  298 – 299 . Thermal conductivity has been treated within multiscale frameworks 258 , 300 ,  301 ,  302 – 303 , and fission-gas behavior has been quantified from first principles 304 . For U-Mo, work began with development of an interatomic potential 305  and atomistic studies of self- and defect diffusion 306 ,  307 – 308 , followed by mesoscale ICME treatments of fabrication and microstructure evolution 309 ,  310 ,  311 – 312 . Mesoscale models have also probed fission-gas behavior and its impact on conductivity 313 ,  314 ,  315 ,  316 – 317 , supported by additional atomistic inputs to refine fission-gas physics 318 ,  319 ,  320 – 321 .",
+        "Thermodynamic descriptions spanning fresh and irradiated fuel have been extensively developed using CALPHAD. Accurate thermodynamics is essential for fresh fuels, which can exhibit multiple stable phases and non-stoichiometry 322 , and becomes even more critical in-reactor to predict fission-product behavior and phase stability 323 . However, CALPHAD is fundamentally an equilibrium framework and needs to be coupled with other approaches such as cluster dynamics 324 ,  325 – 326  or the PF method 223 , 298  to represent the non-equilibrium conditions that occur in reactor fuel. Given the breadth of this literature, we point to comprehensive reviews that synthesize progress across fuel chemistries and methods 322 , 327 , 328 . Thermodynamic models have been directly coupled to fuel performance solvers to improve treatment of evolving composition and phases 329 , 330 . The most complete database for nuclear fuel is the Thermodynamics of Advanced Fuels—International Database (TAF-ID) 331 , developed by an international consortium."
+      ]
+    },
+    {
+      "heading": "ICME of cladding materials",
+      "paragraphs": [
+        "As with fuel materials, ICME has been applied to cladding beginning with Zr alloys and steels for fast reactors. We begin by highlighting some of the modeling work focused on Zr alloys and then move on to other cladding materials. We provide a general timeline in Fig.  5 b, showing the cumulative number of papers cited here for the various cladding materials.",
+        "Early atomistic simulations examined cascade damage in Zr 332 , 333 , establishing baseline defect production and interaction energetics, though these studies were not yet used for alloy design. Subsequent atomistic work investigated iodine attack on Zr cladding 334 ,  335 ,  336 – 337 , clarifying mechanistic pathways relevant to stress corrosion cracking. Atomistic modeling then expanded to defect transport, anisotropic point-defect energetics, and irradiation-induced growth 338 ,  339 ,  340 ,  341 ,  342 ,  343 ,  344 – 345 . Parallel atomistic and mesoscale efforts addressed oxidation, hydrogen pickup, and hydride formation. Atomic-scale studies focused on O and H behavior in the metal, oxides, and hydrides 346 ,  347 ,  348 ,  349 ,  350 ,  351 ,  352 – 353 . PF simulations have been used to capture oxide growth kinetics and stress coupling 354 ,  355 ,  356 ,  357 – 358 . Because brittle hydrides are a major concern for cladding integrity, PF methods have been widely used to model hydride nucleation, growth, and morphology under stress and thermal gradients 359 ,  360 ,  361 ,  362 ,  363 ,  364 ,  365 ,  366 ,  367 ,  368 ,  369 ,  370 ,  371 ,  372 ,  373 ,  374 ,  375 ,  376 ,  377 – 378 , although only two studies have targeted the transgranular hydrides most relevant to delayed hydride cracking 379 , 380 . Insights from experiments and lower-length-scale modeling have informed materials models in fuel performance codes 381 , 382 . Crystal plasticity has been used to probe anisotropic plasticity and texture effects 383 ,  384 ,  385 ,  386 ,  387 ,  388 ,  389 – 390  and to quantify irradiation growth and creep 391 ,  392 – 393 . Thermodynamics databases for Zr alloys provide phase stability foundations for these models 394 . To date, however, most of this work has enhanced mechanistic understanding and code capabilities rather than directly driving new alloy chemistries or fabrication routes to improve Zircaloy behavior.",
+        "One accident-tolerant fuel (ATF) strategy retains Zr-alloy cladding but applies protective coatings such as Cr or FeCrAl to mitigate high-temperature steam oxidation. This concept remains under development and is therefore well-suited to ICME, yet modeling has largely focused on macroscale performance. Finite-element analyses and fuel-performance code studies have examined pellet-cladding mechanical interaction, stress redistribution, and failure margins in coated cladding in accident conditions 54 , 58 , 395 ,  396 ,  397 ,  398 ,  399 – 400 . Complementary continuum treatments have considered interdiffusion and coating integrity under reactor conditions 401 , 402 . At the lower length scales, crystal plasticity has recently been used to assess fatigue life in Cr-coated Zircaloy-4 403 , providing microstructure-sensitive insights to inform coating design and qualification.",
+        "FeCrAl alloys are a second major ATF cladding candidate, and ICME has been applied across scales to assess and optimize their performance. Early macroscale thermo-mechanical simulations indicated that FeCrAl cladding can meet or exceed zircaloy performance under normal, transient, and accident conditions 404 ,  405 ,  406 ,  407 ,  408 – 409 , with subsequent validation against new experimental data 410 , 411 . Composition optimization efforts have combined CALPHAD and ML to target protective oxide formation and mechanical robustness across operating and accident regimes 412 ,  413 ,  414 – 415 . At smaller scales, collision-cascade MD has characterized primary damage formation 416 , 417 , and DFT, MD, discrete dislocation dynamics, and crystal plasticity have been used to connect defect physics to yield, hardening, and irradiation-assisted deformation in both unirradiated and irradiated states 418 ,  419 ,  420 ,  421 ,  422 ,  423 ,  424 – 425 . These insights are now propagating back into fuel-performance models to improve fidelity for FeCrAl cladding 426 ,  427 – 428 . ML has also been used to relate precipitation to hardening across alloy variants 429 . On the environmental side, DFT studies of oxidation mechanisms are informing alloying strategies that promote resilient chromia/alumina scales 430 ,  431 – 432 , while PF modeling suggests irradiation-induced segregation and phase evolution pathways that could influence hardening 433 . Collectively, this ICME workflow is accelerating FeCrAl cladding development.",
+        "SiC/SiC composite cladding is another prominent ATF concept, attractive for its oxidation resistance via protective silica formation and its low neutron absorption 434 , 435 . Macroscale models have evaluated mechanical and thermo-mechanical performance during steady, transient, and accident conditions and guided layer-architecture optimization 436 ,  437 ,  438 ,  439 ,  440 – 441 , including requirements on effective composite thermal conductivity 442 . Composite behavior has been implemented in fuel-performance tools to capture fuel-cladding interactions 58 , and mechanical damage models tailored to composite failure mechanisms have been developed 443 , 444 . Additional modeling has explored microstructural strategies, such as introducing bimodal porosity to relieve stress 445 . At the atomistic level, DFT has probed potential fuel-cladding interactions 446 , and MD has addressed radiation response, swelling, and mechanical behavior 447 ,  448 ,  449 – 450 . Data-efficient ML has begun to predict swelling from sparse datasets 451 . Manufacturing-aware multiscale models are being used to simulate and optimize the braiding process 452 , 453 . Recognizing variability as a key risk, a probabilistic damage framework has been proposed for statistical performance assessment 454 , and tribological models have examined wear of composite cladding tubes 455 . Given the complexity of SiC composites, coordinated multiscale initiatives are underway to support design and qualification for normal and accident conditions 456 ,  457 – 458 .",
+        "For fast reactors with liquid-metal coolants, steel claddings such as 316, 304, and HT-9 have been modeled primarily at the engineering scale. Fuel-performance frameworks with cladding materials models have been developed and refined over decades 459 ,  460 ,  461 ,  462 ,  463 ,  464 ,  465 – 466 , supported by improved constitutive descriptions 467 . Crystal plasticity has provided mechanistic insight into deformation and creep 468 , enabling data-driven surrogate constitutive models for HT-9 and 316 in fuel-performance codes 469 , 470 . Additional modeling has addressed corrosion by liquid metals 471  and predicted failure modes and mechanisms across designs 472 ."
+      ]
+    },
+    {
+      "heading": "ICME of reactor pressure vessel steels",
+      "paragraphs": [
+        "Another example of ICME applied to nuclear reactor materials is the modeling of irradiation-induced hardening in RPV steels to support lifetime extension, and we show the cumulative number of papers cited in this work per publication year in Fig.  5 c. This body of work has been heavily influenced by Dr. Robert Odette; ~40% of the papers summarized here involve him. The central mechanistic picture is that radiation-enhanced diffusion promotes the formation of nanoscale precipitates that impede dislocation motion and thereby harden and embrittle the steel matrix 80 , 473 . Early efforts developed semi-empirical and theoretical models grounded in hypothesized mechanisms and experimental trends 474 ,  475 – 476 , while fracture-mechanics-based approaches quantified failure behavior under irradiation-induced degradation 477 ,  478 ,  479 ,  480 – 481 .",
+        "These foundations enabled multiscale modeling and simulation frameworks that connect atomic-scale defect and precipitation processes to macroscopic property changes 482 ,  483 ,  484 – 485 . At the atomistic level, MD has been used to simulate displacement cascades and compared directly with positron annihilation measurements 486 , while discrete dislocation dynamics informed by DFT has clarified the link between obstacle populations and hardening 487 . Interatomic potentials tailored for RPV chemistries have been developed to capture precipitation energetics 488 , and MD has been applied to resolve precipitate evolution pathways 489 . Complementary atomic-scale Monte Carlo simulations elucidate phase formation and compositional partitioning under irradiation 489 ,  490 – 491 , while CALPHAD provides the thermodynamic basis for phase stability and driving forces 492 , 493 .",
+        "Mesoscale and continuum models then translate these mechanisms to engineering-relevant predictions. PF simulations capture radiation-induced phase formation at dislocations and the emergence of distinctive core-shell precipitate morphologies 494 ,  495 – 496 . Cluster dynamics models quantify defect and solute clustering kinetics under reactor fluxes and temperatures, enabling predictions of precipitate populations over service lifetimes 497 ,  498 – 499 . Crystal plasticity links evolving microstructures to changes in macroscopic mechanical response and anisotropy 500 . In parallel, Monte Carlo strategies are being explored to assess thermal annealing as a mitigation pathway for embrittlement recovery 501 , and extended finite element methods have been used to predict RPV cracking under thermal shock during accident transients 502 . Most recently, machine learning methods have emerged to accelerate embrittlement prediction by leveraging sparse, heterogeneous datasets and multiscale descriptors 503 ,  504 – 505 . Collectively, this progression, from mechanistic models through atomistic, mesoscale, and continuum scales to data-driven surrogates, illustrates how ICME integrates physics and computation to produce predictive, transferrable tools for managing RPV steel performance over extended operating lifetimes."
+      ]
+    },
+    {
+      "heading": "ICME of additive manufacturing for reactor materials",
+      "paragraphs": [
+        "Another critical facet of ICME is the explicit modeling of fabrication processes and their propagation through microstructure to in-service performance. The nuclear sector is beginning to explore novel manufacturing routes for safety-significant components, with additive manufacturing (AM) attracting attention for its ability to realize complex geometries, tailor local microstructures for corrosion and radiation tolerance, reduce feedstock waste, and speed iteration. At the same time, qualification concerns persist around part-to-part variability arising from localized heat input, scan strategy, and feedstock variability 506 . An ICME-centric response links process parameters to microstructure and properties via calibrated models, and wraps those models in digital twins that assimilate process monitoring and post-build characterization to forecast in-reactor performance 507 . In this framing, AM is not a black box but a controllable link in the digital chain, with UQ and targeted down-selection and testing used to close the loop where predictions most affect safety margins. Modeling and simulation is just beginning to be applied to AM for reactor materials, as shown in Fig.  5 d.",
+        "Concretely, the MOOSE framework is being extended to nuclear AM, providing thermo-mechanical, microstructural, and performance modeling capabilities with embedded UQ 508 , 509 , while machine learning accelerates surrogate model development and real-time inference 510 . ML has also been used to predict alloy printability in laser powder bed fusion, guiding composition/process choices upstream 511 . Downstream of the build, CALPHAD is informing post-AM heat-treatment windows, such as showing how annealing affects phase stability and properties in LPBF 709 austenitic stainless steel 512 , and PF modeling is resolving irradiation-induced composition redistribution in AM austenitic Fe-Cr-Ni, with implications for hardening and corrosion resistance 513 . Together, these efforts exemplify process-aware ICME for AM: connecting build parameters to evolving microstructure and properties, quantifying uncertainty, and generating auditable models. Such integration is essential for the future qualification of AM parts for reactor service, where credible predictions, targeted separate-effects tests, and digital-chain traceability can de-risk deployment."
+      ]
+    },
+    {
+      "heading": "Future vision",
+      "paragraphs": [
+        "The use of ICME approaches on nuclear materials has increased rapidly in the last 15 years, as shown in Fig.  5 . With that foundation, the next decade should transform computational design for nuclear materials from a collection of compelling case studies into a repeatable, regulatory-aligned, and industry-scalable development pipeline. The guiding idea is a digital chain that links physics-based and data-driven models, targeted experiments, processing history, and qualification requirements to a living description of material behavior across its lifecycle, including handling at the end of life. This digital chain is a traceable, end-to-end linkage among data, models, assumptions, parameters, results, and decisions across the lifecycle, with machine-readable provenance, version control, persistent identifiers, and automated data exchange. Unlike traditional workflows that are file-centric and siloed (parameters are re-entered, assumptions are captured informally, and handoffs occur via ad hoc scripts and emails), the digital chain contains automated hand-offs where if new irradiation data become available, for example, the calibrated parameters would update, dependent simulations would rerun, and the change log would record the provenance and impact on predictions. If the traditional materials tetrahedron is expanded to include chemistry and microstructure evolution, as argued earlier and shown in Fig.  4 , this future ICME workflow must give that evolution and its uncertainties sufficient consideration in both design and licensing. This vision of the future is summarized in Fig.  6 . Fig. 6 Summary of our future vision for ICME approaches applied to the design of nuclear reactor materials.",
+        "Three pillars are essential. First, models must be credible by construction. That means verification 294 , 329 , 514 , validation 256 , 283 , 410 , and uncertainty quantification 191 , 264 , 505 , 515 ,  516 – 517  are included from the beginning, accuracy goals are tied to safety functions and acceptance criteria, and code quality control meets NRC quality expectations. Multi-fidelity strategies that combine mechanistic simulations (DFT, MD, PF, crystal plasticity, continuum mechanics) with surrogate models 469 , 470  and physics-informed machine learning 159 , 503 , 504  can provide the necessary accuracy-cost balance, but only if their domains of applicability, error bars, and failure modes are clear and explicit. This is especially important for multiscale modeling, where the model uncertainty from a lower length-scale simulation propagates through the predictions at a higher length scale 188 , 518 , and so must be considered when quantifying its uncertainty. For actinide and complex alloy chemistries, the rapid maturation of machine-learned interatomic potentials 345 , 353  offers a path to first-principles accuracy in MD simulations, provided their training sets are curated, traceable, and stress-tested on independent benchmarks.",
+        "Second, experiments and multiscale modeling must be combined into a unified effort starting with the experimental design phase through qualification. Experimentalists and modelers should work together to design the full suite of experiments, ranging from separate effect, few effects, and integral reactor tests 163 . When modelers are directly included in the design of the separate effect and few effects tests, they help ensure that the necessary data on the conditions of the test are collected to allow them to use the data to validate their models. Then, the models validated on the separate and few effects tests can be used to assist in the design of the integral tests. As more in-situ measurement approaches become available in test reactors 519 , 520 , the validated models can serve as digital twins 507 , 521 ,  522 – 523  of the test, updating the predictions based on the in-situ data. Additional separate effects and few effects tests, designed by active learning and Bayesian optimal experimental design, should target the uncertainties that most influence safety margins and licensing decisions. High-throughput microstructural characterization and automated image analysis can turn postirradiation examination into quantitative datasets that close ICME loops, informing and validating models of microstructure evolution and its impact on properties.",
+        "Third, the licensing pathway should recognize and reward model credibility. Performance-based, risk-informed evidence packages that map model predictions and uncertainty to the Standard Review Plan’s acceptance criteria can enable staged approvals. For example, method topical reports that establish the modeling framework and V&V/UQ pedigree could be approved. Then, early demonstrations via lead tests could be the basis for the next approval. Subsequent generic approvals would broaden use. For advanced reactors, technology-inclusive frameworks are a natural fit for material-agnostic performance criteria and for codes and standards that already accommodate high-temperature alloys, ceramics, and composites. Modeling and simulation will never eliminate the need for integral reactor testing but would enable targeted lead tests with maximized value for enabling approval, assuming NRC provides clear expectations. However, current NRC guidance does not clearly define how modeling evidence should be weighed against experimental data or what level of uncertainty is acceptable for licensing decisions, which limits how far ICME can be used today. A shared “materials licensing playbook” that aligns ICME artifacts with regulatory expectations would reduce friction for both applicants and reviewers.",
+        "Realizing this vision requires data infrastructure and community practice that make ICME reproducible and reusable. FAIR (findable, accessible, interoperable, and reusable) data standards, common formats for microstructure and property datasets, persistent identifiers for models and parameters, and machine-readable metadata describing training/validation domains will let others build on prior work rather than repeating it. Various nuclear materials experimental databases exist now 524 ,  525 ,  526 – 527 , but their data are stored in different formats, and the available metadata are often incomplete or not provided. Irradiation conditions are typically documented, but microstructural datasets often lack essential metadata, such as sample preparation details, imaging conditions, calibration parameters (if any), and analysis methods. These vary significantly across laboratories, and even among individual researchers within the same laboratory, making it difficult to reuse data, compare results, or extract quantitative trends. Access to these databases varies widely, from open repositories to restricted archives that require applications, institutional sponsorship, data-use agreements, and adherence to proprietary or export-control rules. Open, curated nuclear materials benchmark problems that span atomistic to engineering scales, with reference datasets and scoring metrics, need to be developed to drive rapid, transparent progress and help separate model innovation from overfitting. The success of shared resources such as the TAF-ID 331  fuel thermodynamics database suggests analogous databases for other cladding and structural alloys, capturing both equilibrium and irradiation-modified thermodynamics and kinetics. Databases of defect properties are needed as well. We suggest that a shared platform be created that standardizes FAIR data standards and formats and encourages use in current and future databases, providing a common foundation for reproducible ICME, cross-laboratory comparability, and data structures suitable for modern computational and machine-learning methods.",
+        "In addition, manufacturing and variability must be pulled into the loop to extend the computational materials design approach from cradle to grave 19 . Process-aware ICME that couples thermo-mechanical processing, joining, coating deposition, and composite layup to microstructure and performance will shorten iteration cycles and surface trade-offs early. Probabilistic design, informed by variability in feedstock, process, and irradiation conditions, can translate microstructure distributions into property distributions and, ultimately, into uncertainty-informed safety margins. Surrogates and reduced-order models with quantified error will enable these probabilistic assessments to be used in design, surveillance, and operations. This design process should also be extended to the final handling of the used material.",
+        "Finally, the endpoint should be living digital twins 507 , 521 ,  522 – 523  of critical components, such as fuel, cladding, and structural materials, during reactor operation that assimilate surveillance and operational data to update state and margin predictions over time. For LWRs, capsule surveillance and non-destructive evaluation can be fused with ICME models to inform aging management and life extension. For advanced reactors with embedded sensing, on-line state estimation can guide operations within material limits while generating data that improves the next design cycle. In this steady state, models no longer simply justify initial deployment; they help manage materials throughout their life, providing a continuous feedback loop between design, qualification, operation, and final disposition."
+      ]
+    },
+    {
+      "heading": "Conclusion",
+      "paragraphs": [
+        "This review shows that computational materials design and ICME are maturing to the point where they can accelerate nuclear materials development with a repeatable, auditable, and regulatory relevant pipeline. We have reviewed types of nuclear materials and the conditions faced by materials in different reactor types. We also reviewed the current approach for nuclear materials development and ICME. Treating in-service microstructure evolution as a core design variable, pairing targeted separate-effects experiments (with calibrated transfer to neutron conditions) to validate the models that matter most for safety margins, and embedding verification, validation, and uncertainty quantification under quality assurance are essential departures from standard ICME for nuclear reactor materials. Across fuels, cladding materials, and RPV steels, multiscale physics (DFT, MD, PF, crystal plasticity, CALPHAD, fuel-performance solvers) fused with physics-aware machine learning have produced mechanistic, multi-fidelity workflows that deepen understanding and yield predictive emulators, even though full qualification remains a work in progress.",
+        "To realize the promise of faster, lower-risk material development while preserving nuclear safety, we recommend building a digital chain that links processing, microstructure, properties, performance, and licensing artifacts; adopting FAIR data, community benchmarks, and persistent model metadata; and deploying multi-fidelity surrogates with explicit error bounds that feed staged, evidence-based licensing and living digital twins for surveillance and life-management. With coordinated investment in data infrastructure, integrated experimental-model campaigns, and early regulator engagement, these elements can compress development and qualification timelines, lower cost and program risk, and enable materials that meet the demanding performance and safety expectations of current and future reactor technologies."
+      ]
+    }
+  ],
+  "tables": [
+    {
+      "caption": "Summary of reactor technologies, showing the type, the coolant, the fuel material, the cladding material, and typical steady operating temperatures",
+      "headers": [
+        "Type",
+        "Coolant",
+        "Fuel",
+        "Cladding",
+        "Temperatures"
+      ],
+      "rows": [
+        [
+          "LWR",
+          "H 2 O",
+          "UO 2",
+          "Zr alloys",
+          "300–350 °C"
+        ],
+        [
+          "CANDU",
+          "D 2 O",
+          "UO 2",
+          "Zr alloys",
+          "300 °C"
+        ],
+        [
+          "MFR",
+          "Liquid Na or Pb",
+          "U-Zr or U-Pu-Zr",
+          "HT-9",
+          "400–550 °C"
+        ],
+        [
+          "CFR",
+          "Liquid Na or Pb",
+          "UO 2 , MOX, or UN",
+          "HT-9",
+          "400–600 °C"
+        ],
+        [
+          "HTGR",
+          "He gas",
+          "TRISO",
+          "N/A",
+          "700–950 °C"
+        ],
+        [
+          "MSR",
+          "Molten salt",
+          "TRISO or Molten salt",
+          "N/A",
+          "600–800 °C"
+        ]
+      ],
+      "header_groups": [],
+      "table_alignment_status": "resolved",
+      "row_provenance": [
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 5
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 5
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 5
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 5
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 5
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 5
+          }
+        ]
+      ],
+      "tbody_alignment_status": "resolved"
+    }
+  ]
+}

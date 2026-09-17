@@ -1,0 +1,619 @@
+{
+  "doi": "10.1007/s00170-026-18504-9",
+  "title": "Adhesion, sterilization resistance and heat deflection temperature of 3D printed PLA parts coated with hydroxyapatite by powder bed annealing",
+  "abstract": "Abstract The development of low-cost, patient-specific orthopedic implants with bioactive surfaces remains challenging for resorbable polymers such as polylactic acid (PLA), due to limited thermal stability and poor coating adhesion. This study evaluates a novel powder bed annealing process that simultaneously enhances the mechanical and thermal performance of FFF-printed PLA while forming a bioactive hydroxyapatite (HA) or HA/titanium dioxide (TiO₂) coating. PLA specimens fabricated by fused filament fabrication (FFF) were annealed at 170–190 °C in HA or HA/TiO₂ powder beds, followed by autoclave sterilization under different drying conditions. Two-factorial experimental designs were applied to assess mechanical behavior, thermal stability, coating thickness, chemical composition, and coating adhesion. Annealing temperature was identified as the dominant parameter. Samples treated at 180 °C showed the highest flexural strength (up to 37 MPa) and elastic modulus, with autoclaving, particularly with drying, maintaining or further improving these properties. Impact resistance increased by over 100% after sterilization for selected conditions. Powder bed annealing increased the Heat Deflection Temperature from ~ 65 °C for as-printed PLA to ≥ 150 °C, enabling deformation-free autoclave sterilization. Bioactive coatings with thicknesses of 20–50 μm remained stable after sterilization, especially for samples annealed at 180 °C. EDS analysis confirmed deep HA particle diffusion into the polymer matrix. Coating adhesion strengths between 83 and 139 MPa exceeded values commonly reported for polymer–ceramic systems and resisted bending stresses up to 91 MPa. These results demonstrate that powder bed annealing is a single-step, scalable process capable of integrating mechanical reinforcement, thermal stabilization, and osseointegrative surface formation, offering a practical manufacturing route for customized, sterilization-resistant PLA implants.",
+  "journal": "The International Journal of Advanced Manufacturing Technology",
+  "year": "2026",
+  "sections": [
+    {
+      "heading": "Introduction",
+      "paragraphs": [
+        "The increasing number of orthopedic procedures globally [ 1 ,  2 ] has been driving demand for implants and prosthetic devices. However, conventional implant materials, particularly metallic biomaterials such as titanium, pose significant challenges due to their high manufacturing cost [ 3 ] and mechanical incompatibility with native bone [ 4 ,  5 ]. One of the most common problems associated with metallic implants is the stress shielding effect, caused by the mismatch in elastic modulus between the implant and bone tissue, leading to bone resorption and implant loosening over time [ 6 ].",
+        "In this context, biocompatible polymers, especially those that are biodegradable and customizable, have emerged as viable alternatives. Among them, polylactic acid (PLA) stands out for its widespread use in biomedical applications, due to its ease of processing, biocompatibility, bioresorbability, and mechanical properties suitable for moderate-load-bearing applications [ 7 ,  8 ]. PLA-based materials have been successfully used in the production of bone fixation devices [ 9 ], interference screws [ 10 ,  11 – 12 ], and tissue engineering scaffolds [ 13 ]. PLA can also be tailored through structural modification [ 14 ], copolymerization [ 15 ], and surface treatments to enhance its performance [ 16 ].",
+        "A particularly relevant advancement in the fabrication of polymer-based implants is additive manufacturing (AM), specifically the fused filament fabrication (FFF) method. It allows for the rapid prototyping of highly customized parts with geometries that are difficult or impossible to achieve using traditional subtractive manufacturing. This enables the production of patient-specific implants at lower costs, reducing waste and lead time [ 17 ,  18 ]. However, FFF-printed polymers, particularly PLA, often suffer from anisotropic mechanical properties due to layer-by-layer deposition and poor interlayer adhesion [ 19 ,  20 ].",
+        "To overcome these limitations, post-processing methods such as thermal annealing have been proposed to improve crystallinity and reduce anisotropy. Annealing above the glass transition temperature of PLA (~ 60–65 °C) enables molecular rearrangement and formation of crystalline domains, enhancing thermal stability, stiffness, and sometimes even impact resistance [ 21 ,  22 ,  23 ,  24 ,  25 – 26 ]. Nonetheless, traditional annealing processes may lead to dimensional distortion of the printed parts, which limit their application when geometric precision is crucial [ 19 ].",
+        "To address this, recent studies have proposed annealing PLA parts while immersed in a powder bed to support the geometry during heating, preventing deformation and facilitating even heat distribution [ 27 ,  28 ]. While this method has primarily been explored as a dimensional stabilization technique, it opens the potential for an innovative dual-function approach: not only improving the polymer’s internal structure but also modifying its surface. This novel approach, termed powder bed annealing, was explored in our previous study [ 29 ] with functional particulates. It was observed that hydroxyapatite (HA) and titanium dioxide (TiO₂) particles, when present in the powder bed during annealing, adhered to the softened surface of PLA, forming a uniform coating layer. The process resulted in a hybrid composite coating with a significant content of bioactive ceramics integrated into the polymeric surface, creating a potential osseointegrative layer for orthopedic applications.",
+        "Hydroxyapatite, the main inorganic constituent of natural bone, is widely regarded for its osteoconductive and bioactive properties, supporting bone in-growth and implant integration [ 30 ,  31 – 32 ]. Additionally, titanium dioxide, particularly in its rutile phase, has been shown to improve cell adhesion and promote osteoblast activity, while also offering antimicrobial benefits [ 33 ,  34 – 35 ]. The possibility of forming a HA/TiO₂ composite coating using the powder bed annealing process offers an appealing route for generating bioactive surfaces on PLA implants without the need for complex and costly equipment like plasma spraying, sputtering, or electrodeposition [ 36 ,  37 ].",
+        "An additional benefit of powder bed annealing could be the concurrent improvement in the temperature resistance of the printed parts. As demonstrated in prior research, annealing of semicrystalline polymers like PLA can significantly increase their Heat Deflection Temperature (HDT) [ 38 ], enabling the parts to withstand more rigorous sterilization methods such as autoclaving [ 39 ,  40 ], which is a critical step for clinical translation. While PLA is traditionally considered unsuitable for high-temperature sterilization due to its low Tg and high distortion [ 41 ,  42 ,  43 – 44 ], studies have reported that certain annealing treatments can elevate its HDT above 120 °C [ 45 ] and that would increase PLA suitability as an implant material.",
+        "Given these insights, the present study aims to advance this innovative approach by systematically evaluating the mechanical and thermal behavior, as well as the surface coating characteristics of PLA parts subjected to powder bed annealing and coated with HA and TiO₂ particles. This work builds upon earlier findings to explore the interplay between annealing parameters (temperature, time at peak temperature) and the nature of the particulate bed in influencing coating thickness, adhesion, and composition. Additionally, the impact of autoclave sterilization on the coated parts was investigated to assess their viability for surgical use, addressing both functional performance and practical constraints. Furthermore, this study seeks to evaluate the extent to which submicron particles diffuse and anchor into the softened PLA matrix during annealing, to verify if there is robust adhesion and long-term mechanical integration, which are critical for in-vivo performance.",
+        "The innovative nature of this study lies in its proposition of a low-cost, simple, and scalable surface modification process that simultaneously enhances mechanical performance, creates bioactive coatings, and improves sterilization resistance. This approach circumvents the limitations of traditional coating methods that require complex infrastructure or high-cost inputs, offering a practical route to producing custom-fit implants using standard desktop FFF printers and basic lab ovens. Finally, this work incorporates rigorous quantitative assessment protocols, including flexural and impact testing (ASTM D6272 and D4508) [ 46 ,  47 ], progressive load scratch testing for coating adhesion (ASTM D7027) [ 48 ], SEM/EDS for surface characterization, and HDT evaluation (ASTM D648) [ 49 ], to provide a comprehensive evaluation of the resulting materials. By integrating these testing methodologies with two-factorial experimental designs, the influence of each process parameter can be statistically evaluated, offering reliable guidance for optimizing future manufacturing strategies. In summary, this research addresses a critical need in the biomedical field: the development of accessible, customizable, and sterilization-resistant polymeric implants with bioactive coatings. By leveraging the synergistic effects of additive manufacturing, powder bed annealing, and ceramic surface functionalization, this study contributes to the ongoing transformation of implant manufacturing, aligning cost-effective fabrication with clinical efficacy and regulatory compliance."
+      ]
+    },
+    {
+      "heading": "Methodology",
+      "paragraphs": []
+    },
+    {
+      "heading": "Materials",
+      "paragraphs": [
+        "All the samples were fabricated by FFF in natural PLA from Filamentos 3D Brasil [ 50 ], supplied in 1 kg spools of filament with 1.75 mm diameter. The calcium phosphate was obtained from Adicel [ 51 ], a food additive supplier, according to which the tricalcium phosphate can be used in food industry as anti-humectant, stabilizer, pH regulator, clouding agent, and concentrated source of calcium. This white mineral compound in a fine, crystalline powder is obtained by the reaction between food-grade phosphoric acid and hydrated lime. Titanium dioxide was purchased from online stores, since it is the world’s most used pigment load for white paints, and it also presents as a fine white crystalline powder.",
+        "Chemical characterization by X-ray diffraction (XRD) and SEM (Scanning Electron Microscopy) and EDS (Energy Dispersive Spectroscopy) of both particulates was conducted in previous work [ 29 ]. It has been revealed that the calcium phosphate is of hydroxyapatite (HA) crystalline structure, which is the preferred structure for implant coating due to its lower solubility and greater stability in the human body [ 32 ,  52 ,  53 ], while the titanium dioxide is of the rutile crystalline structure, which presents adequate biological activity as well [ 35 ]. The HA and the TiO₂ present in the form of small crystals with thickness of about 200 nm to 500 nm which agglomerate into larger particles of about 2 μm to 10 μm."
+      ]
+    },
+    {
+      "heading": "Production and preparation of test specimens",
+      "paragraphs": [
+        "As explained in previous works [ 29 ], test samples were prepared in accordance with ASTM D6272 [ 46 ] because with this geometry it was also possible to generate samples to perform impact tests, layer thickness and chemical composition analysis, investigate heat deflection temperature and adhesion of coating by scratch tests. Besides facilitating production, it guaranteed an equal heat input and thermal history during the annealing process. Samples were fabricated by FFF, one by one, on a Creality Ender 3 v1 ®  printer with a nozzle temperature of 210 °C, table temperature of 60 °C, 100% infill, printing speed of 50 mm/s, layer height of 0.32 mm and nozzle diameter of 1 mm.",
+        "After printing, samples were coated by the powder bed annealing process for which a detailed explanation can be found in the work of Campos et al. [ 29 ]. The procedure is patent pending, with code BR 10 2025 000986-2 registered in Brazilian National Institute of Intelectual Protection (INPI). Their geometry, dimensions and printing orientation are shown in Fig.  1 a. In Fig.  1 b and c it is possible to see the aspect of samples as printed and after coating generation, respectively. Fig. 1 ( a ) Sample geometry (dimensions in mm). ( b ) Specimens as printed and ( c ) after coating generation",
+        "For the current work, samples were first divided into two designs of experiments (DoE) as shown in Fig.  2 , both of them of 2³ factorial type. In the first one, carried out as per Table  1 , the coating thickness and chemical composition, together with flexural and impact properties were investigated according to annealing and autoclaving parameters. The second design was used to study the influence of powder bed annealing conditions on coating adhesion and part’s temperature resistance, as shown in Table  2 .",
+        "Table 1 2³ design of experiments to investigate the influence of annealing temperature and autoclaving sterilization parameters on samples flexural resistance, impact resistance, coating layer thickness and coating chemical composition Condition Annealing temperature (°C) Cycles Drying A 180 1 No B 180 1 Yes C 180 2 No D 180 2 Yes E 170 1 No F 170 1 Yes G 170 2 No H 170 2 Yes",
+        "Table 2 2³ design of experiments to investigate the influence of powder bed annealing parameters on samples thermal resistance and coating adhesion Condition Particulate Time at Tmax (min) Tmax (°C) A 100% CaPO 5 190 B 100% CaPO 5 170 C 100% CaPO 0 190 D 100% CaPO 0 170 E 50% CaPO + 50% TiO₂ 5 190 F 50% CaPO + 50% TiO₂ 5 170 G 50% CaPO + 50% TiO₂ 0 190 H 50% CaPO + 50% TiO₂ 0 170",
+        "Fig. 2 Schematic of the general experimental methodology. After 3D printing, samples were coated by powder bed annealing process in different conditions according to two 2³ designs of experiments. The first was used to investigate coating thickness, chemical composition and mechanical properties according to annealing and sterilization conditions. The second was used to investigate thermal resistance and coating adhesion in regard to the annealing parameters",
+        "For the first DoE, powder bed annealing was carried using only calcium phosphate particulate because it was found on previous works that this condition yielded better mechanical properties. Four samples were produced at each condition, with 3 being used for bending tests and the last one being cut into 3 impact tests samples and 2 pieces for analysis of coating thickness and chemical composition. Powder bed annealing was conducted by heating samples immersed in a powder bed inside a metallic tray. The 4 samples were placed in the tray, which was taken into an electric oven with thermocouples inserted into the powder bed near the samples, monitoring the temperature as exemplified in Fig.  3 . When the maximum temperature (Tmax) was reached, the tray was kept for 3 min in the oven and then taken off and allowed to cool naturally in air at a room temperature of 25 °C. Then the samples were retrieved from below the powder bed, washed smoothly in water, dried in compressed air and stored in plastic containers filled with silica to prevent moisture, until they were used for the subsequent experiments. The autoclave sterilizations were carried in a Cristófoli Vitale 21 L water vapor autoclave with sterilization temperature kept between 126 °C and 130 °C, which corresponds to a pressure of 1.5 kgf/cm² to 1.9 kgf/cm². After placing 250 ml of distilled water in the equipment, together with the samples, each cycle was comprised of about 20 min for the equipment to heat and another 20 min for the sterilization to occur. When drying was enabled, it took 20 min at 120 °C. Fig. 3 Temperature monitoring of the powder bed annealing process, with thermocouple Tq0 measuring temperature inside the electrical oven and thermocouple Tq1 measuring temperature inside the powder bed near the samples. The green line marks the moment when the temperature of 170 °C was reached, from which 3 min were counted before taking the tray out of the oven",
+        "For the second DoE, it was desirable to verify if there were advantages regarding coating adhesion when using calcium phosphate together with titanium dioxide (50% CaPO + 50% TiO₂) instead of only the first (100% CaPO). Also, as a sequence of the investigation initiated in previous work [ 29 ], the powder bed annealing temperatures (Tmax) of 170 °C and 190 °C were used, together with the times at maximum temperatures (Time at Tmax) of 0 and 5 min. Aside from these differences in input parameters, the powder bed annealing happened in the same methodology as for the first DoE, producing instead 8 samples for each condition (4 at each annealing operation), 3 of which were subjected to thermal resistance tests and 2 of each subject to adhesion investigation."
+      ]
+    },
+    {
+      "heading": "Flexural tests",
+      "paragraphs": [
+        "Four point bending tests were conducted for three specimens of each condition of the first DoE in a universal testing machine with 200 kg capacity, ± 200 g accuracy and following the requirements of ASTM D6272 [ 46 ] standard. The data on maximum flexural strength (MFS), modulus of elasticity (E) and flexural elongation (ε) were obtained. To calculate the modulus of elasticity it was measured the tangent of the straight segment formed between the origin at 0 and the stress at 0.5% deformation as can be seen in the example given in Fig.  4 , which shows the graph for specimens of condition B. Fig. 4 Stress-strain curve with points used for calculating the modulus of elasticity highlighted for B1 curve"
+      ]
+    },
+    {
+      "heading": "Impact tests",
+      "paragraphs": [
+        "The Izod impact tests were performed according to ASTM D4508 [ 47 ] to observe the influence of autoclave sterilization on the energy absorbed by the samples, which were 19 mm in length, 12.7 mm in width and 3.2 mm in thickness. Three specimens were tested per condition of the first DoE with a pendulum of 778 mm in length, 0.963 kg in mass and center of mass at 159 mm from the rotation center, released from a horizontal position and reaching a speed of 5.6 m/s when hitting the sample with an energy of 3.8 J. The impact testing apparatus employed in this study was a modified version based on the design by Tsuruta [ 54 ]. The energy absorbed by the specimen during impact was measured using an encoder-type sensor attached to the pendulum’s shaft, which recorded the pendulum’s peak angular displacement. This encoder featured a 220 mm diameter disk with 360 holes, each 1 mm in width and spaced 1 mm apart, arranged along the disk’s outer edge. An LM393 module, mounted on the pendulum support, was used to detect and convert the disk’s movement into digital signals analyzed by an Arduino Uno."
+      ]
+    },
+    {
+      "heading": "Coating layer thickness and chemical analysis",
+      "paragraphs": [
+        "Coating layer thickness and chemical analysis were carried in the cross section of 2 segments from a sample of each condition of the first DoE. The first segment was cut from the extremity of the parallelepiped shaped flexural sample, while the second segment was cut from the middle, both of which were then embedded in resin, sanded to a 2000-mesh sandpaper, polished and received a 10 nm gold coating on a Leica EM SCD050 metallizer. They were later taken to SEM microscopy for BSE (backscattered electron imaging) and EDS analysis, with three images of each segment being used to measure the layer thickness on the cross-section using the ImageJ software as shown in Fig.  5 a and to verify the coating chemical composition as shown in Fig.  5 b. The proportion of HA in the coating was calculated as the division of the Ca content in the coating (weight% measured by EDS) by the Ca content of pure calcium phosphate powder analyzed in EDS. Fig. 5 Procedure for measuring the thickness of the layer formed by the adhesion of particulates to a type D sample, measuring 25.550 μm in this case (RRWidth). (b) Different regions of coating (spectrums 36 and 39), embedding resin (spectrums 35 and 38) and substrate (spectrum 37 and 40) chosen for EDS analysis"
+      ]
+    },
+    {
+      "heading": "Temperature resistance by heat deflection temperature",
+      "paragraphs": [
+        "Heat deflection temperature is defined as the temperature at which a standard test bar deflects a specified distance under a standardized load. It is used to determine heat resistance, as per ASTM D648 [ 49 ], and distinguishes between materials that are capable of sustaining light loads at high temperatures. Since the glass transition temperature and the crystallinity of semicrystalline polymers correlate with the maximum temperature the material can withstand, this type of test can be used to compare the Tg and crystallinity of materials produced under different heating and/or cooling conditions. An electronically controlled oven for ramp heating was built by instrumenting a 10 L Britania electric oven (Fig.  6 a) with a power of 1050 W. The internal oven temperature was measured by a K-type thermocouple connected to Arduino MAX31855-compatible module. An Arduino Uno microcontroller with an ATmega 328 processor was used as a signal acquisition board for data logging to the computer with CoolTerm 2.0 software. Temperature deflection tests were performed with the samples on specific supports (Fig.  6 b), heating the oven in an automatically controlled manner at a constant rate of 2 °C/min as required by ASTM D648 [ 49 ]. To achieve this, the oven was constantly switched on and off by an electronic relay also connected to the Arduino (as shown in Fig.  6 c), which turned off the power if the actual temperature was above the ideal value at a given time and did the opposite if the actual temperature was lower, creating a closed-loop control system. The heating ramp is also shown in Fig.  6  d, demonstrating the system’s good accuracy. However, a stress of 1.2 MPa was applied to the samples instead of the traditional values recommended by ASTM. Fig. 6 ( a ) 10 L electric oven. ( b ) Samples on a support for the heat deflection test. ( c ) Schematic of the ramp temperature control system, consisting of an Arduino Uno, MAX31855 module with a type K thermocouple, and relay to turn the furnace on/off. ( d ) Temperature in the furnace measured by thermocouples connected to the Arduino, during the heat deflection tests"
+      ]
+    },
+    {
+      "heading": "Quantitative coating adhesion",
+      "paragraphs": [
+        "For these tests, 2 samples of each condition of the second DoE were coated in gold for later SEM inspection, and 4 progressive load scratch tests were conducted in each sample. Coating adhesion was quantified following the general requirements of ASTM D7027 [ 48 ] and using an automated microsclerometer adapted from a 3-axis mini CNC machine. For this, 2 load cells were arranged to measure contact forces in the normal (Fn) and tangential (Ft) directions, with a maximum load of 1 kg and 10 kg, resolution of 0.01 g and 0.1 g, and precision of 1 g and 10 g, respectively, according to the manufacturer. Calibration of the load cells and uncertainty measurement was carried in a previous work [ 55 ]. The system, represented in Fig.  7 , operates at a maximum acquisition rate of 12 Hz and can generate the force vs. displacement graphs shown in Fig.  8 a. For the tests, the load was generated when the indenter was forced to advance against the sample 25 mm in X and 0.2 mm in Z directions, simultaneously, with speed of 1 mm/s, following G-code commands input in Candle 1.1.7 software. It is worth noting that although the mini CNC is only capable of controlling the movement of the coordinate axes, for small loads it was observed that there is a linear relationship between normal force and movement of the Z-axis spindle. Thus, when the scratches were made with linearly increasing depth, Fn presented a similar behavior, as can be seen in Fig.  8 a, with normal loads varying from 10 gf to approximately 180 gf. Fig. 7 ( a ) Mini CNC apparatus used for scratch testing, with yellow arrow indicating the load cells for measuring normal and tangential force, orange arrows indicating the X and Z axes, purple arrow indicating indenter holder and red arrow indicating sample (white parallelepiped clamped to acrylic round plate). ( b ) Contact force measurement system, with load cell, HX711 module and Arduino Fig. 8 ( a ) Graph of load x displacement generated by the advance of the indenter against the sample (condition C from second DoE) in X and Z direction simultaneously, for the first scratch. ( b ) BSE composed image of the 4 scratches made in sample 1 from condition C, with green bar marking the initial failure of the coating and correspondent critical load for the first scratch",
+        "The critical load, defined as the load at which failure of the coating occurs, is determined by verifying the point in the graph that corresponds to the initial failure region indicated by a contrast at the composed SEM images of the scratch, exemplified in Fig.  8 b. This image was obtained by aligning several BSE images using the SE image as a guide, as demonstrated in Fig.  9 . The contrast in BSE image means that there are two regions with different chemical composition, and the darker region that appears as the scratch progresses is due to exposure of the polymeric substrate. For this work, the failure of coating was defined not only by the change of contrast but also by a minimum width of 0.1 mm for each scratch and, as recommended by ASTM D7027 [ 48 ], a continuous length of at least twice the size of the stylus, as exemplified in Fig.  10 a. Regarding the indenter, which can be seen in Fig.  10 b, a small dressing tool with diamond tip was used instead of the 1 mm steel sphere recommended by the standard, to achieve coating failure within loads lower than the capacity of the loadcells. The diamond tip was measured in the SEM to be a square based pyramid with 2.7 mm x 2.7 mm base by 1.12 mm height and edge radius of 125 μm approximately. Fig. 9 Example of how BSE images were composed for each sample, with alignment guided by SE images. Printing deposition lines can be seen in diagonal direction Fig. 10 ( a ) BSE image from condition C (second DoE) with green arrow showing onset of coating failure, defined not only by the change of contrast but also by a minimum width of 0.1 mm for each scratch and, as recommended by ASTM D7027 [ 48 ], a continuous length of at least twice the size of the stylus. ( b ) Indenter tip analyzed in SEM",
+        "Because the diamond stylus is a square-based pyramid, the contact area between the indenter and the sample increases with penetration depth, so a single nominal contact area cannot represent the instantaneous indenter–surface contact during the progressive load test. To allow comparison between conditions, the critical normal load Lc was identified directly from the calibrated normal-force signal at the position where the BSE-image criterion (continuous failure track of width ≥ 0.1 mm and length at least twice the stylus dimension) was first met. Lc, expressed in Newtons, is the primary adhesion descriptor reported in this work and is the quantity most commonly used in the scratch-test literature. To allow a stress-based comparison with previous studies, an apparent critical stress was also computed by dividing Lc by a fixed projected reference area of 0.1 × 0.1 mm² corresponding to the failure-onset patch. This area is geometrically smaller than the instantaneous contact area of the pyramidal stylus at the moment of failure, so the resulting value represents an upper-bound estimate of the local interfacial stress and is treated here as an apparent rather than absolute adhesion strength."
+      ]
+    },
+    {
+      "heading": "Statistical analysis",
+      "paragraphs": [
+        "All experiments regarding mechanical properties (4 point bending, impact and heat deflection temperature tests) and surface characterization (coating layer thickness, coating chemical composition, coating adhesion) were subject to statistical significance analysis by ANOVA using Statistica 11 software, with level of significance of 5% and 95% reliability index. The p-values of significant effects were reported, and additionally the standard deviations were shown in the graphs."
+      ]
+    },
+    {
+      "heading": "Results",
+      "paragraphs": []
+    },
+    {
+      "heading": "Flexural tests",
+      "paragraphs": [
+        "The maximum flexural strength (MFS), modulus of elasticity (E) and flexural elongation (ε) results are presented in Fig.  11 . It is verified that there is a clear difference between samples annealed at 170 °C and 180 °C, with the latter presenting higher MFS and E. Indeed, the powder bed annealing temperature was found to be the most significant factor in ANOVA with  p  = 0.000012 for MFS and  p  = 0.000011 for E. Also, for all conditions, drying after autoclaving improved resistance, with this being the second most significant factor with  p  = 0.000249 for MFS and  p  = 0.018770 for E. Finally, the number of autoclaving cycles was also significant for MFS with  p  = 0.018721 and an increase in maximum stress with 2 cycles instead of 1. Regarding ε, the only significant factor was drying process with  p  = 0.043066, which on average increased elongation when carried out after autoclaving. Fig. 11 Maximum flexural strength (MFS), flexural modulus of elasticity (E) and maximum deformation (Ɛ) for samples before (0) and after (1 or 2) autoclaving cycles",
+        "Although the initial flexural properties before autoclaving (0 cycles) might be the reason for these behaviors, it is likely that changes in PLA chemical composition, sample porosity and/or crystallinity are more preponderant, as explained by Arifvianto [ 20 ], Hart et al. [ 25 ] and Hart et al. [ 26 ], respectively. Considering the temperatures to which PLA was subjected to during annealing (170 °C to 180 °C), autoclave cycles (126 °C to 130 °C) and drying (120 °C), it is conceivable that increases and decreases in mechanical properties come from the types of crystalline structures that are favored with the thermal history of each condition. As explained by Ma et al. [ 56 ], the crystals α and δ are formed between 100 °C and 120 °C, with the former being favored above 120 °C and the latter, considered an unorganized crystal type, favored below 100 °C. Also, β crystals and γ crystals have been created at around 170 °C and 140 °C, respectively. Therefore, the overall better properties reached on conditions A to D might be due to a higher content of α crystal, while the worse properties from condition E to H might be related to unorganized crystalline forms of PLA. Additionally, this same phenomenon might explain why MFS and E changed with the autoclaving cycles and drying operations, since they all work as some sort of heat treatment for the polymer and cause changes in crystallinity, even though they are meant as a sterilization technique. It is important to highlight that in comparison to the literature for PLA [ 57 ,  58 ] and previous works with the powder bed annealing process [ 29 ], the values found for MFS at the present work were significantly lower (19 MPa to 37 MPa against about 50 MPa to 100 MPa). This is probably due to humidity in the filament before the powder bed annealing, which hinders the improvements in mechanical properties that usually accompany the annealing process [ 59 ]. However, even in this case, the resistance values might still be enough for application in polymeric implants, since the maximum stresses on can be significantly reduced to less than 25 MPa in customized FFF-printed designs [ 9 ,  60 ]. This supports the use of powder bed annealing as a manufacturing process that yields parts capable of supporting autoclaving, which is the preferred sterilization method for orthopaedical implants."
+      ]
+    },
+    {
+      "heading": "Izod impact tests",
+      "paragraphs": [
+        "The results of Izod impact energy are shown in Fig.  12 , from which is clear that parts annealed at 180 °C again had an advantage, with this factor being the most significant with  p  = 0.000001. The second most significant was the autoclaving cycles, with  p  = 0.022622, with a reduction in impact energy when 2 cycles are used instead of 1. Interestingly, the non-autoclaved samples presented values consistent with the literature [ 61 ], which indicates the thermal input from the powder bed annealing process did not improve the impact resistance of the samples. However, after autoclave cycles, the impact energy increased more than 100% for some conditions, which means the thermal input was effective in this case. Fig. 12 Izod impact energy for samples before (0) and after (1 or 2) autoclaving cycles",
+        "Since the coating is very thin, this can only be explained by the bulk properties of the PLA substrate. Again, as explained by Ma et al. [ 56 ], the unorganized δ crystal structure and a more dispersed amorphous phase are both favored in temperatures close to 120 °C which happens during autoclaving but not during annealing. It is likely that the unorganized form of the crystal together with the highly dispersed amorphous phase both favor impact toughness, which would explain the great improvements in impact energy after autoclaving. Again, this behavior was not so well observed for samples annealed at 170 °C, which further suggests that these samples were tainted by humidity before powder bed annealing, which somehow prevents the beneficial effects of autoclaving into impact resistance. Furthermore, it is important to state that even for these samples, impact values were still enough for most applications of PLA as implant material, since they were leveled with those from injection molding [ 62 ], which is the standard manufacturing process for current PLA commercial implants. This reinforces the adequateness of autoclaving as a sterilization method for PLA implants with HA coating from the powder bed annealing process, indicating that this manufacturing method is suitable for implant production, once they can be sterilized by the most common technique used for surgical material.",
+        "In addition to crystalline rearrangements, the moisture absorbed during autoclaving may also contribute to the impact-energy reduction through a plasticization mechanism. Bulk PLA absorbs less than 1 wt% of water at room temperature (Abdela et al. [ 63 ]), but FFF-printed parts contain internal voids and weak inter-raster interfaces that retain larger amounts of moisture (Banjo et al. [ 64 ]). Water acts as a plasticizer for PLA, lowering Tg, increasing chain mobility in the amorphous phase, and worsening stress redistribution at inter-layer interfaces of FFF-printed parts, ultimately reducing material resistance as shown by Demirtaş and Avcıoğlu [ 65 ]. This interpretation is supported by the higher impact-energy gain observed in the conditions where post-autoclave drying was applied at 120 °C, since drying removes part of the absorbed moisture and reduces the plasticizing effect. Also, this behavior is compatible with the increase in flexural modulus and MFS after drying."
+      ]
+    },
+    {
+      "heading": "Coating layer thickness and chemical analysis",
+      "paragraphs": [
+        "The hydroxyapatite coating thickness for each condition of the first DoE is presented at Fig.  13 , from which it is possible to see again a better result from samples annealed at 180 °C, with this being the most significant factor in ANOVA with  p  = 0.000000. Also, the number of cycles ( p  = 0.000054), combination of these two factors ( p  = 0.000000) and combination of number of cycles and drying ( p  = 0.000002) were significant too, for a 95% confidence interval. Considering that the powder bed annealing produced similar coating thickness in comparison to previous works [ 29 ], of 28 μm against 33 μm for 170 °C annealing with pure calcium phosphate, these results indicate a poor performance of coatings from this condition when autoclaved, with coating thickness diminishing with cycles. This did not happen for samples produced at 180 °C, which probably means that the later condition yields coatings with better stability that do not peal, degrade or diminish when subjected to autoclaving. Still, although most autoclaving conditions achieved coating thickness that fall short of the desired minimum of 50 μm recommended by Nuswantoro et al. [ 66 ], the values below 30 μm might be beneficial for avoiding coating delamination while maintaining enhanced osseointegration properties [ 67 ]. This also contributes to the suitability of powder bed annealing and autoclaving sterilization as methods capable of producing and sterilizing HA coated customized PLA implants. Fig. 13 Coating thickness measured for samples before (0) and after (1 or 2) autoclave cycles",
+        "Regarding coating chemical composition, the HA proportion was calculated as the division of Ca element content in each condition divided by the Ca element content in pure HA powder, which was measured to be 31.39%. The results shown in Fig.  14  clearly indicate that the coating is a composite formed by an intertwined mix of hydroxyapatite and PLA from the substrate. This supports the claim that this innovative coating is created from the diffusion of HA submicrometric particles into the viscous PLA substrate during powder bed annealing [ 29 ], for only such mechanism would be capable of reaching such high HA content into a coating of about 20 μm to 50 μm in depth. However, the anchoring of HA particles into the PLA surface probably results from two coupled mechanisms rather than from purely thermal diffusion. Above the glass transition temperature, the increase in chain mobility allows the polymer to wet the ceramic particles through capillary and surface-tension effects. At the same time, the part remains fully immersed in the ceramic powder during the entire heating cycle, so the surrounding bed exerts a sustained hydrostatic pressure on the softened polymer surface. For the tray geometry used here (powder bed depth of approximately 30 mm and apparent powder density near 1.5 g/cm³) this pressure is estimated at ≈ 0.4 kPa. Although small in absolute terms, this pressure acts as a quasi-static normal stress on a shear-thinning, non-Newtonian PLA melt and, when maintained for several minutes, drives measurable particle penetration. This coupled mechanism explains why longer times at Tmax and higher Tmax values both increase coating thickness and adhesion: the lower effective viscosity at higher temperature and the longer time available for penetration both amplify the pressure-driven component. Fig. 14 Coating HA proportion measured for samples before (0) and after (1 or 2) autoclaving cycles",
+        "ANOVA reveals that the annealing temperature was again significant ( p  = 0.000032) with a better performance of samples produced at 180 °C, which confirms the suitability of this condition for producing HA coated PLA implants. Drying was the second most significant factor ( p  = 0.001319), improving coating HA proportion. This could signify that autoclaving sterilization is somehow diluting the calcium content in the coating, with the HA proportion returning to the previous levels after drying. Since the water absorption to PLA is very low [ 64 ], this behavior might be explained by HA water absorption, which occurs at high levels according to the water absorption curves reported by Santos et al. [ 68 ] and Sultana and Khan [ 69 ]. Therefore, it is likely that during autoclaving the water vapor is also diffused into the PLA coating, reducing the HA proportion in the coating, but returning to the previous levels after drying takes out the water content. SEM images shown in Fig.  15  support this phenomenon, where for condition A, with no drying, the coating presents less contrast, which suggests a smaller content of Ca elements that appear brighter in the non-autoclaved sample. Fig. 15 ( a ) Autoclaved sample from condition A, with no drying, showing less contrast for the coating, suggesting less Ca content. ( b ) Non-autoclaved sample produced at 180 °C annealing"
+      ]
+    },
+    {
+      "heading": "Temperature resistance by heat deflection temperature",
+      "paragraphs": [
+        "The Heat Deflection Temperature of samples produced according to the second DoE is shown in Fig.  16 , from which it becomes evident that for all powder bed annealing conditions there is a significant increase in thermal resistance, from 65 °C for FFF-printed pure PLA to at least 150 °C on all conditions. It is likely that this change was due to higher crystallinity of the material, since it has already been shown [ 70 ] that more crystals require more heat before the material melts. Interestingly, there seems to be a better performance of samples annealed at 170 °C, which suggest a better stability of the crystals formed at this temperature. Regardless, both levels allow the powder bed annealed PLA parts to withstand autoclaving sterilization conditions, which is crucial for application of this new manufacturing method towards medical devices [ 71 ] and this is in accordance with Tmax being the only significant effect ( p  = 0.000000), once a higher temperature facilitates crystallization [ 72 ]. Again, this subsidizes the proposed powder bed annealing not only as a coating manufacturing method, but also as a heat treatment capable of simultaneously improving the substrate mechanical and thermal properties. Fig. 16 Heat deflection temperature for powder bed annealed samples, showing increase in thermal resistance for all conditions",
+        "The HDT increase measured for all powder bed annealed conditions can be related to the formation of the ordered α-crystalline phase of PLA. As reported by Ma et al. [ 56 ] and confirmed by isothermal crystallization studies, the disordered α′ phase forms predominantly below approximately 110–120 °C, a mixed α′/α population develops between approximately 120–150 °C, and the well-organized α phase becomes dominant above 150 °C, with the highest α-crystal volume fraction in the 160–180 °C range. Because the HDT depends on the rigid amorphous fraction anchored at crystalline lamellae, it scales with the volume fraction and perfection of the α phase rather than with total crystallinity. The HDT values above 150 °C measured here are therefore consistent with a high content of ordered α crystals at both annealing temperatures, while the small HDT advantage of the 170 °C condition can be attributed to a more thermodynamically stable α-population formed in the temperature window where α′→α reorganization is most efficient. The relative magnitudes of the HDT, flexural and impact response are therefore internally consistent with the α-phase interpretation discussed above for the bulk mechanical behavior."
+      ]
+    },
+    {
+      "heading": "Quantitative coating adhesion",
+      "paragraphs": [
+        "Coating adhesion was mensurated as the critical stress in Z direction that caused the indenter to perforate the coating and expose the PLA substrate during the progressive load scratch test, with results presented in Fig.  17 . ANOVA has shown that the most significant factors were Time at Tmax ( p  = 0.000010), Tmax ( p  = 0.000429), the combination of these factors ( p  = 0.000005) and the combination of particulate and Tmax ( p  = 0.000099). Overall, the higher times and temperatures yielded more resistant coatings for most conditions, which is in line with the higher coating thickness achieved in these conditions on previous works [ 29 ]. Therefore, the most likely factor that affects resistance would be the depth attained by HA particulates through diffusion during annealing. However, the linear correlation between these two variables (thickness and adhesion) is only 0.35, which suggests that there are other factors that affect coating adhesion. Fig. 17 Adhesion resistance of coating in progressive load scratch test performed in samples from the second DoE",
+        "As can be seen in Fig.  18 , although coatings generated in different conditions might present the same thickness, there can be differences in HA content and coating regularity that might further justify the better performance of some conditions over others. For instance, the HA coating of condition A, that presented the best adhesion result, shows higher homogeneity (Fig.  18 a) and higher Ca content (Fig.  18 c) than the coating of condition C, which seems more irregular (Fig.  18 b) and has less Ca content (Fig.  18  d). Therefore, it is probable that coating adhesion depends on coating thickness, HA content and coating regularity altogether. Also, even though a more conservative method was used to calculate critical stress, the results in between 83 MPa to 139 MPa were even higher than those from other works [ 73 ] that ranged from 56 MPa to 99 MPa for PEEK/HA composite coating, and much higher than the 8 MPa to 13 MPa found for electrodeposited HA coating on titanium alloy [ 74 ] and the 11 MPa to 25 MPa found for HA coating on polycarbonate-polyurethane substrate [ 75 ]. This is in line with the finding that no coating delamination happened during bending stresses of up to 91 MPa on previous samples produced by the powder bed annealing process [ 29 ]. Considering that coating adhesion is equally as important as osseointegration for implant performance [ 76 ], these results confirm this technique as an interesting coating method for orthopaedical resorbable implants. Fig. 18 BSE images from the cross section of samples from ( a ) condition A and ( b ) condition C, which appear to present very close coating thickness. EDS maps of calcium content for the same images of ( c ) condition A and ( d ) condition C, with the former showing a brighter coating which comes from a higher Ca content",
+        "The critical loads measured in this work range from approximately 0.8 N to 1.4 N, which is comparable to the load ranges reported by Khlifi et al. [ 74 ] and Barnes et al. [ 75 ] for similar progressive-load scratch geometries on HA-coated systems. The corresponding apparent critical stresses, computed as described in the Methodology, are higher than the values reported in those studies; this difference is partly geometric, since the small reference area used here concentrates the load over a fully exposed substrate patch and yields stress values that should not be compared directly across different stylus geometries or area definitions. On a critical-load basis, the coatings produced by powder bed annealing therefore show adhesion performance in the same range as conventional polymer–ceramic systems, while the apparent stress values quantify the local load concentration achieved at coating failure."
+      ]
+    },
+    {
+      "heading": "Conclusions",
+      "paragraphs": [
+        "This study demonstrated that powder bed annealing is a versatile post-processing route for simultaneously enhancing the thermal resistance, mechanical performance, and surface bioactivity of FFF-printed PLA parts. By embedding hydroxyapatite (HA) and titanium dioxide (TiO₂) particles into the polymer surface during annealing, a uniform composite coating was achieved without resorting to complex or high-cost deposition technologies.",
+        "Annealing temperature proved to be the dominant parameter influencing performance. Samples treated at 180 °C exhibited the highest maximum flexural strength (MFS) and modulus of elasticity (E), with statistical significance. MFS ranged from 19 MPa to 37 MPa, which, despite being lower than the 50–100 MPa typically reported for PLA after annealing, remains suitable for many implant geometries designed to operate under stresses below 25 MPa. Drying after autoclaving further improved MFS and E, while two autoclave cycles increased MFS compared to one cycle. In impact resistance, parts annealed at 180 °C again outperformed those processed at 170 °C. Although annealing alone did not enhance Izod impact strength, autoclaving increased it by over 100% in some conditions, likely due to microstructural rearrangements favoring δ crystal formation, a more dispersed amorphous phase, with an additional resistance improvement when drying the parts, due to reduced moisture in the FFF-induced inter-raster microvoids, preventing plasticization.",
+        "Surface coating analysis revealed that annealing at 180 °C yielded thicker and more stable HA layers, with average thicknesses near 28 μm for 170 °C and higher values at 180 °C. Autoclaving at lower annealing temperatures led to coating loss, whereas coatings from the 180 °C condition retained integrity even after sterilization. Although most coatings were below the 50 μm target suggested for optimal osseointegration, thinner layers may reduce delamination risks while preserving bioactivity. The HA proportion in coatings reached levels consistent with deep particulate diffusion into the PLA matrix, driven by the combined effect of thermal softening and the sustained hydrostatic pressure of the powder bed on the non-Newtonian PLA melt, confirming strong interfacial integration.",
+        "Thermal resistance improvements were particularly notable. Heat Deflection Temperature (HDT) increased from ~ 65 °C in as-printed PLA to ≥ 150 °C for all annealed conditions, enabling survival under autoclave sterilization (126–130 °C) without significant distortion. This enhancement is attributed to the formation of the ordered α-crystalline phase, which is the dominant population in the 160–180 °C annealing window and governs the rigid amorphous fraction responsible for HDT. Coating adhesion was characterized through progressive load scratch testing, with critical normal loads (Lc) of approximately 0.8–1.4 N comparable to those reported for HA coatings on metallic and polymeric substrates, while apparent critical stresses of 83–139 MPa quantify the local load concentration at the moment of coating failure under the geometry adopted here. This stress range should not be compared directly across stylus geometries or area definitions, but on a critical-load basis the coatings perform within the range of conventional polymer–ceramic systems. The best adhesion occurred at higher Tmax and longer hold times, correlating with higher HA content and improved coating uniformity.",
+        "Overall, the results confirm that powder bed annealing can be tailored to produce custom FFF-printed PLA implants with robust HA-based coatings, autoclave sterilization compatibility, and mechanical properties appropriate for moderate-load-bearing biomedical applications. The process is low-cost, scalable, and compatible with standard desktop FFF printers and basic laboratory ovens, offering a practical route for decentralized, patient-specific implant manufacturing. Future work should focus on optimizing coating thickness for long-term osseointegration, investigating in vivo performance, and expanding the approach to other bioresorbable polymer–ceramic systems."
+      ]
+    }
+  ],
+  "tables": [
+    {
+      "caption": "2³ design of experiments to investigate the influence of annealing temperature and autoclaving sterilization parameters on samples flexural resistance, impact resistance, coating layer thickness and coating chemical composition",
+      "headers": [
+        "Condition",
+        "Annealing temperature (°C)",
+        "Cycles",
+        "Drying"
+      ],
+      "rows": [
+        [
+          "A",
+          "180",
+          "1",
+          "No"
+        ],
+        [
+          "B",
+          "180",
+          "1",
+          "Yes"
+        ],
+        [
+          "C",
+          "180",
+          "2",
+          "No"
+        ],
+        [
+          "D",
+          "180",
+          "2",
+          "Yes"
+        ],
+        [
+          "E",
+          "170",
+          "1",
+          "No"
+        ],
+        [
+          "F",
+          "170",
+          "1",
+          "Yes"
+        ],
+        [
+          "G",
+          "170",
+          "2",
+          "No"
+        ],
+        [
+          "H",
+          "170",
+          "2",
+          "Yes"
+        ]
+      ],
+      "header_groups": [],
+      "table_alignment_status": "resolved",
+      "row_provenance": [
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 4
+          }
+        ]
+      ],
+      "tbody_alignment_status": "resolved"
+    },
+    {
+      "caption": "2³ design of experiments to investigate the influence of powder bed annealing parameters on samples thermal resistance and coating adhesion",
+      "headers": [
+        "Condition",
+        "Particulate",
+        "Time at Tmax (min)",
+        "Tmax (°C)"
+      ],
+      "rows": [
+        [
+          "A",
+          "100% CaPO",
+          "5",
+          "190"
+        ],
+        [
+          "B",
+          "100% CaPO",
+          "5",
+          "170"
+        ],
+        [
+          "C",
+          "100% CaPO",
+          "0",
+          "190"
+        ],
+        [
+          "D",
+          "100% CaPO",
+          "0",
+          "170"
+        ],
+        [
+          "E",
+          "50% CaPO + 50% TiO₂",
+          "5",
+          "190"
+        ],
+        [
+          "F",
+          "50% CaPO + 50% TiO₂",
+          "5",
+          "170"
+        ],
+        [
+          "G",
+          "50% CaPO + 50% TiO₂",
+          "0",
+          "190"
+        ],
+        [
+          "H",
+          "50% CaPO + 50% TiO₂",
+          "0",
+          "170"
+        ]
+      ],
+      "header_groups": [],
+      "table_alignment_status": "resolved",
+      "row_provenance": [
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 4
+          }
+        ]
+      ],
+      "tbody_alignment_status": "resolved"
+    }
+  ]
+}

@@ -1,0 +1,425 @@
+{
+  "doi": "10.1016/j.matdes.2026.115586",
+  "title": "Strain-rate-dependent dislocation-martensite interactions in Fe-Mn-Al-Nb medium manganese steel via discrete dislocation dynamics modeling",
+  "abstract": "Medium manganese steels (MMnS) exhibit exceptional strength-ductility synergy due to the well-known transformation induced plasticity (TRIP) effects, making it a prime candidate for automotive lightweighting and safety–critical structures. However, the strain-rate-dependent dislocation-martensite interactions governing its strain hardening and plasticity remain incompletely understood, particularly regarding dynamic loading conditions. To address this gap, this study employs an integrated experimental-computational approach by combining dynamic tensile tests (1000–3000 s−1) via split Hopkinson bar apparatus, microstructural characterization, and a novel 3D discrete dislocation dynamics (DDD) model simulating dislocation evolution in austenite–martensite systems. Key findings demonstrate that elevated strain rates enhance yield strength by 12.7 %, primarily through intensified dislocation density and dislocation cell formation, though this concurrently exacerbates strain localization. Furthermore, closer dislocation-martensite proximity (300–1200 nm) significantly increases the critical stress required for dislocation accumulation ahead of martensite. Notably, successful bypassing triggers abrupt macroscopic stress drops followed by rapid dislocation proliferation. Critically, martensite promotes dislocation accumulation and induces secondary hardening; its 45° orientation activates distinct slip systems that accumulate higher dislocation densities, yielding the maximum strength. These insights elucidate dislocation-mediated strengthening under dynamic loading, establishing a microstructure-guided framework for designing advanced high-performance steels.",
+  "journal": "Materials & Design",
+  "year": "2026",
+  "sections": [
+    {
+      "heading": "Introduction",
+      "paragraphs": [
+        "Medium-manganese steels (MMnS) combine high strength and good ductility, making it suitable for lightweight automotive applications  [1–3] . These mechanical properties originate from complex dislocation-mediated plasticity, in which dislocation–dislocation interactions and interactions between dislocations and deformation-induced martensite govern strain hardening  [4–8] . The formation of martensite dissipates energy through volumetric expansion and transformation stress, while also acting as a strong barrier to dislocation motion, promoting dislocation accumulation and interface strengthening  [9,10] . A clear understanding of these microscopic mechanisms, particularly how dislocation dynamics are influenced by the spatial configuration and orientation relationships between martensite and dislocations, is essential for predictive modeling and microstructure design.",
+        "In recent years, extensive experimental studies have been devoted to elucidating the interaction between dislocations and martensite. Liu et al.  [11]  employed in-situ transmission electron microscopy (TEM) to observe that, under stress-induced conditions, martensite grows rapidly and forms complex dislocation structures in the surrounding matrix. Morsdorf et al.  [12]  revealed that dislocation activity in lath martensite is highly localized, with significant plastic accommodation occurring at high-angle boundaries, highlighting the critical role of internal interfaces in mediating deformation; however, their analysis primarily focused on microstructural characterization and lacked a quantitative description of dislocation interaction mechanisms between martensite laths of different orientations. Li et al.  [13]  used in-situ high-energy X-ray diffraction to quantify the evolution of dislocation density in ferrite-martensite steel during tensile deformation, and found that dislocation density increases rapidly after yielding but quickly saturates, with the mean free path and dynamic recovery coefficient showing strong temperature dependence. Shamsujjoha et al.  [14]  investigated the evolution of dislocation density and arrangement in low-carbon lath martensite, and observed that while dislocation density remains nearly constant during deformation, the arrangement parameter decreases significantly, indicating dislocation reorganization into lower-energy configurations; however, this work did not consider the influence of martensite spatial distribution on the overall dislocation evolution. Furthermore, Slater and Harjo et al.  [15,16]  demonstrated that the mechanical behavior of martensite depends not only on dislocation density but also strongly on their spatial distribution, arrangement, and other microstructural heterogeneities. Moreover, the aforementioned experiments were primarily conducted under quasi-static or medium-to-low strain rate conditions, and observations under extreme conditions such as high strain rates remain limited; therefore, the dynamic strengthening mechanisms require further investigation.",
+        "Experimental techniques are often limited in providing real-time three-dimensional observation capabilities of microscale dislocation dynamics. Discrete dislocation dynamics (DDD) has emerged as a powerful tool for bridging microscale dislocation motion with macroscale plasticity, enabling detailed exploration of strengthening mechanisms. In the context of martensite-dislocation interactions, Abou Ali et al.  [5]  utilized a multi-scale DDD-continuum mechanics framework to study dislocation interactions with lath boundaries and precipitates, revealing that lath width and precipitate distribution significantly influence dislocation storage. Huang et al.  [17]  coupled 3D-DDD with crystal plasticity finite element methods to investigate high-temperature strengthening mechanisms at interphase boundaries. Queyreau et al.  [18]  integrated the Orowan mechanism with near-dislocation hardening theory to quantify the relationship between particle bypass stress and strain hardening rate. Shin et al.  [19]  further showed that the size of the second phase and its spacing to adjacent slip planes jointly govern dislocation loop formation and annihilation. Ding et al.  [20]  systematically examined the effects of second-phase volume fraction and slip system orientation on yield stress, highlighting the preferential activation of slip systems with higher Schmid factors. However, most existing DDD studies have focused on equiaxed or spherical second phases  [21–23] , with limited attention to the dynamic interaction between dislocations and lamellar martensite under extreme high strain rates, particularly regarding the influence of martensite orientation and relative spatial positioning of dislocations with respect to the martensite center.",
+        "In this study, the MMnS is investigated by combining split Hopkinson tension bar (SHTB) tests with TEM characterization to analyze macroscopic mechanical responses and microstructural evolution under high strain rates of 1000–3000 s −1 . Building upon these experimental insights, a 3D-DDD model incorporating both austenite and lamellar martensite is established. This model enables a systematic investigation of the effects of strain rate, dislocation-martensite relative distance of 300–1200 nm, and martensite orientation of 0°, 45°, 90° relative to the loading axis on dislocation behavior and strengthening mechanisms. These findings illuminate the role of dislocation-mediated strengthening mechanisms under dynamic loading, thereby providing a microstructure-informed framework to guide the design of advanced high-performance steels with precisely tailored mechanical properties."
+      ]
+    },
+    {
+      "heading": "Material and methods",
+      "paragraphs": []
+    },
+    {
+      "heading": "Material",
+      "paragraphs": [
+        "The experimental material, a manganese steel within the Fe-Mn-Al-Nb system (Fe-10.3Mn-0.52C-2.1Al-0.11Nb, wt.%), underwent a systematic thermomechanical processing route. Initially, the as-cast ingot was subjected to homogenization annealing at 1180 °C for 3 h to eliminate microstructural heterogeneities. Starting from the post-homogenization initial thickness of 40 mm, the material was processed via multi-pass hot rolling to achieve progressive thickness reduction. A subsequent two-stage temperature-controlled rolling procedure was applied to an intermediate slab: the first stage involved rolling at 630 °C for 1.5 h, followed by a second stage at 550 °C for an additional 1.5 h, which yielded a final sheet thickness of 1 mm. Then a critical intercritical annealing treatment was performed at 750 °C for 10 h. The overall thermomechanical processing sequence is schematically illustrated in  Fig. 1 \n                         ."
+      ]
+    },
+    {
+      "heading": "Dynamic tensile tests",
+      "paragraphs": [
+        "Dynamic tensile tests were performed using a conventional SHTB system, schematically illustrated in  Fig. 2(a) \n                         , which consists of a striker bar, an incident bar, and a transmission bar. The test specimens were carefully mounted between the incident and transmission bars; a thin layer of vaseline was applied at the interfaces to reduce friction and ensure the efficient propagation of undistorted stress waves. To investigate high-strain-rate deformation behavior, tests were conducted at strain rates ranging from 1000 s −1  to 3000 s −1 . A flat dumbbell-shaped specimen with 1 mm thickness ( Fig. 2(b) ) was employed to prevent stress wave disturbances that could arise from threaded connections.",
+        "The strain gauges pasted on the incident rod and the transmitted rod simultaneously collect the strain pulses of the incident wave  \n                            \n                               \n                                  ε \n                                  i \n                               \n                               \n                                  ( \n                                  t \n                                  ) \n                               \n                            \n                         \n                         ,  the reflected wave  \n                            \n                               \n                                  ε \n                                  r \n                               \n                               \n                                  ( \n                                  t \n                                  ) \n                               \n                            \n                          and the transmitted wave  \n                            \n                               \n                                  ε \n                                  t \n                               \n                               \n                                  ( \n                                  t \n                                  ) \n                               \n                            \n                         . The strain rate  \n                            \n                               \n                                  ε \n                                  ̇ \n                               \n                            \n                         , strain  \n                            \n                               ε \n                            \n                          and stress  \n                            \n                               σ \n                            \n                          of the specimen can be obtained respectively according to the formulas  \n                            \n                               \n                                  ε \n                                  ̇ \n                               \n                               \n                                  ( \n                                  t \n                                  ) \n                               \n                               = \n                               - \n                               \n                                  \n                                     2 \n                                     \n                                        C \n                                        b \n                                     \n                                  \n                                  \n                                     L \n                                     s \n                                  \n                               \n                               \n                                  ε \n                                  r \n                               \n                               \n                                  ( \n                                  t \n                                  ) \n                               \n                            \n                         ,  \n                            \n                               ε \n                               \n                                  ( \n                                  t \n                                  ) \n                               \n                               = \n                               - \n                               \n                                  \n                                     2 \n                                     \n                                        C \n                                        b \n                                     \n                                  \n                                  \n                                     L \n                                     s \n                                  \n                               \n                               \n                                  ∫ \n                                  \n                                     0 \n                                  \n                                  t \n                               \n                               \n                                  \n                                     ε \n                                     r \n                                  \n                                  \n                                     ( \n                                     τ \n                                  \n                               \n                               \n                                  ) \n                                  d \n                                  τ \n                               \n                            \n                          and  \n                            \n                               σ \n                               \n                                  ( \n                                  t \n                                  ) \n                               \n                               = \n                               \n                                  \n                                     \n                                        E \n                                        b \n                                     \n                                     \n                                        A \n                                        b \n                                     \n                                  \n                                  \n                                     A \n                                     s \n                                  \n                               \n                               \n                                  ε \n                                  t \n                               \n                               \n                                  ( \n                                  t \n                                  ) \n                               \n                            \n                         \n                         [24,25] . Among them,  \n                            \n                               \n                                  C \n                                  b \n                               \n                            \n                          is the elastic wave velocity in the rod,  \n                            \n                               \n                                  L \n                                  s \n                               \n                            \n                          is the gauge length of the specimen,  \n                            \n                               \n                                  A \n                                  b \n                               \n                            \n                          and  \n                            \n                               \n                                  A \n                                  s \n                               \n                            \n                          are the cross-sectional areas of the rod and the specimen respectively, and  \n                            \n                               \n                                  E \n                                  b \n                               \n                            \n                          is the elastic modulus of the rod. To ensure precision and repeatability, three valid tests were performed at each strain rate."
+      ]
+    },
+    {
+      "heading": "Microstructure characterization",
+      "paragraphs": [
+        "The microstructure of MMnS was examined using a FEI Tecnai G2 F20 TEM operated at an accelerating voltage of 200 kV. To prepare electron-transparent specimens, site-specific sampling was conducted via focused ion beam (FIB) techniques from both the undeformed initial state and regions near the tensile fracture surface. Targeted thin lamellae were cut and extracted using ion milling, followed by preliminary thinning to a thickness below 5 μm. Subsequently, fine thinning and cleaning were performed using low-voltage (2–5 kV), low-angle ion beam irradiation to remove surface damage layers and amorphous contamination introduced during sample preparation. This yielded electron-transparent specimen areas with final thicknesses under 100 nm and clean surfaces. Microstructural characterization was carried out using both bright-field (BF) and dark-field (DF) imaging modes to observe the morphological features.",
+        "During the preparation of electron backscatter diffraction (EBSD) samples, the samples were sanded, mechanically polished and electrochemical polished successively. Data were acquired using a JEOL JSM-7900F scanning electron microscope (SEM) equipped with an EDAX Hikari XP EBSD detector. The acceleration voltage for data acquisition was 20 kV, the step size was 200 nm, and the sample tilt angle was 70°."
+      ]
+    },
+    {
+      "heading": "Discrete dislocation dynamics framework",
+      "paragraphs": [
+        "The plastic deformation behavior of crystalline materials fundamentally arises from the slip motion of dislocations within the lattice and their associated proliferation mechanisms  [26] . Within the framework of continuum mechanics, the discrete dislocation dynamics (DDD) method enables quantitative simulation of macroscopic plastic response by numerically solving the motion equations governing dislocation lines under external stress fields  [27–32] . Its computational procedure can be systematically delineated through the following critical stages. First, the continuous dislocation line is discretized into individual segments to facilitate numerical treatment. Next, the Peach-Koehler force acting on each nodal point is precisely computed based on elasticity theory. Subsequently, the trajectories of dislocation nodes are resolved using explicit or implicit numerical integration schemes. Beyond this, short-range dislocation interactions-including topological rearrangements such as dislocation reactions and cross-slip-are rigorously addressed. Finally, the dislocation network configuration is updated, and the corresponding plastic strain field is computed  [33,34] ."
+      ]
+    },
+    {
+      "heading": "Dislocation nodes force",
+      "paragraphs": [
+        "The total force acting on a dislocation line is partitioned among its constituent discrete points. Following discretization, dislocation segments are truncated to short lengths, allowing their geometric and physical characteristics to be fully characterized by analyzing the relative positions between adjacent discrete points. Based on the conservation of the Burgers vector at each segment node, the Burgers vector of every dislocation segment is precisely determined. For each discrete dislocation point, the formulation governing the force it experiences is given by  [35,36] : \n                            \n                               (1) \n                               \n                                  \n                                     \n                                        F \n                                        i \n                                     \n                                     = \n                                     \n                                        F \n                                        el \n                                     \n                                     + \n                                     \n                                        F \n                                        core \n                                     \n                                  \n                               \n                            \n                         where  \n                            \n                               \n                                  F \n                                  el \n                               \n                            \n                          denotes the elastic interaction force between dislocations, and  \n                            \n                               \n                                  F \n                                  core \n                               \n                            \n                          is the dislocation core force.",
+        "It is noted that the elastic force  \n                            \n                               \n                                  F \n                                  el \n                               \n                            \n                          of dislocations mainly stems from the interaction force  \n                            \n                               \n                                  F \n                                  \n                                     \n                                        ij \n                                     \n                                  \n                                  \n                                     kl \n                                  \n                               \n                            \n                          between dislocation segments, the force  \n                            \n                               \n                                  F \n                                  PK \n                               \n                            \n                          exerted by external loads on dislocation segments, and the interaction force  \n                            \n                               \n                                  F \n                                  image \n                               \n                            \n                          between dislocation segments and boundaries. Therefore, the elastic force  \n                            \n                               \n                                  F \n                                  el \n                               \n                            \n                          can be expressed as  [5,37] : \n                            \n                               (2) \n                               \n                                  \n                                     \n                                        F \n                                        el \n                                     \n                                     = \n                                     \n                                        F \n                                        PK \n                                     \n                                     + \n                                     \n                                        F \n                                        \n                                           \n                                              ij \n                                           \n                                        \n                                        \n                                           kl \n                                        \n                                     \n                                     + \n                                     \n                                        F \n                                        image \n                                     \n                                     + \n                                     \n                                        F \n                                        self \n                                     \n                                  \n                               \n                            \n                         where  \n                            \n                               \n                                  F \n                                  \n                                     \n                                        ij \n                                     \n                                  \n                                  \n                                     kl \n                                  \n                               \n                            \n                          represents the interaction force between dislocation segment  kl  and dislocation segment  ij . In the calculation process,  \n                            \n                               \n                                  F \n                                  image \n                               \n                            \n                          usually adopts periodic boundary conditions, so it is relatively small and generally ignored.  \n                            \n                               \n                                  F \n                                  self \n                               \n                            \n                          is the self-stress of the dislocation, that is, the linear tension. \n                            \n                               \n                                  F \n                                  PK \n                               \n                            \n                          mainly comes from external loads. It can be expressed as  [34,38] : \n                            \n                               (3) \n                               \n                                  \n                                     \n                                        F \n                                        PK \n                                     \n                                     = \n                                     \n                                        ( \n                                        σ \n                                        · \n                                        b \n                                        ) \n                                     \n                                     × \n                                     ξ \n                                  \n                               \n                            \n                         where  \n                            \n                               σ \n                            \n                          represents the stress tensor,  \n                            b \n                          represents the Burgers vector, and  \n                            \n                               ξ \n                            \n                          represents the direction vector of dislocation line."
+      ]
+    },
+    {
+      "heading": "Dislocation motion",
+      "paragraphs": [
+        "When the integration time step of the discrete dislocation dynamics simulation is large enough, the motion equation can be simplified as  [39–41] : \n                            \n                               (4) \n                               \n                                  \n                                     \n                                        F \n                                        m \n                                     \n                                     = \n                                     B \n                                     v \n                                  \n                               \n                            \n                         where  \n                            \n                               B \n                            \n                          is the damping coefficient.",
+        "Assuming that the motion capacity of each dislocation segment is the same on all slip systems, the damping coefficient matrix can be expressed as  [42] : \n                            \n                               (5) \n                               \n                                  \n                                     B \n                                     = \n                                     \n                                        ∫ \n                                        l \n                                     \n                                     \n                                        \n                                           B \n                                           0 \n                                        \n                                        \n                                           N \n                                           T \n                                        \n                                        N \n                                        d \n                                        l \n                                     \n                                  \n                               \n                            \n                         where  \n                            \n                               \n                                  B \n                                  0 \n                               \n                            \n                          is the static viscous damping coefficient;  N  is a matrix of formal functions;  l  is the length of dislocation segment.",
+        "According to eq.  (4) , the velocity of the dislocation segment  \n                            \n                               m \n                            \n                          at time  \n                            \n                               t \n                            \n                          is  \n                            \n                               \n                                  v \n                                  \n                                     m \n                                  \n                                  t \n                               \n                            \n                         . Since the loading step size is  \n                            \n                               Δ \n                               t \n                            \n                         , the dislocation is obtained the position of the segment after the loading step: \n                            \n                               (6) \n                               \n                                  \n                                     \n                                        X \n                                        \n                                           m \n                                        \n                                        \n                                           t \n                                           + \n                                           Δ \n                                           t \n                                        \n                                     \n                                     = \n                                     \n                                        X \n                                        \n                                           m \n                                        \n                                        t \n                                     \n                                     + \n                                     \n                                        v \n                                        \n                                           m \n                                        \n                                        t \n                                     \n                                     Δ \n                                     t \n                                  \n                               \n                            \n                         where  \n                            \n                               \n                                  X \n                                  \n                                     m \n                                  \n                                  t \n                               \n                            \n                          is the position of the error segment  \n                            \n                               m \n                            \n                          at time  \n                            \n                               t \n                            \n                         ; \n                            \n                               \n                                  X \n                                  \n                                     m \n                                  \n                                  \n                                     t \n                                     + \n                                     Δ \n                                     t \n                                  \n                               \n                            \n                          is the position of the error segment  \n                            \n                               m \n                            \n                          at time  \n                            \n                               t \n                               + \n                               Δ \n                               t \n                            \n                         . Through this motion equation, the spatiotemporal evolution of each dislocation segment can be traced and described."
+      ]
+    },
+    {
+      "heading": "Calculation of plastic strain",
+      "paragraphs": [
+        "In the framework of DDD modeling, the plastic strain arises from dislocation glide. The plastic strain increment  \n                            \n                               Δ \n                               \n                                  ε \n                                  \n                                     p \n                                  \n                                  m \n                               \n                            \n                          is computed by homogenizing the area increment  \n                            \n                               dS \n                            \n                          swept by the dislocation segment along its slip direction, using the following expression  [43] : \n                            \n                               (7) \n                               \n                                  \n                                     Δ \n                                     \n                                        ε \n                                        \n                                           p \n                                        \n                                        m \n                                     \n                                     = \n                                     \n                                        \n                                           dS \n                                        \n                                        \n                                           2 \n                                           V \n                                        \n                                     \n                                     \n                                        ( \n                                        n \n                                        ⊗ \n                                        b \n                                        + \n                                        b \n                                        ⊗ \n                                        n \n                                        ) \n                                     \n                                  \n                               \n                            \n                         where  V  represents the volume of crystal,  \n                            \n                               n \n                            \n                          is the normal vector of slip plane. Finally, the total plastic strain increment  \n                            \n                               Δ \n                               \n                                  ε \n                                  p \n                               \n                            \n                          of the DDD model can be obtained via considering all dislocation segments  [43] : \n                            \n                               (8) \n                               \n                                  \n                                     Δ \n                                     \n                                        ε \n                                        p \n                                     \n                                     = \n                                     ∑ \n                                     \n                                        Δ \n                                        \n                                           ε \n                                           \n                                              p \n                                           \n                                           m"
+      ]
+    },
+    {
+      "heading": "Dislocation topology",
+      "paragraphs": [
+        "In addition to dislocation discretization, topological operations are indispensable for modeling diverse dislocation interactions, including reactions, annihilation, cross-slip, and coupling with phases such as martensite. On a common slip plane, when two dislocations approach, annihilation ensues if their Burgers vectors are equal in magnitude but opposite in direction. If their Burgers vectors are not antiparallel, a misalignment reaction may occur  [44] .",
+        "Dislocation cross-slip plays a pivotal role in governing both dislocation structure evolution and macroscopic mechanical properties. During dislocation glide, thermal activation enables dislocations to transfer to a neighboring slip plane. The cross-slip probability of a dislocation segment is quantified via a Monte Carlo method, formulated as  [45] : \n                            \n                               (9) \n                               \n                                  \n                                     p \n                                     = \n                                     α \n                                     Ω \n                                     Δ \n                                     t \n                                     exp \n                                     ( \n                                     - \n                                     \n                                        \n                                           Δ \n                                           \n                                              W \n                                              \n                                                 ∗ \n                                              \n                                           \n                                           - \n                                           τ \n                                           A \n                                        \n                                        \n                                           kT \n                                        \n                                     \n                                     ) \n                                  \n                               \n                            \n                         \n                         \n                            \n                               (10) \n                               \n                                  \n                                     Ω \n                                     = \n                                     \n                                        \n                                           \n                                              C \n                                              t \n                                           \n                                           π \n                                        \n                                        L \n                                     \n                                  \n                               \n                            \n                         where  \n                            \n                               α \n                            \n                          is a numerical parameter that regulates the likelihood of cross-slip;  \n                            \n                               Ω \n                            \n                          refers to the vibrational frequency of a dislocation segment having length  \n                            \n                               L \n                            \n                         ; Δ t  indicates the time step size; Δ W * represents the activation energy required for double kink nucleation;  τ  corresponds to the effective shear stress;  A  denotes the area swept by the dislocation segment during motion;  k  is the Boltzmann constant;  T  stands for the absolute temperature;  C \n                         t  signifies the speed of transverse sound waves.",
+        "In this study, modeling dislocation-martensite interactions ​requires topological treatments compatible with periodic boundary conditions​. It is noted that the dislocation nodes exiting one surface re-emerge from the opposite surface, simulating dislocation behavior. Martensite typically exhibits high hardness and a significant elastic modulus mismatch with the matrix phase, inducing residual stress fields at their interface via lattice mismatch. Due to their generally ​non-coherent interface, martensite cannot effectively coordinate large-scale lattice distortions through an interface dislocation network  [46–50] . Consequently, the martensite phase is ​modeled as an impenetrable obstacle to dislocations in this DDD simulations.",
+        "When a dislocation node migrates to the martensite boundary, its intersection with the interface is detected in real time via geometric criteria, and the node is adjusted to a position outside the interface  [51,52] . Critically, displacement integration scheme neglects martensite’s hindering effect, allowing nodes to erroneously penetrate the second-phase region. To resolve this, post-integration displacement corrections are implemented: nodes that have entered the martensite are reset to their previous time-step positions ( Fig. 3 \n                         ). To propagate further, dislocation lines must bypass the martensite. During this process, segments crossing the martensite often carry opposite Burgers vectors, causing them to eventually meet, annihilate, and fragment."
+      ]
+    },
+    {
+      "heading": "DDD simulation set-up",
+      "paragraphs": [
+        "To investigate the effects of dislocation-martensite center distance​ and ​martensite phase orientation on behavior in multiple slip systems, a three-dimensional DDD simulation was developed. The Burgers vector ( b ) is 0.256 nm, shear modulus ( G ) is 65 GPa, and Poisson’s ratio ( ν ) is 0.31. Initially, the matrix phase (subjected to strain rates of 1000–3000 s −1 ) was selected for simulation. This setup models the high-strain-rate strain hardening stage, where dislocations rearrange to form small-angle grain boundaries (dislocation walls) that progressively evolve into dislocation cell structures, which is consistent with experimental observations.",
+        "A lath martensite is embedded at the center of a 4000 nm cubic model, with geometric dimensions of 1.78 μm (length) × 227.68 nm (width). The martensite is treated as an impenetrable obstacle for dislocations, and loading is applied along the X-axis. Initial dislocation lines are positioned at distances of 300 nm, 400 nm, 800 nm, and 1200 nm from the martensite center. The slip planes are oriented perpendicular to the loading axis, with their in-plane position adjusted via X-axis translation. The martensite orientations are categorized into three types: (1) long axis parallel to the loading X-axis; (2) long axis at 45° to the loading axis; (3) long axis perpendicular to the loading axis. The slip system comprises combinations of the {1 1 1} slip plane and 〈1 1 0〉 slip direction from the 12 FCC slip systems. Initial dislocation sources are pinned Frank-Read sources, with densities of 1.4 × 10 11  m −2  for the single-slip system and 1.49 × 10 12  m −2  for the multi-slip system. And the material parameters for the DDD model are derived from  Table 1 \n                         ."
+      ]
+    },
+    {
+      "heading": "Results and discussion",
+      "paragraphs": []
+    },
+    {
+      "heading": "Strain rate affected dislocation evolution",
+      "paragraphs": [
+        "A notable enhancement in both strength and ductility was recorded for the Fe-Mn-Al-Nb steel under high-strain-rate deformation of 1000–3000 s −1 . The ultimate tensile strength (UTS) achieved at 3000 s −1  was 1095 MPa, which is 12.7 % greater than the value of 972 MPa measured at 1000 s −1 . A consistent strengthening trend was observed for the yield strength (YS), which increased from 842 MPa to 940 MPa. Accompanying these gains in strength, the total elongation (TEL) also improved from 31 % to 40 %, indicating a concurrent increase in formability, as shown in  Fig. 4(a) and (b) \n                         . In summary, increasing the strain rate from 1000 s −1  to 3000 s −1  results in a simultaneous improvement in both strength and ductility in this MMnS. The higher strain rate accelerates dislocation multiplication, leading to a rapid increase in dislocation density. Meanwhile, the restricted coordination of dislocation motion promotes the formation of dislocation tangles and cell structures, which significantly impede further dislocation movement which will be discussed later. This contributes to pronounced strain hardening, macroscopically manifested as enhanced strength and hardening capacity. The mechanical properties within the strain rate range of 1000 to 3000 s −1  are shown in  Table 2 \n                         .",
+        "The serrated flow behavior observed in  Fig. 4  can be attributed to two main causes. On one hand, the extremely short stretching time intensifies the interference between the two waves under higher strain conditions, leading to significant oscillations in flow stress  [53,54] . On the other hand, the high strain rate promotes a rapid increase in dislocation density accompanied by an instantaneous rise in temperature, resulting in alternating dominance between strain-rate hardening and thermal softening  [55] . Adiabatic temperature rise (ΔT) can be estimated using the following equation  [56] : \n                            \n                               Δ \n                               T \n                               = \n                               \n                                  \n                                     Δ \n                                     Q \n                                  \n                                  \n                                     ρ \n                                     \n                                        C \n                                        P \n                                     \n                                  \n                               \n                               = \n                               \n                                  β \n                                  \n                                     ρ \n                                     \n                                        C \n                                        P \n                                     \n                                  \n                               \n                               \n                                  ∫ \n                                  \n                                     \n                                        ε \n                                        0 \n                                     \n                                  \n                                  \n                                     ε \n                                     1 \n                                  \n                               \n                               \n                                  σ \n                                  d \n                                  ε \n                               \n                            \n                         .Here,  β  is the mechanical energy conversion coefficient, which is 0.9. The specific heat capacity  \n                            \n                               \n                                  C \n                                  P \n                               \n                            \n                          is 0.46 kJ/(kg·K), the material density  ρ  is 7.8 g/cm 3 . True stress is denoted by  σ , and true strain by  ε . While  \n                            \n                               \n                                  ε \n                                  0 \n                               \n                            \n                          and  \n                            \n                               \n                                  ε \n                                  1 \n                               \n                            \n                          respectively represent the true strain at the beginning and end of plastic deformation.  Fig. 4(c)  shows the functional relationship between ΔT and true strain, corresponding to strain rates of 1000, 2000, and 3000 s −1 , with ΔT reaching 73 °C, 89 °C, and 103 °C respectively.",
+        "To investigate the strengthening mechanisms governing the macroscopic mechanical behavior of MMnS under dynamic tension, the dislocation evolution was characterized by TEM and EBSD.  Fig. 5 \n                          illustrates the evolution of dislocation configurations in MMnS with increasing strain rate. The initial microstructure is characterized by a dual-phase of ferrite and austenite ( Fig. 5a ), with the corresponding grain morphology illustrated in  Fig. 5b . The statistical evaluation of the EBSD data ( Fig. 5j, k ) revealed average grain sizes of approximately 1.44 μm for austenite and 1.58 μm for ferrite. Furthermore, the EBSD phase distribution map ( Fig. 5c ) indicated an austenite volume fraction of 35.4 %. Regarding the initial dislocation structure, the microstructure exhibited sparsely distributed, discrete, and slender dislocation lines ( Fig. 5d ).",
+        "At a strain rate of 1000  s −1  with a strain of 0.31, dislocations with varying orientations multiply and interact, leading to entanglement and accumulation.  Fig. 5(e)  illustrates dislocation wall formation, prominent near grain boundaries. Further deformation at this strain rate drives these structures to evolve into incipient dislocation cells, as shown in  Fig. 5(f) . At a strain rate of 2000  s −1  with a strain of 0.37,  Fig. 5(g)  displays more pronounced, dense dislocation walls, while  Fig. 5(h)  reveals well-defined dislocation cells featuring high-density walls and low-density interiors. This transition, from dispersed dislocations to organized cells, represents a critical strengthening mechanism: dislocation walls act as barriers, partitioning grains into smaller domains and impeding dislocation motion, which directly elevates flow stress. At a strain rate of 3000  s −1  with a strain of 0.40, a very thick parallel misaligned wall forms, as shown in  Fig. 5(i) , marking the preparation for the subsequent evolutionary stage to develop into a dense population of cells. The increased dislocation density and refinement of these structures at high strain rates directly manifest the enhanced macroscopic strain hardening, providing a microstructural basis for the observed mechanical behavior.",
+        "By adopting a cross-scale approach and combining experimental characterization with DDD simulation, the strain hardening mechanism under different strain rates is elucidated through analysis at the microstructural level. Within the DDD framework, the dislocation walls are simulated using regularly arranged positive/negative dislocation dipoles, enabling a systematic study of the evolution of dislocations from a dispersed state to a wall/cell structure under different strain rates.  Fig. 6 \n                          illustrates the schematic diagram of the DDD-FEM coupling method.",
+        "Fig. 7(a) \n                          depicts the strain rate dependence of minimum yield stress, showing a systematic upward trend as strain rate increases. At 1000 s −1 , the minimum yield stress is 250.8 MPa; this value rises significantly to 282.6 MPa at 3000 s −1 , representing a 12.7 % increase. This trend aligns with dislocation density evolution ( Fig. 7(b) ), which grows from 1.74 × 10 13  m −2  at 1000 s −1  to 2.94 × 10 13  m −2  at 3000 s −1 . The positive correlation between yield stress and dislocation density validates classical dislocation strengthening theory, which posits that elevated strain rates enhance strength by promoting dislocation multiplication and accumulation.",
+        "The simulation results presented in  Fig. 8 \n                          align with experimental observations of dislocation evolution. At a strain rate of 1000 s −1 ,  Fig. 8 (a 1 ) and(a 2 ) show dislocations beginning to accumulate, forming dislocation walls alongside incipient dislocation cells. Increasing the strain rate to 2000 s −1 ,  Fig. 8 (b 1 ) and (b 2 ) reveal a marked rise in dislocation density and more developed cellular structures. At 3000 s −1 ,  Fig. 8 (c 1 ) and(c 2 ) exhibit high-density parallel dislocation walls and well-defined dislocation cells, indicating that elevated strain rates promote dislocation multiplication. As strain rate increases, dislocation velocity rises while the nucleation energy barrier for kinks decreases, raising the critical resolved shear stress required for slip plane transitions. This reduces dislocation cross-slip frequency. Under these conditions, dislocations tend to form wall structures, enhancing mutual interactions and driving the development of dislocation tangles.",
+        "Moreover,  Fig. 9 \n                          delineates strain field distributions under varying strain rates, offering deeper insights into deformation heterogeneity. At 1000 s −1  ( Fig. 9 (a 1 )–(a 2 )), strain localization manifests as relatively diffuse and uniformly distributed features. As strain rates rise to 2000 s −1  ( Fig. 9 (b 1 )–(b 2 )), strain concentration intensifies markedly within matrix between dislocation walls. At the peak rate of 3000 s −1  ( Fig. 9 (c 1 )–(c 2 )), strain localization escalates into extensive, interconnected bands that align with the dense, parallel dislocation walls documented in  Fig. 8 (c 1 )– (c 2 ). These strain-concentrated zones are primarily localized at dislocation cell boundaries and regions of intense dislocation interaction. Critically, the evolution of strain localization with increasing strain rates directly correlates with the dislocation morphology transition, from dispersed tangles to ordered walls and cells, thereby underscoring heightened plastic instability under dynamic loading.",
+        "In summary, elevated strain rates induce extensive dislocation multiplication and interaction. To mitigate the resultant high dislocation density, dislocations self-organize into low-energy configurations, including dislocation walls and cells. These structures function as potent barriers to subsequent dislocation glide, directly contributing to the enhanced strength and work-hardening rate observed in macroscopic stress–strain responses. Notably, the strong congruence between TEM observations and DDD simulations validates that the model faithfully captures multi-scale strengthening mechanisms.  Fig. 10 \n                          visually encapsulates the complete dynamic evolution of dislocations transforming into walls and cells across varied high strain rates."
+      ]
+    },
+    {
+      "heading": "Influence of dislocation-martensite distance on strengthening",
+      "paragraphs": [
+        "To validate the scale rationality of the developed model, dislocation-boundary distances in  Fig. 11 \n                         (a–b) are initially analyzed. Subsequently, to elucidate how dislocation-martensite center distance governs strengthening, a DDD simulation with varied initial distances is constructed using the initial dislocation structure models in  Fig. 11 (c–f). By tuning the initial position of dislocation sources, the study systematically examines variations in mechanical responses arising from different dislocation origins.",
+        "Fig. 12 \n                          depicts stress–strain responses and concurrent dislocation density evolution under varying initial center-to-center distances between dislocations and martensite.  Fig. 12(a)  reveals a clear trend: yield strength systematically increases as this distance decreases from 1200 nm to 300 nm. Samples with smaller distances exhibit higher flow stresses during early plastic deformation. Consistently, a distinct stress drop or inflection point emerges immediately upon yielding across all cases, marking the onset of dislocation bypass of the martensite barrier. This stress relaxation arises from the dissipation of local stress concentrations as dislocations overcome the obstacle, followed by rapid dislocation multiplication.  Fig. 12(b)  shows that dislocation density remains stable in the elastic regime before increasing sharply near the yield point for all center-to-center distances. This abrupt rise correlates closely with the stress evolution in  Fig. 12(a) ; specifically, the onset of rapid dislocation multiplication coincides with the stress drop, confirming that plastic relaxation is driven by a burst of dislocation activity. Further, as the dislocation-martensite distance decreases, yield dislocation density increases, indicating more intense dislocation accumulation and interaction when the martensite obstacle is closer.",
+        "Combined analysis of dislocation evolution ( Fig. 13 \n                         ) and stress–strain/dislocation density reveals how dislocation-martensite center distance governs strengthening mechanisms. For a fixed initial distance, temporal evolution of dislocation-martensite interactions exhibits three universal stages: initial contact, yield criticality, and plastic development.  Fig. 13 (a 1 ) illustrates the dislocation bowing significantly under external load, marking its initial contact with the martensite obstacle.  Fig. 13 (a 2 ) shows the dislocation bypassing the martensite, followed by extensive multiplication, a hallmark of plastic deformation onset.  Fig. 13 (a 3 ) displays a high-density dislocation zone and loops, reflecting continued plastic development.  Fig. 13 (b 1 -b 3 ), (c 1 -c 3 ), and (d 1 -d 3 ) replicate this three-stage pattern, though variations in bowing amplitude and multiplication site location emerge with differing initial distances.",
+        "Comparing different distances at the same evolutionary stage, the initial contact stage, as shown in  Fig. 13 (a 1 –d 1 ), shows decreasing bowing amplitude as distance shortens from 1200 nm to 300 nm. This suggests closer martensite proximity causes earlier obstruction, halting full bowing and driving premature entry into the accumulation stage. During the bypass and multiplication stage, as shown in  Fig. 13 (a 2 –c 2 ), intense multiplication occurs at larger distances, whereas  Fig. 13 (d 2 ) reveals incomplete bypassing, indicating shorter distances demand higher critical stress for obstacle overcoming and delay dislocation release. In the plastic development stage, as shown in  Fig. 13 (a 3 –d 3 ), extensive multiplication leaves abundant dislocation loops around the martensite.",
+        "As distance shortens from 1200 nm to 300 nm, yield strength increases markedly. This strengthening arises because closer martensite proximity enhances dislocation-obstacle interactions: higher critical stress is required for dislocations to accumulate ahead of the martensite and release, driving overall hardening. Upon bypassing, extensive multiplication triggers rapid dislocation proliferation and movement, culminating in a sharp rise in dislocation density.",
+        "Fig. 14 \n                          elucidates the mechanisms of dislocation-martensite interactions at varying initial center distances and their impact on the macroscopic mechanical response of MMnS. When dislocations encounter martensite obstacles, the critical stress required for bypassing them is strongly dependent on the initial dislocation-martensite center distance. A smaller distance results in earlier obstruction, reduced bowing, and a higher critical stress. Upon successful bypass of the martensite, the redistribution of the local stress concentration leads to a macroscopic stress drop."
+      ]
+    },
+    {
+      "heading": "The influence of martensite orientation on dislocation evolution",
+      "paragraphs": [
+        "The enhanced plastic deformation in MMnS is predominantly ascribed to the formation of abundant martensite laths during deformation. At a strain rate of 1000 s −1  with a strain of 0.31, martensite lath formation is visually identified ( Fig. 15(a) \n                         ). As the strain rate increases to 2000 s −1  with a strain of 0.37, these laths evolve into interwoven bundles. Magnified micrographs reveal distinct misorientation boundaries between laths and significant dislocation accumulation at martensite interfaces ( Fig. 15 (b–e)). The microstructure between martensite plates is residual austenite. Further increasing the strain rate to 3000 s −1  with a strain of 0.4 renders martensite lath boundaries indistinct, as indicated by yellow dashed lines in  Fig. 15(f) . To elucidate the microscopic mechanism governing dislocation-martensite interactions, subsequent investigations will employ DDD simulations for systematic analysis. Characteristic martensite lath dimensions, 1.78 μm in length and 227.68 nm in width, serve as critical input parameters for these DDD simulations. Based on the TEM observations, DDD simulations were configured to systematically investigate the effect of martensite orientation on dislocation behavior. Representative orientations, specifically, angles of 0°, 45°, and 90° between the martensite lath long axis and the loading direction, were selected to cover a realistic range of crystallographic configurations.",
+        "Fig. 16 \n                          presents the initial dislocation configuration in the ​matrix phase, with and without martensite phases of three distinct orientations: (a) martensite long axis parallel to the loading axis (0° orientation); (b) martensite long axis at 45° to the loading axis; (c) martensite long axis perpendicular to the loading axis (90° orientation); and (d) the initial configuration without martensite. These models serve as a basis for investigating the orientation-dependent effect of martensite on dislocation evolution.",
+        "Leveraging stress–strain curves and plastic strain evolution ( Fig. 17 \n                         ), we systematically compare post-yield stress responses and underlying microscopic mechanisms between martensite-containing and martensite-free models. All models exhibit a distinct stress drop immediately post-yield arising from insufficient initial dislocation density to accommodate the applied strain rate. This triggers a transient stress peak that surpasses the steady-state flow stress prior to plastic relaxation. The highest yield strength occurs when martensite’s long axis is oriented 45° to the loading direction; moderate strength is found at 0° (parallel); and the lowest at 90° (perpendicular). This trend underscores martensite’s orientation-dependent role as an effective barrier to dominant slip planes, as shown in  Fig. 17(a) . Plastic strain curve analysis ( Fig. 17(b) ) further reveals that plastic deformation initiates first in the martensite-free model, followed sequentially by martensite-oriented models at 90°, 0°, and 45°.",
+        "Martensite acts as an impenetrable barrier to dislocation motion, driving accumulation near phase interfaces, local stress concentration, and a need for higher stress to circumvent martensite. As dislocation density increases, entanglement forms a stable structure, and the MMnS enters strain hardening saturation with stable macroscopic stress. The evolution of dislocation density reveals the activation of specific slip systems under different martensite orientations, which directly dominates the subsequent plastic deformation. Specifically, when the long axis of martensite is parallel to the loading axis, as shown in  Fig. 18(a) \n                         , the  \n                            \n                               ( \n                               \n                                  \n                                     1 \n                                  \n                                  \n                                     ¯ \n                                  \n                               \n                               11 \n                               ) \n                               [ \n                               101 \n                               ] \n                            \n                          slip system is activated preferentially, contributing the main plastic flow. When the long axis of the martensite is at a 45° Angle to the loading axis, as shown in  Fig. 18(b) , two slip systems  \n                            \n                               ( \n                               \n                                  \n                                     1 \n                                  \n                                  \n                                     ¯ \n                                  \n                               \n                               11 \n                               ) \n                               [ \n                               101 \n                               ] \n                            \n                          and  \n                            \n                               ( \n                               1 \n                               \n                                  \n                                     1 \n                                  \n                                  \n                                     ¯ \n                                  \n                               \n                               1 \n                               ) \n                               [ \n                               011 \n                               ] \n                            \n                          are activated simultaneously when they meet the higher critical shear stress conditions. The dislocations on these two slip systems interact, forming a more stable dislocation structure, thereby generating the highest yield strength. When the long axis of martensite is perpendicular to the loading axis, as shown in  Fig. 18(c) , it is still the two slip systems  \n                            \n                               ( \n                               \n                                  \n                                     1 \n                                  \n                                  \n                                     ¯ \n                                  \n                               \n                               11 \n                               ) \n                               [ \n                               101 \n                               ] \n                            \n                          and  \n                            \n                               ( \n                               1 \n                               \n                                  \n                                     1 \n                                  \n                                  \n                                     ¯ \n                                  \n                               \n                               1 \n                               ) \n                               [ \n                               011 \n                               ] \n                            \n                          that dominate the deformation and contribute the flow stress.",
+        "In contrast, models without martensite show a post-yield stress drop but no rebound. Without second-phase hindrance, dislocations freely proliferate and slip, spreading plastic deformation across the system. Dislocation density rises rapidly then saturates, reaching dynamic equilibrium and steady-state flow.  Fig. 18(d)  shows that multiple slip systems  \n                            \n                               ( \n                               \n                                  \n                                     1 \n                                  \n                                  \n                                     ¯ \n                                  \n                               \n                               11 \n                               ) \n                               [ \n                               101 \n                               ] \n                            \n                         ,  \n                            \n                               ( \n                               1 \n                               \n                                  \n                                     1 \n                                  \n                                  \n                                     ¯ \n                                  \n                               \n                               1 \n                               ) \n                               [ \n                               011 \n                               ] \n                            \n                         , and  \n                            \n                               ( \n                               1 \n                               \n                                  \n                                     1 \n                                  \n                                  \n                                     ¯ \n                                  \n                               \n                               1 \n                               ) \n                               [ \n                               110 \n                               ] \n                            \n                          are activated simultaneously, with uniform dislocation distribution, good deformation coordination, stable macroscopic stress, and no secondary hardening.",
+        "Fig. 19 \n                          illustrates the mechanism by which martensite mediates dislocation activity and hardening response. In all models, stress exhibits elastic overshoot followed by a yield stress decrease. Subsequently, martensite acts as an effective barrier, impeding further dislocation motion and inducing accumulation near its interfaces. This accumulation generates local stress concentrations, triggering a stress rebound and secondary hardening. As deformation proceeds, dislocations persistently multiply and entangle within specific slip systems, forming stable structures that ultimately drive strain hardening saturation. In contrast, the martensite-free model enables unconstrained dislocation glide, allowing rapid attainment of a dynamic equilibrium characterized by steady-state flow without secondary hardening. Collectively,  Fig. 19  underscores how martensite modulates subsequent hardening behavior and plastic evolution by regulating dislocation accumulation and slip paths."
+      ]
+    },
+    {
+      "heading": "Conclusion",
+      "paragraphs": [
+        "Synergizing dynamic SHTB experiments with 3D-DDD simulations, this study deciphers how strain rate, dislocation-martensite proximity, and martensite orientation collectively govern strength-ductility synergy in MMnS. The key findings are given.",
+        "At strain rates from 1000 to 3000 s −1 , yield strength increased by 12.7 % (250.8 to 282.6 MPa) concomitant with a dislocation density rise (1.74 × 10 13  to 2.94 × 10 13  m −2 ). Higher strain rates enhance hardening by accelerating dislocation multiplication and dislocation cell wall formation, albeit exacerbating strain localization.",
+        "Reducing dislocation-martensite center distance from 1200 to 300 nm elevates critical resolved shear stress for dislocation glide via earlier obstruction and diminished bow-out amplitude, directly boosting hardening. Post-bypass, a macroscopic stress drop occurs, followed by rapid dislocation multiplication. Martensite acts as an impenetrable barrier, driving interfacial dislocation accumulation and inducing secondary hardening. In contrast, martensite-free samples rapidly attain steady-state slip post-yielding with severely blunted hardening capacity. Martensite oriented at 45° to the loading direction promotes dislocation buildup in dominant slip systems, yielding the highest strength."
+      ]
+    },
+    {
+      "heading": "CRediT authorship contribution statement",
+      "paragraphs": [
+        "Ning Guo:  Writing – review & editing, Project administration, Funding acquisition, Conceptualization.  Xinping Ji:  Writing – original draft, Software, Methodology.  Bingtao Tang:  Methodology, Formal analysis.  Jilai Wang:  Visualization, Validation."
+      ]
+    }
+  ],
+  "tables": [
+    {
+      "caption": "Calculated material parameters of the DDD model.",
+      "headers": [
+        "Parameter",
+        "Value",
+        "Unit",
+        "Reference"
+      ],
+      "rows": [
+        [
+          "Burgers vector  b",
+          "0.256",
+          "nm",
+          "[27]"
+        ],
+        [
+          "Poisson’s ratio ν",
+          "0.31",
+          "",
+          "[27]"
+        ],
+        [
+          "Shear modulus  G",
+          "65",
+          "GPa",
+          "[27]"
+        ],
+        [
+          "Drag coefficient  B",
+          "1.0 × 10 −4",
+          "Pa·s",
+          ""
+        ],
+        [
+          "Martensite length",
+          "1.78",
+          "μm",
+          ""
+        ],
+        [
+          "Martensite width",
+          "227.68",
+          "nm",
+          ""
+        ]
+      ],
+      "header_groups": [],
+      "table_alignment_status": "resolved",
+      "row_provenance": [
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 4
+          }
+        ]
+      ],
+      "tbody_alignment_status": "resolved"
+    },
+    {
+      "caption": "Mechanical properties in the range of strain rates of 1000–––3000 s −1 .",
+      "headers": [
+        "Strain rate / s −1",
+        "YS/ MPa",
+        "UTS / MPa",
+        "TEL/ %"
+      ],
+      "rows": [
+        [
+          "1000",
+          "854±14.4",
+          "962±12.1",
+          "31±0.5"
+        ],
+        [
+          "2000",
+          "884±9.0",
+          "1055±4.7",
+          "36±1.0"
+        ],
+        [
+          "3000",
+          "945±5.0",
+          "1114±17.6",
+          "39±0.5"
+        ]
+      ],
+      "header_groups": [],
+      "table_alignment_status": "resolved",
+      "row_provenance": [
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 4
+          }
+        ]
+      ],
+      "tbody_alignment_status": "resolved"
+    }
+  ]
+}

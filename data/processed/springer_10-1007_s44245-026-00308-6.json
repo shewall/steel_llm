@@ -1,0 +1,2696 @@
+{
+  "doi": "10.1007/s44245-026-00308-6",
+  "title": "Comparative analysis of YOLO architectures for automated casting defect detection in industrial quality control",
+  "abstract": "Abstract Industry 4.0 demands intelligent quality control systems capable of real-time automated defect detection in manufacturing environments. This study presents a systematic comparative evaluation of three You Only Look Once (YOLO) architectures—YOLOv5s, YOLOv8s, and YOLO11s—for automated casting defect detection in industrial pump impeller manufacturing. Models were evaluated on 1300 real-world grayscale images across detection accuracy, inference speed, computational efficiency, and statistical reliability. YOLOv8s achieved the highest detection performance on the evaluated dataset, attaining 99.9% precision, 100% recall (95% CI: 0.962−1.000), and 99.5% mAP@0.5 at 196 FPS, corresponding to a 19.6 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\times $$\\end{document}  margin over the 10 FPS production-line benchmark. All three architectures operated between 179 and 213 FPS, exceeding real-time production requirements by 17–21 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\times $$\\end{document} . Statistical validation via bootstrap resampling (95% CI, 1000 iterations) and permutation testing (10,000 permutations) confirmed significant inter-architecture performance differences, with large practical effect sizes (Cohen’s  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$d = 0.52$$\\end{document} –1.89). A learning curve analysis identified performance saturation at approximately 600–700 training images, supporting the selected 1170-image training subset. All architectures achieved a 95.5% reduction in model storage requirements relative to traditional convolutional neural network approaches, supporting deployment on resource-constrained industrial edge devices. Results are reported on a single controlled dataset representing one product type; generalisation to other casting geometries requires further validation. Architecture-specific deployment guidelines for Manufacturing Execution System (MES) integration and edge computing scenarios are provided.",
+  "journal": "Discover Mechanical Engineering",
+  "year": "2026",
+  "sections": [
+    {
+      "heading": "Introduction",
+      "paragraphs": [
+        "The global casting industry, valued at USD 145.2 billion in 2023, underpins manufacturing sectors including automotive, aerospace, and industrial machinery [ 1 ]. Quality control represents both a significant operational challenge and a competitive differentiator, with defect-related costs accounting for 5–12% of total production expenses in typical foundry operations [ 2 ]. Casting defects arise from complex interactions among process parameters, material properties, and environmental conditions during solidification [ 3 ].",
+        "Traditional manual inspection methods remain prevalent globally, with an estimated 68% of foundries relying primarily on human inspection. This figure varies considerably by region: higher automation adoption has been reported in Western Europe and Japan (approximately 45–50% manual reliance) compared with emerging manufacturing economies in South and Southeast Asia (approximately 75–85%) [ 4 ]. These manual systems suffer from well-documented limitations: inspector fatigue leads to a 23% detection rate degradation over 8-hour shifts; subjective interpretation introduces 15–20% inter-operator variability; and throughput constraints limit inspection to 5–10% of total production volume [ 4 ].",
+        "Despite the proliferation of deep learning in manufacturing, several critical gaps persist in the literature: (1) To the best of the authors’ knowledge  no systematic comparison of modern YOLO variants specifically for casting defect detection has been reported; (2) previous casting studies have focused on image classification without the spatial localisation required for automated defect remediation; (3) only 23% of published studies include rigorous statistical validation of reported performance differences [ 5 ]; and (4) limited reporting of inference speed, model size, and deployment requirements hinders practical industrial implementation. This study addresses these gaps through a comprehensive evaluation of YOLOv5s, YOLOv8s, and YOLO11s on a real-world industrial pump impeller dataset, extending beyond accuracy metrics to encompass inference speed, computational efficiency, statistical reliability, and Industry 4.0 deployment considerations including MES integration and edge computing requirements [ 6 ,  7 ].",
+        "The primary contributions of this work are:  A systematic comparison of three modern YOLO variants for casting defect detection, with publicly available training scripts and image subset list to support reproducibility; Establishment of performance benchmarks achieving 99.9% precision at 196 FPS inference on standard industrial GPU hardware; A bootstrap-based statistical validation framework providing 95% confidence intervals and permutation tests suitable for single-run model comparisons; A learning curve analysis identifying the annotation saturation threshold for binary casting inspection; and Practical deployment guidelines, including an architecture selection matrix, bridging experimental results and industrial implementation."
+      ]
+    },
+    {
+      "heading": "Related work",
+      "paragraphs": []
+    },
+    {
+      "heading": "Deep learning for industrial defect detection",
+      "paragraphs": [
+        "Computer vision systems for industrial quality control have evolved through three broadly defined generations. First-generation systems (1990–2005) employed rule-based image processing, achieving 70–80% detection accuracy under controlled conditions [ 8 ]. Second-generation approaches (2005–2015) introduced machine learning classifiers, improving accuracy to 85–90%; Support Vector Machines, for example, achieved 88% accuracy on casting defects when combined with hand-crafted features [ 9 ]. The current generation, enabled by deep learning, demonstrates accuracy exceeding 95% while automating feature extraction [ 10 ]. Early CNN applications achieved 92% classification accuracy on casting defects but required pre-segmented defect regions [ 11 ]. Region-based CNNs improved detection to 94% mAP but required approximately 2.3 s per image, which is incompatible with real-time production inspection [ 12 ]."
+      ]
+    },
+    {
+      "heading": "YOLO architectures in manufacturing inspection",
+      "paragraphs": [
+        "Within deep learning, YOLO architectures have emerged as well-suited for industrial deployment owing to their single-stage detection pipeline, which enables real-time processing at high throughput [ 13 ]. Recent applications span diverse inspection domains: Chen et al. [ 14 ] integrated RevCol with YOLOv8s for magnetic block surface defect detection; Yu et al. [ 15 ] proposed an improved YOLOv8-based method for concrete surface crack detection; Wang et al. achieved 89 FPS with 93% mAP on fabric defect detection [ 16 ]; Sekhar et al. [ 17 ] identified welding defects with 95% accuracy at 112 FPS; Huang et al. [ 18 ] achieved 96.8% mAP on solar panel defects with a 23% reduction in inference time relative to YOLOv5; and Long and Lin [ 19 ] achieved a 4.4% mAP improvement while reducing parameters by 61.1% via YOLOv8x-ECW for fiberboard surface defect detection. In the casting domain, Sani et al. reported 99.45% balanced accuracy in pump impeller classification using transfer learning, though without the spatial localisation required for automated robotic rejection [ 20 ].",
+        "Collectively, these studies demonstrate the versatility of YOLO architectures across inspection modalities. However, no published work has systematically compared YOLOv5s, YOLOv8s, and YOLO11s specifically for casting defect detection, nor do existing studies consistently report the deployment metrics—inference latency, model size, and energy consumption—necessary for informed industrial implementation decisions. The present study addresses this gap."
+      ]
+    },
+    {
+      "heading": "Materials and methods",
+      "paragraphs": []
+    },
+    {
+      "heading": "Industrial dataset and production context",
+      "paragraphs": []
+    },
+    {
+      "heading": "Manufacturing environment and data acquisition",
+      "paragraphs": [
+        "This study used the publicly available “Casting Product Image Data for Quality Inspection” dataset [ 21 ], which represents real-world production conditions in submersible pump impeller manufacturing. The dataset comprises 7340 grayscale images captured in an operational foundry environment, reflecting authentic industrial constraints including ambient lighting variations, surface oxidation patterns, and handling marks. Each image represents a top-down view acquired at a quality inspection station positioned after fettling and grinding operations but before final machining. The imaging configuration employs monochrome sensors at  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$300\\times 300$$\\end{document}  pixel resolution, consistent with typical machine vision deployments where grayscale imaging provides adequate defect discrimination while reducing bandwidth and storage requirements relative to colour sensors [ 22 ]. The fixed overhead perspective ensures consistent part presentation across images. Figure  1  shows representative sample images from both classes. Fig. 1 Representative sample images from the casting dataset showing defective (top row) and non-defective (bottom row) pump impeller castings"
+      ]
+    },
+    {
+      "heading": "Defect taxonomy and binary classification rationale",
+      "paragraphs": [
+        "The dataset encompasses seven defect categories with distinct formation mechanisms: (i) blow holes from gas entrapment during solidification; (ii) pinholes indicating microporosity that compromises surface integrity; (iii) burr formations from mould parting line flash; (iv) shrinkage cavities from inadequate feeding systems; (v) mould material inclusions causing stress concentrations; (vi) cold shuts from incomplete fusion of metal streams; and (vii) metallurgical defects including grain boundary segregation.",
+        "Although the dataset encompasses seven morphologically distinct defect categories, the detection task is formulated at the binary level (defective/non-defective) for the following reasons. Bounding box annotations delineate the complete impeller casting boundary rather than individual defect sub-regions, consistent with the original labelling convention [ 21 ] and with industrial go/no-go inspection practice, where the actionable decision is part rejection rather than pixel-level defect segmentation. This part-level annotation approach does not artificially inflate mAP: a true positive requires the model to both localise the part correctly ( \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\textrm{IoU} \\ge 0.5$$\\end{document} ) and classify it accurately, so random or oversized predictions register as false positives.",
+        "Adopting the YOLO detection framework over a classification-only approach provides three practical advantages for industrial integration: (i) spatial coordinates for robotic rejection arm targeting; (ii) confidence scores for threshold-based quality tiering, allowing borderline parts to be routed to human review; and (iii) bounding box outputs that map directly to production line coordinate systems for MES integration. The limitation that this formulation does not discriminate between defect subtypes (e.g. blow holes vs. shrinkage cavities) is acknowledged; multi-class defect localisation with sub-region annotations is identified as a priority for future work. Detailed dataset characteristics are provided in Table  1 . Table 1 Dataset description Attribute Description Dataset name Casting Product Image Data for Quality Inspection Source Kaggle [ 21 ] Domain Industrial manufacturing—casting quality control Product type Submersible pump impellers Total images 7340 (Training: 6633; Test: 707) Classes 2—Defective: 4207 images (57.3%); Non-defective: 3133 images (42.7%) Image format Grayscale;  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$300\\times 300$$\\end{document}  px; top-down view Study subset 1300 images—Defective: 781 (60.1%); Non-defective: 519 (39.9%) Split (subset) Training: 1170 (90%); Validation: 130 (10%) Preprocessing Resized to  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$640\\times 640$$\\end{document}  px; normalised to [0, 1]; YOLO bounding box format Key strengths Real industrial data; consistent imaging conditions; publicly available Limitations Single product type and viewpoint; binary labels only; controlled environment"
+      ]
+    },
+    {
+      "heading": "Dataset preparation",
+      "paragraphs": [
+        "From the complete dataset of 7340 images, a representative subset of 1300 images (17.7%) was selected using a strict stratified random sampling protocol applied independently to each class folder ( def_front  and  ok_front ) with a fixed random seed of 42, ensuring reproducibility and eliminating manual selection bias. The resulting subset comprised 781 defective images (60.1%) and 519 non-defective images (39.9%), preserving the class ratio of the full dataset to within rounding precision.",
+        "To verify that the subset introduced no distributional bias, pixel intensity distributions of the 1300-image subset and the complete 7340-image dataset were compared. Mean pixel intensities were closely matched (subset:  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$128.4 \\pm 42.3$$\\end{document} ; full dataset:  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$127.9 \\pm 43.1$$\\end{document} ), and a two-sample Kolmogorov–Smirnov test on sampled pixel intensity values confirmed no statistically significant distributional difference ( \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$p = 0.61$$\\end{document} ,  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\alpha = 0.05$$\\end{document} ).",
+        "The subset size of 17.7% was further validated empirically through a learning curve analysis presented in Sect.  4.1.3 , which demonstrates that mAP@0.5 saturates at approximately 600–700 training images, placing the full 1170-image training set comfortably within the saturation zone.",
+        "Images were partitioned into training (1170 images, 90%) and validation (130 images, 10%) sets using stratified sampling to preserve the class ratio across both splits. Images were resized to  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$640\\times 640$$\\end{document}  pixels to match the YOLO input resolution, maintaining sufficient resolution for detecting defects as small as 2 mm in diameter (approximately 20 pixels at 0.1 mm/pixel). Pixel intensities were normalised to [0, 1] using min-max scaling. Annotations were converted to YOLO format with normalised bounding box coordinates  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$(x_c,\\, y_c,\\, w,\\, h)$$\\end{document} . A fixed random seed of 42 was applied to all stochastic operations including dataset splitting, weight initialisation, and augmentation sampling to ensure complete reproducibility."
+      ]
+    },
+    {
+      "heading": "YOLO architecture selection and configuration",
+      "paragraphs": []
+    },
+    {
+      "heading": "Architecture selection criteria",
+      "paragraphs": [
+        "Three YOLO variants were selected to represent evolutionary stages in single-stage object detection, with the “small” (s) variant chosen for each architecture to balance detection performance with the computational constraints of industrial edge devices.",
+        "YOLOv5s  (Ultralytics, 2020) serves as the baseline architecture, employing a CSPDarknet53 backbone with 9.1M parameters and 23.8 GFLOPs computation. The architecture’s CSP bottlenecks optimise gradient flow across layers. Despite the absence of a formal peer-reviewed publication, YOLOv5 has achieved widespread industrial adoption and integration into commercial deployment platforms.",
+        "YOLOv8s  (Ultralytics, January 2023) introduced three principal refinements: anchor-free detection, eliminating manual anchor configuration; a decoupled head design separating classification and localisation tasks; and C2f modules replacing CSP blocks for enhanced feature fusion. With 11.1M parameters and 28.4 GFLOPs, YOLOv8s increases computation relative to YOLOv5s while delivering improved accuracy through architectural design rather than parameter scaling. Recent studies corroborate its suitability for industrial inspection: Hao et al. [ 23 ] applied an enhanced YOLOv8-based model for hot-rolled steel surface defect detection; Liu et al. [ 24 ] used YOLOv8 for CFRP composite defect detection via nonlinear frequency modulation thermography; and Huang et al. [ 25 ] reported 2.4% and 8.3% improvements in mAP@0.5 and mAP@0.5:0.95, respectively, with a YOLOv8n-based model for wire-arc additive manufacturing inspection.",
+        "YOLO11s  (Ultralytics, 2024) incorporates attention mechanisms for enhanced feature discrimination and dynamic label assignment that adapts to the object distribution during training. With 9.4M parameters and optimised computation paths, YOLO11s offers comparable accuracy to YOLOv8s at a lower parameter count. Industrial deployment experience remains limited given its recent release, making a rigorous empirical evaluation of direct relevance to practitioners.",
+        "Figure  2  presents a structural comparison of the three architectures. Fig. 2 Architectural comparison of YOLOv5s ( \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$9.1\\text {M}$$\\end{document}  parameters, 23.8 GFLOPs), YOLOv8s ( \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$11.1\\text {M}$$\\end{document}  parameters, 28.4 GFLOPs), and YOLO11s ( \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$9.4\\text {M}$$\\end{document}  parameters, 21.3 GFLOPs), illustrating the progression from coupled to decoupled detection heads and from anchor-based to anchor-free designs"
+      ]
+    },
+    {
+      "heading": "Training protocol",
+      "paragraphs": [
+        "All three models were trained under identical hyperparameter configurations to ensure a fair comparison. The Adam optimiser ( \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\beta _1 = 0.9$$\\end{document} ,  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\beta _2 = 0.999$$\\end{document} ,  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\varepsilon = 10^{-8}$$\\end{document} ) was used with an initial learning rate of 0.01 following a cosine annealing schedule, reduced to 0.001 by the final epoch. An L2 weight decay of  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$5 \\times 10^{-4}$$\\end{document}  was applied to reduce overfitting on the limited training set. Training duration was set to 80 epochs for all models, determined through preliminary experiments that showed convergence plateauing at approximately 60–65 epochs, with additional epochs yielding less than 0.5% mAP improvement. A batch size of 16 balanced GPU memory utilisation (12.3 GB of 16 GB available) with gradient stability; smaller batches exhibited 3.2% higher validation loss variance in preliminary trials, while larger batches exceeded memory capacity. All training runs were initialised with random seed 42 applied to PyTorch, NumPy, and Python random number generators to ensure deterministic behaviour across architectures. The full hyperparameter configuration is summarised in Table  2 ."
+      ]
+    },
+    {
+      "heading": "Loss functions",
+      "paragraphs": [
+        "The multitask loss function  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${\\mathcal {L}}_{\\text {total}}$$\\end{document}  combines three objectives weighted to reflect industrial inspection priorities: 1 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\begin{aligned} {\\mathcal {L}}_{\\text {total}} = \\lambda _{\\text {box}}\\,{\\mathcal {L}}_{\\text {CIoU}} + \\lambda _{\\text {cls}}\\,{\\mathcal {L}}_{\\text {BCE}} + \\lambda _{\\text {obj}}\\,{\\mathcal {L}}_{\\text {Focal}} \\end{aligned}$$\\end{document} where  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\lambda _{\\text {box}} = 0.05$$\\end{document} ,  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\lambda _{\\text {cls}} = 0.5$$\\end{document} , and  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\lambda _{\\text {obj}} = 1.0$$\\end{document} . The higher objectness weight reflects the industrial priority of detecting defect presence over precise boundary delineation, since part rejection is triggered by classification, whereas boundary accuracy primarily supports downstream root cause analysis."
+      ]
+    },
+    {
+      "heading": "Localisation loss—CIoU:",
+      "paragraphs": [
+        "Complete Intersection over Union (CIoU) loss extends standard IoU with penalties for centre-point distance and aspect ratio inconsistency: 2 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\begin{aligned} {\\mathcal {L}}_{\\text {CIoU}} = 1 - \\textrm{IoU} + \\frac{\\rho ^2(\\textbf{b},\\, \\textbf{b}^{\\text {gt}})}{c^2} + \\alpha \\, v \\end{aligned}$$\\end{document} where  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\textbf{b}$$\\end{document}  and  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\textbf{b}^{\\text {gt}}$$\\end{document}  are the predicted and ground truth box centres,  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\rho (\\cdot )$$\\end{document}  is the Euclidean distance,  c  is the diagonal of the smallest enclosing box, and the aspect ratio term  v  and its trade-off coefficient  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\alpha $$\\end{document}  are: 3 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\begin{aligned} v = \\frac{4}{\\pi ^2} \\left( \\arctan \\frac{w^{\\text {gt}}}{h^{\\text {gt}}} - \\arctan \\frac{w}{h}\\right) ^{\\!2}, \\qquad \\alpha = \\frac{v}{1 - \\textrm{IoU} + v} \\end{aligned}$$\\end{document}"
+      ]
+    },
+    {
+      "heading": "Classification loss—BCE with label smoothing:",
+      "paragraphs": [
+        "Binary Cross-Entropy with label smoothing ( \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\varepsilon = 0.1$$\\end{document} ) replaces hard binary targets  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$y \\in \\{0, 1\\}$$\\end{document}  with smoothed targets  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${\\tilde{y}}$$\\end{document} : 4 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\begin{aligned} {\\tilde{y}}= & y(1 - \\varepsilon ) + \\frac{\\varepsilon }{2} \\end{aligned}$$\\end{document} 5 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\begin{aligned} {\\mathcal {L}}_{\\text {BCE}}= & -\\!\\left[ {\\tilde{y}}\\log {\\hat{p}} + (1-{\\tilde{y}})\\log (1-{\\hat{p}})\\right] \\end{aligned}$$\\end{document} where  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${\\hat{p}}$$\\end{document}  is the predicted class probability. Label smoothing reduces overconfident predictions near the decision boundary, which is important for quality inspection where borderline parts should be routed for human review rather than silently accepted or rejected."
+      ]
+    },
+    {
+      "heading": "Objectness loss—focal loss:",
+      "paragraphs": [
+        "Focal Loss addresses foreground–background class imbalance in casting inspection images, where defect regions occupy a small fraction of the total image area: 6 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\begin{aligned} {\\mathcal {L}}_{\\text {Focal}} = -\\alpha _t\\,(1 - p_t)^{\\gamma }\\log p_t \\end{aligned}$$\\end{document} where  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$p_t = p$$\\end{document}  if  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$y = 1$$\\end{document} , else  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$p_t = 1 - p$$\\end{document} ;  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\alpha _t = 0.25$$\\end{document}  is the class-balancing weight; and  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\gamma = 2.0$$\\end{document}  is the focusing parameter. The modulating factor  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$(1 - p_t)^{\\gamma }$$\\end{document}  down-weights easily classified examples, directing training capacity toward hard misclassified instances. In preliminary experiments, this weighting reduced false negatives by 18% relative to standard cross-entropy."
+      ]
+    },
+    {
+      "heading": "Data augmentation for manufacturing variability",
+      "paragraphs": []
+    },
+    {
+      "heading": "Production-informed augmentation strategy",
+      "paragraphs": [
+        "Data augmentation strategies were designed to simulate manufacturing process variations and improve model robustness to deployment conditions. Geometric transformations included: horizontal flipping ( \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$p = 0.5$$\\end{document} ), reflecting the symmetric orientations in which parts may arrive at the inspection station; random rotation ( \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\pm 15^{\\circ }$$\\end{document} ,  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$p = 0.3$$\\end{document} ), representing fixture positioning variability; and scaling (0.8– \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$1.2\\times $$\\end{document} ,  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$p = 0.5$$\\end{document} ), accounting for camera-to-part distance variation. Photometric augmentations addressed illumination variability inherent in foundry environments: brightness adjustment ( \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\pm 20\\%$$\\end{document} ,  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$p = 0.4$$\\end{document} ); contrast modification (0.8– \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$1.2\\times $$\\end{document} ,  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$p = 0.4$$\\end{document} ); and Gaussian noise ( \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\sigma = 0.01$$\\end{document} ,  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$p = 0.2$$\\end{document} ) modelling sensor noise under industrial electromagnetic conditions. Augmentation parameters were selected to reflect the range of variations observed during preliminary site measurements."
+      ]
+    },
+    {
+      "heading": "Advanced augmentation for defect diversity",
+      "paragraphs": [
+        "Mosaic augmentation ( \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$p = 0.3$$\\end{document} ) combined four training images into a single  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$640\\times 640$$\\end{document}  pixel composite, increasing effective defect density per batch. This is particularly relevant for casting images, where defects typically occupy only 2–15% of the image area, meaning that single-image batches are dominated by non-defective surface texture. Compositing four images per training sample forces the model to detect defects across varied spatial positions and scales within a single forward pass. Additionally, since all images share a consistent overhead viewpoint and background texture, mosaic augmentation disrupts potential spurious correlations between background appearance and class label, encouraging the model to attend to local defect morphology.",
+        "MixUp augmentation ( \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\alpha = 0.2$$\\end{document} ,  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$p = 0.2$$\\end{document} ) blended image pairs using a mixing coefficient  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\lambda \\sim \\textrm{Beta}(\\alpha ,\\alpha )$$\\end{document} , producing convex combinations of both images and labels. Because defective and non-defective pump impellers share the same gross geometry and differ only in localised surface irregularities, many training examples lie close to the decision boundary in feature space. MixUp’s label interpolation smooths this boundary, improving confidence score calibration near the 0.45 deployment threshold where borderline parts are routed to human review.",
+        "Together, these augmentations increased the effective dataset size by approximately  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$2.5\\times $$\\end{document}  and prevented validation loss divergence observed after epoch 35 in baseline training without augmentation. Conservative probabilities were confirmed through preliminary experiments. The full training and augmentation configuration is summarised in Table  2 . Table 2 Training hyperparameters and augmentation settings Category Parameter Value Optimiser Algorithm Adam \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\beta _1$$\\end{document} ,  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\beta _2$$\\end{document} ,  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\varepsilon $$\\end{document} 0.9, 0.999,  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$10^{-8}$$\\end{document} Learning rate Initial/Final 0.01/0.001 Schedule Cosine annealing Regularisation Weight decay \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$5\\times 10^{-4}$$\\end{document} Training Epochs 80 Batch size 16 Random seed 42 Loss functions Localisation CIoU Classification BCE + label smoothing ( \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\varepsilon = 0.1$$\\end{document} ) Objectness Focal Loss ( \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\gamma =2.0$$\\end{document} ,  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\alpha _t=0.25$$\\end{document} ) Weights ( \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\lambda $$\\end{document} ) Box: 0.05; Class: 0.5; Obj: 1.0 Basic augment Horizontal flip \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$p = 0.5$$\\end{document} Rotation \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\pm 15^{\\circ }$$\\end{document} ,  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$p = 0.3$$\\end{document} Scaling 0.8– \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$1.2\\times $$\\end{document} ,  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$p = 0.5$$\\end{document} Brightness \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\pm 20\\%$$\\end{document} ,  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$p = 0.4$$\\end{document} Contrast 0.8– \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$1.2\\times $$\\end{document} ,  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$p = 0.4$$\\end{document} Gaussian noise \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\sigma =0.01$$\\end{document} ,  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$p = 0.2$$\\end{document} Advanced augment Mosaic \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$p = 0.3$$\\end{document} MixUp \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\alpha =0.2$$\\end{document} ,  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$p = 0.2$$\\end{document}"
+      ]
+    },
+    {
+      "heading": "Evaluation framework",
+      "paragraphs": []
+    },
+    {
+      "heading": "Detection performance metrics",
+      "paragraphs": [
+        "Performance was evaluated using standard object detection metrics. Precision (positive predictive value) quantifies the false alarm rate; recall (sensitivity) measures the defect detection rate; and F1-score provides a balanced summary of the two. Mean Average Precision was evaluated at two IoU thresholds: mAP@0.5 represents standard detection performance and mAP@0.5:0.95 assesses localisation quality, relevant for automated defect measurement applications."
+      ]
+    },
+    {
+      "heading": "Deployment metrics",
+      "paragraphs": [
+        "Deployment-critical metrics were evaluated under production-representative conditions: single-image inference (batch size 1) with no test-time augmentation, and a confidence threshold of 0.45 optimised on the validation set. Metrics reported include inference latency (ms/image), throughput (FPS), model size (MB), and peak GPU memory. Experiments were conducted on an NVIDIA Tesla T4 GPU (16 GB VRAM)."
+      ]
+    },
+    {
+      "heading": "Statistical validation framework",
+      "paragraphs": [
+        "Bootstrap resampling (1000 iterations with replacement) of the 130-image validation set generated empirical 95% confidence intervals (2.5th–97.5th percentiles) for precision, recall, F1-score, and mAP@0.5 without distributional assumptions. Pairwise architectural comparisons used permutation tests (10,000 permutations on image-level outcomes), which are appropriate for single-run model comparisons. Effect sizes (Cohen’s  d ) quantify practical significance. All tests used a significance level of  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\alpha = 0.05.$$\\end{document}  The training and validation sets were constructed using stratified random sampling on filename-level identifiers, ensuring complete mutual exclusivity. The narrow bootstrap confidence intervals reported in Sect.  4.1.2  suggest stable generalization behavior."
+      ]
+    },
+    {
+      "heading": "Results",
+      "paragraphs": []
+    },
+    {
+      "heading": "Detection performance",
+      "paragraphs": []
+    },
+    {
+      "heading": "Primary performance metrics",
+      "paragraphs": [
+        "Table  3  summarises the detection performance of the three architectures on the 130-image validation set. YOLOv8s achieved the highest overall performance with 99.9% precision and 100% recall, yielding zero false negatives across the validation set and an mAP@0.5 of 99.5%. YOLOv5s demonstrated robust baseline performance with 96.7% precision, 98.1% recall, and an F1-score of 97.4%, exceeding the accuracy typically reported for manual inspection. The mAP@0.5−0.95 of 93.2% for YOLOv5s suggests slightly reduced localisation precision relative to the other two architectures. YOLO11s achieved intermediate classification performance (98.9% precision, 99.4% recall) while attaining the highest mAP@0.5−0.95 of 94.8%, indicating superior bounding box regression among all three models. Training convergence curves are shown in Fig.  3 . Table 3 Detection performance on the 130-image validation set Model Precision Recall F1 mAP@0.5 mAP@0.5:0.95 YOLOv5s 0.967 0.981 0.974 0.981 0.932 YOLOv8s 0.999 1.000 0.999 0.995 0.942 YOLO11s 0.989 0.994 0.992 0.991 0.948 All models trained for 80 epochs; confidence threshold = 0.45",
+        "Fig. 3 Training convergence curves for YOLOv5s, YOLOv8s, and YOLO11s across 80 epochs"
+      ]
+    },
+    {
+      "heading": "Statistical significance and reliability",
+      "paragraphs": [
+        "Bootstrap resampling (1000 iterations with replacement) of the 130-image validation set was used as the primary measure of result stability. The 95% confidence intervals derived from the 2.5th and 97.5th percentiles confirm that the near-perfect performance of YOLOv8s and YOLO11s is stable across hypothetical resampled validation sets. YOLOv8s intervals spanned Precision [0.984−1.000], Recall [0.962−1.000], F1 [0.977−1.000], and mAP@0.5 [0.988−1.000]. YOLO11s produced comparable intervals of Precision [0.971−1.000], Recall [0.954−1.000], F1 [0.968−1.000], and mAP@0.5 [0.981−1.000]. YOLOv5s returned slightly wider intervals—Precision [0.942−0.990], Recall [0.961−0.998], F1 [0.951−0.985], mAP@0.5 [0.962−0.997]—indicating marginally greater performance variability, though remaining within a practically acceptable range.",
+        "Pairwise permutation tests (10,000 permutations on image-level detection outcomes) confirmed that YOLOv8s significantly outperformed YOLOv5s ( \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$p = 0.031$$\\end{document} ) and YOLO11s similarly outperformed YOLOv5s ( \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$p = 0.018$$\\end{document} ). The comparison between YOLOv8s and YOLO11s was not statistically significant ( \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$p = 0.087$$\\end{document} ), indicating that the two architectures deliver statistically comparable performance. Effect size analysis further characterised these differences: the YOLOv8s–YOLOv5s comparison yielded a large effect ( \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$d = 0.52$$\\end{document} –1.89), the YOLOv8s–YOLO11s comparison yielded a small-to-medium effect ( \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$d = -0.34$$\\end{document} –0.95), and the YOLO11s–YOLOv5s comparison yielded a large effect ( \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$d = 0.62$$\\end{document} –0.94, favouring YOLO11s). Full results are summarised in Table  4 .",
+        "It is acknowledged that k-fold cross-validation across multiple independent training runs would provide a more rigorous generalisability assessment. Five-fold cross-validation across three architectures would require approximately 37.5 GPU-hours ( \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$3 \\times 5 \\times 2.5$$\\end{document}  h) and is identified as a priority for future work.",
+        "Additional reliability metrics—Matthews Correlation Coefficient (MCC), area under the precision–recall curve (AUC-PR), and mean bounding box IoU—are reported in Table  5 . YOLOv8s achieved near-perfect scores across all classification metrics (MCC = 0.999, AUC-PR = 0.999), while YOLO11s attained the highest localisation precision (mean IoU =  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$0.91 \\pm 0.05$$\\end{document} ). YOLOv5s remained competitive (MCC = 0.947, AUC-PR = 0.974) though consistently below the two newer architectures. Collectively, these results identify YOLOv8s as the preferred architecture for classification-critical applications and YOLO11s for applications requiring precise bounding box localisation. Table 4 Bootstrap confidence intervals and permutation test results Metric YOLOv5s Mean [95% CI] YOLOv8s Mean [95% CI] YOLO11s Mean [95% CI] p  5 s vs 8 s p  8 s vs 11 s p  5 s vs 11 s Precision 0.967 [0.942−0.990] 0.999 [0.984−1.000] 0.989 [0.971−1.000] 0.031* 0.087 0.018* Recall 0.981 [0.961−0.998] 1.000 [0.962−1.000] 0.994 [0.954−1.000] 0.031* 0.087 0.018* F1-score 0.974 [0.951−0.985] 0.999 [0.977−1.000] 0.991 [0.968−1.000] 0.031* 0.087 0.018* mAP@0.5 0.981 [0.962−0.997] 0.995 [0.988−1.000] 0.991 [0.981−1.000] 0.031* 0.087 0.018* mAP@0.5:0.95 0.932 [0.908−0.956] 0.942 [0.921−0.963] 0.948 [0.928−0.968] 0.044* 0.082 0.021* Bootstrap 95% CI: 1000 iterations with replacement from the 130-image validation set. Permutation  p -values: 10,000 permutations of image-level detection outcomes. *Significant at  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\alpha = 0.05$$\\end{document} . Cohen’s  d  computed from bootstrap distributions. ANOVA-based testing was not used as it requires independent training replicates unavailable in the current single-run design Table 5 Robustness and reliability metrics Model Precision [95% CI] Recall [95% CI] MCC AUC-PR Mean IoU (±SD) YOLOv5s 0.967 [0.947−0.987] 0.981 [0.961−0.991] 0.947 0.974 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$0.85 \\pm 0.08$$\\end{document} YOLOv8s 0.999 [0.979−1.000] 1.000 [0.990−1.000] 0.999 0.999 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$0.89 \\pm 0.06$$\\end{document} YOLO11s 0.989 [0.969−0.999] 0.994 [0.984−1.000] 0.983 0.991 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$0.91 \\pm 0.05$$\\end{document}"
+      ]
+    },
+    {
+      "heading": "Learning curve analysis",
+      "paragraphs": [
+        "To validate the 1170-image training subset and characterise performance under constrained annotation budgets, YOLOv8s was trained on five progressively larger subsets (200, 400, 600, 900, and 1170 images) drawn from the same stratified pool, with all evaluations on the fixed 130-image validation set under identical hyperparameters (seed = 42, 80 epochs). Results are shown in Fig.  4  and Table  6 .",
+        "Three phases were identified. In the  rapid gain phase  (200–400 images), mAP@0.5 increased from 0.674 to 0.907. The 200-image result warrants caution: perfect recall (1.000) at precision of 0.499 indicates a degenerate solution in which the model predicts the positive class universally—a well-documented behaviour under extreme data scarcity. In the  consolidation phase  (400–600 images), all metrics improved simultaneously (mAP@0.5:  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$0.907 \\rightarrow 0.976$$\\end{document} ; F1:  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$0.781 \\rightarrow 0.932$$\\end{document} ; Precision:  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$0.678 \\rightarrow 0.931$$\\end{document} ), indicating balanced feature learning. In the  saturation phase  (600–1170 images), mAP@0.5 stabilised between 0.976 and 0.995, with incremental gains below 0.020 per doubling of training data. The empirical saturation threshold was identified at approximately 600–700 images.",
+        "The 1170-image training set operated 470–570 images above the saturation threshold. The 0.001 difference between the learning curve result at 1170 images (mAP@0.5 = 0.994) and the main experiment (0.995) reflects normal training stochasticity. For practitioners, approximately 600–700 annotated images represent the minimum for balanced binary casting defect detection with small-variant YOLO architectures on comparable datasets; 1000–1200 images provide saturation-zone reliability. Fig. 4 YOLOv8s learning curve across five training set sizes (200–1170 images) evaluated on a fixed 130-image validation set. The saturation threshold is at approximately 600–700 images. The degenerate precision–recall at 200 images reflects model collapse under extreme data scarcity Table 6 YOLOv8s performance across training set sizes Images % subset mAP@0.5 mAP@0.5:0.95 F1 Precision Recall 200 17% 0.674 0.584 0.666 0.499 1.000 400 34% 0.907 0.812 0.781 0.678 0.922 600 51% 0.976 0.878 0.932 0.931 0.933 900 77% 0.995 0.995 0.988 0.987 0.988 1,170 100% 0.994 0.992 0.962 0.966 0.959 Fixed 130-image validation set; seed = 42; 80 epochs. Saturation identified at 600–700 images (mAP@0.5 gain <0.020 per increment beyond this point). The 200-image result reflects degenerate behaviour under extreme data scarcity"
+      ]
+    },
+    {
+      "heading": "Inference speed and throughput",
+      "paragraphs": []
+    },
+    {
+      "heading": "Real-time performance capabilities",
+      "paragraphs": [
+        "All three architectures exceeded the 10 FPS production line inspection benchmark by substantial margins (Fig.  5 ). YOLOv5s achieved the fastest inference at 4.7 ms per image (213 FPS), representing a 21.3 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\times $$\\end{document}  throughput margin above the benchmark. YOLOv8s processed images at 5.1 ms (196 FPS, a 19.6 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\times $$\\end{document}  margin), and YOLO11s at 5.6 ms (179 FPS, a 17.9 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\times $$\\end{document}  margin). These margins refer exclusively to model inference and do not include image acquisition, preprocessing, or communication latency, which contribute approximately 2–5 ms per image in typical industrial deployments.",
+        "Inference consistency, measured as the standard deviation of processing times across 1000 sequential images, remained below 0.3 ms for all architectures, confirming deterministic behaviour suitable for synchronised production line integration. A speed–accuracy trade-off analysis identified Pareto-optimal configurations: YOLOv5s for throughput-critical applications, YOLOv8s for balanced requirements, and YOLO11s for localisation- critical applications where the marginal speed reduction is justified by superior bounding box precision. Fig. 5 Inference speed and detection performance trade-off.   a  shows per-image processing times for YOLOv5s (4.7 ms), YOLOv8s (5.1 ms), and YOLO11s (5.6 ms).   b  plots FPS against mAP@0.5"
+      ]
+    },
+    {
+      "heading": "Scalability and batch processing",
+      "paragraphs": [
+        "Batch processing experiments demonstrated near-linear throughput scaling up to a batch size of 8. At this batch size, throughput reached 1504 FPS (YOLOv5s), 1432 FPS (YOLOv8s), and 1312 FPS (YOLO11s), supporting simultaneous inspection of multiple production streams from a single GPU deployment. Peak GPU memory consumption at batch size 8 was 2.8 GB (YOLOv5s), 3.2 GB (YOLOv8s), and 3.0 GB (YOLO11s), remaining within the capacity of entry-level industrial GPUs (8 GB VRAM) and indicating that multi-stream deployment does not require high-end hardware."
+      ]
+    },
+    {
+      "heading": "Detection quality and defect characterisation",
+      "paragraphs": []
+    },
+    {
+      "heading": "Precision–recall trade-off analysis",
+      "paragraphs": [
+        "The precision–recall curves (Fig.  6 ) revealed distinct operational characteristics across architectures. YOLOv8s maintained precision above 95% across the entire recall range up to 0.98, indicating robust performance across confidence thresholds. The AUC-PR values—0.999 (YOLOv8s), 0.991 (YOLO11s), and 0.974 (YOLOv5s)—quantify the reliability of each model across the full range of operating conditions. Optimal confidence thresholds, determined by F1-score maximisation on the validation set, were 0.42 (YOLOv5s), 0.45 (YOLOv8s), and 0.48 (YOLO11s), achieving false-positive rates below 3.3% while maintaining recall above 98% for all three architectures. Fig. 6 Precision–recall curves for  a  YOLOv5s (mAP@0.5: 0.981),  b  YOLOv8s (mAP@0.5: 0.995), and  c  YOLO11s (mAP@0.5: 0.991). Results shown for defective class (grey), non-defective class (orange), and combined (blue)"
+      ]
+    },
+    {
+      "heading": "Confusion matrix analysis",
+      "paragraphs": [
+        "Confusion matrices normalised across the 130-image validation set (Fig.  7 ) revealed distinct error patterns. YOLOv8s achieved near-perfect classification with one false positive (0.1% FP rate) and zero false negatives. YOLOv5s exhibited 22 false positives and 12 false negatives, indicating a slight tendency toward over-detection. YOLO11s showed intermediate behaviour with seven false positives and four false negatives. The Matthews Correlation Coefficient (MCC)—which accounts for all four confusion matrix cells and is robust to class imbalance— was 0.999 (YOLOv8s), 0.983 (YOLO11s), and 0.947 (YOLOv5s), consistent with the primary metric results in Table  3 . Fig. 7 Normalised confusion matrices for  a  YOLOv5s,  b  YOLOv8s, and  c  YOLO11s evaluated on 130 validation images. Values indicate proportions normalised by true class frequency"
+      ]
+    },
+    {
+      "heading": "Localisation precision and bounding box quality",
+      "paragraphs": [
+        "IoU analysis of 50 randomly selected defect instances revealed differences in localisation quality across architectures. YOLO11s achieved the highest mean IoU of  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$0.91 \\pm 0.05$$\\end{document} , with 94% of predictions exceeding an IoU threshold of 0.75. YOLOv8s followed with a mean IoU of  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$0.89 \\pm 0.06$$\\end{document} , while YOLOv5s showed higher variability at  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$0.85 \\pm 0.08$$\\end{document} , occasionally producing oversized bounding boxes spanning multiple adjacent defect regions, which may limit applicability in scenarios requiring individual defect characterisation.",
+        "Visual inspection of detection outputs on representative validation samples corroborates these quantitative findings (Figs.  8  and  9 ). YOLOv8s consistently produced tight bounding boxes with few false positives, while YOLO11s demonstrated particularly precise localisation for defects with irregular boundaries. YOLOv5s detections, while largely correct, exhibited marginally wider bounding boxes on borderline samples, consistent with its higher false positive count in the confusion matrix analysis. Fig. 8 Representative YOLOv8s detection results on the validation set displayed as a  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$4\\times 4$$\\end{document}  grid. Blue boxes: defective; cyan boxes: non-defective. Confidence scores are shown above each detection Fig. 9 Comparative detection results for YOLOv5s, YOLOv8s, and YOLO11s on identical validation samples. Each model shows  a  ground truth and  b  model predictions. Blue boxes: defective; cyan boxes: non-defective. Confidence threshold: 0.45"
+      ]
+    },
+    {
+      "heading": "Computational efficiency",
+      "paragraphs": []
+    },
+    {
+      "heading": "Model size and storage requirements",
+      "paragraphs": [
+        "Model footprint metrics relevant to edge deployment are summarised in Table  7 . YOLOv5s required 18.5 MB of storage, YOLOv8s 22.5 MB, and YOLO11s 19.2 MB. All three are substantially smaller than traditional CNN architectures such as VGG16 (528 MB), representing a 95.5% reduction that facilitates deployment on resource-constrained industrial edge devices. Model loading times were 0.82 s (YOLOv5s), 0.94 s (YOLOv8s), and 0.87 s (YOLO11s) on standard industrial PC configurations, all well within typical production line initialisation requirements. Table 7 Key model metrics Model Layers Parameters GFLOPs Size (MB) Backbone YOLOv5s 84 9,112,310 23.8 18.5 CSPDarknet53 YOLOv8s 72 11,126,358 28.4 22.5 Modified CSP / C2f YOLO11s 100 9,413,574 21.3 19.2 Enhanced CSP with attention"
+      ]
+    },
+    {
+      "heading": "Energy consumption and thermal characteristics",
+      "paragraphs": [
+        "Power consumption during continuous inference averaged 42 W (YOLOv5s), 48 W (YOLOv8s), and 45 W (YOLO11s), compared to 15 W at idle. Assuming 24/7 operation at an illustrative industrial electricity rate of USD 0.12/kWh, the estimated annual electricity costs are USD 441 (YOLOv5s), USD 504 (YOLOv8s), and USD 473 (YOLO11s). The inter-architecture difference of USD 63 per annum is negligible relative to hardware and integration costs, confirming that energy consumption should not be a primary criterion for architecture selection.",
+        "Peak GPU temperatures under continuous load were 67 °C (YOLOv5s), 71 °C (YOLOv8s), and 69 °C (YOLO11s), remaining within safe operating limits and requiring no specialised cooling beyond standard industrial enclosure ventilation. These thermal profiles are compatible with foundry environments where ambient temperatures typically reach 35–40 °C."
+      ]
+    },
+    {
+      "heading": "Training dynamics and model convergence",
+      "paragraphs": []
+    },
+    {
+      "heading": "Convergence analysis",
+      "paragraphs": [
+        "Training progression (Fig.  10 ) revealed distinct convergence patterns across architectures. YOLOv8s demonstrated the fastest convergence, reaching 90% of its final mAP@0.5 by epoch 25. YOLOv5s improved steadily through epoch 45 before plateauing. Across all three architectures, stable convergence was reached by approximately epoch 25, with minimal fluctuation thereafter, confirming that the 80-epoch training budget was sufficient and that none of the models showed signs of continued improvement that would justify extended training.",
+        "YOLO11s exhibited transient non-monotonic behaviour with a temporary performance dip at epochs 3–4, attributed to the dynamic label assignment strategy requiring initial calibration, before recovering to its final performance level. Despite this early instability, YOLO11s achieved the highest final mAP@0.5−0.95 of 0.948, reflecting superior bounding box regression relative to the other two architectures. Fig. 10 Validation loss trajectories (box, classification, and DFL losses) for YOLOv5s, YOLOv8s, and YOLO11s across 80 training epochs"
+      ]
+    },
+    {
+      "heading": "Validation loss stability",
+      "paragraphs": [
+        "Validation loss trajectories confirmed stable generalisation across all three architectures. YOLOv8s maintained the lowest final validation loss (0.0342) with the smallest fluctuation ( \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\sigma = 0.0018$$\\end{document} ) after epoch 30. YOLOv5s showed a slightly higher final loss (0.0411) with comparable stability ( \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\sigma = 0.0021$$\\end{document} ). YOLO11s exhibited marginally higher variability ( \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\sigma = 0.0029$$\\end{document} ), consistent with the influence of its dynamic label assignment on loss trajectory."
+      ]
+    },
+    {
+      "heading": "Ablation study",
+      "paragraphs": [
+        "A systematic ablation of YOLOv8s components was conducted to quantify each architectural and training design choice (Table  8 ). All ablation variants were trained under an identical compute budget: 80 epochs, batch size 16, Adam optimiser ( \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\text {lr}_0 = 0.01$$\\end{document} , cosine annealing to 0.001, weight decay  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$= 5\\times 10^{-4}$$\\end{document} ), image size  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$640\\times 640$$\\end{document} , random seed 42, and confidence threshold 0.45 at evaluation. Each variant modified exactly one component relative to the full YOLOv8s baseline.",
+        "Among architectural modifications, replacing C2f modules with traditional CSP blocks reduced mAP@0.5 by 1.9% (0.995 vs. 0.976), while reverting to a coupled detection head reduced precision by 2.7% (0.999 vs. 0.963). Anchor-free detection reduced model size by 3.1% without performance loss. For loss functions, replacing CIoU with standard IoU reduced mAP@0.5−0.95 by 2.1% (0.942 vs. 0.921); removing label smoothing reduced precision by 0.8% (0.999 vs. 0.991); and equal loss weighting reduced mAP@0.5 by 1.3%. Data augmentation had the largest single impact: complete removal caused a 7.6% precision degradation (0.999 vs. 0.923), while using basic augmentation only (without Mosaic or MixUp) reduced mAP@0.5 by 1.4%. Training with 30 epochs instead of 80 reduced mAP@0.5 by 1.0% (0.995 vs. 0.985), confirming that the 80-epoch budget is justified without evidence of overfitting. Table 8 Ablation study results for YOLOv8s Configuration Precision Recall mAP@0.5 mAP@0.5:0.95 FPS Full YOLOv8s (baseline) 0.999 1.000 0.995 0.942 196 Without C2f modules 0.971 0.983 0.976 0.901 218 Without decoupled head 0.963 0.975 0.968 0.889 209 IoU instead of CIoU 0.988 0.994 0.989 0.921 196 Without label smoothing 0.991 0.997 0.991 0.928 196 No augmentation 0.923 0.946 0.931 0.842 196 Basic augmentation only 0.976 0.989 0.981 0.903 196 30 epochs (vs. full 80) 0.981 0.992 0.985 0.912 196 All variants trained under identical conditions: 80 epochs (except where noted), batch size 16, Adam optimiser ( \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\text {lr}_0 = 0.01$$\\end{document} ), cosine annealing to 0.001), weight decay  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$5\\times 10^{-4}$$\\end{document} , image size  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$640\\times 640$$\\end{document} , seed = 42, confidence threshold 0.45. One component modified per row relative to the full YOLOv8s baseline. FPS on NVIDIA Tesla T4, batch size 1, no test-time augmentation"
+      ]
+    },
+    {
+      "heading": "Discussion",
+      "paragraphs": []
+    },
+    {
+      "heading": "Architecture selection framework",
+      "paragraphs": [
+        "To support evidence-based architecture selection, Table  9  presents a Deployment Decision Matrix mapping application-specific requirements to the recommended architecture based on the experimental results of this study. Six deployment dimensions are addressed: defect detection criticality, inspection throughput, localisation precision, edge hardware constraints, retraining frequency, and new product adaptation. Each recommendation is anchored to quantitative thresholds from Tables  3 ,  5 , and  7 . Table 9 Deployment Decision Matrix for YOLO architecture selection in industrial casting inspection Dimension Requirement Recommended Quantitative basis Defect detection criticality Zero false negatives (safety-critical) YOLOv8s Recall = 1.000; 0 missed defects High recall (>98%) YOLO11s Recall = 0.994 Standard (>95%) YOLOv5s Recall = 0.981 Inspection throughput Maximum, multi-line YOLOv5s 213 FPS; 21.3 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\times $$\\end{document}  margin Balanced accuracy-speed YOLOv8s 196 FPS; 19.6 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\times $$\\end{document}  margin Precision-critical YOLO11s 179 FPS; 17.9 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\times $$\\end{document}  margin Localisation precision SPC / automated measurement (IoU > 0.90) YOLO11s Mean IoU  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$= 0.91 \\pm 0.05$$\\end{document} Standard rejection routing YOLOv8s Mean IoU  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$= 0.89 \\pm 0.06$$\\end{document} Basic detection YOLOv5s Mean IoU  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$= 0.85 \\pm 0.08$$\\end{document} Edge hardware constraints Minimal footprint YOLOv5s 18.5 MB; 42 W Standard industrial edge YOLO11s 19.2 MB; 45 W Mid-range GPU YOLOv8s 22.5 MB; 48 W Retraining frequency Frequent (monthly) YOLOv8s 90% performance by epoch 25 Periodic (quarterly) YOLO11s Superior final accuracy Infrequent YOLOv5s Robust convergence New product adaptation Rapid transfer learning YOLOv8s C2f feature transferability Maximum accuracy YOLO11s Attention mechanism adaptation All thresholds derived from Tables  3 ,  5 , and  7 . FPS on NVIDIA Tesla T4, batch size 1. IoU from 50 randomly selected validation instances (Sect.  4.3.3 ). Recommendations apply to the specific dataset and hardware configuration evaluated; practitioners should validate against site-specific requirements. SPC, Statistical process control",
+        "YOLOv8s is the preferred architecture for applications where missed defects carry high consequence, given its perfect recall on the validation set. YOLOv5s is the appropriate choice when maximum inspection throughput is the primary constraint, processing 213 FPS from a single GPU. YOLO11s is best suited to applications requiring precise defect localisation, such as automated dimensional measurement or statistical process control, where its mean IoU of  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$0.91 \\pm 0.05$$\\end{document}  provides the highest bounding box fidelity.",
+        "A staged implementation pathway may reduce operational risk during transition from manual inspection. Phase 1 involves parallel operation alongside manual inspection for a validation period. Phase 2 transitions to automated primary inspection with a statistical sampling overlay. Phase 3 implements full automation with exception-based human intervention. These findings corroborate recent work demonstrating YOLO’s effectiveness in industrial inspection: Li et al. (2025) applied YOLO-LitePV to photovoltaic panel defect detection [ 26 ], and Han et al. (2025) combined YOLOv5 with phased array ultrasonic testing for weld defect recognition [ 27 ], both highlighting the importance of balancing detection accuracy with computational efficiency.",
+        "The deployment feasibility of all three architectures is supported by their modest computational footprint: model sizes of 18.5−22.5 MB and energy consumption of 42–48 W enable deployment on standard industrial edge hardware. A comprehensive return-on-investment analysis requires site-specific data on production volume, defect rates, and integration complexity, which are beyond the scope of this study; practitioners are directed to published foundry automation frameworks for site-specific economic evaluation [ 28 ]"
+      ]
+    },
+    {
+      "heading": "Limitations and future work",
+      "paragraphs": [
+        "Current limitations define both the boundary conditions of this study and the development pathway toward zero-defect manufacturing. Single-view inspection cannot detect non-visible surface defects on complex geometries; binary classification forgoes defect type information relevant to root cause analysis; and the fixed  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$640 \\times 640$$\\end{document}  input resolution may miss sub-2 mm micro-defects in high-precision applications. Additionally, all results are reported on a single validation set of 130 images drawn from one publicly available dataset representing a single product type (submersible pump impellers) captured under controlled imaging conditions. Generalisation to other casting geometries, defect distributions, or variable production lighting conditions cannot be assumed without further empirical validation on independent datasets. The small validation set size, while consistent with the total annotated dataset available, means that individual misclassifications have a proportionally large effect on reported metrics; k-fold cross-validation across multiple training runs would provide a more rigorous generalisability estimate and is identified as a priority for future work (Sect.  4.1.2 ). The learning curve analysis (Sect.  4.1.3 ) establishes 600–700 annotated images as the practical saturation threshold for binary casting defect detection with small-variant YOLO architectures, providing actionable annotation budget guidance for practitioners implementing similar systems under resource constraints.",
+        "The evolution of this work follows a three-stage trajectory. In the first stage, enhanced detection capability, multi-view inspection would address non-visible defect surfaces, multi-class defect taxonomy with sub-region annotations would enable discrimination between defect morphologies, and tiled inference on high-resolution inputs would extend sensitivity to sub-2 mm defects. Transfer learning from the current models is expected to require only 200–500 images to adapt to new casting product types. In the second stage, process-aware quality prediction, the detection system would be integrated with real-time casting process data streams (pouring temperature, mould filling speed, cooling rate, metal composition) via OPC UA to correlate defect patterns with upstream process variables, enabling predictive intervention before defects manifest at the inspection station. In the third stage, zero-defect autonomous manufacturing, multi-view detection, multi-class classification, and closed-loop process feedback would be combined into a self-optimising quality system. Federated learning across foundry networks would enable continuous model improvement from distributed production data, supporting convergence toward zero-defect targets aligned with Industry 5.0 objectives."
+      ]
+    },
+    {
+      "heading": "Conclusions",
+      "paragraphs": [
+        "This study reported performance benchmarks for three YOLO architectures applied to industrial casting defect detection on a single controlled dataset of pump impeller castings. The results indicate that all three architectures can achieve detection performance comparable to accuracy levels typically reported for manual inspection in the literature, while operating at real-time throughput. YOLOv8s attained the highest classification performance with 99.9% precision and 100% recall (95% CI: 0.962−1.000); YOLOv5s achieved the highest throughput at 213 FPS; and YOLO11s provided the best localisation accuracy (mean IoU  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$= 0.91 \\pm 0.05$$\\end{document} ) for measurement applications. All three architectures exceeded the 10 FPS production line inspection benchmark by 17–21 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\times $$\\end{document} , and their model sizes of 18.5−22.5 MB represent a 95.5% reduction relative to traditional CNN approaches, suggesting suitability for deployment on resource-constrained industrial edge devices.",
+        "Statistical validation via bootstrap resampling and permutation testing confirmed significant performance differences between architectures, with large effect sizes between the two newer models and YOLOv5s. A learning curve analysis identified performance saturation at approximately 600–700 training images, providing practical annotation budget guidance for similar binary inspection tasks. These findings are based on a single dataset and validation set of 130 images; independent validation on other casting types and production environments is necessary before broader deployment conclusions can be drawn.",
+        "Future work follows a staged trajectory: near-term extensions include multi-view inspection, multi-class defect taxonomy, and adaptive resolution strategies; medium-term development integrates real-time casting process data for predictive quality intervention; and the long-term objective is a federated, self-optimising inspection network enabling closed-loop process control across distributed manufacturing operations."
+      ]
+    }
+  ],
+  "tables": [
+    {
+      "caption": "Dataset description",
+      "headers": [
+        "Attribute",
+        "Description"
+      ],
+      "rows": [
+        [
+          "Dataset name",
+          "Casting Product Image Data for Quality Inspection"
+        ],
+        [
+          "Source",
+          "Kaggle [ 21 ]"
+        ],
+        [
+          "Domain",
+          "Industrial manufacturing—casting quality control"
+        ],
+        [
+          "Product type",
+          "Submersible pump impellers"
+        ],
+        [
+          "Total images",
+          "7340 (Training: 6633; Test: 707)"
+        ],
+        [
+          "Classes",
+          "2—Defective: 4207 images (57.3%); Non-defective: 3133 images (42.7%)"
+        ],
+        [
+          "Image format",
+          "Grayscale;  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$300\\times 300$$\\end{document}  px; top-down view"
+        ],
+        [
+          "Study subset",
+          "1300 images—Defective: 781 (60.1%); Non-defective: 519 (39.9%)"
+        ],
+        [
+          "Split (subset)",
+          "Training: 1170 (90%); Validation: 130 (10%)"
+        ],
+        [
+          "Preprocessing",
+          "Resized to  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$640\\times 640$$\\end{document}  px; normalised to [0, 1]; YOLO bounding box format"
+        ],
+        [
+          "Key strengths",
+          "Real industrial data; consistent imaging conditions; publicly available"
+        ],
+        [
+          "Limitations",
+          "Single product type and viewpoint; binary labels only; controlled environment"
+        ]
+      ],
+      "header_groups": [],
+      "table_alignment_status": "resolved",
+      "row_provenance": [
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 2
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 2
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 2
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 2
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 2
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 2
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 2
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 2
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 8,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 8,
+            "source_col": 2
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 9,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 9,
+            "source_col": 2
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 10,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 10,
+            "source_col": 2
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 11,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 11,
+            "source_col": 2
+          }
+        ]
+      ],
+      "tbody_alignment_status": "resolved"
+    },
+    {
+      "caption": "Training hyperparameters and augmentation settings",
+      "headers": [
+        "Category",
+        "Parameter",
+        "Value"
+      ],
+      "rows": [
+        [
+          "Optimiser",
+          "Algorithm",
+          "Adam"
+        ],
+        [
+          "Optimiser",
+          "\\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\beta _1$$\\end{document} ,  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\beta _2$$\\end{document} ,  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\varepsilon $$\\end{document}",
+          "0.9, 0.999,  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$10^{-8}$$\\end{document}"
+        ],
+        [
+          "Learning rate",
+          "Initial/Final",
+          "0.01/0.001"
+        ],
+        [
+          "Learning rate",
+          "Schedule",
+          "Cosine annealing"
+        ],
+        [
+          "Regularisation",
+          "Weight decay",
+          "\\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$5\\times 10^{-4}$$\\end{document}"
+        ],
+        [
+          "Training",
+          "Epochs",
+          "80"
+        ],
+        [
+          "Training",
+          "Batch size",
+          "16"
+        ],
+        [
+          "Training",
+          "Random seed",
+          "42"
+        ],
+        [
+          "Loss functions",
+          "Localisation",
+          "CIoU"
+        ],
+        [
+          "Loss functions",
+          "Classification",
+          "BCE + label smoothing ( \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\varepsilon = 0.1$$\\end{document} )"
+        ],
+        [
+          "Loss functions",
+          "Objectness",
+          "Focal Loss ( \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\gamma =2.0$$\\end{document} ,  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\alpha _t=0.25$$\\end{document} )"
+        ],
+        [
+          "Loss functions",
+          "Weights ( \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\lambda $$\\end{document} )",
+          "Box: 0.05; Class: 0.5; Obj: 1.0"
+        ],
+        [
+          "Basic augment",
+          "Horizontal flip",
+          "\\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$p = 0.5$$\\end{document}"
+        ],
+        [
+          "Basic augment",
+          "Rotation",
+          "\\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\pm 15^{\\circ }$$\\end{document} ,  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$p = 0.3$$\\end{document}"
+        ],
+        [
+          "Basic augment",
+          "Scaling",
+          "0.8– \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$1.2\\times $$\\end{document} ,  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$p = 0.5$$\\end{document}"
+        ],
+        [
+          "Basic augment",
+          "Brightness",
+          "\\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\pm 20\\%$$\\end{document} ,  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$p = 0.4$$\\end{document}"
+        ],
+        [
+          "Basic augment",
+          "Contrast",
+          "0.8– \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$1.2\\times $$\\end{document} ,  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$p = 0.4$$\\end{document}"
+        ],
+        [
+          "Basic augment",
+          "Gaussian noise",
+          "\\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\sigma =0.01$$\\end{document} ,  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$p = 0.2$$\\end{document}"
+        ],
+        [
+          "Advanced augment",
+          "Mosaic",
+          "\\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$p = 0.3$$\\end{document}"
+        ],
+        [
+          "Advanced augment",
+          "MixUp",
+          "\\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\alpha =0.2$$\\end{document} ,  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$p = 0.2$$\\end{document}"
+        ]
+      ],
+      "header_groups": [],
+      "table_alignment_status": "resolved",
+      "row_provenance": [
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 3
+          }
+        ],
+        [
+          {
+            "source": "carried",
+            "source_row_index": 0,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 3
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 3
+          }
+        ],
+        [
+          {
+            "source": "carried",
+            "source_row_index": 2,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 3
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 3
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 3
+          }
+        ],
+        [
+          {
+            "source": "carried",
+            "source_row_index": 5,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 3
+          }
+        ],
+        [
+          {
+            "source": "carried",
+            "source_row_index": 5,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 3
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 8,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 8,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 8,
+            "source_col": 3
+          }
+        ],
+        [
+          {
+            "source": "carried",
+            "source_row_index": 8,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 9,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 9,
+            "source_col": 3
+          }
+        ],
+        [
+          {
+            "source": "carried",
+            "source_row_index": 8,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 10,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 10,
+            "source_col": 3
+          }
+        ],
+        [
+          {
+            "source": "carried",
+            "source_row_index": 8,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 11,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 11,
+            "source_col": 3
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 12,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 12,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 12,
+            "source_col": 3
+          }
+        ],
+        [
+          {
+            "source": "carried",
+            "source_row_index": 12,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 13,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 13,
+            "source_col": 3
+          }
+        ],
+        [
+          {
+            "source": "carried",
+            "source_row_index": 12,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 14,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 14,
+            "source_col": 3
+          }
+        ],
+        [
+          {
+            "source": "carried",
+            "source_row_index": 12,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 15,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 15,
+            "source_col": 3
+          }
+        ],
+        [
+          {
+            "source": "carried",
+            "source_row_index": 12,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 16,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 16,
+            "source_col": 3
+          }
+        ],
+        [
+          {
+            "source": "carried",
+            "source_row_index": 12,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 17,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 17,
+            "source_col": 3
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 18,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 18,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 18,
+            "source_col": 3
+          }
+        ],
+        [
+          {
+            "source": "carried",
+            "source_row_index": 18,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 19,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 19,
+            "source_col": 3
+          }
+        ]
+      ],
+      "tbody_alignment_status": "resolved"
+    },
+    {
+      "caption": "Detection performance on the 130-image validation set",
+      "headers": [
+        "Model",
+        "Precision",
+        "Recall",
+        "F1",
+        "mAP@0.5",
+        "mAP@0.5:0.95"
+      ],
+      "rows": [
+        [
+          "YOLOv5s",
+          "0.967",
+          "0.981",
+          "0.974",
+          "0.981",
+          "0.932"
+        ],
+        [
+          "YOLOv8s",
+          "0.999",
+          "1.000",
+          "0.999",
+          "0.995",
+          "0.942"
+        ],
+        [
+          "YOLO11s",
+          "0.989",
+          "0.994",
+          "0.992",
+          "0.991",
+          "0.948"
+        ]
+      ],
+      "header_groups": [],
+      "table_alignment_status": "resolved",
+      "row_provenance": [
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 6
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 6
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 6
+          }
+        ]
+      ],
+      "tbody_alignment_status": "resolved"
+    },
+    {
+      "caption": "Bootstrap confidence intervals and permutation test results",
+      "headers": [
+        "Metric",
+        "YOLOv5s Mean [95% CI]",
+        "YOLOv8s Mean [95% CI]",
+        "YOLO11s Mean [95% CI]",
+        "p  5 s vs 8 s",
+        "p  8 s vs 11 s",
+        "p  5 s vs 11 s"
+      ],
+      "rows": [
+        [
+          "Precision",
+          "0.967 [0.942−0.990]",
+          "0.999 [0.984−1.000]",
+          "0.989 [0.971−1.000]",
+          "0.031*",
+          "0.087",
+          "0.018*"
+        ],
+        [
+          "Recall",
+          "0.981 [0.961−0.998]",
+          "1.000 [0.962−1.000]",
+          "0.994 [0.954−1.000]",
+          "0.031*",
+          "0.087",
+          "0.018*"
+        ],
+        [
+          "F1-score",
+          "0.974 [0.951−0.985]",
+          "0.999 [0.977−1.000]",
+          "0.991 [0.968−1.000]",
+          "0.031*",
+          "0.087",
+          "0.018*"
+        ],
+        [
+          "mAP@0.5",
+          "0.981 [0.962−0.997]",
+          "0.995 [0.988−1.000]",
+          "0.991 [0.981−1.000]",
+          "0.031*",
+          "0.087",
+          "0.018*"
+        ],
+        [
+          "mAP@0.5:0.95",
+          "0.932 [0.908−0.956]",
+          "0.942 [0.921−0.963]",
+          "0.948 [0.928−0.968]",
+          "0.044*",
+          "0.082",
+          "0.021*"
+        ]
+      ],
+      "header_groups": [],
+      "table_alignment_status": "resolved",
+      "row_provenance": [
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 7
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 7
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 7
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 7
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 7
+          }
+        ]
+      ],
+      "tbody_alignment_status": "resolved"
+    },
+    {
+      "caption": "Robustness and reliability metrics",
+      "headers": [
+        "Model",
+        "Precision [95% CI]",
+        "Recall [95% CI]",
+        "MCC",
+        "AUC-PR",
+        "Mean IoU (±SD)"
+      ],
+      "rows": [
+        [
+          "YOLOv5s",
+          "0.967 [0.947−0.987]",
+          "0.981 [0.961−0.991]",
+          "0.947",
+          "0.974",
+          "\\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$0.85 \\pm 0.08$$\\end{document}"
+        ],
+        [
+          "YOLOv8s",
+          "0.999 [0.979−1.000]",
+          "1.000 [0.990−1.000]",
+          "0.999",
+          "0.999",
+          "\\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$0.89 \\pm 0.06$$\\end{document}"
+        ],
+        [
+          "YOLO11s",
+          "0.989 [0.969−0.999]",
+          "0.994 [0.984−1.000]",
+          "0.983",
+          "0.991",
+          "\\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$0.91 \\pm 0.05$$\\end{document}"
+        ]
+      ],
+      "header_groups": [],
+      "table_alignment_status": "resolved",
+      "row_provenance": [
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 6
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 6
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 6
+          }
+        ]
+      ],
+      "tbody_alignment_status": "resolved"
+    },
+    {
+      "caption": "YOLOv8s performance across training set sizes",
+      "headers": [
+        "Images",
+        "% subset",
+        "mAP@0.5",
+        "mAP@0.5:0.95",
+        "F1",
+        "Precision",
+        "Recall"
+      ],
+      "rows": [
+        [
+          "200",
+          "17%",
+          "0.674",
+          "0.584",
+          "0.666",
+          "0.499",
+          "1.000"
+        ],
+        [
+          "400",
+          "34%",
+          "0.907",
+          "0.812",
+          "0.781",
+          "0.678",
+          "0.922"
+        ],
+        [
+          "600",
+          "51%",
+          "0.976",
+          "0.878",
+          "0.932",
+          "0.931",
+          "0.933"
+        ],
+        [
+          "900",
+          "77%",
+          "0.995",
+          "0.995",
+          "0.988",
+          "0.987",
+          "0.988"
+        ],
+        [
+          "1,170",
+          "100%",
+          "0.994",
+          "0.992",
+          "0.962",
+          "0.966",
+          "0.959"
+        ]
+      ],
+      "header_groups": [],
+      "table_alignment_status": "resolved",
+      "row_provenance": [
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 7
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 7
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 7
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 7
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 7
+          }
+        ]
+      ],
+      "tbody_alignment_status": "resolved"
+    },
+    {
+      "caption": "Key model metrics",
+      "headers": [
+        "Model",
+        "Layers",
+        "Parameters",
+        "GFLOPs",
+        "Size (MB)",
+        "Backbone"
+      ],
+      "rows": [
+        [
+          "YOLOv5s",
+          "84",
+          "9,112,310",
+          "23.8",
+          "18.5",
+          "CSPDarknet53"
+        ],
+        [
+          "YOLOv8s",
+          "72",
+          "11,126,358",
+          "28.4",
+          "22.5",
+          "Modified CSP / C2f"
+        ],
+        [
+          "YOLO11s",
+          "100",
+          "9,413,574",
+          "21.3",
+          "19.2",
+          "Enhanced CSP with attention"
+        ]
+      ],
+      "header_groups": [],
+      "table_alignment_status": "resolved",
+      "row_provenance": [
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 6
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 6
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 6
+          }
+        ]
+      ],
+      "tbody_alignment_status": "resolved"
+    },
+    {
+      "caption": "Ablation study results for YOLOv8s",
+      "headers": [
+        "Configuration",
+        "Precision",
+        "Recall",
+        "mAP@0.5",
+        "mAP@0.5:0.95",
+        "FPS"
+      ],
+      "rows": [
+        [
+          "Full YOLOv8s (baseline)",
+          "0.999",
+          "1.000",
+          "0.995",
+          "0.942",
+          "196"
+        ],
+        [
+          "Without C2f modules",
+          "0.971",
+          "0.983",
+          "0.976",
+          "0.901",
+          "218"
+        ],
+        [
+          "Without decoupled head",
+          "0.963",
+          "0.975",
+          "0.968",
+          "0.889",
+          "209"
+        ],
+        [
+          "IoU instead of CIoU",
+          "0.988",
+          "0.994",
+          "0.989",
+          "0.921",
+          "196"
+        ],
+        [
+          "Without label smoothing",
+          "0.991",
+          "0.997",
+          "0.991",
+          "0.928",
+          "196"
+        ],
+        [
+          "No augmentation",
+          "0.923",
+          "0.946",
+          "0.931",
+          "0.842",
+          "196"
+        ],
+        [
+          "Basic augmentation only",
+          "0.976",
+          "0.989",
+          "0.981",
+          "0.903",
+          "196"
+        ],
+        [
+          "30 epochs (vs. full 80)",
+          "0.981",
+          "0.992",
+          "0.985",
+          "0.912",
+          "196"
+        ]
+      ],
+      "header_groups": [],
+      "table_alignment_status": "resolved",
+      "row_provenance": [
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 6
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 6
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 6
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 6
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 6
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 6
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 6
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 6
+          }
+        ]
+      ],
+      "tbody_alignment_status": "resolved"
+    },
+    {
+      "caption": "Deployment Decision Matrix for YOLO architecture selection in industrial casting inspection",
+      "headers": [
+        "Dimension",
+        "Requirement",
+        "Recommended",
+        "Quantitative basis"
+      ],
+      "rows": [
+        [
+          "Defect detection criticality",
+          "Zero false negatives (safety-critical)",
+          "YOLOv8s",
+          "Recall = 1.000; 0 missed defects"
+        ],
+        [
+          "Defect detection criticality",
+          "High recall (>98%)",
+          "YOLO11s",
+          "Recall = 0.994"
+        ],
+        [
+          "Defect detection criticality",
+          "Standard (>95%)",
+          "YOLOv5s",
+          "Recall = 0.981"
+        ],
+        [
+          "Inspection throughput",
+          "Maximum, multi-line",
+          "YOLOv5s",
+          "213 FPS; 21.3 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\times $$\\end{document}  margin"
+        ],
+        [
+          "Inspection throughput",
+          "Balanced accuracy-speed",
+          "YOLOv8s",
+          "196 FPS; 19.6 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\times $$\\end{document}  margin"
+        ],
+        [
+          "Inspection throughput",
+          "Precision-critical",
+          "YOLO11s",
+          "179 FPS; 17.9 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\times $$\\end{document}  margin"
+        ],
+        [
+          "Localisation precision",
+          "SPC / automated measurement (IoU > 0.90)",
+          "YOLO11s",
+          "Mean IoU  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$= 0.91 \\pm 0.05$$\\end{document}"
+        ],
+        [
+          "Localisation precision",
+          "Standard rejection routing",
+          "YOLOv8s",
+          "Mean IoU  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$= 0.89 \\pm 0.06$$\\end{document}"
+        ],
+        [
+          "Localisation precision",
+          "Basic detection",
+          "YOLOv5s",
+          "Mean IoU  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$= 0.85 \\pm 0.08$$\\end{document}"
+        ],
+        [
+          "Edge hardware constraints",
+          "Minimal footprint",
+          "YOLOv5s",
+          "18.5 MB; 42 W"
+        ],
+        [
+          "Edge hardware constraints",
+          "Standard industrial edge",
+          "YOLO11s",
+          "19.2 MB; 45 W"
+        ],
+        [
+          "Edge hardware constraints",
+          "Mid-range GPU",
+          "YOLOv8s",
+          "22.5 MB; 48 W"
+        ],
+        [
+          "Retraining frequency",
+          "Frequent (monthly)",
+          "YOLOv8s",
+          "90% performance by epoch 25"
+        ],
+        [
+          "Retraining frequency",
+          "Periodic (quarterly)",
+          "YOLO11s",
+          "Superior final accuracy"
+        ],
+        [
+          "Retraining frequency",
+          "Infrequent",
+          "YOLOv5s",
+          "Robust convergence"
+        ],
+        [
+          "New product adaptation",
+          "Rapid transfer learning",
+          "YOLOv8s",
+          "C2f feature transferability"
+        ],
+        [
+          "New product adaptation",
+          "Maximum accuracy",
+          "YOLO11s",
+          "Attention mechanism adaptation"
+        ]
+      ],
+      "header_groups": [],
+      "table_alignment_status": "resolved",
+      "row_provenance": [
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "carried",
+            "source_row_index": 0,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "carried",
+            "source_row_index": 0,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "carried",
+            "source_row_index": 3,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "carried",
+            "source_row_index": 3,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "carried",
+            "source_row_index": 6,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "carried",
+            "source_row_index": 6,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 8,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 8,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 8,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 9,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 9,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 9,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 9,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "carried",
+            "source_row_index": 9,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 10,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 10,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 10,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "carried",
+            "source_row_index": 9,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 11,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 11,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 11,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 12,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 12,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 12,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 12,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "carried",
+            "source_row_index": 12,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 13,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 13,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 13,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "carried",
+            "source_row_index": 12,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 14,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 14,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 14,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 15,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 15,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 15,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 15,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "carried",
+            "source_row_index": 15,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 16,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 16,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 16,
+            "source_col": 4
+          }
+        ]
+      ],
+      "tbody_alignment_status": "resolved"
+    }
+  ]
+}

@@ -1,0 +1,1131 @@
+{
+  "doi": "10.1007/s12289-026-02026-6",
+  "title": "A scientific benchmark for elasto-plastic constitutive modeling - Part I: micro- and macroscopic experimental data set and benchmark problem",
+  "abstract": "Abstract An accurate and diverse set of experimental data is essential for characterizing material behavior across different length scales and for calibrating the respective constitutive models. An independent validation experiment, the MUC-Test, is presented to validate such constitutive models. The benchmark dataset provides raw experimental data that serves as the basis for calibrating constitutive models of varying complexity. The material investigated is a dual-phase steel (DP800HHE). The conducted microscale experiments investigate the material properties at the grain level. These experiments include nanoindentation, electron backscatter diffraction, and in-situ synchrotron measurements to capture the material’s microstructural behavior. These data serve as the basis for generating representative volume elements and for phase-specific calibration of the crystal plasticity models. On the macroscale, a wide range of experiments has been conducted, including tensile, tension-compression, plane-strain, shear, layer-compression, and cyclic tensile tests. This data can be used to calibrate flow curves and yield locus curves. Part I of this benchmark paper series details the experiments and provides data for calibrating both microscopic and macroscopic models. It also introduces the benchmark problem based on the MUC-Test for validation of these models. Dataset https://zenodo.org/records/18431261",
+  "journal": "International Journal of Material Forming",
+  "year": "2026",
+  "sections": [
+    {
+      "heading": "Introduction",
+      "paragraphs": [
+        "Benchmarks are an essential part of the scientific process. They enable objective comparisons and independent evaluations of different methods within a field of study. One of the best-known benchmarks today is the “ImageNet” benchmark dataset [ 1 ], which contains more than 14 million labeled images. Since 2010, this benchmark and the annual competitions have made it possible to track the ongoing development of image recognition. The same applies to more engineering-oriented benchmarks, such as the “DIC Challenges” conducted under the auspices of the Society for Experimental Mechanics and iDICs [ 2 ].",
+        "In sheet metal forming research, different benchmark tasks are used to compare numerical simulations against measurements of deep drawn parts or simpler experiments. In the benchmark study by Allen et al. [ 3 ], parameters were provided to calibrate flow curves and yield locus functions to simulate the forming process of an aluminum pillar. The participants’ numerical predictions were evaluated at three cross-sections after springback using a geometric comparison. The ESAFORM 2024 benchmark [ 4 ] focuses on the geometric accuracy of a part produced by single point incremental forming. In this study, multiple research institutes contributed experimental results to systematically investigate the influence of process strategies and tool paths on the final part geometry.",
+        "Also widely known are the S-rail benchmark [ 5 ] and the U-bending benchmark [ 6 ], introduced at NUMISHEET conferences to validate advances in springback prediction. These benchmarks are still often used to validate new constitutive models [ 7 ,  8 – 9 ], compare finite-element solver approaches [ 10 ,  11 ], or conduct parameter studies [ 12 ]. Yet, all of these benchmarks were designed to validate macroscopic forming simulations and do not provide multiscale, batch-consistent calibration data.",
+        "Ongoing advances in constitutive modeling are continuously increasing the experimental effort required for model calibration. The phenomenological Yld2004-18p yield criterion, e.g., requires nine independent experiments for calibration [ 13 ]. When combining this with a kinematic hardening model, the data space expands further. This is where current benchmark datasets reach their limits. One promising approach is to calibrate such complex material models using a virtual laboratory [ 14 ]. The study of Liu et al. [ 15 ] demonstrates that constitutive models calibrated via crystal plasticity simulation (CPFEM) tests accurately predict springback and deformation behaviors. They also used the U-bending benchmark for validation.",
+        "Coppieters et al. [ 16 ] also use the virtual laboratory approach to calibrate a Yld2000-2d model. Here, a representative volume element (RVE) of a single-phase ferritic steel was calibrated using a tensile test in the rolling direction (RD) and an orientation distribution function. Nine load paths in the first quadrant of the stress space were generated to calibrate the Yld2000-2d and compared with the corresponding experiments. These investigations enabled the creation of experimental and virtually calibrated yield locus curves. Both approaches were validated using the bulge test. Coppieters et al. obtained equally good simulation results for the bulge test using both approaches.",
+        "The process becomes more complex when calibrating an RVE with individual models for ferrite and martensite for a dual-phase (DP) steel. A tensile test is insufficient here because it does not provide a unique solution. Jeon et al. [ 17 ] demonstrate that their elasto-visco-plastic self-consistent crystal plasticity model can be used to determine the lattice strains from a tensile-compression test on a DP1000. Using a dataset containing lattice strains for ferrite and martensite, it is possible to perform phase-specific optimization of the elastic and plastic material parameters. For validation, Jeon et al. also use the U-bending experiment. However, a problem here is that the U-bending experiment was not performed on the same DP1000 batch as the tensile-compression test and other tests they use for calibration. These studies demonstrate that benchmark datasets intended for long-term use should provide data for generating RVEs and calibrating phase-specific constitutive models.",
+        "Despite these developments in virtual calibration approaches, current benchmark datasets still lack comprehensive multiscale experimental data. As a result, they are only partially suitable for the calibration and validation of modern constitutive models, particularly when phase-specific behavior needs to be captured. The aim of this study is therefore to provide a batch-consistent benchmark dataset for DP800HHE (high-hole expansion) steel, enabling calibration and validation across multiple scales. The dataset is designed to support both macroscopic finite element models and microstructure-based approaches. A brief introduction to macroscopic and microscopic constitutive modeling approaches for plasticity is provided in Appendix  A . Part II of the benchmark paper series provides examples of how to use the provided experimental dataset to calibrate microscopic and macroscopic material models [ 18 ].",
+        "In addition, the validation experiment MUC-Test proposed by Eder et al. [ 19 ] is introduced in this paper. This experiment minimizes the influence of friction effects. Part II of the benchmark paper series evaluates the benchmark results submitted by participants in the NUMISHEET 2025 Scientific Benchmark and presents the underlying experimental ground truth for the MUC-Test validation experiment [ 18 ]."
+      ]
+    },
+    {
+      "heading": "Macroscopic experiments",
+      "paragraphs": [
+        "This section describes the macroscopic test methods used. Tensile and compressive tests were performed to assess deformation and failure behavior. The tests included monotonic tensile, cyclic tensile, tensile-compressive, plane strain, shear, and layer compression. These tests were conducted on an AllRound Line Z 150 universal testing machine from ZwickRoell GmbH & Co. KG, equipped with a LaserXtens non-contact strain gauge. To capture digital image correlation (DIC) data, the Aramis SRX from Carl Zeiss GOM Metrology GmbH was used. In addition, Nakajima and bulge tests were performed on a BUP1000 sheet metal forming machine from ZwickRoell GmbH & Co. KG. This machine was equipped with the Aramis 4M DIC system from Carl Zeiss GOM Metrology GmbH. Both DIC systems operate in accordance with the VDI 2626 [ 20 ] and VDI 2634-1 [ 21 ] directives for optical measurement devices."
+      ]
+    },
+    {
+      "heading": "Tensile tests - uniaxial load",
+      "paragraphs": [
+        "The tensile test, defined in ISO 6892-1 [ 22 ], is a standardized method for determining mechanical properties of materials under tensile load at room temperature. The test starts by preparing a specimen. To prevent changes in the martensite and ferrite phases, the samples for this and subsequent experiments were prepared using electrical discharge machining (EDM). Tensile specimens were produced according to DIN 50125 [ 23 ], shape H standards. The specimens had a parallel length of 75 mm, a gauge length of 50 mm, and a width of 12.5 mm. The tested DP800HHE had a thickness of 1.49 mm and was uncoated. The thickness and width of all samples were measured at three points using a micrometer. The specimen was then clamped in a tensile testing machine that applied controlled forces while measuring its length. A preload of 50 N was applied. This results in a pre-stress of 2.68 MPa, which is well below the onset for yielding and below the maximum recommended by ISO 6892-1.",
+        "During the test, the specimen is continuously deformed as the applied force increases. Changes in the applied force and specimen elongation are recorded. Both a laser extensometer and a DIC system were used to measure length changes. The test typically determines parameters such as yield strength, tensile strength, and elongation at break. These parameters were measured in a test with a constant traverse speed of 0.15 mm/s. This gives an elongation rate of about 0.002 1/s. Surface temperature changes were measured with a PT1000 sensor attached to the specimen. This made it possible to determine the onset of yielding by temperature, as described in [ 24 ,  25 – 26 ].",
+        "Experiments were conducted with specimens in five different orientations. Therefore, specimens were cut from the sheet metal at  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$22.5^{\\circ }$$\\end{document}  increments relative to the RD ( \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$0^{\\circ }$$\\end{document} ,  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$22.5^{\\circ }$$\\end{document} ,  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$45^{\\circ }$$\\end{document} ,  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$67.5^{\\circ }$$\\end{document} , and  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$90^{\\circ }$$\\end{document} ). The dataset contains full-field DIC data and width changes from the laser extensometer. With DIC data, anisotropy is evaluated across the entire sample, whereas with extensometer width data, it is determined at the specimen’s center. These experiments enable the determination of the effects of anisotropy on stress ratios and r-values. Figure  1 a shows true stress and relative temperature over true strain during the complete tensile test with respect to the RD. The evaluation was carried out up to the end of uniform elongation. Figure  1 b shows a section from the start of the test up to 2.5% true strain. In this initial phase, the thermoelastic effect appears clearly in the surface temperature signal. Fig. 1 True stress and relative temperature over the true strain during the complete tensile test with respect to the RD ( a ) and a section from the start up to 2.5% true strain ( b )"
+      ]
+    },
+    {
+      "heading": "Tensile tests - cyclic load",
+      "paragraphs": [
+        "In addition to the standard uniaxial tensile test used to determine material anisotropy, cyclic tensile tests were conducted. Flat tensile specimens were again used in accordance with DIN 50125 [ 23 ]. Each specimen had a width of 12.5 mm. The preload was set at 50 N. Tests were executed at a constant speed of 0.15 mm/s. For each cycle, after an engineering strain of 1%, the specimen was unloaded at the same rate until 0 N was reached. This loading and unloading process was repeated 17 times. Strains were recorded with a non-contact laser extensometer, and surface temperature changes were monitored with the PT1000 sensor. The tests were performed in three direction with respect to the RD:  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$0^{\\circ }$$\\end{document} ,  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$45^{\\circ }$$\\end{document} , and  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$90^{\\circ }$$\\end{document} . The setup allows the evaluation of Young’s modulus as a function of plastic strain. This enables calibration of models such as the Yoshida-Uemori model [ 27 ]. Figure  2  shows the evolution of stress and temperature over time. The first eight cycles are presented in (a), while (b) shows a detailed section from 50 s to 100 s. Fig. 2 True stress and relative temperature over time for the first 8 cycles of a cyclic tensile test with respect to RD ( a ) and a section between 50 s and 100 s ( b )"
+      ]
+    },
+    {
+      "heading": "Tension-compression test",
+      "paragraphs": [
+        "The tension-compression test is a setup used to characterize the mechanical response of materials to load reversal. To enhance the stability of the testing setup during compression, an anti-buckling support mechanism is integrated. The support was designed in accordance with the anti-buckling device proposed in [ 28 ]. Four screws with metric thread M4 on each side provide axial support for the sample. These screws were tightened to 3 Nm of torque prior to the commencement of the test. It has a measuring window for setting the extensometer’s initial length to 12 mm. The strains are captured using a non-contact extensometer. All experiments were subjected to a preload of 50 N. Throughout the testing process, the elongation levels were incrementally increased by 1% of the engineering strain for each additional sample examined. After tensile loads, the sample is compressed to its initial length and, in the third step, relieved of external forces.",
+        "Figure  3  illustrates the seven experiments conducted in a true stress-strain diagram, each with an engineering strain of 2% to 8%. Tensile, compressive, and force relief procedures were conducted at a constant crosshead speed of 0.15 mm/s. All experiments were carried out in RD. The data obtained from the experimental procedure can be utilized for calibrating a kinematic hardening model, such as the Chaboche-Rousselier model [ 29 ] or the Yoshida-Uemori model [ 27 ], which is particularly relevant in accurately predicting springback in sheet metal forming. For example, this model is applicable when material passes through a drawbead and experiences both tensile and compressive stresses. Notably, the kinematic hardening effect demonstrated in this experiment was first identified by Bauschinger [ 30 ]. Fig. 3 True stress-strain diagram of seven DP800HHE tension-compression tests to investigate the kinematic hardening in between 2% and 8% engineering strain, individual cycles were controlled by engineering strain and increased by 1% per experiment"
+      ]
+    },
+    {
+      "heading": "Plane strain test",
+      "paragraphs": [
+        "A notched specimen is suitable for inverse calibration of the yield locus under plane strain conditions. The width of the specimen was 36 mm. The symmetric notches had a width of 9 mm, a length of 4 mm, resulting in a span width of 18 mm. The samples were first preloaded to 20 N. During testing, the traverse moved at a constant velocity of 0.028 mm/s. The initial distance between the clamps was 20 mm. During the experiment, the DIC system detected the major 1  and minor strains in the deformation zone. For DIC measurements, a frequency of 1 Hz was used. The elongation of the specimen was measured with a non-contact laser extensometer with an initial length of 10 mm. Figure  4 a shows the force-displacement curve from a plane strain test with respect to the RD. Additionally, the strain ratio from the DIC is shown in b), and a section through the sample’s center in the x-direction is shown in c), both at the time of maximum force. These results indicate that the intended plane strain state was achieved in the middle of the specimen due to its geometry. Consequently, inverse optimization can use the force-displacement curve to iteratively adjust the yield locus model. In the case of anisotropic constitutive models with high flexibility, this adjustment can be made independently in different directions. Therefore, tests were conducted at  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$0^{\\circ }$$\\end{document} ,  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$45^{\\circ }$$\\end{document} , and  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$90^{\\circ }$$\\end{document}  with respect to the RD. Fig. 4 a ) Force-displacement curve of a notched specimen geometry at  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$0^{\\circ }$$\\end{document}  with respect to the RD;  b ) strain ratios recorded by the DIC system;  c ) major and minor strain of the DIC measurement on the specimen in the x-direction at the center of the specimen"
+      ]
+    },
+    {
+      "heading": "Shear test",
+      "paragraphs": [
+        "In this study, a twin-bridge shear geometry was used to achieve a pure shear strain condition in its bridges. This geometry was originally proposed by Roth and Mohr [ 31 ] and can be used for yield locus calibration. A constant crosshead velocity of 0.0032 mm/s was employed throughout the experiments. Due to the specimen geometry, the plastic deformation is concentrated on the specimen bridges. The DIC system captures local strains in this area at 0.5 Hz. A preload of 30 N was applied to the sample. All experiments were conducted at a  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$45^{\\circ }$$\\end{document}  angle with respect to the RD. For displacement measurements, a non-contact laser extensometer with a 10 mm measuring distance was used. One part of the extensometer was positioned on the upper side of the specimen, while the other was placed on the fixed lower side of the bridge. The dataset includes results from three such tests. As illustrated in Fig.  5 a, the resulting dataset, which includes the piezoelectric sensor force signal and the displacement, can be used to calibrate the yield locus in the pure-shear region. For instance, this dataset supports the calibration of the Vegter model. The von Mises stresses from an FEM simulation are shown in the Fig.  5 b. Here, the localization of the stresses in the shear zone is clearly visible. Fig. 5 a ) The force-displacement curve resulting from a shear test in  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$45^{\\circ }$$\\end{document}  according to the RD;  b ) FEM simulation of the sample geometry from [ 31 ] with the resulting von Mises stress"
+      ]
+    },
+    {
+      "heading": "Hydraulic bulge test",
+      "paragraphs": [
+        "The bulge test, according to ISO 16808 [ 32 ], is an experiment to achieve higher plastic strain values by biaxial loading, which, for example, can be used for extrapolating flow curves. For this experiment, the DP800HHE specimen is clamped in a hydraulic sheet metal forming machine. A draw bead prevents the material from slipping. The die diameter is 123 mm, and the punch diameter, which performs the vertical movement, is 120 mm. The velocity of the punch during the test was 0.05 mm/s. This speed was selected to ensure a test duration of at least 120 s, as specified in ISO 16808. Applying hydraulic pressure to the material specimen via the punch’s movement results in plastic deformation and an increase in internal pressure. This plastic deformation induces a bulge in the specimen that can be observed with a DIC system operating at 1 Hz. The DIC system captures the sheet thickness and sheet curvature evolution. In addition, the pressure is recorded during the experiment. According to ISO 16808, the stress-strain values can be calculated using membrane theory. The bulge stress  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\sigma _B$$\\end{document}  as a function of thickness strain  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\varepsilon _3$$\\end{document}  is calculated as follows: \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\begin{aligned} \\sigma _B(\\varepsilon _3) = \\frac{p}{t_0 \\, e^{\\varepsilon _3} \\left( \\frac{1}{\\rho _1(\\varepsilon _3)} + \\frac{1}{\\rho _2(\\varepsilon _3)} \\right) }, \\end{aligned}$$\\end{document} where  p  is the measured internal pressure,  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$t_0$$\\end{document}  is the initial sheet thickness, and  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\rho _1(\\varepsilon _3)$$\\end{document}  and  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\rho _2(\\varepsilon _3)$$\\end{document}  are the principal radii of curvature in two orthogonal directions as a function of  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\varepsilon _3$$\\end{document} .  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\rho _1(\\varepsilon _3)$$\\end{document}  and  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\rho _2(\\varepsilon _3)$$\\end{document}  are calculated using the DIC data. Figure  6  shows the true stress-strain diagram. Fig. 6 True stress–strain curve from a bulge test, showing the magnitude of  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\varepsilon _3$$\\end{document}"
+      ]
+    },
+    {
+      "heading": "Layer compression test",
+      "paragraphs": [
+        "In the layer compression test, round specimens with a diameter of 15 mm were cut from the DP800HHE material using a laser. 2  The stack consisted of eleven DP800HHE specimens compressed between two parallel plates. The middle three specimens were selected for evaluation because they exhibit uniform load distribution and experience the least friction. To minimize interaction with the pressure plates, the stack was decoupled using a lanolin-based lubricant and a Teflon sheet. Prior to the start of the experiment, the lengths of the three specimens in RD and transverse directions, as well as their thickness, were measured using a micrometer. After the compressive force was applied, the resulting deformation was quantified. This experimental setup was proposed by Vegter and An [ 34 ] and by Merklein and Kuppert [ 35 ].",
+        "With these measurements, the biaxial r-value can be calculated. Table  1  presents mean measurement results for each layer from three tests, where measurements were taken after a 180 kN load. In another test series, a 200 kN load was used. In both series, the crosshead had a constant velocity of 0.01 mm/s. Force signals shown in Fig.  7  are measured with a piezoelectric sensor, while displacement was recorded based on crosshead movement. Fig. 7 Force-displacement curve of the layer compression test with a maximum force of 180 kN Table 1 The mean lengths in (RD) and across (TD) the RD of the three center plates (layer 5, 6 and 7) measured before the layer compression test and after a compression force of 180 kN Before compression test After compression test  Layer RD [mm] TD [mm] Thickness [mm] RD [mm] TD [mm] Thickness [mm] 5 14.848 14.817 1.480 15.810 15.599 1.334 6 14.824 14.838 1.484 15.771 15.623 1.333 7 14.843 14.854 1.479 15.789 15.632 1.331"
+      ]
+    },
+    {
+      "heading": "Nakajima experiment",
+      "paragraphs": [
+        "In the Nakajima experiment, according to ISO 12004 [ 36 ], the material is deformed until it necks or fractures, enabling investigation of its forming limit curve (FLC) and safe deformation boundaries. The test setup and specimen geometries follow the ISO 12004 standard. The punch speed was 1 mm/s. The clamping force between the blankholder and the die with a locking bead was 600 kN. Lanolin is used to lubricate the punch and reduce friction. A soft polyvinyl chloride sheet is placed between the punch and the sheet. Another layer of lanolin is applied between the polyvinyl chloride and the specimen. A piezoelectric sensor recorded the forces required for the experiment. Surface deformations were measured by a DIC system operating at 10 Hz. These data were used to calculate the major and minor strains. The line method and the time-dependent evaluation method [ 37 ] were used for the analysis and are available in the dataset.",
+        "Specimens with parallel sample lengths of 30 mm, 50 mm, 70 mm, 90 mm, 110 mm, 125 mm, and a full sample (235 mm) were used to investigate the FLC points. To ensure the reliability of the results, each test was conducted three times, and the data were analyzed statistically. Figure  8  illustrates the force-displacement curve of one specimen of each conducted geometry until failure, along with the FLC conducted in this manner. Fig. 8 a ) Force-displacement curves of seven Nakajima experiments of the respective specimen geometry for each FLC point;  b ) resulting FLC, determined using the line method with nine lines for each support point"
+      ]
+    },
+    {
+      "heading": "Microscopic experiments",
+      "paragraphs": [
+        "This section describes microscopic experiments, including optical emission spectrometry (OES), nanoindentation, scanning electron microscopy (SEM), electron backscatter diffraction (EBSD), and in-situ synchrotron measurements. These methods enable the properties of DP800HHE steel to be investigated at the microstructural level. Grain size effects and phase distribution are analyzed with regard to mechanical properties. The experiments investigate the relationship between microstructure and macroscopic behavior. This characterization can be used to create an RVE, calibrate CPFEM constitutive models, or validate CPFEM constitutive models calibrated by inverse optimization from macroscopic experiments."
+      ]
+    },
+    {
+      "heading": "Optical emission spectrometer",
+      "paragraphs": [
+        "The OES method analyzes chemical composition by detecting spectra produced when matter interacts with electromagnetic radiation. In this approach, spectral lines from specific atomic energy levels are analyzed. A DP800HHE specimen was tested at six surface points to assess homogeneity and determine its elemental composition. The OES results and corresponding standard deviations are presented in Table  2 . Table 2 The chemical composition of DP800HHE, determined by OES, presented in percent by weight and its standard deviation C Si Mn P Cr Mo Ni Cu 0.062 0.186 2.45 0.0026 0.573 0.0133 0.0478 0.0352 ± 0.0012 ± 0.0018 ± 0.0067 ± 0.00018 ± 0.003 ± 0.0001 ± 0.00085 ± 0.00011 Ti V Pb Sn Ca Sb B Fe 0.0489 0.0060 0.0014 0.0021 0.0014 0.0053 0.0016 96.5 ± 0.00035 ± 0.00013 ± 0.00012 ± 0.00007 ± 0.00012 ± 0.00091 ± 0.00017 ± 0.0086"
+      ]
+    },
+    {
+      "heading": "Scanning electron microscope and electron backscatter diffraction",
+      "paragraphs": [
+        "In this study, SEM and EBSD were employed to scan and characterize the microstructural components of the DP800HHE steel. The SEM images provided offer a detailed view of the microstructural phases by SE2 and InLens detectors, as shown in Fig.  9 . This SE2 detector (Fig.  9 , left) is situated at a distance from the sample and can capture secondary electrons emitted from a broader area. It is suitable for observing the overall surface morphology and larger features of the sample. The InLens detector (Fig.  9 , right) is positioned closer to the electron beam axis, to capture secondary electrons emitted from a very small area near the beam interaction point. It is ideal for examining fine structures and smaller features. From the SEM images, it can be deduced that the DP800HHE steel predominantly comprises martensite and ferrite, which contribute to its high strength and moderate ductility. The possible presence of bainite and retained austenite, though minimal, can influence the overall mechanical properties, such as toughness and hardness. Fig. 9 SEM images of the DP800HHE showing various microstructural phases. Left: SE2 detector image highlighting the overall surface morphology. Right: InLens detector image providing detailed surface features. Key phases identified include Martensite (M), Ferrite (F), Bainite (B), and Retained Austenite (RA)",
+        "Additionally, EBSD was used to study both the initial and pre-strained samples: the RD, normal direction (ND), and transverse direction (TD) planes of the original material, and the pre-strained sample (using the 11% pre-strained RD-ND plane as an example). EBSD is a microstructural and crystallographic technique used to examine the crystallographic orientation of materials. It indicated that the indexed phase was predominantly a pure BCC phase, while the contents of the FCC and Fe \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$^3$$\\end{document} C phases were both less than 0.1%. To further study the grain characteristics in detail, Fig.  10  shows an example of each sample, including the band contrast (BC) map, crystal orientation map, and internal grain orientation spread (GOS) map with grain boundaries. The range of the BC map is 0-180. As seen in Fig.  10 a, the BC map is always used for distinguishing phases from the ferrite-like phases [ 38 ,  39 ]. For example, martensite regions exhibit lower BC values and appear darker, while ferrite regions exhibit higher BC values and appear lighter. Another EBSD feature is the GOS maps, which are highlighted in Fig.  10 b. The internal GOS of each point is defined as the misorientation angle between its crystal orientation and the average orientation of the corresponding grain. It is often used to identify grains, such as bainite, that exhibit more orientation changes due to substructures. From the orientation map in Fig.  10 c, it’s evident that the grain size and shape in the RD-TD and RD-ND planes are distinctly different. The inverse pole figure (IPF) in the ND is used as the color code for the crystal orientation map. Both planes show grains elongated along the RD direction, but this elongation is more pronounced in the RD-ND plane. Additionally, the grain size in the RD-ND plane is smaller than in the RD-TD plane, reflecting the material’s anisotropic deformation under strain. Under a pre-strain of 11%, there is a noticeable decrease in the BC values, indicating changes in the microstructure possibly due to strain-induced phase transformations or phase refinement. Furthermore, the grain size decreases, consistent with strain hardening and grain refinement mechanisms typically observed in high-strength steels under deformation. Fig. 10 Microstructural analysis of the DP800HHE using various mapping techniques. ( a ) BC (band contrast), ( b ) GOS (grain orientation spread) map, ( c ) Orientation maps of different planes or samples",
+        "Deformation of the DP800HHE increases the average misorientation within the grains; the combination of these visualizations (Fig.  11 ) demonstrates the effect of deformation on the material’s microstructure [ 40 ]. The histogram quantifies changes in the misorientation distribution, while the microstructure maps visually illustrate them. 11% of pre-strained samples have higher KAM values than the raw DP800HHE, indicating increased internal strain and potential defects. This is evidenced by the shift in the histogram and the more prominent warm-colored areas in the right microstructure map compared to the left. Fig. 11 EBSD plot: KAM map of the raw DP800HHE (left) and at an 11% pre-strain (right) on RDND plane and KAM value comparison histogram"
+      ]
+    },
+    {
+      "heading": "Nanoindentation",
+      "paragraphs": [
+        "The properties of materials at the microscopic scale can be determined with the nanoindenter test. In this setup, a Berkovich indenter with a triangular pyramid tip ( \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$60^{\\circ }$$\\end{document}  angle) on a Micro Materials NanoTest Vantage was used with an indentation force of 10 mN. The penetration path into the DP800HHE steel sample was recorded to determine the nano-hardness. Figure  12  shows the relationship between indentation load and depth for four nanoindentations in different ferrite grains at a maximum load of 10 mN, while Table  3  presents the corresponding results. Analysis of the load-depth curve reveals the material’s behavior under load, providing grain-level property information. This test is often used in CPFEM to calibrate or optimize the phase being tested. Using the data, this can be performed for the ferrite phase. Fig. 12 Indentation load versus indentation depth for a nanoindenter with a Berkovich tip in ferrite with a maximum load of 10 mN Table 3 Results of four nanoindentation tests on a ferrit grain with a maximum load of 10 mN Indent Max. depth [nm] Plastic depth [nm] Hardness [GPa] Plastic work [nJ] 1 336.38 320.42 3.526 1.145 2 402.59 386.71 2.469 1.231 3 368.65 351.85 2.954 1.221 4 365.51 346.26 3.045 1.312 Mean 368.26 351.31 2.999 1.227"
+      ]
+    },
+    {
+      "heading": "In-situ synchrotron measurement",
+      "paragraphs": [
+        "In-situ synchrotron diffraction experiments are performed to characterize the material’s microstructural behavior. The measurements enable phase-specific evaluation of the individual lattice-plane spacing and its interactions. The experiment was performed at the High Energy Materials Science beamline HEMS P07, situated at the Helmholtz-Zentrum Hereon at PETRA III (DESY, Hamburg). An X-ray beam with a wavelength of 0.15949  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\mathring{\\textrm{A}}$$\\end{document}  and a beam size of 0.7 x 0.7 mm \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$^2$$\\end{document}  was used. The diffraction pattern was measured with a Perkin Elmer XRD 1621 flat panel detector with 2048 x 2048 pixels and a 200 x 200  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\upmu \\text {m}^2$$\\end{document}  pixel size. The distance between the sample and the detector was 2.28 m, and to maximize resolution, the detector was positioned so that only about  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$110^{\\circ }$$\\end{document}  of the Debye-Scherrer rings were covered. The detector settings were calibrated using the NIST standard powder sample Lanthanhexaborid (LaB6) [ 41 ]. The setup generated diffraction patterns at a rate of 0.25 Hz. To investigate the lattice strains under load, a tensile rig [ 42 ] was installed, as schematically shown in Fig.  13 . The sample was mounted with specially developed clamping jaws to minimize clearance and prevent slipping. A preload of 50 N was applied. The macroscopic strain was measured using special high-elongation strain gages (KYOWA KFEM-5–120-C1) while the load was recorded by a load cell in the test machine. A platinum-based resistance thermometer (PT1000, precision class B) was clamped to the specimen to measure the temperature. The temperature sensor signal, as well as the load and displacement signals of the tensile test machine, are transferred to the HBM QuantumX data acquisition system to enable synchronized data recording. Furthermore, a trigger signal was generated by the synchrotron measurement system to ensure that all signals are synchronized. The macroscopic data were recorded with 90 Hz. An air conditioning system kept the temperature in the beam line housing constant at  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$21\\,^{\\circ }\\text {C}$$\\end{document}  throughout the measurements. Fig. 13 Experimental setup at DESY for conducting simple and cyclic tensile tests with in-situ synchrotron measurement [ 25 ] Fig. 14 Schematic illustration of the in-situ tensile test setup. The tensile direction is indicated. The marked segment of the Debye-Scherrer rings is used to create the diffractogram",
+        "As described in “ Tensile tests - uniaxial load ” section, the sample was produced following DIN 50125 shape H standards with a parallel length of 75 mm, a gauge length of 50 mm, and a width of 12.5 mm. The thickness was about 1.49 mm. The sample was cut out of the sheet parallel to the RD. During the measurement, an uniaxial tensile test, as described in “ Tensile tests - uniaxial load ” section, was conducted at an elongation rate of approximately 0.0004 1/s. The elongation rate was chosen to obtain a sufficient number of measurement points in the elastoplastic region.",
+        "For data evaluation, a  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$10^{\\circ }$$\\end{document}  slice was cut from the Debye-Scherrer rings in the vertical direction, corresponding to the lattice plane normal aligned with the tensile direction. With the help of the software Pydidas [ 43 ], the section of the 2D detector image was converted into a 1D diffractogram as shown in Fig.  14 . This was done for all steps of the loading curve. A Python script was used to fit the highly overlapping peaks of the ferrite and martensite phases. All peaks are fitted individually using a Gaussian peak profile, while the background is subtracted. The script uses the phase fractions determined by EBSD measurements to constrain the peak-intensity ratios of overlapping peaks. Additionally, it enables starting the fitting procedure at any point in the tensile test dataset. Since the distance between the peak positions is largest at the highest external stress, as demonstrated by [ 25 ], the procedure is initiated at this point. At each subsequent step, the algorithm uses the previous result as the new initial guess for the peak fit, ensuring that no nonphysical jumps in the peak parameters are fitted. This is also checked in a feedback loop to flag any unexpected large changes in the peak parameters. Furthermore, the peaks of the residual austenite phase are fitted using a Gaussian peak profile as long as possible. Since the austenite undergoes a strain-induced phase transformation into martensite, the peaks vanish with higher strains, so the fit is stopped below a certain goodness of fit. For the ferrite and martensite phases, the (110), (200), (211), and (220) peaks were fitted. For the austenitic phase, the (200), (220), and (311) lattice planes were processed. From the evaluated peak positions, the lattice strains  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\varepsilon _{hkl}$$\\end{document}  in load direction were calculated using the following formula: \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\varepsilon _{hkl} = \\frac{\\sin {\\theta }_{hkl,0}}{\\sin {\\theta }_{hkl}}-1$$\\end{document} Here,  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${\\theta }_{hkl}$$\\end{document}  is the peak position in the diffractogram, and subscript 0 denotes the reference position without applied external force. By use of Bragg’s Law, the change of the lattice plane distances under an external load, resulting in a peak shift in the diffraction pattern, can be analyzed. Selected results are shown in Fig.  15 . From the evaluated data, the elasto-plastic behavior can be deduced for each lattice plane individually. Additionally, load transfers as well as the strain-induced phase transformation can be assessed. Fig. 15 True macroscopic stress versus lattice strain curve for the lattice plane (211). Shown are the curves for the ferrite and martensite phases separately. Each point represents a diffraction measurement"
+      ]
+    },
+    {
+      "heading": "Texture measurement",
+      "paragraphs": [
+        "Measuring the crystallographic texture is necessary to identify possible preferential orientations that could lead to anisotropic material behavior. To measure the texture, the sample is rotated successively, and diffractograms are collected in transmission geometry at each rotation step. The preferred crystalline orientation can be deduced from the intensity variations of the diffracted Debye-Scherrer rings.",
+        "For the measurements, samples with the tensile test geometry are used. To assess the influence of sheet rolling, samples with orientations of  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$0^{\\circ }$$\\end{document} ,  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$45^{\\circ }$$\\end{document} , and  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$90^{\\circ }$$\\end{document}  relative to the RD were investigated. Additionally, samples with a pre-strain of 6% were measured to conclude if texture is introduced by the tensile test. Texture measurements were conducted at beamline P07B of the Helmholtz-Zentrum Hereon at PETRA III (DESY). The detector distance was chosen to capture the complete Debye-Scherrer rings. A LaB6 sample was measured first to precisely calibrate the detector.",
+        "The data was processed using the software SteCa [ 44 ]. First, the detector images are cut into  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$5^{\\circ }$$\\end{document}  segments across which the intensity of the Bragg reflections is integrated, then the peaks are fitted. For the texture evaluation, only the ferritic peaks were fitted using a Gaussian peak profile, since the overall texture of the DP steel is well described by the texture of the ferrite phase [ 45 ]. Using the obtained peak intensities, pole figures were generated for the (110), (200), and (211) lattice planes. The results were used to calculate the orientation distribution function (ODF) with the software MTEX [ 46 ]. One ODF is shown in Fig.  16  as an example. Slight fiber texture components in the rolling and normal directions can be observed, which is commonly observed in rolled sheet metals [ 47 ]. The texture intensity is rather weak, with a maximum of 3.0 multiples of random distribution (m.r.d). A comparison of samples cut with different orientations relative to the RD shows that the texture follows the RD in all cases. The texture of the samples with a pre-strain level shows qualitatively the same pattern and has about 3.4 m.r.d at maximum. This means there is no significant enhancement of the material’s texture due to deformation. Fig. 16 ODF figure of the  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$0^{\\circ }$$\\end{document}  sample without pre-strain. The plot shows the  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\varphi _2 =45^{\\circ }$$\\end{document}  section of the RD-ND plane. The ODF visualizes the orientation of the crystalline grains in Euler angles. The distribution density in multiples of random distribution (m.r.d), shown by the color bar, indicates the intensity of the texture in the sample"
+      ]
+    },
+    {
+      "heading": "Validation experiment",
+      "paragraphs": [
+        "The provided experimental benchmark data can be utilized to calibrate constitutive models for forming simulations. To assess the quality of this constitutive model for representing the material at hand, an independent validation experiment is necessary. The MUC-Test, proposed in [ 19 ,  48 ], is to be employed in the benchmark for this purpose."
+      ]
+    },
+    {
+      "heading": "Experimental setup",
+      "paragraphs": [
+        "The tool geometries of the MUC-Test are published in the benchmark dataset. The hydraulic sheet metal forming machine BUP1000 is equipped with this tool. Before the experiment, an ethanol-cleaned rectangular specimen is placed between the blankholder and the die. Eder et al. [ 19 ] proposed three specimen geometries with widths of 70 mm, 110 mm, and 230 mm, and for each width, they investigated three rolling directions:  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$0^{\\circ }$$\\end{document} ,  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$45^{\\circ }$$\\end{document} , and  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$90^{\\circ }$$\\end{document}  with respect to the RD. A clamping force is applied between the blankholder and die, while a drawbead also prevents the specimen from slipping. The punch, moving vertically at 1 mm/s, then deforms the metal sheet, as illustrated for the FEM model in Fig.  17 . This causes plastic deformation of the material. Major and minor strain evolution is measured using a DIC system at 10 Hz. The spatial resolution on the initial blank is 0.05 mm/pixel. Facets on the sample surface are selected to achieve an expansion reference length of 1.02 mm, with a facet size of 19 pixels and a dot pitch of 11 pixels, as proposed by Eder et al. [ 19 ]. This setup allows for dataset generation throughout the experiment. During testing, punch forces are recorded continuously. Major and minor strains, along with force-displacement data, are used in post-processing to evaluate the constitutive models."
+      ]
+    },
+    {
+      "heading": "Friction reduction of the validation experiment",
+      "paragraphs": [
+        "During the experiment, the draw bead and the blankholder force prevent the material from flowing into the tool. The clamping force from Table  4  is used. To further reduce friction, the punch is coated with three layers of a friction-reducing lanolin and two layers of forming film. The die of the MUC-Test was measured using a laser confocal microscope at three points, with dimensions of  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$1088\\,\\upmu \\text {m}~\\text {x}~1450\\,\\upmu \\text {m}$$\\end{document} . The measurements were analyzed for their roughness using 17 horizontal and 17 vertical lines. With these 102 measuring lines, a surface roughness of R \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$_{z}$$\\end{document}  8.010 with a standard deviation of 0.779 was measured. The uncoated DP800HHE samples are cleaned with ethanol. 24 lines in the RD and 24 lines transverse to the RD on the initial material were measured. The examination yielded a surface roughness of  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\text {R}_{z}~6.927\\,\\upmu \\text {m}$$\\end{document}  in the RD and  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\text {R}_{z}~7.466\\,\\upmu \\text {m}$$\\end{document}  transverse to the RD. This data can be utilized to determine the friction coefficient between the sheet metal and the die."
+      ]
+    },
+    {
+      "heading": "Comparison parameters for validation",
+      "paragraphs": [
+        "In the benchmark task, participants are required to set up a digital twin using the provided geometry and to run a simulation of the experiment using their calibrated constitutive models for the DP800HHE. In contrast to the approach proposed in [ 19 ], the full deformation field should not be used for comparison purposes. Instead, for validation, only major and minor strains along the xz- and yz-planes passing through the origin at the top of the sheet material, as shown in orange in Fig.  17 , should be considered. Figure  18  shows the DIC measurement results for a DP600, in which the RD was located along the x-direction, as an example of the strain distribution in the two evaluation sections. The representative strains shown were recorded at a punch stroke of 25 mm for the 70 mm specimen and both 16 mm for the 110 mm and 230 mm specimens. These strains are dependent on the punch stroke and sample geometry, and should be evaluated for the benchmark task at the punch stroke of Table  4 , where a displacement of 0.00 mm is the initial contact of the punch with the specimen. Figure  18 a shows that the three different specimen widths span a wide range in the minor strain region. For this reason, the MUC-Test is particularly well-suited as a validation experiment for material models in sheet metal forming.",
+        "The punch forces from initial contact up to the punch stroke shown in Table  4  are used for validation, which is also employed in the benchmark. In order to investigate the anisotropy of the material, three sample widths, each with a different orientation with respect to the RD, are examined in the simulation part of the benchmark, as also shown in Table  4 . This direction to be examined is always in the x-direction from Fig.  17 . Fig. 17 FEM model for the MUC-Test setup with blankholder (blue), die (green), punch (red) and a deformed 70 mm specimen geometry (yellow) with the sections in the x and y plane through the origin in orange required for validation. The direction with respect to the RD of the sample geometry to be investigated in this validation experiment is in the x-direction Fig. 18 Typical strain distribution for  a ) minor strain and  b ) major strain in the two DIC evaluation sections for a DP600 with the three specimen geometries of the MUC-Test at a punch stroke of 80% of the maximum punch stroke Table 4 Following initial contact with the sheet material, the specific sample geometry dependent punch stroke to be employed for the validation of both major and minor shape change must be determined Specimen width Punch stroke Clamping force Orientation 70 mm 21 mm 400 kN \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$45^{\\circ }$$\\end{document}  with respect to RD 110 mm 12 mm 400 kN \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$90^{\\circ }$$\\end{document}  with respect to RD 230 mm 13 mm 800 kN RD"
+      ]
+    },
+    {
+      "heading": "Conclusion and outlook",
+      "paragraphs": [
+        "This work introduces a batch-consistent experimental dataset for calibrating elasto-plastic constitutive models using DP800HHE steel. The micro- and macroscale investigations enable consistent use of models across different length scales, ranging from typical phenomenological models commonly used in FEM sheet metal forming analyses to phase-specific CPFEM models using RVEs. Microscale methods such as nanoindentation, EBSD, and in-situ synchrotron diffraction provide phase- and grain-specific data on deformation mechanisms. Macroscale experiments capture anisotropy, hardening, and complex loading conditions. Unlike existing benchmarks, this dataset achieves full batch consistency for both micro- and macroscale experiments. The benchmark problem first requires selecting an appropriate set of experiments to calibrate a chosen constitutive model. Next, it involves simulating the MUC-Test validation experiments to evaluate and compare the calibrated models. Part II of the benchmark paper series provides a detailed analysis and assessment of submitted models using the experimental MUC-Test reference data, enabling an objective comparison of current modeling methods across different length scales, as a basis for further development in the elasto-plastic modeling of sheet metal materials [ 18 ]."
+      ]
+    }
+  ],
+  "tables": [
+    {
+      "caption": "The mean lengths in (RD) and across (TD) the RD of the three center plates (layer 5, 6 and 7) measured before the layer compression test and after a compression force of 180 kN",
+      "headers": [
+        "Layer",
+        "RD [mm]",
+        "TD [mm]",
+        "Thickness [mm]",
+        "RD [mm]",
+        "TD [mm]",
+        "Thickness [mm]"
+      ],
+      "rows": [
+        [
+          "5",
+          "14.848",
+          "14.817",
+          "1.480",
+          "15.810",
+          "15.599",
+          "1.334"
+        ],
+        [
+          "6",
+          "14.824",
+          "14.838",
+          "1.484",
+          "15.771",
+          "15.623",
+          "1.333"
+        ],
+        [
+          "7",
+          "14.843",
+          "14.854",
+          "1.479",
+          "15.789",
+          "15.632",
+          "1.331"
+        ]
+      ],
+      "header_groups": [
+        {
+          "label": "Before compression test",
+          "start_col": 2,
+          "end_col": 4
+        },
+        {
+          "label": "After compression test",
+          "start_col": 5,
+          "end_col": 7
+        }
+      ],
+      "table_alignment_status": "resolved",
+      "row_provenance": [
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 7
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 7
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 7
+          }
+        ]
+      ],
+      "tbody_alignment_status": "resolved"
+    },
+    {
+      "caption": "The chemical composition of DP800HHE, determined by OES, presented in percent by weight and its standard deviation",
+      "headers": [],
+      "rows": [
+        [
+          "C",
+          "Si",
+          "Mn",
+          "P",
+          "Cr",
+          "Mo",
+          "Ni",
+          "Cu"
+        ],
+        [
+          "0.062",
+          "0.186",
+          "2.45",
+          "0.0026",
+          "0.573",
+          "0.0133",
+          "0.0478",
+          "0.0352"
+        ],
+        [
+          "± 0.0012",
+          "± 0.0018",
+          "± 0.0067",
+          "± 0.00018",
+          "± 0.003",
+          "± 0.0001",
+          "± 0.00085",
+          "± 0.00011"
+        ],
+        [
+          "Ti",
+          "V",
+          "Pb",
+          "Sn",
+          "Ca",
+          "Sb",
+          "B",
+          "Fe"
+        ],
+        [
+          "0.0489",
+          "0.0060",
+          "0.0014",
+          "0.0021",
+          "0.0014",
+          "0.0053",
+          "0.0016",
+          "96.5"
+        ],
+        [
+          "± 0.00035",
+          "± 0.00013",
+          "± 0.00012",
+          "± 0.00007",
+          "± 0.00012",
+          "± 0.00091",
+          "± 0.00017",
+          "± 0.0086"
+        ]
+      ],
+      "header_groups": [],
+      "table_alignment_status": "no_header",
+      "row_provenance": [
+        [
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          },
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          },
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          },
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          },
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          },
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          },
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          },
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          },
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          },
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          },
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          },
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          },
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          },
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          },
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          },
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          },
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          },
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          },
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          },
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          },
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          },
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          },
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          },
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          },
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          },
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          },
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          },
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          },
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          },
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          },
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          },
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          },
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          },
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          },
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          },
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          },
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          },
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          },
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          },
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          },
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          },
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          },
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          }
+        ]
+      ],
+      "tbody_alignment_status": "no_headers_to_target"
+    },
+    {
+      "caption": "Results of four nanoindentation tests on a ferrit grain with a maximum load of 10 mN",
+      "headers": [
+        "Indent",
+        "Max. depth [nm]",
+        "Plastic depth [nm]",
+        "Hardness [GPa]",
+        "Plastic work [nJ]"
+      ],
+      "rows": [
+        [
+          "1",
+          "336.38",
+          "320.42",
+          "3.526",
+          "1.145"
+        ],
+        [
+          "2",
+          "402.59",
+          "386.71",
+          "2.469",
+          "1.231"
+        ],
+        [
+          "3",
+          "368.65",
+          "351.85",
+          "2.954",
+          "1.221"
+        ],
+        [
+          "4",
+          "365.51",
+          "346.26",
+          "3.045",
+          "1.312"
+        ],
+        [
+          "Mean",
+          "368.26",
+          "351.31",
+          "2.999",
+          "1.227"
+        ]
+      ],
+      "header_groups": [],
+      "table_alignment_status": "resolved",
+      "row_provenance": [
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 5
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 5
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 5
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 5
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 5
+          }
+        ]
+      ],
+      "tbody_alignment_status": "resolved"
+    },
+    {
+      "caption": "Following initial contact with the sheet material, the specific sample geometry dependent punch stroke to be employed for the validation of both major and minor shape change must be determined",
+      "headers": [
+        "Specimen width",
+        "Punch stroke",
+        "Clamping force",
+        "Orientation"
+      ],
+      "rows": [
+        [
+          "70 mm",
+          "21 mm",
+          "400 kN",
+          "\\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$45^{\\circ }$$\\end{document}  with respect to RD"
+        ],
+        [
+          "110 mm",
+          "12 mm",
+          "400 kN",
+          "\\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$90^{\\circ }$$\\end{document}  with respect to RD"
+        ],
+        [
+          "230 mm",
+          "13 mm",
+          "800 kN",
+          "RD"
+        ]
+      ],
+      "header_groups": [],
+      "table_alignment_status": "resolved",
+      "row_provenance": [
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 4
+          }
+        ]
+      ],
+      "tbody_alignment_status": "resolved"
+    },
+    {
+      "caption": "Overview of common flow curve models",
+      "headers": [
+        "Flow curve model",
+        "Equation"
+      ],
+      "rows": [
+        [
+          "Swift [ 49 ]",
+          "\\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\sigma = K (\\varepsilon _0 + \\varepsilon )^n$$\\end{document}"
+        ],
+        [
+          "Hockett–Sherby [ 50 ]",
+          "\\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\sigma = \\sigma _{\\textrm{sat}} - (\\sigma _{\\textrm{sat}} - \\sigma _0)\\,\\exp \\left( -a \\varepsilon ^p\\right)$$\\end{document}"
+        ],
+        [
+          "Ludwik [ 51 ]",
+          "\\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\sigma = \\sigma _0 + K \\varepsilon ^n$$\\end{document}"
+        ],
+        [
+          "Gosh [ 52 ]",
+          "\\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\sigma = \\sigma _0 \\cdot (\\varepsilon _0 + \\varepsilon )^n - C$$\\end{document}"
+        ],
+        [
+          "Voce [ 53 ]",
+          "\\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\sigma = \\sigma _0 + R \\left( 1 - \\exp (-\\beta \\varepsilon )\\right)$$\\end{document}"
+        ]
+      ],
+      "header_groups": [],
+      "table_alignment_status": "resolved",
+      "row_provenance": [
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 2
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 2
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 2
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 2
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 2
+          }
+        ]
+      ],
+      "tbody_alignment_status": "resolved"
+    },
+    {
+      "caption": "Typical experimental data required for calibration of yield criteria",
+      "headers": [
+        "Yield criterion",
+        "Directional dependence",
+        "Typical experiments for calibration"
+      ],
+      "rows": [
+        [
+          "von Mises [ 54 ]",
+          "Isotropic",
+          "Uniaxial tensile test"
+        ],
+        [
+          "Hill 1948 [ 56 ]",
+          "Orthotropic",
+          "Uniaxial tensile tests in  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$0^{\\circ }$$\\end{document} ,  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$45^{\\circ }$$\\end{document} ,  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$90^{\\circ }$$\\end{document}"
+        ],
+        [
+          "Yld2000-2d [ 57 ]",
+          "Anisotropic",
+          "Uniaxial tensile tests ( \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$0^{\\circ }$$\\end{document} ,  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$45^{\\circ }$$\\end{document} ,  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$90^{\\circ }$$\\end{document} ), biaxial test, plane strain tensile test"
+        ],
+        [
+          "Vegter [ 59 ]",
+          "Flexible anisotropic",
+          "Uniaxial tensile tests ( \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$0^{\\circ }$$\\end{document} ,  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$45^{\\circ }$$\\end{document} ,  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$90^{\\circ }$$\\end{document} ), plane strain tensile test ( \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$0^{\\circ }$$\\end{document} ,  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$45^{\\circ }$$\\end{document} ,  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$90^{\\circ }$$\\end{document} ), biaxial test, shear test ( \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$0^{\\circ }$$\\end{document} ,  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$45^{\\circ }$$\\end{document} ,  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$90^{\\circ }$$\\end{document} )"
+        ]
+      ],
+      "header_groups": [],
+      "table_alignment_status": "resolved",
+      "row_provenance": [
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 3
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 3
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 3
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 3
+          }
+        ]
+      ],
+      "tbody_alignment_status": "resolved"
+    }
+  ]
+}

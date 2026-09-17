@@ -1,0 +1,1272 @@
+{
+  "doi": "10.1007/s00170-026-18419-5",
+  "title": "Efficient multiscale design of microstructure evolution in shape rolling: a validated FEM-FCA framework",
+  "abstract": "Abstract Accurate prediction and design of microstructure evolution are essential for optimizing the mechanical performance of shape-rolled components. This work presents an efficient multiscale FEM–FCA computational framework that enables proactive microstructure design in shape rolling processes. The framework integrates Finite Element Method (FEM)-derived thermomechanical fields with a computationally efficient Frontal Cellular Automata (FCA) approach that captures grain nucleation, growth, and static recrystallization (SRX). Unlike traditional CA methods that suffer from excessive computational costs, the FCA approach reduces simulation time by an order of magnitude while maintaining physical accuracy through front-tracking mechanisms. Originally validated for flat rolling, the framework has been extended to complex shape rolling geometries (square–oval–round sequences) through seamless multiscale data coupling. Comprehensive validation against experimental data from AISI 304 L stainless steel demonstrates excellent predictive capability, achieving RMSE of 1.099 μm (8.12%) for grain size and accurate flow stress evolution. This validated framework bridges the gap between detailed microstructural modeling and industrial applicability, offering a scalable tool for process optimization across diverse rolling operations and materials.",
+  "journal": "The International Journal of Advanced Manufacturing Technology",
+  "year": "2026",
+  "sections": [
+    {
+      "heading": "Introduction",
+      "paragraphs": [
+        "Accurate prediction of microstructure evolution during metal forming processes is critical to optimize material properties and reduce industrial manufacturing costs. Shape rolling, in particular, presents unique challenges due to complex deformation patterns and varying thermomechanical conditions throughout the process. AISI 304 L stainless steel serves as an ideal test material for microstructure modeling validation due to its widespread industrial applications in automotive [ 1 ], aerospace [ 2 ,  3 ], and other industrial sectors [ 4 ,  5 ], where controlled grain refinement directly impacts mechanical performance through Hall-Petch strengthening [ 6 ,  7 ], corrosion resistance [ 8 ], and service life. The ability to predict and control microstructural evolution in shape rolling processes enables manufacturers to optimize processing parameters, reduce material waste, and achieve desired mechanical properties without extensive trial-and-error experimentation [ 9 ,  10 ].",
+        "Current approaches to microstructure evolution modeling encompass several computational methods, each with distinct advantages and limitations. The Finite Element Method (FEM) provides accurate thermomechanical field predictions but lacks microstructural detail [ 11 ,  12 ]. Traditional Cellular Automata (CA) models offer detailed grain-level evolution, but suffer from high computational costs and poor scalability [ 13 ,  14 ,  15 – 16 ]. Phase Field Methods (PFM) provide high-resolution interface tracking, but are computationally prohibitive for industrial-scale applications [ 17 ,  18 – 19 ]. Level Set (LS) methods provide efficient front tracking but struggle with complex topological changes during recrystallization [ 20 ,  21 ]. Monte Carlo (MC) approaches offer statistical accuracy, but lack the deterministic predictability required for process control [ 22 ,  23 – 24 ]. A critical gap exists in current modeling frameworks: the lack of computationally efficient multiscale integration that combines accurate thermomechanical predictions with detailed microstructural evolution while maintaining industrial applicability. Furthermore, most existing models focus on flat rolling conditions, leaving shape rolling processes with complex deformation patterns inadequately addressed.",
+        "The combination of FEM with Frontal Cellular Automata (FCA) addresses these limitations through a novel multiscale integration strategy. Unlike traditional CA models that require full-field calculations across the entire domain, FCA focuses computational resources only on active recrystallization fronts, dramatically reducing computational overhead while maintaining physical accuracy [ 25 ,  26 ]. This approach leverages the strength of the FEM to provide accurate thermomechanical fields (temperature, strain, strain rate) as input conditions for FCA-based microstructural evolution. The FCA method inherently accounts for both the nucleation and grain growth mechanisms during and after deformation, offering a unified perspective on static recrystallization that eliminates the need for separate dynamic and static models. Previous validation in flat rolling processes [ 27 ] demonstrated the accuracy and computational efficiency of the model, establishing a solid foundation for extension to the more complex conditions of the shape rolling. The independent modeling scheme (FEM → FCA without feedback) is justified by the dominance of the deformation parameters over the microstructural effects on the metal flow during the rolling conditions studied.",
+        "This study presents and validates a computationally efficient multiscale FEM–FCA framework for predicting microstructure evolution in AISI 304 L stainless steel during shape rolling. The framework extends a previously validated flat-rolling model to complex shape rolling geometries, specifically focusing on square-oval-round pass sequences commonly used in industrial applications. Validation is achieved through a comprehensive comparison with experimental data from laboratory-scale rolling tests, including grain size measurements and flow stress analysis. The developed framework advances process-aware microstructure modeling by improving both predictive accuracy and computational efficiency, offering an adaptable tool for industrial process optimization."
+      ]
+    },
+    {
+      "heading": "Shape rolling modeling system",
+      "paragraphs": [
+        "The comprehensive modeling system dedicated to shape rolling is presented in Fig.  1 . Experimental studies, numerical simulations, and data from the literature are the main elements of information used during system development. Microscopic studies are basic research carried out in the field of experimental studies. The experimental findings and information from the existing literature serve as the basis for identifying and validating the model parameters. In particular, flow stress data, recrystallization kinetics, and thermal properties of AISI 304 L were adopted from literature sources to ensure realistic model input [ 5 ,  28 ]. The comparison and validation blocks are also important parts of the presented system. The model parameters were previously identified, verified, and validated for AISI 304 L stainless steel in the other process; results can be found elsewhere [ 27 ]. Predictions of shape rolling are compared with experimental laboratory rolling. The block named ‘Modeling of the shape rolling process’ completes the whole system. Fig. 1 Modeling system for shape rolling",
+        "The structure of this paper corresponds to the sequence and logic of activities to achieve the basic goal of the work, i.e., verification of the technology development scheme and confirmation of the effectiveness of the methods and models used. Verification was carried out by comparison of the model’s results with experimental data. The described framework is modular and can be implemented using standard FEM outputs and independently developed CA solvers.",
+        "Section  3  presents the multiscale numerical modeling framework — the FEM–FCA scheme for predicting final microstructure in shape rolling, including the constitutive model for AISI 304 L steel (Sect.   3.1 ) and the implementation of the FCA model and its one-way coupling with FEM (Sect.   3.2 ). Then, the shape rolling process was prepared using FEM: process scheme and materials (Sect.   4 ), groove design by FEM (Sect.   5 ), and FEM simulation of the designed schedule (Sect.   5 ). The prediction of microstructure evolution was performed using FCA modeling (Sect.   6 ). Finally, the rolling process was implemented and experimental studies (Sect.   7 ) were performed to validate both the entire design scheme from FEM to FCA and the detailed results of the microstructure modeling. Section   8  presents the model validation, comparing predictions and experimental data. In addition, further work, industrial applications, and computational challenges are presented in Sect.   9 ."
+      ]
+    },
+    {
+      "heading": "Numerical modeling of shape rolling with the use of FEM and FCA",
+      "paragraphs": [
+        "Multiscale models give information about processes and phenomena taking place in the materials on a different scale, and consequently, provide additional qualitative information about the processes. Figure  2  shows the developed scheme based on the FEM and FCA to predict the final microstructure in the shape rolling. The FEM and FCA simulations are performed in sequence without feedback from FCA to FEM. The separation of FEM from microstructural evolution is justified by the dominance of deformation parameters (temperature, strain, and strain rate), the absence of dynamic recrystallization (DRX), and the limited influence of microstructural changes on the overall material flow under the considered hot rolling conditions. This assumption is consistent with dislocation density-based constitutive formulations, in which the macroscopic response is primarily governed by thermomechanical variables, while microstructural effects are incorporated indirectly through internal variables, which is sufficient for the considered process conditions, as confirmed by the experimental validation presented in this work. A detailed discussion of this assumption and its implications is provided in Appendix A. Fully coupling both models would significantly increase computational cost without improving accuracy. The two-step approach ensures efficiency and reliable predictions, as confirmed by experiments, making it suitable for the studied rolling conditions. FEM modeling determines the parameters of the shape rolling process, whereas FCA simulations give the microstructure evolution and predict the final microstructure. The process of FEM modeling encompasses simulating in accordance with the designed schedule and determining the process parameters. These parameters are then transferred to the FCA model to simulate the evolution of the microstructure. At the foundational level (first level), the FCA is being considered with the FCA transformation and reorganization options. The space reorganization procedure is required to maintain consistency between the evolving microstructure and the large deformation of the material. The associated numerical error is primarily related to the reassignment of cells at grain boundaries. As a result, the uncertainty is localized and limited to the vicinity of interfaces. Its magnitude can be estimated to be on the order of half the cell size, and is therefore directly controlled by the spatial resolution of the simulation. Consequently, the influence of remapping on global measures such as average grain size is limited. Fig. 2 Modeling scheme to predict the evolution and the final microstructure",
+        "The second level contains modules that allow one to simulate the initial microstructure, recrystallization, and other microstructural phenomena in the shape rolling process considered. Simulations are performed for representative points located in the chosen places. FCAs are used to model the evolution of microstructure and provide adequate results. All predictions and simulations are based on this developed model [ 27 ]."
+      ]
+    },
+    {
+      "heading": "Constitutive model for AISI 304 L steel",
+      "paragraphs": [
+        "The thermomechanical behavior of AISI 304 L stainless steel in the FEM and FCA simulations was described using a physically-based constitutive model derived from dislocation density theory. The model belongs to the class of internal variable models, in which the flow stress is expressed as a function of the evolving dislocation density, reflecting the internal state of the material.",
+        "The flow stress is defined according to the Taylor relationship: k 1 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\:\\sigma\\:={\\sigma\\:}_{0}+\\alpha\\:\\mu\\:b\\sqrt{{\\rho\\:}_{av}}$$\\end{document}",
+        "where:  σ 0  – stress necessary to move the dislocations,  α  – material constant,  µ  – shear modulus,  b  – the magnitude of Burgers vector,  ρ av  – average dislocation density: 2 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\:{\\rho\\:}_{av}=\\rho\\:(1-X)$$\\end{document}",
+        "with X being the recrystallized volume fraction.",
+        "The evolution of dislocation density is governed by the competition between strain hardening and recovery processes: 3 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\:\\dot{\\rho\\:}=U\\left(\\epsilon\\:\\right)\\dot{\\epsilon\\:}-\\varOmega\\:\\left(\\rho\\:\\right)\\dot{\\epsilon\\:}-R\\left(\\rho\\:\\right)$$\\end{document}",
+        "where the first term represents dislocation generation and storage, the second term accounts for dynamic recovery, and the third term corresponds to static recovery.",
+        "The model incorporates the effects of temperature and strain rate through thermally activated mechanisms, commonly expressed using Arrhenius-type relations and the Zener–Hollomon parameter. This allows the model to capture material behavior under varying deformation conditions typical for hot rolling processes.",
+        "Recrystallization is treated as a coupled microstructural process influencing the effective dislocation density through the formation of new grains with reduced dislocation content. The evolution of recrystallized volume fraction is incorporated into the model in a manner consistent with Kolmogorov–Johnson–Mehl–Avrami-type formulations.",
+        "The constitutive model used in this work is based on previously developed and experimentally validated formulations for austenitic steels under hot deformation conditions [ 29 ,  30 ]. Further extensions accounting for varying deformation conditions and FEM implementation can be found in [ 31 ,  32 ].",
+        "Although flow stress may depend on microstructural features such as grain size, under the high-temperature conditions considered in this study (1000–1100 °C), the material response is predominantly governed by temperature, strain, and strain rate. The contribution of grain size to flow stress is therefore reduced compared to lower-temperature deformation processes.",
+        "Moreover, the constitutive model used in the FEM simulations is based on dislocation density evolution, which implicitly accounts for microstructural softening mechanisms such as recovery. This ensures consistency between the macroscopic response and the underlying microstructural processes without requiring explicit feedback from the FCA model. For austenitic steels at high temperatures, the sensitivity of flow stress to grain size is known to be significantly lower than to strain rate and temperature.",
+        "The validity of this assumption is supported by the good agreement between predicted and experimental grain sizes.",
+        "The model parameters were identified using plastometric tests using Gleeble 3800 conducted over a wide range of temperatures and strain rates representative of hot rolling conditions. Detailed equations, parameter values, and representative flow stress curves are provided in Appendix A."
+      ]
+    },
+    {
+      "heading": "Implementation of the FCA model and FEM coupling",
+      "paragraphs": [
+        "The frontal cellular automata (FCA) model used in this study was implemented as an in-house computational framework developed by the authors. The algorithm follows the formulation previously introduced in earlier works, where both the methodological foundations and computational characteristics of FCA have been described in detail [ 26 ,  33 ].",
+        "The coupling between FEM and FCA is implemented as a one-way (weak) coupling, in which thermomechanical fields obtained from FEM simulations are used as input for the microstructure evolution model. This assumption is justified by the fact that, under the considered hot rolling conditions (1000–1100 °C), the material response is primarily governed by temperature, strain, and strain rate, while the influence of microstructural evolution on the overall deformation behavior remains limited.",
+        "Furthermore, consistency between both modeling scales is ensured by the use of a common dislocation density-based formulation, in which microstructural effects are incorporated indirectly in the FEM model and explicitly resolved in the FCA framework. The validity of the adopted approach is supported by the good agreement between predicted and measured grain sizes.",
+        "Thermomechanical fields obtained from FEM simulations, including temperature, effective strain, and strain rate, are transferred to the FCA domain via structured data files. These data are mapped onto the cellular automata grid using spatial interpolation, ensuring consistency between the continuous FEM domain and the discrete CA representation. Data transfer between FEM and FCA models is described in detail in Appendix B.",
+        "The evolution of the microstructure within the FCA framework is computed using an explicit time-stepping scheme. The time increment is defined consistently with the FEM simulation step, allowing for synchronized data exchange between both models. Local transition rules governing the state of individual cells are evaluated based on the current thermomechanical conditions and internal variables describing the microstructural state.",
+        "From a computational perspective, the FCA implementation employs a list-based approach in which only active (front) cells are processed during each update step. In contrast to classical cellular automata, where all cells are updated at each iteration, this significantly reduces the computational effort. The computational cost is therefore governed by the number of active cells rather than the total number of cells in the domain.",
+        "This behavior can be interpreted in terms of computational complexity by distinguishing between the total number of cells ( N ) and the number of active cells ( N f ). While classical cellular automata require  O ( N ) operations per iteration, the FCA approach operates with  O ( N f ), where typically  N f  < <  N . As a result, each cell is usually processed only once during the simulation, which further improves efficiency (see [ 26 ,  33 ] for detailed analysis).",
+        "This reduction can also be expressed in terms of global computational scaling. For a three-dimensional domain with linear size  n , classical cellular automata typically exhibit a computational complexity of  O ( n 4 ), due to repeated updates of the full domain over time. In contrast, the FCA approach reduces this scaling to approximately  O ( n 3 ), as each cell is processed only once during the evolution [ 26 ].",
+        "The simulations presented in this work were performed using a sequential implementation of the FCA algorithm, with typical computation times on the order of 2–3 min for the considered case. Parallel implementations, including GPU-based approaches developed by the authors, can further reduce computation times to the order of seconds for comparable problem sizes.",
+        "It should be noted that the primary objective of the present study is predictive capability rather than computational speed; however, the adopted FCA approach enables efficient simulations without compromising accuracy.",
+        "In addition, unlike conventional CA models based on fixed regular grids, the FCA approach allows the cellular structure to evolve consistently with the deformation field, including changes in cell size and shape. This enables a more realistic representation of grain boundary motion under non-uniform deformation conditions.",
+        "Moreover, by avoiding the use of a fixed lattice, the FCA method significantly reduces artificial anisotropy associated with grid orientation, which is a known limitation of classical CA models. This leads to a more physically consistent description of grain morphology and growth kinetics.",
+        "As a result, the FCA method improves not only computational efficiency but also predictive accuracy by better capturing the coupling between deformation and microstructure evolution. This is particularly important in processes such as shape rolling, where deformation paths are highly non-uniform."
+      ]
+    },
+    {
+      "heading": "Material and modeling approach",
+      "paragraphs": [
+        "In contrast to flat rolling, the square–oval–round shape rolling process is characterized by strongly non-uniform deformation conditions resulting from the grooved geometry of the rolls. This leads to significant spatial variations of strain, strain rate, and temperature across the cross-section.",
+        "To account for these effects, the FEM–FCA framework was adapted to handle complex deformation paths, including multi-pass processing and non-uniform thermomechanical fields. In particular, the mapping of FEM results onto the FCA grid was performed using spatial interpolation to accurately capture local deformation histories.",
+        "Additionally, the modeling scheme incorporates the evolution of thermomechanical conditions between successive passes, which is essential for describing static recrystallization in shape rolling processes.",
+        "The shape rolling in two passes was simulated in the square-oval-round scheme. Modeling was performed with 1000 °C and 1100 °C as initial temperatures. The rolling schedule is shown in Fig.  3 . This scheme is identical to the scheme planned for further rolling under laboratory conditions. Cuboid samples with dimensions of 15 × 15 × 100 mm were simulated. The diameter of the rollers was 200 mm, and the speed of the rolling speed was 0.6 m/s. During the inter-pass intervals, the material was air-cooled. The cooling rate after the last pass was − 20 K/s, and the cooling time was 2 s. Fig. 3 Modeling scheme of the shape rolling",
+        "The material studied is AISI 304 L stainless steel. These steels exhibit an austenitic structure at ambient temperature, that is, the same structure that ordinary steels take only after heating above the temperature of the austenite-ferrite transformation. Therefore, these steels do not undergo any crystal structural changes, at least at temperatures higher than the ambient temperature [ 5 ]. They consist exclusively of an austenite γ phase, which can dissolve a large amount of carbon at higher temperatures. They retain this amount of carbon in a solid solution after they are quickly cooled, beginning at high temperatures. As a result of the lack of transformation, these steels tend to grow grain when heated at high temperatures, and the regeneration of grain size by heat treatment is not possible. However, this phenomenon does not entail a hot fragility. In general, the mechanical properties of corrosion-resistant steels are very beneficial as a result of their high ductility.",
+        "AISI 304 L represents an austenitic stainless steel characterized by its low carbon content and the presence of chromium and nickel. Table  1  shows the mechanical characteristics of 304 L stainless steel. They are strong, light, ductile, aesthetically pleasing, and readily available in a variety of forms. They also show good strength and toughness when exposed to cryogenic conditions. Table  2  provides an overview of the chemical composition of AISI 304 L.  Table 1 304 L stainless steel mechanical characteristics [ 5 ,  28 ] Parameter Value Unit Yield Strength (0.2% Offset), Min 30 / 205 ksi / MPa Ultimate Tensile Strength (UTS), Min 75 / 515 ksi / MPa Elongation (in 50 mm), Min 40 % Reduction in Area, Min 50 % Hardness, Max 201 HB Table 2 AISI 304 L used for the studies [ 5 ,  28 ] AISI 304 L Element (%) Chromium 18.1 Nickel 10 Carbon 0.03 Manganese 1.21 Molybdenum 0.15 Copper 0.19 Aluminum 0.055 Vanadium 0.031 Niobium 0.01 Titanium 0.006 Phosphorus 0.036 Silicon 0.5 Nitrogen 0.03"
+      ]
+    },
+    {
+      "heading": "FEM passes schedule design and simulations",
+      "paragraphs": [
+        "The FEM was used in two stages for pass schedule design and rolling simulation for microstructure prediction. In both cases, FEM calculations were carried out using the code based on the work of Malinowski and Lenard [ 34 ]. As a result of the calculation, the model generates a set of files for a given number of cross-sections of the rolled bar. The files contain information about the coordinates of individual points in cross-sections, time, temperature, components of the strain rate tensor, flow stress, and others. Updates of the position of mesh nodes during subsequent iterations to the appropriate result files allow easy graphical tracking of changes occurring during the modeling. Figure  4  shows two modeling cases. The modeling was performed for the quarter of the bar cross-section to reduce the computational costs without loss in accuracy. The FEM mesh consists of 8-node trilinear hexahedral isoparametric elements with full 2 × 2 × 2 Gauss quadrature. The Eulerian control volume is discretized with 12 × 12 × 30 elements in the width, height, and rolling directions, respectively, yielding 4,320 elements for the quarter-symmetry model. Non-uniform spacing is applied, with finer elements concentrated near the roll gap and the workpiece surface where deformation and thermal gradients are highest, and coarser elements in the interior and away from the contact zone. The formulation is quasi-static and steady-state, based on the variational principle of minimum plastic power; the nonlinear system is solved using the BFGS quasi-Newton algorithm. The workpiece is modeled as rigid-viscoplastic with penalty-based incompressibility; flow stress follows the Shida equation with temperature-dependent coefficients. Within the FEM solver, thermo-mechanical coupling is handled via a staggered sequential scheme: the mechanical field is solved first, then the heat equation is updated using plastic dissipation as a volumetric source; the heat transfer coefficient at the roll–workpiece interface is 6,000 W/m²K. Contact is detected using a geometrically-based node-to-surface algorithm; friction follows a constant shear (Tresca-type) law  τ f  =  m  ·  k , where  k  =  σ f /√3, with a friction factor  m  = 0.8 applied to all contact surfaces. A formal mesh convergence study was not performed; mesh parameters were selected based on established practice from prior flat-rolling validations [ 26 ] and physical resolution requirements. The adequacy of the discretization is supported indirectly by the experimental validation results reported in Sect.  7 . Fig. 4 Modeled cross-section: ( a ) the entire bar and groove, ( b ) the upper right quarter",
+        "In the first case of using the FEM code, the modeling of the passes of the designed square-oval-round scheme was carried out. It is necessary to match the modeling scheme with the real process that is being used for further validation. The schedule design starts from the last pass. Taking into account the parameters of the final groove, probe simulations enable the determination of key characteristics of the incoming bar, including its shape and dimensions. The sizes of the entry bars should not underfill or overfill the grooves. The entry velocity of the bar was also calculated. Then the calculations for the design of the grooves of the previous pass were performed in the same way.",
+        "Figure  5  shows an example of the groove design simulations described above, where an oval bar should properly fill the round grooves. The underfilling (blue grid), overfilling (red grid), and proper filling (green grid) of the grooves are the three cases shown in Fig.  5 . Proper filling of a given groove can be achieved by assuming the right parameters defined in the input calculation file and, above all, by correctly determining the dimensions of the input bar. Improper selection affects under- or overfilling. Fig. 5 Fitting the oval bar when filling the round grooves",
+        "After the appropriate grooves were obtained, the assumed rolling scheme can be simulated in the right rolling direction. Figure  6  presents bar meshes at the entrance and exit of the grooves. Figures  7  and  8  present temperature distributions at the exit of the passes for two temperatures (1000 °C in Fig.  7 , and 1100 °C in Fig.  8 ). In both temperature cases, an oval measuring 25.6 × 8.6 mm was obtained in the first pass, while in the second pass, a round of 12.8 × 12.8 mm was obtained. Fig. 6 Grooves and meshes obtained from FEM modeling: ( a ) the 1st pass, ( b ) the 2nd pass Fig. 7 Temperature distributions obtained in FEM simulations with the initial temperature of 1000 °C after the passes: ( a ) 1st, ( b ) 2nd. Isotherms represent temperature in °C Fig. 8 Temperature distributions obtained in FEM simulations with the initial temperature of 1100 °C after the passes: (a) 1st, (b) 2nd. Isotherms represent temperature in °C"
+      ]
+    },
+    {
+      "heading": "FCA prediction results",
+      "paragraphs": [
+        "On the basis of FEM calculations, the simulations of changes in the microstructure in steel were realized for selected representative points. For the calculation by the FCA, information on the processing parameters (time, strain rate tensor, and temperature) was transferred from the FEM simulations. The evolution of the microstructure was modeled for each chosen representative point. The points were selected in such a way that some of them can be examined in the following experimental validation. The results obtained for these points were transferred in the next stage to FCA. Figure  9  shows the locations of the points. Fig. 9 Location of representative modeling points",
+        "The locations selected for detailed FCA simulations were identified based on the analysis of the full thermomechanical fields obtained from FEM simulations. In particular, points were chosen to represent characteristic regions of the deformation field across the cross-section, including areas with significantly different strain and temperature histories (e.g., near-surface and central regions).",
+        "Additionally, the selected points correspond to locations accessible for experimental characterization, enabling direct comparison between predicted and measured grain sizes. In the case of shape rolling in grooved passes, extending experimental observations to a larger number of spatial locations is limited by strong gradients of deformation and temperature, as well as practical constraints related to precise sampling and metallographic preparation.",
+        "Therefore, the present study focuses on representative points covering the range of thermomechanical conditions encountered during the process, rather than providing a full spatial mapping of microstructure evolution.",
+        "The simulation starts by establishing an initial microstructure characterized by a predetermined average grain size  d av . The FCA and microstructure parameters listed below were used:",
+        "space dimensions − 200 cells × 200 cells × 200 cells, modeling volume − 50 μm × 50 μm × 50 μm, grains number– 100 ( d av  = 80 μm, this value was comparable to the sizes measured before the experiment).",
+        "The selected domain size represents a statistically representative volume of the microstructure (50 μm × 50 μm × 50 μm). The cell resolution used in the FCA simulations (200 × 200 × 200 cells, corresponding to a cell size of 0.25 μm), was selected based on physical and numerical considerations. This resolution was selected to ensure that the cell size remains significantly smaller than the characteristic grain size, allowing accurate representation of grain boundaries and recrystallized regions. The chosen discretization represents a compromise between numerical accuracy and computational cost typical for three-dimensional microstructure simulations.",
+        "Figure  10  shows the initial simulated microstructure. The evolution of the domain geometry directly follows the deformation field, allowing consistent tracking of the same material volume during microstructure evolution. Fig. 10 The initial simulated microstructure",
+        "Figure  11  shows the changes in microstructure at the selected time for point 3 (Fig.  9 ) located on the diagonal of the square for the initial process temperature of 1000 °C. The change in the shape of the computational domain reflects the material deformation during rolling. The initial cubic domain is transformed into a parallelepiped according to the deformation tensor, while preserving constant volume. The same material volume is tracked throughout the simulation. After the CA space reorganization, is becomes cubic again. This approach allows direct visualization of deformation-induced anisotropy and its subsequent reduction due to recrystallization. Fig. 11 Point 3 - microstructures: ( a ) after the deformation in the 1st pass, ( b ) with full static recrystallization after the 1st pass, ( c ) before the 2nd pass after the space reorganization, ( d ) after the deformation in the 2nd pass, ( e ) with full recrystallization after the 2nd pass, ( f ) with space reorganization after the 2nd pass",
+        "As can be seen in Fig.  11 , the deformation conditions affect the geometric parameters of the cells and the entire space, as well as the shape and size of the grains after deformation and recrystallization. Recrystallization begins during the deformation, proceeds between passes, and ends before the next pass.",
+        "Figure  12  shows the changes in grain size and flow stress for all modeled points marked in Fig.  9  for a temperature of 1000 °C.",
+        "Different final grain sizes were obtained for different representative points (Fig.  12 b), which are directly related to the location of the points selected for the simulation and the deformation conditions and temperature at these locations. At all the modeled points, after subsequent passes, full static recrystallization occurred (Fig.  12 a). The presented curves correspond to plastic flow stress; the initial elastic regime is not explicitly included. Fig. 12 Changes in flow stress ( a ) and average grain size ( b ) for selected points – initial temperature 1000 °C",
+        "It should be noted that, in the present modeling framework, static, dynamic, and metadynamic recrystallization are not treated as strictly separate mechanisms, but rather as different manifestations of the same underlying process governed by dislocation density evolution and thermally activated grain nucleation and growth.",
+        "Although local strain values may reach relatively high levels, the thermomechanical conditions of the process, characterized by high temperatures and relatively high strain rates, limit grain growth during deformation. Therefore, the observed microstructure is predominantly associated with mechanisms conventionally classified as static recrystallization.",
+        "Figure  13  shows the changes in microstructure at the different modeling steps from 1100 °C for point 3 (Fig.  9 ). The change in the shape of the computational domain reflects the material deformation during rolling. The initial cubic domain is transformed into a parallelepiped according to the deformation tensor, while preserving constant volume. Fig. 13 Point 3 - microstructures: ( a ) after the deformation in the 1st pass, ( b ) with full static recrystallization after the 1st pass, ( c ) before the 2nd pass after the space reorganization, ( d ) after the deformation in the 2nd pass, ( e ) with full recrystallization after the 2nd pass, ( f ) with space reorganization after the 2nd pass",
+        "Figure  14  shows the changes in flow stress and grain size for all modeled points at the initial temperature of 1100 °C. Fig. 14 Changes in flow stress ( a ) and average grain size ( b ) for selected points – initial temperature 1100 °C",
+        "The increase in temperature affects the larger final grain size obtained for the simulation points compared to the modeling at 1000 °C. Full recrystallization also occurred at all points after passes and appropriate holding time (Fig.  14 a).",
+        "Recrystallization in rolling processes is governed by key technological parameters, such as temperature, strain rate, and strain. In this study, the applied strain levels were below the critical threshold required to trigger dynamic recrystallization (DRX). Unlike continuous rolling, where high strain rates and short inter-pass times promote DRX, the rolling conditions examined here, characterized by inter-pass holding times, favor static recrystallization (SRX) as the dominant softening mechanism.",
+        "Our results confirm that the accumulated strain in each pass was sufficient to induce complete recrystallization within the available inter-pass time. This is evidenced by the return of flow stress to its reference level (Fig.  12 a) and the absence of unrecrystallized areas in the microstructure images (Fig.  13 ). In contrast, industrial rolling processes such as rod rolling and hot strip rolling, where inter-pass times are significantly shorter, typically favor DRX because of insufficient recovery time between passes.",
+        "Furthermore, the deformation time was short and no significant changes in flow stress were observed during deformation (Figs.  12 a and  14 a). While nucleation begins during deformation, fully developed new grains predominantly appear post-deformation (Figs.  11 a and  13 a). The small grain sizes and lack of significant grain growth observed in Figs.  11 c and e and  13 c, and  13 e further indicate that the recrystallization occurring in this study is not DRX but rather full SRX. This is further supported by the flow stress evolution trends (Figs.  12  and  14 ) and, to a lesser extent, by the microstructure changes visible in Figs.  11 b, d and f and  13 b and d, and  13 f.",
+        "Although the distinction between DRX and SRX can sometimes be conditional, our findings strongly indicate that under the examined rolling conditions, SRX remains the dominant recrystallization mechanism. This observation aligns with the expected behavior of AISI 304 L stainless steel under shape rolling conditions featuring moderate strain rates and sufficient inter-pass time for recrystallization to fully develop.",
+        "Additional examples of microstructures obtained from simulations (for 1000 °C) for other representative points are shown in Fig.  15 . Fig. 15 Examples of microstructures for point 1 after the 1st pass ( a ), and after the 2nd pass ( b ), and for point 0 after the 1st pass ( c ), and after the 2nd pass ( d )"
+      ]
+    },
+    {
+      "heading": "Experimental studies",
+      "paragraphs": [
+        "The experimental studies for model validation included rolling specimens of 15 × 15 × 100 mm. A laboratory mill is equipped with two rolls, each having a diameter of 200 mm and rotating at a speed of 60 rpm. The samples were heated to two temperatures (1000 and 1100 °C) and held for 15 min. After soaking, the samples were transferred to the rolling mill within approximately 3 s and subjected to a 2-second air-cooling period before the first pass. For two-pass rolling, an inter-pass interval of 5 s was applied, followed by a further 2-second air-cooling period before the second pass. Several samples were rolled in one pass and others in two passes according to the developed square-oval-round schedule. The samples were fast cooled in water immediately after the final pass to freeze the microstructure for metallographic analysis. Figure  16  presents the full scheme of the experiment. Metallographic studies were performed in the next stage. The locations of the microscopic analysis are presented in Fig.  17 . Three images were taken at the marked locations for each pass. The measured parameters were grain size and percentage of recrystallized volume. Fig. 16 Scheme of shape rolling and view of the specimen before and after the 1st and 2nd passes of rolling Fig. 17 Microstructure analysis locations shown in the cross-section of the oval and round specimens",
+        "The recrystallized grain sizes obtained from the metallographic analysis are presented in Table  3 . Numerous grain size assessments were performed at various points within the specimens. The grain size of austenite before the experimental rolling was approximately 80 micrometers. Some results of microscopic studies after rolling from 1000 to 1100 °C are presented in Fig.  18 . All experimental cases demonstrate a completely homogeneous recrystallized structure. Figure  19  presents additional microscopic images of microstructures (for 1100 °C) captured at a different resolution to support microstructural validation. Table 3 Results of microstructure studies T 0 °C D 0 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\mu$$\\end{document} mm Grain size D \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\gamma$$\\end{document} mm Oval Round A B C A 1000 80 10.9 12.6 7.9 7.3 1100 80 28.3 28.1 21.2 13.0 Fig. 18 Examples of microstructure rolled from 1000 °C (left column) and 1100 °C (right column): ( a ) before shape rolling, ( b ) center of the cross-section (location A) after the 1st pass, ( c ) top surface (location B) after the 1st pass, ( d ) side surface (location C) after the 1st pass, ( e ) center (location A) after the 2nd pass Fig. 19 Additional examples of microstructure rolled from 1100 °C in different resolutions: ( a ) center of the cross-section (location A) after the 1st pass, ( b ) top surface (location B) after the 1st pass, ( c ) side surface (location C) after the 1st pass",
+        "These results demonstrate not only the successful formation of homogeneous recrystallized microstructures but also reveal how local deformation and thermal conditions shape the grain size distribution. As expected, the center of the specimen, where the temperature remains highest, but deformation is lower, exhibits coarser grains. On the contrary, the surface layers, subjected to higher strain and faster cooling, show finer recrystallized grains. This behavior aligns with the known mechanisms of dynamic recrystallization, where strain accelerates nucleation and grain refinement, while elevated temperature promotes grain boundary migration and growth [ 35 ,  36 ]. During the square-to-oval pass, strain varied significantly: from approximately 0.7 near the surface, 0.5 at the center, to as low as 0.2 at roll contact zones. In the oval-to-round pass, the highest strain (~ 0.9) occurred at the center. Despite this heterogeneity, full recrystallization was achieved after the first pass, allowing the material to enter the second pass strain-free. This explains the uniformity observed in microstructures from both passes and supports the reliability of the simulation. Moreover, the temperature-dependent grain growth (e.g., 7.3 μm at 1000 °C vs. 13.0 μm at 1100 °C) further confirms the model’s ability to capture thermally driven grain evolution. These findings validate the FEM–FCA model’s assumptions regarding local strain-temperature effects on recrystallization and show strong agreement with physical metallurgical principles.",
+        "Examples of the grain size distributions obtained from experimental and simulation studies for location B after the first pass for both initial temperatures are presented in Fig.  20 . Fig. 20 Examples of grain size distributions (microstructural and simulation studies) with different initial temperatures: a – 1000 °C, b – 1100 °C",
+        "The evaluation of the simulated grain size distribution model confirms its effectiveness through statistical accuracy, strong correlation with experimental data, and visual agreement. The mean and standard deviation values remain nearly identical between the experimental and simulated distributions, indicating that the model accurately preserves the central tendency and variability of the grain sizes. Linear regression analysis shows a slope close to 1:1 (1.0812), and a perfect R² value of 1.0, further validating the strong correlation between the datasets. A strong correlation is confirmed by an almost perfect correlation coefficient equal to approximately 1. The regression analysis gives a proportional dependance with the slope 1.0812, which shows some systematic error.",
+        "The histograms of the experimental and simulated data overlap closely, highlighting the ability of the model to replicate real-world grain size distributions without introducing artificial distortions. Additionally, the model maintains high accuracy across different microstructures, demonstrating its robustness and adaptability.",
+        "In general, the minimal differences between the experimental and simulated data, strong statistical agreement, excellent correlation, and consistent performance between different datasets confirm the reliability of the model. Its effectiveness as a predictive tool makes it valuable for microstructural analysis and material characterization."
+      ]
+    },
+    {
+      "heading": "Model validation",
+      "paragraphs": [
+        "The validation of the model was the next stage of the work. At this stage, the predictions and experimental results were compared. Various modeling conditions were performed in the laboratory. Selected modeling results (flow stress and average grain size during modeling) for points corresponding to the location of the experimental microstructure examination and different initial temperatures are shown in Fig.  21 .",
+        "By analyzing the flow stress-time plot (Fig.  21 a), the flow stress reaches the reference value. Recrystallization was completed for all simulation variants presented, just as in the experiments. The differences in grain size for modeling and experiments are shown in Fig.  22 . The  d av  obtained in metallographic studies is marked by ‘measured’, correspondingly, the  d av  from simulations is marked by ’simulation’. Fig. 21 The flow stress ( a ) and average grain size ( b ) for selected simulation points and different initial temperatures Fig. 22 Comparison of the modeled grain size  d av  with the experimental results",
+        "Similar values of average recrystallized grain size were received in the modeling and laboratory rolling:",
+        "point 0 (location A), pass 1,  T  = 1000 °C -  dav  = 13 μm (measured value 10.9 μm), point 0 (location A), pass 2,  T  = 1000 °C -  dav  = 7.4 μm (measured value 7.3 μm), point 1 (location B), pass 1,  T  = 1100 °C –  dav  = 27.6 μm (measured value 28.1 μm), point 2 (location C), pass 1,  T  = 1000 °C -  dav  = 8.3 μm (measured value 7.9 μm).",
+        "The standard deviation (SD), which indicates how far a value has varied from the mean value, was determined for the simulation results. The following SDs were obtained for the compared cases:",
+        "point 0 (location A), pass 1,  T  = 1000 °C -  SD  = 1,454, point 0 (location A), pass 2,  T  = 1000 °C -  SD  = 0,703, point 1 (location B), pass 1,  T  = 1100 °C –  SD  = 0,811, point 2 (location C), pass 1,  T  = 1000 °C -  SD  = 0,765.",
+        "The FEM-FCA model shows a high level of agreement with the experimental results, as evidenced by a low RMSE of 1.099 μm, representing the average difference between the simulated and measured values. To assess the model’s accuracy relative to reality, the RMSE% relative to the experiment is used, which defines the relative prediction error. This value is 8.12%, indicating good model accuracy, since values below 10% are considered well fit. RMSE in µm provides an absolute measure of error in real units, while RMSE% enables a better comparison of the effectiveness of the model with experimental data. The standard deviation values for different locations confirm that the model effectively captures variations in recrystallization behavior. Flow stress trends also align with experimental measurements, validating the accuracy of the model in predicting deformation behavior and static recrystallization kinetics. The high agreement of the FEM-FCA model makes it a reliable tool for analyzing material microstructure after the rolling process.",
+        "While this study does not re-verify the FEM model under every possible process parameter variation, the FEM-based rolling simulation framework employed here is based on previously validated methodologies. In earlier work, Łach et al. established a multiscale model for shape rolling, where FEM was used to design the rolling pass schedule, later coupled with microstructure modeling [ 37 ,  38 ]. This foundational approach was refined further and extended. Moreover, the numerical strategies for FEM simulation of metal forming were experimentally validated in earlier benchmark work by Malinowski and Lenard, confirming the applicability of FEM for rolling, forging, and other thermomechanical processes [ 34 ]. Furthermore, the heat transfer and cooling boundary conditions central to rolling were independently validated using one- and three-dimensional FEM models for the prediction of temperature on hot-rolled plates [ 39 ]. Together, these prior publications demonstrate the systematic verification of FEM modules used in this study and confirm the reliability of the underlying simulation methodology across process parameters and thermal conditions. It should be noted, however, that the heat transfer validation in [ 37 ] was performed for plate geometry; a geometry-specific calibration of heat transfer coefficients for complex bar profiles (oval and round cross-sections) would further improve local temperature field accuracy and is identified as a direction for future work.",
+        "The proposed FEM–FCA framework can be positioned among existing microstructure modeling approaches by considering its balance between predictive accuracy and computational efficiency. Classical cellular automata models provide detailed microstructural resolution but are associated with high computational cost due to full-domain updates at each iteration.",
+        "In contrast, the FCA approach reduces computational effort by operating only on active cells, which significantly improves efficiency, particularly for problems involving localized microstructure evolution. At the same time, the present results demonstrate good predictive capability, with a grain size error of approximately 8%, which is comparable to values reported in the literature for microstructure models applied to hot deformation processes.",
+        "Therefore, the proposed framework offers a practical compromise between computational efficiency and predictive accuracy, making it suitable for process-oriented simulations such as shape rolling. A qualitative comparison of the proposed FEM–FCA framework with selected modeling approaches is presented in Table  4 . Table 4 Comparison of selected microstructure modeling approaches Method Microstructure resolution Computational cost Predictive capability Typical application FEM (without microstructure) Low Low Limited Process modeling Classical CA High High High Microstructure studies | FEM–CA coupling High Very high High Detailed research simulations FEM–FCA (present work) High Reduced High (~ 8% error) Process-oriented simulations"
+      ]
+    },
+    {
+      "heading": "Industrial applications and computational challenges",
+      "paragraphs": [
+        "Despite extensive research on CA-based microstructure modeling, its industrial implementation remains constrained by computational inefficiencies, lack of real-time capabilities, and integration difficulties with metal forming processes. Although CA models have provided valuable insights into recrystallization phenomena, their practical use in large-scale manufacturing has been hindered by extensive experimental calibration and slow processing speeds.",
+        "This study addresses these challenges by introducing Frontal Cellular Automata (FCA), an optimized approach that reduces simulation time, improves model adaptability, and integrates seamlessly with process simulations. Primary industrial bottlenecks include high computational costs, offline processing limitations, material-specific calibration demands, and limited coupling with FEM simulations. Traditional CA models require significant processing time, making them impractical for real-time applications. FCA significantly reduces computation time, enabling large-scale simulations to be performed in minutes instead of hours. Furthermore, most CA-based models operate offline, requiring post-processing and preventing real-time manufacturing control. The improved computational efficiency of FCA paves the way for integration into real-time production environments, where microstructure predictions could directly inform rolling process adjustments.",
+        "Another major limitation of CA models is the need for extensive calibration, as microstructural evolution parameters vary between different alloys. Although calibration remains necessary, FCA allows greater adaptability across materials, requiring only parameter adjustments rather than fundamental model modifications. Furthermore, many CA-based models lack full integration with FEM, limiting their practical use in industrial settings. The integration of the FCA-FEM models improve optimization of the process, and makes simulations more representative of actual metal forming operations when real deformation conditions significantly influence microstructure evolution.",
+        "This study advances CA-based microstructure modeling for industrial applications by improving computational performance and practical applicability. FCA reduces computational load by focusing on active recrystallization regions, eliminating redundant calculations, and enhancing processing speed. While most CA models focus on Dynamic Recrystallization (DRX) and Post-Dynamic Recrystallization (PDRX), the proposed model extends its applicability to Static Recrystallization (SRX) and multi-pass deformation processes, covering a broader range of rolling conditions. Experimental validation is another key improvement, as many CA-based models remain purely numerical. This work bridges that gap by confirming the FCA predictions against experimental microstructural observations, reinforcing the accuracy and reliability of the model. The study also demonstrates how FCA can be integrated into industrial rolling simulations, enhancing its usefulness for process optimization in metal forming industries.",
+        "To further improve industrial feasibility, future research should focus on embedding FCA simulations into rolling mills to develop adaptive rolling strategies that optimize grain refinement in real time. AI-based optimization techniques could automate parameter selection, reducing the need for extensive experimental calibration. Additionally, leveraging high-performance computing (HPC) and GPU acceleration would further speed up simulations, making real-time microstructure predictions feasible.",
+        "Although full-scale industrial adoption of CA-based modeling still requires further development, this study overcomes critical computational and practical barriers that have historically hindered its application. By improving efficiency, adaptability, and integration with real-world rolling processes, this research represents an important step toward making CA-based microstructure simulations a viable tool for industrial metal forming applications."
+      ]
+    },
+    {
+      "heading": "Summary",
+      "paragraphs": [
+        "This study introduces an advanced multiscale modeling framework that integrates FEM and FCA to accurately predict microstructure evolution during the shape rolling of AISI 304 L stainless steel. The proposed methodology was applied to a real pass schedule, using a square-oval-round rolling sequence. The FEM model determined the process parameters, including the temperature, strain, and strain rate distributions, while the FCA model simulated recrystallization kinetics, capturing grain nucleation and growth. This integrated approach ensures that microstructure evolution predictions are directly linked to deformation conditions, improving accuracy and practical relevance.",
+        "The FCA model used in this study was originally developed and validated for flat rolling applications and has now been successfully extended to shape rolling, demonstrating its adaptability. The processing conditions at different locations in the deformed steel influenced the recrystallization behavior, resulting in variations in the grain size and recrystallization fraction. The FEM-FCA model is closely aligned with the experimental results, achieving a low RMSE of 1.099 μm and an RMSE% of 8.12%, demonstrating high predictive precision and reliability in the estimation of grain size. The trends in flow stress evolution also closely matched the experimental observations, confirming the precision of the dislocation density-based constitutive model used in this study.",
+        "Unlike traditional CA-based microstructure models, which suffer from high computational costs and long processing times, FCA significantly reduces simulation time, making large-scale industrial applications feasible. Conventional CA models also tend to treat dynamic and static recrystallization separately, whereas FCA enables a unified representation of grain nucleation and growth during and after deformation. Furthermore, FEM-FCA coupling allows for the direct integration of deformation conditions with microstructural evolution, improving simulation realism and applicability in industrial metal forming processes.",
+        "The developed FEM-FCA modeling framework serves as a computationally efficient and experimentally validated tool to optimize shape rolling operations. The system allows for predicting microstructural changes before manufacturing, enabling quality control and process optimization. Although validated for AISI 304 L stainless steel, the model is adaptable to other steel grades and metallic materials, requiring only adjustments in material-specific parameters.",
+        "The developed modeling system represents a significant step forward in computational microstructure modeling, offering improved predictive accuracy, computational efficiency, and industrial relevance. By addressing key challenges that have historically limited the industrial adoption of CA-based modeling, this work contributes to advancing computational metal forming models toward real-world process optimization."
+      ]
+    }
+  ],
+  "tables": [
+    {
+      "caption": "304 L stainless steel mechanical characteristics [ 5 ,  28 ]",
+      "headers": [
+        "Parameter",
+        "Value",
+        "Unit"
+      ],
+      "rows": [
+        [
+          "Yield Strength (0.2% Offset), Min",
+          "30 / 205",
+          "ksi / MPa"
+        ],
+        [
+          "Ultimate Tensile Strength (UTS), Min",
+          "75 / 515",
+          "ksi / MPa"
+        ],
+        [
+          "Elongation (in 50 mm), Min",
+          "40",
+          "%"
+        ],
+        [
+          "Reduction in Area, Min",
+          "50",
+          "%"
+        ],
+        [
+          "Hardness, Max",
+          "201",
+          "HB"
+        ]
+      ],
+      "header_groups": [],
+      "table_alignment_status": "resolved",
+      "row_provenance": [
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 3
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 3
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 3
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 3
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 3
+          }
+        ]
+      ],
+      "tbody_alignment_status": "resolved"
+    },
+    {
+      "caption": "AISI 304 L used for the studies [ 5 ,  28 ]",
+      "headers": [],
+      "rows": [
+        [
+          "Element",
+          "(%)"
+        ],
+        [
+          "Chromium",
+          "18.1"
+        ],
+        [
+          "Nickel",
+          "10"
+        ],
+        [
+          "Carbon",
+          "0.03"
+        ],
+        [
+          "Manganese",
+          "1.21"
+        ],
+        [
+          "Molybdenum",
+          "0.15"
+        ],
+        [
+          "Copper",
+          "0.19"
+        ],
+        [
+          "Aluminum",
+          "0.055"
+        ],
+        [
+          "Vanadium",
+          "0.031"
+        ],
+        [
+          "Niobium",
+          "0.01"
+        ],
+        [
+          "Titanium",
+          "0.006"
+        ],
+        [
+          "Phosphorus",
+          "0.036"
+        ],
+        [
+          "Silicon",
+          "0.5"
+        ],
+        [
+          "Nitrogen",
+          "0.03"
+        ]
+      ],
+      "header_groups": [
+        {
+          "label": "AISI 304 L",
+          "start_col": 1,
+          "end_col": 2
+        }
+      ],
+      "table_alignment_status": "unresolved",
+      "row_provenance": [
+        [
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          },
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          },
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          },
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          },
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          },
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          },
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          },
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          },
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          },
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          },
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          },
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          },
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          },
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          },
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          }
+        ]
+      ],
+      "tbody_alignment_status": "no_headers_to_target"
+    },
+    {
+      "caption": "Results of microstructure studies",
+      "headers": [
+        "",
+        "",
+        "A",
+        "B",
+        "C",
+        "A"
+      ],
+      "rows": [
+        [
+          "1000",
+          "80",
+          "10.9",
+          "12.6",
+          "7.9",
+          "7.3"
+        ],
+        [
+          "1100",
+          "80",
+          "28.3",
+          "28.1",
+          "21.2",
+          "13.0"
+        ]
+      ],
+      "header_groups": [
+        {
+          "label": "Grain size D \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\gamma$$\\end{document} mm",
+          "start_col": 3,
+          "end_col": 6
+        },
+        {
+          "label": "Oval",
+          "start_col": 3,
+          "end_col": 5
+        }
+      ],
+      "table_alignment_status": "resolved",
+      "row_provenance": [
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 6
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 6
+          }
+        ]
+      ],
+      "tbody_alignment_status": "resolved"
+    },
+    {
+      "caption": "Comparison of selected microstructure modeling approaches",
+      "headers": [
+        "Method",
+        "Microstructure resolution",
+        "Computational cost",
+        "Predictive capability",
+        "Typical application"
+      ],
+      "rows": [
+        [
+          "FEM (without microstructure)",
+          "Low",
+          "Low",
+          "Limited",
+          "Process modeling"
+        ],
+        [
+          "Classical CA",
+          "High",
+          "High",
+          "High",
+          "Microstructure studies"
+        ],
+        [
+          "| FEM–CA coupling",
+          "High",
+          "Very high",
+          "High",
+          "Detailed research simulations"
+        ],
+        [
+          "FEM–FCA (present work)",
+          "High",
+          "Reduced",
+          "High (~ 8% error)",
+          "Process-oriented simulations"
+        ]
+      ],
+      "header_groups": [],
+      "table_alignment_status": "resolved",
+      "row_provenance": [
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 5
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 5
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 5
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 5
+          }
+        ]
+      ],
+      "tbody_alignment_status": "resolved"
+    },
+    {
+      "caption": "Model parameters used in the present study",
+      "headers": [
+        "Parameter",
+        "Value",
+        "Description"
+      ],
+      "rows": [
+        [
+          "α",
+          "0.5 [-]",
+          "(A1) material constant"
+        ],
+        [
+          "µ",
+          "75 [GPa]",
+          "(A1) shear modulus"
+        ],
+        [
+          "b",
+          "2.566 × 10 − 10  [m]",
+          "(A1) Burgers vector"
+        ],
+        [
+          "R",
+          "8.314 [J mol − 1  K − 1 ]",
+          "gas constant"
+        ],
+        [
+          "\\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\:{n}_{\\sigma\\:}$$\\end{document}",
+          "0.257 [-]",
+          "(A2) exponent"
+        ],
+        [
+          "\\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\:{Q}_{\\sigma\\:}$$\\end{document}",
+          "99170 [J mol − 1 ]",
+          "(A2) activation energy"
+        ],
+        [
+          "\\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\:{a}_{\\sigma\\:}$$\\end{document}",
+          "0.05419 [MPa]",
+          "(A2) coefficient"
+        ],
+        [
+          "\\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\:{\\epsilon\\:}_{m}$$\\end{document}",
+          "1.729 [-]",
+          "(A7) characteristic strain"
+        ],
+        [
+          "\\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\:{a}_{r}$$\\end{document}",
+          "4.2148 × 10 − 3  [s − 1 ]",
+          "(A9) coefficient"
+        ],
+        [
+          "\\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\:{Q}_{r}$$\\end{document}",
+          "228700 [J mol − 1 ]",
+          "(A9) activation energy"
+        ],
+        [
+          "\\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\:{A}_{Z}$$\\end{document}",
+          "306.3 [s − 1 ]",
+          "(A10) coefficient"
+        ],
+        [
+          "\\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\:{n}_{Z}$$\\end{document}",
+          "0.725 [-]",
+          "(A10) exponent"
+        ],
+        [
+          "\\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\:{Q}_{Z}$$\\end{document}",
+          "455000 [J mol − 1 ]",
+          "(A11) activation energy"
+        ],
+        [
+          "\\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\:{\\epsilon\\:}_{v}$$\\end{document}",
+          "0.011 [-]",
+          "(A12) characteristic strain"
+        ],
+        [
+          "\\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\:{v}_{N}$$\\end{document}",
+          "20.2 [s − 1 ]",
+          "(A14) nucleation rate"
+        ],
+        [
+          "\\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\:{n}_{V}$$\\end{document}",
+          "0.81 [-]",
+          "(A18) exponent"
+        ],
+        [
+          "\\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\:{Q}_{R}$$\\end{document}",
+          "300000 [J mol − 1 ]",
+          "(A18-A20) activation energy"
+        ],
+        [
+          "\\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\:{a}_{V}$$\\end{document}",
+          "5.845 × 10 − 6  [-]",
+          "(A18) coefficient"
+        ],
+        [
+          "\\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\:{a}_{v}$$\\end{document}",
+          "148.4 [m s − 1 ]",
+          "(A19) coefficient"
+        ],
+        [
+          "\\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\:{n}_{D}$$\\end{document}",
+          "-0.2418 [-]",
+          "(A20) exponent"
+        ],
+        [
+          "\\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\:{a}_{D}$$\\end{document}",
+          "2594 [-]",
+          "(A20) coefficient"
+        ]
+      ],
+      "header_groups": [],
+      "table_alignment_status": "resolved",
+      "row_provenance": [
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 3
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 3
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 3
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 3
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 3
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 3
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 3
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 3
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 8,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 8,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 8,
+            "source_col": 3
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 9,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 9,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 9,
+            "source_col": 3
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 10,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 10,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 10,
+            "source_col": 3
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 11,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 11,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 11,
+            "source_col": 3
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 12,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 12,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 12,
+            "source_col": 3
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 13,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 13,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 13,
+            "source_col": 3
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 14,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 14,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 14,
+            "source_col": 3
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 15,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 15,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 15,
+            "source_col": 3
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 16,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 16,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 16,
+            "source_col": 3
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 17,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 17,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 17,
+            "source_col": 3
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 18,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 18,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 18,
+            "source_col": 3
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 19,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 19,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 19,
+            "source_col": 3
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 20,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 20,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 20,
+            "source_col": 3
+          }
+        ]
+      ],
+      "tbody_alignment_status": "resolved"
+    }
+  ]
+}

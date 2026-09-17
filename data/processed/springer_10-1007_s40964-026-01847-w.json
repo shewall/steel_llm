@@ -1,0 +1,1585 @@
+{
+  "doi": "10.1007/s40964-026-01847-w",
+  "title": "Multi-material additive manufacturing for microfluidic applications",
+  "abstract": "Abstract Multi-material additive manufacturing has become a powerful technique to fabricate complex microfluidic devices by integrating multiple functional materials, enabling the seamless integration of structural, mechanical, sensing, and fluidic functionalities. This paper reviews the state-of-the-art in this research field. Specifically, different additive manufacturing technologies are presented. Extrusion-based techniques (e.g. fused filament fabrication, polyjet printing, direct ink writing) allow sequential deposition of various polymers through multiple nozzles, enabling the fabrication of microfluidic devices with embedded electrodes. However, extrusion methods generally offer limited resolution and require surface post-processing to achieve smooth fluidic channels. Conversely, light-based techniques (e.g. stereolithography, digital light processing and two-photon polymerization) yield micrometer-scale resolution but they are constrained to single-material fabrication. Several approaches to overcome this limitation are reviewed, including multi-vat printers, single-vat resin swapping systems, (micro)fluidic resin exchange, and wavelength-controlled dual-curing resins, to enable the fabrication of integrated microfluidic devices, which exhibit a variety of material properties (rigid, flexible, conductive, etc.) and functional elements. The remaining challenges include material compatibility and biocompatibility, preventing cross-contamination, and balancing high-resolution with throughput. The ongoing developments in materials and process optimization have resulted in improvements in the reliability of multi-material printing, driving the adoption of this technology for the fabrication of microfluidic devices, with the potential to be used in a variety of applications, including lab-on-a-chip technologies, clinical diagnostics, and point-of-care devices.",
+  "journal": "Progress in Additive Manufacturing",
+  "year": "2026",
+  "sections": [
+    {
+      "heading": "Introduction",
+      "paragraphs": [
+        "Microfluidics is the study and manipulation of fluids at a microscopic scale, typically within channels ranging from a few micrometers to one millimeter in size. By leveraging the unique behavior of fluids at such scale [ 1 ] and by carefully designing microfluidic devices, it is possible to achieve high levels of performance in terms of detection speed and sensitivity, making this technology an invaluable tool for numerous healthcare applications, including disease diagnostics, drug discovery, and personalized medicine [ 2 ]. By combining multiple processes on a single chip, microfluidics allows efficient execution of complex laboratory functions while using minimal sample volumes, ultimately driving important advances in both research and clinical contexts [ 3 ]. Furthermore, microfluidics has transformed biological research with the development of Organ-On-a-Chip (OOC) models that simulate human physiological conditions, enabling controlled cell culture environments and precise manipulation of biological materials [ 4 ]. Beyond healthcare and biotechnology, microfluidics plays a role in environmental monitoring, for instance detecting pollutants, performing chemical synthesis, optimizing chemical reactions, and optimizing industrial processes [ 5 ]. In the food and beverage industries, microfluidic systems aid in quality control, contamination detection, and flavor analysis [ 6 ].",
+        "The manufacturing of microfluidic devices involves precise fabrication techniques to create all the necessary components. Figure  1  shows a list of such components, including microscale channels, valves, pumps, micromixer elements, sensors, optical windows, and chambers for fluid manipulation. The materials used are typically silicon, glass, and polymers. The most widely used polymer in research settings is polydimethylsiloxane (PDMS), which offers transparency, flexibility, and biocompatibility. The most commonly used methods to fabricate planar microfluidic structures with high precision are photolithography, soft lithography, hot embossing and injection molding [ 7 ]. Photolithography, adopted from semiconductor manufacturing, is ideal for creating rigid microfluidic chips with complex patterns in silicon and glass, while soft lithography, using elastomeric polymers, allows for rapid prototyping and the creation of compliant devices. Injection molding and hot embossing uses thermoplastic polymers and are scalable techniques, suitable for mass production, ensuring cost-effective manufacturing for commercial applications. Fig. 1 Fields of application of microfluidics and the main components which are generally integrated into microfluidic devices. (created with BioRender.com)",
+        "Additive Manufacturing (AM) has recently emerged as a groundbreaking technology in microfluidic device manufacturing, offering exceptional flexibility in design and rapid prototyping capabilities. By constructing three-dimensional microfluidic channels directly from digital designs, AM enables the creation of complex 3D geometries with high precision, that would be difficult or even impossible to achieve through traditional manufacturing methods, previously mentioned. The AM layer-by-layer methodology supports a wide variety of materials, including plastics, metals, ceramics, and composites [ 8 ,  9 – 10 ], making it especially suitable for microfluidic applications that require tailored material properties that can be integrated in a seamless way with a single-fabrication step. A critical comparison between the most widely used printing technologies in microfluidics is presented by Macdonald et al. [ 11 ].",
+        "Some examples of microfluidic devices manufactured through AM are shown in Fig.  2 , which include micromixers, an organ-on-a-chip model, a microfluidic chain reaction device and integrated pumps and valves. Fig. 2 Examples of 3D-printed microfluidic devices. Micromixer devices fabricated via (I) fused filament fabrication, adapted with permission from Ref. [ 12 ], (II) digital light processing, adapted with permission from Ref. [ 13 ], and (III) polyjet, adapted with permission from Ref. [ 14 ]. (IV) Organ-on-a-chip device via digital light processing, adapted with permission from Ref. [ 15 ]. (V) Microfluidic chain reaction device fabricated via digital light processing, adapted with permission from Ref. [ 16 ]. Pumps and valves fabricated via (VI) stereolithography, adapted with permission from Ref. [ 17 ] and (VII) digital light processing, adapted with permission from Ref. [ 16 ]",
+        "Several scientific reviews have captured the progression of 3D printed microfluidics and potential applications [ 17 ,  18 ,  19 ,  20 ,  21 – 22 ]. These reviews illustrate the transformative effects of AM in the field, yet also highlight new demands that existing AM methods cannot fully meet, such as resolution limitations, difficulties in cleaning and shaping microchannels, material selection constraints, and the need for build-platforms capable of accommodating centimeter-scale devices to enable the connection of the microfluidic device with external pumps and sensors.",
+        "Significant advances in the field of microfluidic device fabrication have been made, yet a substantial challenge persists in the integration of multiple functional components with distinct properties. Specifically, incorporating diverse components, such as electrodes, channels, membranes and elements with distinct stiffness levels, requires simultaneous integration of multiple materials, including conductive and non-conductive polymers [ 19 ,  23 ], stiff and elastic polymers [ 24 ], hydrophilic and hydrophobic regions for fluid management [ 25 ,  26 ], and stimuli-responsive polymers to engineer adaptive structures.",
+        "Methods for integrating multiple materials in microfluidic devices involve multi-step processes and often require the creation of each element separately. Accurate and watertight assembly of these components is usually performed using bonding techniques, such as plasma, thermal, and adhesive bonding [ 27 ]. While these methods are compatible with high-resolution features, they are constrained by material availability, geometric complexity, and time-consuming multi-step procedures. Furthermore, each of these bonded interfaces presents a new failure point for alignment errors and leakages [ 28 ].",
+        "Multi-material additive manufacturing facilitates the direct integration of electrodes, channels, and membranes through the seamless 3D printing of multiple materials within a single process. This approach offers a promising pathway to overcome the limitations of bonding and assembly while expanding the design space for more functional and complex microfluidic devices. This review examines the rapidly growing field of Multi-Material Additive Manufacturing (MMAM) for microfluidic applications. This research field is in an early stage of development, making it particularly timely to document its current status.",
+        "Section  2  focuses on multi-material extrusion-based technologies suitable for microfluidic fabrication.",
+        "Section  3  represents the core of this review paper, focusing on light-based additive manufacturing processes (or vat additive manufacturing). Different approaches to enable multi-material light-based 3D printing are compared and challenges are identified. Suitable biocompatible resins for light-based 3D printing are also listed, with specific attention to their suitability for multi-material designs, and whether they are already on the market or require custom development. This review further discusses the technical challenges in multi-material light-based 3D printing, including resolution limits, material compatibility, and production complexities.",
+        "Finally, section  4  briefly describes some of the hybrid additive manufacturing approaches. By exploring the potential and constraints of MMAM, this review paper highlights the influence of this technology on the future of microfluidics."
+      ]
+    },
+    {
+      "heading": "Extrusion-based multi-material additive manufacturing for microfluidic devices",
+      "paragraphs": [
+        "The three main extrusion-based 3D printing methods suitable for microfluidic applications are Fused Filament Fabrication, PolyJet, and Direct Ink Writing.",
+        "Fused Filament Fabrication  (FFF) is a widely used additive manufacturing process that builds objects layer-by-layer by extruding thermoplastic filament through a heated nozzle, as can be seen in the schematic in Table  1 . The filament is heated to a semi-liquid state and deposited in thin lines along a predetermined path forming sliced layers of three dimensional part. After each layer is deposited, relative motion in the z-direction is introduced either by moving the nozzle/printhead or by displacing the build platform, depending on the printer architecture [ 29 ]. This creates the spacing required for deposition of the next layer, which fuses with the previous one to form a solid structure. FFF is cost-effective, versatile, and capable of producing durable parts with a wide range of thermoplastic materials, such as acrylonitrile butadiene styrene (ABS), polylactic acid (PLA), and composite materials [ 30 ], making it suitable for prototyping. It enables for multi-material printing by simply integrating multiple print-heads or by extruding different compatible polymers through the same nozzle upon purging during the switching process.",
+        "An example of the use of FFF to develop a multi-material microfluidic system has been proposed by Li et al. [ 31 ] with the development of a device for the analysis of nitrate in soil. The device body was 3D printed using transparent ABS and incorporated a 400  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${\\upmu}$$\\end{document} m wide membrane fabricated from a commercially available composite filament. The membrane becomes porous by dissolving the water-soluble component present in the composite filament. Morgan et al. [ 32 ] developed a multi-component fluidic system by simply connecting modular interlocking blocks together. The authors showcase the versatility and cost-effectiveness of fused filament fabrication 3D printing in creating microfluidic devices, highlighting its simplicity and rapid prototyping capabilities. Gaal et al. [ 33 ] introduced a simple process for fabricating integrated microfluidic devices by using FFF. To demonstrate the efficacy of this approach, a 3D-printed electronic tongue sensor was built, enabling the distinction of basic tastes below the human threshold.",
+        "Despite the easy integration of multiple materials, most of the literature on 3D printed microfluidics using this technology is limited and not recent. This is because FFF parts often have high roughness, due to oval shaped cross section of the extruded treads created by line deposition. Post-processing is then required to achieve smooth finishes and the transparency required for microfluidics. Moreover, the resolution is lower compared to other AM techniques, and FFF can struggle with complex geometries and fine details [ 34 ], making this technology less suitable for the fabrication of high-resolution microfluidic components.",
+        "PolyJet  (PJ) printing is an advanced additive manufacturing technique that jets layers of liquid photopolymer resin onto a build platform, which are then cured using ultraviolet (UV) light. Table  1  shows a schematic of the working principle. This process can print with multiple materials simultaneously, allowing for highly detailed and complex parts with smooth surface finishes. PJ is particularly suited for creating prototypes, medical models, and devices that require intricate details and varying material properties within the same part [ 35 ]. An additional advantage is the fact that PolyJet 3D printing has shown significant promise for the fabrication of enclosed microfluidic channels without requiring photocurable supports, thereby simplifying the manufacturing process [ 36 ]. This capability extends further to the creation of complex microfluidic components, such as capacitors, diodes, and transistors, demonstrating the potential to integrate both static and dynamic elements within a single device [ 37 ]. Building on this versatility, microfluidic systems with embedded electrodes and optically transparent features, facilitating advanced applications such as pharmaceutical analysis in biological samples has been successfully fabricated [ 38 ]. Additionally, the integration of flexible and rigid structures in a single monolithic print has been used to generate emulsions with active droplet control [ 39 ]. Finally, by optimizing the PJ process parameters to achieve precise control over the material properties and structural integrity of the printed objects, Yang et al. [ 40 ] demonstrated that PJ printing is effective in creating complicated multi-material parts that have high strength and mechanical performance.",
+        "However, the cost of materials, which are mainly proprietary, and the need for extensive post-processing to remove uncured resin can be significant. In addition, parts produced using PolyJet 3D printing with photopolymer resins may exhibit reduced long-term durability, due to limitations such as UV-instability, discoloration, and degradation over time, compared to other additive manufacturing methods or engineering plastics [ 41 ].",
+        "Direct Ink Writing  (DIW) is an advanced additive manufacturing method that precisely deposits highly viscous inks to create three-dimensional structures. This technique uses a continuous extrusion process through a nozzle for the layer-by-layer deposition of a material, following digitally defined paths (Table  1 ). The rheological behaviour of the ink is critical for printability. Printable inks typically require shear-thinning behaviour to enable extrusion through the nozzle under applied pressure, together with sufficient yield stress or viscoelastic recovery after deposition to maintain filament shape, prevent excessive spreading, and support subsequent layers [ 42 ,  43 ]. DIW is highly versatile, accommodating a variety of materials, including polymers, ceramics, hydrogels, and metal alloys, suitable for applications ranging from biomedical engineering to electronics [ 44 ,  45 ]. This method has been successfully used to produce intricate ceramic structures, flexible conductive polymer nanocomposites, hydrogels for tissue engineering [ 46 ] and for the manufacturing of microfluidic systems [ 47 ].",
+        "Moreover, DIW’s capability for multi-material printing allows the integration of different materials in a single print job, ideal for creating multifunctional devices requiring varied properties like gradient structures or embedded sensors. Although the process demands precise control of the rheology of the ink and the process parameters to ensure consistent results, ongoing research aims to address these challenges and expand the capabilities of DIW [ 48 ,  49 ,  50 – 51 ]. An example of the use of DIW for microfluidic applications involves the creation of 3D Fe - Cu multi-metal architectures using an in situ material-switching system that enables seamless transitions between iron and copper inks without cross-contamination [ 52 ]. Expanding on DIW’s adaptability, researchers have also developed on-demand programmable liquid metal - composite microstructures, where elastomer composites embedded with liquid metal microdroplets can transform from spherical to needle-like configurations, allowing for tunable material properties [ 53 ]. DIW has further proven effective in soft electronics, as demonstrated through the use of silicone elastomers to construct multilayered, interconnected microchannels integrated with electronic components, overcoming limitations typical of conventional replica molding approaches [ 54 ]. However, DIW can suffer from limited resolution, making it difficult to produce extremely fine channels and the process may face material compatibility issues, as not all inks exhibit the necessary rheological properties for stable printing and long-term device performance. Table 1 Comparison of extrusion-based additive manufacturing techniques for microfluidic fabrication Technique Working principle Minimum channel size Pros Cons Multi-material capability References Fused Filament Fabrication (FFF) Extrusion of molten thermoplastic polymer Typically  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\ge $$\\end{document} 500  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${\\upmu}$$\\end{document} m; minimum channel width  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\sim $$\\end{document} 170  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${\\upmu}$$\\end{document} m Low cost (200–2000 €), widely accessible; suitable for rapid prototyping Limited resolution; rough internal surfaces Commercial multi-material systems are available, but material choice is generally limited to thermoplastics [ 11 ,  55 ] PolyJet (PJ) Jetting of liquid photopolymer Channels  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\ge $$\\end{document} 205  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${\\upmu}$$\\end{document} m demonstrated; below  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\sim $$\\end{document} 200  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${\\upmu}$$\\end{document} m challenging Good surface finish; moderate resolution; channels can be self-supported using uncured resin Support removal/cleaning becomes problematic for small channels; expensive equipment (20K–500K €); features below  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\sim $$\\end{document} 50–100  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${\\upmu}$$\\end{document} m may be difficult Excellent multi-material capability, well-suited for integrated valves/gaskets/seals; limited material choice due to proprietary materials [ 11 ] Direct Ink Writing (DIW) Continuous extrusion through a nozzle Channels down to  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\sim $$\\end{document} 32  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${\\upmu}$$\\end{document} m wide and  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\sim $$\\end{document} 30  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${\\upmu}$$\\end{document} m high using fast-curing inks High-resolution features; direct printing of functional inks, e.g., conductive materials and hydrogels Often planar/open structures; enclosed 3D microchannels remain challenging; strong dependence on ink rheology Multi-material printing via multiple inks or printheads [ 47 ]"
+      ]
+    },
+    {
+      "heading": "Light-based multi-material additive manufacturing",
+      "paragraphs": [
+        "Light-based or vat polymerization techniques are a collection of additive manufacturing techniques that are based on the solidification of photopolymers upon exposure to specific light wavelengths. This process, known as photopolymerization, involves the cross-linking of resin molecules to form solid structures through photoinitiators that initiate the necessary chain reaction for solidification. The manufacturing process is conducted layer-by-layer on a build platform submerged in resin, with a light source selectively curing the resin based on CAD model [ 56 ]. Most of the commercially available light-based 3D printers do not enable multi-material printing. However, thanks to the high resolution, broad material availability and good surface quality (relatively low roughness), they have shown great potential for manufacturing microfluidic devices. For this reason, a growing research field aims at enabling multi-material capabilities for light-based additive manufacturing techniques.",
+        "In this section, the light-based additive manufacturing technologies more suitable for the fabrication of microfluidic devices are described and strategies to enable multi material printing are presented."
+      ]
+    },
+    {
+      "heading": "Light-based additive manufacturing",
+      "paragraphs": [
+        "The light-based additive manufacturing techniques mostly used for the manufacturing of microfluidic devices are Stereolithography, Digital Light Processing, and Two-Photon Polymerization.",
+        "Stereolithography  (SLA) is a process that employs a vat of photopolymer resin, a UV laser source, a build platform, galvanometer mirrors, and a control system (table  2 ). The process begins with the build platform slightly submerged in the resin. The UV source, directed by the galvanometer mirrors, traces the cross-sectional pattern of the object on the resin surface, causing it to solidify. Once a layer has been cured, the platform is moved, allowing a new layer of resin to cover the previous one. This process is repeated until the entire object is manufactured, with the precision of the laser and the controlled movement of the platform ensuring high detail and accuracy in the final product. SLA is known for its ability to produce high-resolution single-material microfluidic devices [ 39 ] [ 57 ] with intricate details, making it ideal for micro-devices.",
+        "Digital Light Processing (DLP) is also based on vat photopolymerization and therefore relies on the same general curing principle as SLA: photoinduced polymerization of a liquid photopolymer resin (table  2 ). The key difference between SLA and DLP is the way light is delivered to the resin. In SLA, a focused laser is typically scanned point-by-point or line-by-line across the resin surface, whereas in DLP a digital micromirror device (DMD) projects an entire two-dimensional image of a layer using a UV or visible-light source [ 58 ,  59 ]. This allows DLP to cure a complete layer simultaneously, often reducing layer exposure time compared with laser-scanning SLA. The key components of DLP include a vat of photopolymer resin, a projected light source, a DMD, a build platform, and a control system. After each layer is cured, the platform is repositioned to allow fresh resin to fill the gap before exposure of the next layer.",
+        "Masked stereolithography  (mSLA) illuminates an entire layer at once similarly to DLP, but the projector is replaced by a LCD screen to selectively mask UV light (table  2 ). The ability of DLP and mSLA to project a complete layer simultaneously results in fast fabrication and high-resolution output, making it a suitable solution for microfluidic fabrication [ 60 ] [ 13 ]. However, for both 3D printing technologies the surface finish may exhibit pixelation due to the voxel structure of the projected image. The size of the build plate is often limited, which can restrict the size of parts that can be produced in a single print. Moreover, the expense of the DMD (for DLP printers) may influence the overall cost of the equipment.",
+        "Two-Photon Polymerization  (TPP) is an additive manufacturing technique that employs high-intensity femtosecond laser pulses to fabricate 3D micro- and nano-structures [ 61 ]. This technique relies on two-photon absorption, a nonlinear optical process where two photons are simultaneously absorbed to induce polymerization within a photosensitive material (table  2 ).This enables the creation of structures with sub-micron resolution. TPP’s ability to produce features smaller than the diffraction limit of light makes it particularly useful in fields such as photonics, biosciences, and micro-electromechanical systems [ 62 ,  63 – 64 ] and microfluidics [ 65 ] [ 66 ]. Moreover, it is also the only technique that is fully freeform (does not need to print in layers), enabled by polymerization only occurring around the focal point of the laser. Although TPP systems can reach high writing speeds, the overall throughput is typically limited by the serial voxel-by-voxel nature of the process, the small voxel size, restricted writing fields, and the challenges of scaling beyond micro- and mesoscale structures [ 67 ,  68 ]. Compared to other 3D printing methods, the equipment for TPP is expensive, and the process itself is costly and requires expert users. Table 2 Comparison of light-based additive manufacturing techniques for microfluidic fabrication Technique Working principle Minimum channel size Pros Cons Multi-material capability References Stereolitho- graphy (SLA) Photopolymerization with a UV laser source Custom systems: 18  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${\\upmu}$$\\end{document} m  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\times $$\\end{document}  20  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${\\upmu}$$\\end{document} m; commercial SLA typically 50–100  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${\\upmu}$$\\end{document} m without specialized resins Good resolution and smooth internal surfaces; entry-level resin SLA printers have a low price, typically 500–2000 € Uncured resin removal from enclosed channels can be difficult; material options are largely limited to UV-curable resins Generally single-material; multi-resin approaches are mostly research-level [ 69 ] Digital Light Processing (DLP) Photopolymerization with a digital micromirror device 18  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${\\upmu}$$\\end{document} m  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\times $$\\end{document}  20  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${\\upmu}$$\\end{document} m demonstrated; standard microfluidics typically  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\ge $$\\end{document} 75–100  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${\\upmu}$$\\end{document} m High XY resolution and fast printing; good surface quality for precise microstructures; price range from 500–2000 € for entry-level systems to >5000 € for professional printers Minimum feature size is constrained by pixel size; cleaning enclosed channels remains challenging Primarily single-material; emerging multi-resin concepts remain complex and mostly at the research stage [ 11 ] Masked stereolithography (mSLA) Photopolymerization with an LCD screen Limited by pixel size ( \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\sim $$\\end{document} 18–35  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${\\upmu}$$\\end{document} m) and scattering; embedded channels commonly  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\ge $$\\end{document} 75  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${\\upmu}$$\\end{document} m Low-cost, typically 500–1000 € for entry-level systems; useful for microfluidic channels around 75–100  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${\\upmu}$$\\end{document} m LCD pixel bleeding and light scattering reduce fidelity Normally single-material; resin swapping for multi-material microfluidics is possible but typically still at the research stage [ 70 ] Two-Photon Polymerization (TPP) Photopolymerization via two-photon absorption <1  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${\\upmu}$$\\end{document} m to 10  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${\\upmu}$$\\end{document} m Highest available resolution, including sub-micron features; enables micro-/nano-fluidic components Limited by build volume, throughput, and scalability; very high equipment cost (>500K€) Multi-material printing is possible via sequential writing/material exchange, but most systems operate with a single photoresist per run [ 71 ]"
+      ]
+    },
+    {
+      "heading": "Multi-material light-based additive manufacturing",
+      "paragraphs": [
+        "As previously mentioned, most of the light-based additive manufacturing techniques do not enable for multi-material 3D printing. However, academic research has focused on overcoming this limitation. Grayscale-based DLP provides another route to spatially programmed material properties without physical resin exchange. Instead of using binary exposure patterns, grayscale projection modulates the local light dose within each layer, thereby controlling the degree of conversion, cure depth, crosslinking density, or subsequent reaction extent [ 72 ,  73 ]. This strategy has been used to fabricate functionally graded materials from a single resin vat, including structures with large spatial variations in mechanical properties [ 59 ,  72 ]. For microfluidic devices, grayscale exposure could be relevant for locally tuning membrane stiffness, valve compliance, optical transmission, or permeability. However, grayscale printing does not necessarily produce chemically distinct materials unless the resin formulation is specifically designed to translate light dose into different material states. Moreover, careful calibration is required because light scattering, overcuring, post-curing, and dose-depth coupling can reduce spatial fidelity. To be able to print with different materials, four main concepts have been proposed for the fabrication of multi-material structures using light-based 3D printing: the multiple tank approach, single tank approach, the (micro)fluidic approach, and the material approach. In the following subsections, each approach is described and a comparison is presented in table  3 ."
+      ]
+    },
+    {
+      "heading": "Multiple tank approach",
+      "paragraphs": [
+        "The multiple tank approach [ 74 ,  75 ] uses two or more tanks, each containing a different material or serving as a rinsing station. The main steps involved are as follows:  Print with the first material in the first vat; Lift the print-bed and clean the printed part which is still wet with unpolymerized resin; Dry the printed part; Move to the second vat; Print with the second material; Repeat points 2, 3, 4 and 5 for multi material printing. Switching between different vats can be performed manually, using linear translation or with a rotating carousel, as shown in Fig.  3 .",
+        "The ’print–pause–print’ methods, introduced by Kim et al. [ 76 ], allows for the manual exchange of poly (ethylene glycol) diacrylate (PEG-DA) resins during the stereolithographic printing process to create a microfluidic device. The authors presented a molecular diffusion device, integrating water-impermeable channel walls and a porous barrier structure for the study of small molecule diffusion. However, this method has some drawbacks. The printing process can be time-consuming, relying on manual intervention. There is a high risk of material contamination due to unpolymerized resin on the platform and potential residues in the tank. Additionally, this approach may result in significant material waste.",
+        "A linear translation concept has been developed by Cheng et al. [ 75 ] to integrate material handling and rinsing process (Fig.  3 i). UV light is digitally projected from a UV source positioned beneath a vertically moving platform (the build plate). A glass plate sits between the UV projector and the platform, supporting two or more polymer resin containers. This plate moves horizontally to deliver the appropriate resin for each layer. The capabilities of the proposed approach have been demonstrated by presenting the fabrication of digital materials, soft robot with seamlessly integrated sensors, and ceramic structure with freestanding parts by printing ceramic and polymer together. Moreover, hydrogels with two colors have been printed to simulate a blood vessel system: the red hydrogel blood vessels have been embedded into a transparent hydrogel matrix. Fig. 3 Prototypes of multi-material 3D printers which employ the multiple tank approach by means of (i) linear translation stage, adapted with permission from Ref. [ 75 ], and (ii) a rotating carousel, adapted with permission from Ref. [ 74 ] to enable resin switching",
+        "The rotating carousel concept (Fig.  3 ii) was presented by Choi et al. [ 74 ]. Their approach allowed for the sequential use of different photopolymers by rotating the build platform between four stainless steel vats containing various resins. Different challenges have been presented and overcome in this work. First a leveling system (including a laser displacement sensor, floating target, peristaltic pump, pump head, flexible tubing, and resin containers) was created to keep a constant resin level across the different vats. Secondly, the viscosity of commercially available resins has been lowered (by dilution with solvent) in order to ensure good removal of uncured resin after printing or during material exchange.",
+        "In conclusion, the multiple tank method effectively eliminates material contamination by keeping materials separate. It reduces material waste by minimizing cross-contamination; however, the requirement for thorough cleaning of parts before switching materials can still generate some waste. When combined with process automation, it enhances efficiency and precision in the fabrication of complex multi-material structures. The limited number of tanks that can be integrated into a 3D printing system inherently restricts the variety of materials that can be used in a single fabrication process: each additional material requires its own tank, increasing the system’s complexity and spatial footprint. Furthermore, the procedure can be time-consuming due to the necessary rinsing steps between material changes, which may slow down the overall production rate. Despite these challenges, the multiple tank approach remains a viable method for applications where material purity is critical, and the number of materials used is limited."
+      ]
+    },
+    {
+      "heading": "Single tank approach",
+      "paragraphs": [
+        "The single tank approach uses one tank or build platform, on top of which the material switching is perform manually or by means of automated fluidic systems.",
+        "Hensleigh et. al [ 77 ] presented a projection stereolithography system equipped with a fluidic system capable of depositing different photo-curable resins on a platform (Fig.  4 i). Subsequently, the resin polymerized to form 3D micro-architectures via exposition to UV light and unpolymerized resin is then removed with a wiper. The authors developed custom made recipes to form photo-sensitive resins with specific electrical charge. Printing those charged resins enables to create 3D charge-programmed mosaic structures which precise location of electrostatic charges from which a variety of materials can be subsequently deposited at predefined locations within the structure. Microscale selective depositions of several materials, including metallic, ceramic, semiconducting and magnetic materials, either singularly or in combination with multiple depositions have been demonstrated.",
+        "A different approach has been proposed by Quero et al. [ 78 ]. It is based on a simple modification of a DLP printer that relies on a vat inclination system and embedded peristaltic pumps that allow the injection and removal of resins and the cleaning step between material changes (Fig.  4 ii). Using a high-resolution projector, microfluidic channels as narrow as 43  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${\\upmu}$$\\end{document} m in diameter were obtained. The printing of multi-material objects containing flexible, rigid, water-soluble, fluorescent, phosphorescent, and conductive (containing Poly(3,4-ethylenedioxythiophene) or copper nanoparticles) resins has been demonstrated by presenting some showcase devices. Examples of microfluidic chips printed with this technique are a capillary microchip electrophoresis containing conductive electrodes to perform contactless conductivity detection and a straight channel device surrounded by a spiral microchannel combining conductive and non-conductive resins. A positive aspect of the vat tilting concept is that it can be easily incorporated into commercially available printers; the down side relates with the high probability of contamination while exchanging the resin. Fig. 4 Prototypes of multi-material 3D printers which employ the single tank approach coupled with (i) a resin wiper, adapted with permission from Ref. [ 77 ], and (ii) a bath tilting mechanism, adapted with permission from Ref. [ 78 ]"
+      ]
+    },
+    {
+      "heading": "(Micro)fluidic approach",
+      "paragraphs": [
+        "The resin exchange and the cleaning step can also be performed in an integrated and enclosed (micro)fluidic system. (Micro)channels are used to precisely deliver feedstock materials into a (micro)fluidic chamber. In this method, the flow of materials is meticulously controlled by valves and facilitated by pumps, allowing for the precise manipulation of multiple materials. After photopolymerization occurs, unpolymerized material is efficiently pumped out of the chamber. The chamber can then be rinsed with a solvent and filled with a different material for subsequent processing steps, facilitating multi-material fabrication. Han et al. [ 79 ] presented a multi-material projection micro-stereolithography based on the use of a dynamic fluidic control of multiple liquid photopolymers and an integrated fluidic cell. Figure  5 i shows the proposed setup. A transparent glass window coated with polydimethylsiloxane (PDMS) was tightly clamped to the top of the fluidic cell. The UV light ( \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\lambda $$\\end{document} =405 nm) passing through the window, reaches the photocurable polymer solution in the enclosed fluidic cell. The pressure-driven material exchange process was performed using a pump connected to the fluidic cell through tubing: during the material exchange, the new material was quickly pumped to the fluidic cell to replace the previous material in the printing chamber. With this technique, a bi-layer micro-capillary structure has been presented, containing hollow channels with an inner diameter of 100  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${\\upmu}$$\\end{document} m.",
+        "A similar approach has been presented by Mayer et al. [ 61 ]. Figure  5 ii shows a microfluidic chamber that has been integrated with a commercial TPP system (Nanoscribe [ 80 ]). The material exchange is performed using a pressure controller that is connected to a nitrogen bottle, several reservoirs containing the different photoresists and developer liquids, a home-built distributor valve, and tubing connecting the different components. Fig. 5 Representative examples of multi-material 3D printers utilizing the (micro)fluidic approach for resin exchange. (i) System developed by Han et al, adapted with permission from Ref.[ 79 ], (ii) Setup by Mayer et al, adapted with permission from Ref. [ 61 ], (iii) Design by Kunwar et al, adapted with permission from Ref. [ 81 ], (iv) Configuration by Fournié et al, adapted with permission from Ref. [ 82 ]",
+        "Kunwar et al. [ 81 ] Fig.  5 iii, presented a similar approach but instead using pressure-driven flow to exchange the resin, they rely on the generation and continuous maintenance of a resin meniscus between crosslinked layers and the bottom of a PDMS window (through which a 405nm light is projected). The authors named such process  Meniscus-enabled Projection Stereolithography or MAPS platform . During printing, a 3-phase contact line between resin, crosslinked layers, and air is present by a continuous flow of resin solution using syringe pumps and an inline micromixer. Such resin meniscus serves as a reservoir for the MAPS printing process. Material exchange is performed using two independent infusion ports with programmable flow rates, demonstrating low or no cross-contamination in both vertical and lateral directions. Among other examples to demonstrate the capabilities of the MAPS platform, the authors presented a 3D printed 3-channel hydrophobic (PEGDA 250) microfluidic device with hydrophilic (PEGDA 6k) central channel separated by an array of micro-posts.",
+        "A different concept has been proposed by Fournié et al. [ 82 ] (Fig.  5 iv). They developed a modified printhead capable of controlled aspiration and injection of the photocurable materials to enable the material exchange. This ensure a continuous supply of material and reducing cross-contamination issues. UV curing of the deposited resin is performed using an optical fiber coupled to a 405nm monomodal laser embedded in the printhead. The authors demonstrated the capability of the system to print lines with a width of 20 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${\\upmu}$$\\end{document} m and its suitability for the manufacturing of engineered micro-environment and scaffolds for cell growth and cell migration studies.",
+        "Although the (micro)fluidic approach shows a great potential for the fabrication of high-resolution multi-material microfluidic channels, it also presents some challenges. The viscosity of the materials can affect flow dynamics within the fluidic material exchange systems, potentially impacting the resolution and accuracy of the printed structures. There is also a risk of contamination during material exchange, which can affect the purity and performance of the final product. Significant material waste may occur due to the need to fill and flush the microfluidic systems, leading to inefficiencies."
+      ]
+    },
+    {
+      "heading": "Material approach",
+      "paragraphs": [
+        "A completely different approach to multi-material light-based polymerization has been taken by Cazin et al. [ 83 ,  84 ]. Instead of mechanically swapping materials, they took a chemical approach by mixing a dual photocurable resin whose material properties could be controlled when hardened via polymerization at different wavelengths. By exposing the epoxy monomers with 365 nm UV-light they undergo cationic hardening, while the acrylates in the mixture undergo radical induced chain growth after exposure with 405 nm light. Exposing the mixture with only 365nm UV-light resulted in a relatively brittle part with only 4 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\%$$\\end{document}  elongation at failure, while exposing to only 405nm light resulted in a highly flexible part with up to 24 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\%$$\\end{document}  elongation at failure. This chemical approach can achieve printing speeds comparable to single material resin printer, with zero waste. While this is highly promising, the material selection for this approach is very limited due to the lack of research into dual photocurable resins.",
+        "More generally, in wavelength-selective vat photopolymerization systems, different wavelengths can be used to selectively activate distinct photochemical pathways or modulate the local degree of conversion within a single resin bath. This enables spatial control over material properties, and in suitably designed systems also over material composition, without physical resin exchange [ 85 ]. A unique dual-wavelength vat photopolymerization (DW-VP) technique is presented by Chin et al. [ 86 ], allowing for the printing of vivid, multicolored images from a single, uniform resin vat. Combining pH-sensitive dyes with a photoacid generator (PAG) is the core of their innovation. This enables UV light (365 nm) to modulate the local acidity and, consequently, color, while visible light curing (405 nm) determines the object’s geometry. This system allows for either a two-step process (structure first, color added later) or simultaneous dual-light exposure, resulting in high-resolution (approximately 50 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${\\upmu}$$\\end{document} m layers) multicolored objects that are visually striking, such as gradient pyramids and camouflaged cubes. High-resolution, full-color photopolymerization printing without resin swapping is possible thanks to mechanical testing that demonstrated color change does not affect structural integrity. Table 3 Comparison of multi-material approaches for light-based additive manufacturing Multi-material approach Switching 3D printing technique Materials Cleaning between material exchange Microfluidic application Switching time References Multiple tanks Manual SLA PEG-DA in various Mw Cleaning the tank to avoid cross contamination Porous barrier within transparent microfluidic channels Minutes [ 76 ,  87 ] Linear translation DLP Hydrogels, functional polymers, ceramics acrylic based resins Spinning platform or dedicated rinsing tank A blood vessel system consisting of bi-colored hydrogels 30 s-5 min [ 75 ,  88 ,  89 ] Rotating VAT carousel SLA Commercially available materials, diluted with (2) propoxylated neopentyl glycol diacrylate (PNGD) Manual cleaning with isopropyl alcohol Microfluidic application; not shown Not mentioned [ 74 ] Single tank Changing the deposition bath (particle suspension) between steps, while spatial selectivity is controlled by the programmed surface charges on the printed object SLA Metallic, ceramic, semiconducting and magnetic materials Cleaning through ethanol rinse and air-dried Microfluidic application not shown; showcased devices with 3D electronic interfaces Not mentioned [ 77 ] Local deposition of resin using extrusion heads DLP Formlabs commercial resins No cleaning needed Microfluidic application not shown Not mentioned [ 90 ] Vat inclination system and embedded peristaltic pumps for injection and removal of resins DLP Flexible, rigid, water soluble, fluorescent, phosphorescent, and conductive (containing PEDOT or copper nanoparticles) resins The vat washing procedure is able to clean the previously printed layers since the volume of solvent injected is enough to partially cover the building platform Microfluidic channels of widths down to 43 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${\\upmu}$$\\end{document} m, capillary microchip electrophoresis devices with integrated conductive electrodes, straight channels surrounded by spiral microchannel architectures Flow time of 60 s, it was possible to recover 95 % of the material in the vat [ 78 ] (Micro)fluidic Within the printhead Optical fiber is integrated in the printhead PEGDA-based hydrogels Flushing and injecting subsequent material Scaffolds for cell patterning and spheroid engineering 90 s [ 82 ] From the build platform, through microfluidic ducts engineered within the growing part (iCLIP) DLP Acrylate, epoxy, carbon nanotube filled resins Not needed if all injected resin is used during printing Microfluidic application not shown Depended on resin viscosity [ 91 ] Fluidic cell consists of a printing chamber with integrated microfluidic inlet and outlet channels, a build platform with an embedded pumping channel, and optical windows Custom made DLP, TPP, SLA PEGDA-based resins, GelMA-based bioinks, commercial photopolymer resins, custom-developed PEGDA/NIPAAm-based resins, photoresists incorporating fluorescent semiconductor quantum dots and organic dyes, nonfluorescent photoresists Flushing and injecting subsequent material 3-channel hydrophobic (PEGDA 250), microfluidic device with hydrophilic (PEGDA 6k), central channel separated by an array of micro-posts / Bilayer micro-capillary structure with a hollow channel (inner diameter of 100  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${\\upmu}$$\\end{document} m) /continuous or discrete gradients of desired (bio)inks Continuous, within a few seconds [ 61 ,  79 ,  81 ,  92 ] Material No switching mSLA PEGDA-based resins, modified with photoacid generator (PAG) in combination with pH responsive dyes No cleaning needed Microfluidic application not shown No switching [ 86 ] No switching Customized DLP printer with high intensity LED sources Dual photocurable resin is applied containing multi-functional acrylates, which are cured by a radical induced chain growth reaction at 405 nm, and bi-functional epoxy monomers, which additionally undergo cationic curing upon UV exposure (365 nm) No cleaning needed Microfluidic application not shown No switching [ 83 ]"
+      ]
+    },
+    {
+      "heading": "Commercially available light-based multi-material printers",
+      "paragraphs": [
+        "Commercially available multi-material light-based 3D printing systems, that uses one of the methods for resin exchange described in the previous paragraph, are scarce.",
+        "The Lithoz CeraFab Multi 2M30 [ 93 ], has not been used for the manufacturing of microfluidic devices, but it enables the development of multifunctional parts combining ceramic and metal materials. Materials can be combined within a single layer by using a multiple tank approach.",
+        "A microfluidic approach is used by Heteromerge [ 94 ] to enable miniaturized functional 3D multi-material prints with two-photon laser lithography. Their fluidic system is specifically designed as an add-on for the TPP Nanoscribe printers [ 80 ].",
+        "Supernova [ 95 ] introduced the Viscous Lithography Manufacturing (VLM) approach, which represents an innovative technique within the field of additive manufacturing. Since it is still in the technology adoption phase, it has never been used for microfluidic application, but it worth to mention it because it holds the promise of dual-material printing at high resolution. This method minimizes material waste by transferring the material from its tank to the photopolymerization area via laminating a thin film using a roller, and then returning the unpolymerized material back to its tank. Furthermore, there is no requirement for rinsing, and there is no risk of material contamination. It is important to note that the use of high-viscosity materials is associated with certain disadvantages, including the limitation of the available resins.",
+        "In addition, research-grade DLP systems such as the MonoPrinter MONO3-VZ/MONO3VZ2 [ 96 ] can be configured with multiple LED channels, commonly in the UV and visible range, enabling sequential or wavelength-selective exposure protocols. Such hardware is particularly relevant for dual-wavelength resin systems, where material properties are programmed through orthogonal or sequential photochemical reactions rather than through mechanical resin exchange. However, these approaches depend strongly on the availability of suitable wavelength-selective chemistries, and their translation to microfluidic devices still requires resins that combine optical transparency, biocompatibility, chemical stability, and compatibility with channel-cleaning procedures."
+      ]
+    },
+    {
+      "heading": "Challenges in multi-material light-based 3D printing",
+      "paragraphs": [
+        "One of the primary challenges in light-based multi-material additive manufacturing is  material contamination  [ 97 ]. When switching between different materials, residue on the surfaces of the part or the resin tank can cause cross-contamination between the feed materials, resulting in a dilemma. Either sacrifice the purity and performance of the final microfluidic device or discard the contaminated materials. Properly cleaning these surfaces can prevent this cross-contamination, but most cleaning methods do not allow for the reclamation of the residues which are removed from the part. Both discarding feed material and cleaning without material reclamation results in significant material waste. In many cases during a full multi-material print, the wasted material be significantly greater in volume than the final product. When also considering the scarce availability and high price of biocompatible resins, the extent of this problem becomes apparent. Fig. 6 Cleaning approaches. Rinsing station by Grigoryan et al, adapted with permission from Ref. [ 98 ] and removal by centrifugal force by Cheng et al, adapted with permission from Ref. [ 75 ]",
+        "Two principal methodologies exist for the removal of unpolymerized resin during multi-material printing via light-based 3D printing:  The first entails the washing of the structure with solvents. If material exchange is performed using the (micro)fluidic approach, the cleaning can occur within the microfluidic chamber, using the same setup as shown in Fig.  5 ii [ 61 ]. Otherwise, when material exchange is performed through the single tank approach or multiple tanks approach, the cleaning of the structure with solvents [ 74 ,  98 ] can also be done manually rinsing the printed part or by employing a dedicated tank (Fig.  6 i), where a deep-in approach or an ultrasonic cleaning setup have been successfully employed. Those methods allow for zero reclamation of the cleaned resins, resulting in increased material waste. The second approach, proposed by Chen et al. [ 75 ], does not require solvent (Fig.  6 ii). Drawing inspiration from mammals that shake their bodies to dry off, the authors developed the centrifugal cleaning system, which removes residual resin during multi-material transitions by spinning the printed part at high angular speeds (1000–10000 rpm). Unlike previously reported techniques, this approach eliminates the need for direct contact with a solid wiper or fluid, making it suitable for fabricating multi-material structures over significantly larger areas. While this technique enables for both material reclamation and cleaning of complex shapes, vibrations due to asymmetric parts and alignment issues remain troublesome. In addition to cleaning,  post processing  represents a challenging step, since the different materials may require different specific treatments, which may not be compatible with each other. Ultrasonic cleaning [ 99 ] facilitates the removal of residual resin from hard-to-reach areas without compromising the structural integrity of the printed parts. This method proves particularly effective for ensuring thorough cleaning, which is crucial for maintaining the dimensional accuracy and surface finish of the final microfluidic device. However, this method may not be compatible with all photocurable polymers. For instance, hydrogels require drying, where techniques like air-drying and lyophilization (freeze-drying) are commonly employed [ 100 ,  101 ]. According to Hwangbo[ 102 ] the choice of washing solution and the duration of the washing process significantly impact both biocompatibility and mechanical properties. Optimizing these parameters can lead to improved safety and performance of biocompatible structures. Keane et al. [ 103 ], explore a range of post-processing techniques tailored for biopolymers, highlighting the importance of selecting appropriate cleaning methods to maintain the integrity and desired properties of these materials. Table 4 Pros and cons of multi-material approaches Multi-material approach Pros Cons Multiple tanks Simple and rapid method with low cost; compatible with a broad range of materials and scalable to multi-material printing, though ultimately limited by the number of available vats or tanks Often requires human intervention; susceptible to vibration and stability issues (e.g., rotating print beds); constrained by resin viscosity, shadowing, trapped volumes, surface tension effects, and scalability limited by space limitations for multiple tanks or carousel systems Single tank Scalable implementation; compatible with several light-based 3D printing techniques; supports integration of  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\ge $$\\end{document} 4 materials within a single structure; affordable and relatively easy to implement High material waste; resolution can depend on precise resin localization if a deposition process is involved; high-viscosity resins can increase vat filling, drainage, and recoating times and may complicate complete interlayer filling. Low-viscosity resins facilitate resin exchange and recoating; however, viscosity alone does not determine mechanical performance, which is primarily governed by resin chemistry, monomer/oligomer structure, crosslinking density, filler content, degree of conversion, curing conditions, and post-processing (Micro)fluidic Fully integrated system enabling the integration with high-resolution printing techniques; scalable vat-free approach with enhanced printing speeds; supports printing of high-viscosity resins and processing of multiple resins; enables fabrication of complex 3D structures with programmable lateral, vertical, discrete, or gradient material variations; relatively easy to scale High material waste and extensive parameter tuning required; risk of resin contamination during multimaterial printing, leading to additional waste; claims of minimal contamination are not always experimentally verified; printable structure height may be limited by the design of the fluidic chamber; material consumption increases with the number of materials due to resin mixing during material switching, reducing throughput especially for highly viscous resins Material Single-step fabrication with fast printing speeds and good interlayer adhesion; thermally promoted diffusion can improve interfacial bonding between soft and rigid domains, enhancing mechanical continuity across material interfaces Limited material availability and functional diversity (often restricted to color changes); lack of sharp material interfaces due to diffusion of photo-released species, which compromises multi-material spatial resolution; overall approach is not easily scalable",
+        "A second aspect that poses some challenges in light-based multi-material 3D printing is the fact that, despite efforts to  minimize material waste , it may not be possible to re-use the unpolymerized resin, which may still be lost during the switching and cleaning processes. This not only increases material cost but also reduces the sustainability of the manufacturing process [ 97 ].",
+        "The workflow and equipment required for multi-material printing are also complex. Multi-material light-based 3D printing often necessitates  sophisticated systems  such as rotating carousels or multiple vats to handle different resins. This increased complexity can lead to higher maintenance requirements and potential downtime if the system malfunctions [ 104 ].",
+        "Processing time  is another significant challenge. The need to switch materials and clean the system between uses can considerably slow down the manufacturing process, reducing overall efficiency compared to single-material printing methods [ 97 ,  104 ].",
+        "Achieving consistent  dimensional accuracy and high surface quality  across different materials is also challenging. Variations in the curing properties of different resins can lead to inconsistencies in the final product [ 105 ]. This underscores the need for  slicing and design software  to manage material distribution and variable process parameters (e.g. exposure time).",
+        "An additional challenge that needs to be addressed when printing with multiple materials is the  swelling  (and de-swelling) process, which involve the controlled absorption and release of water, which can modify the polymer (or hydrogel material) properties. By manipulating the swelling behavior, researchers can tailor the mechanical properties and responsiveness of hydrogels to environmental stimuli such as pH, temperature, and ionic strength [ 106 ]. However, a deeper understanding of the swelling process when printing different materials is still needed since each material may have a different swelling ratio when exposed to the same environmental conditions, leading to uneven stress distribution, mechanical deformation of the structures, and loss of performance."
+      ]
+    },
+    {
+      "heading": "Properties and characteristics of commonly used resins and hydrogels in multi- material light-based printing",
+      "paragraphs": [
+        "There is a wide variety of materials used in light-based 3D printing; the selection depends on the characteristics and intended application of the structures. This selection becomes even more critical in multi-material light-based 3D printing, as it enables the combination of different mechanical properties and chemical compositions within a single printed object. Understanding these materials is crucial for optimizing the technology to create complex and multifunctional structures.",
+        "Resins used in light-based 3D printing technologies are typically composed of several key components that work together to enable precise and rapid curing under specific wavelengths of light. The primary component is the photopolymerizable monomer or oligomer, which forms the structural matrix of the printed object once polymerized. Photoinitiators are another essential ingredient; they absorb the incoming light (usually UV or visible light) and generate reactive species (like free radicals) that trigger polymerization of the monomers. To fine-tune the resin’s mechanical properties, additives such as stabilizers, which help prevent premature curing during storage, dyes or pigments, which may be added to control light penetration and improve resolution and crosslinkers. Crosslinkers, or crosslinking agents, are essential in light-based 3D printing, where they form covalent bonds between polymer chains to create a three-dimensional network structure that enhances the printed material’s mechanical strength, thermal stability, and chemical resistance [ 107 ,  108 ]. They are generally classified as monomeric (e.g., divinylbenzene (DVB), ethylene glycol dimethacrylate (EGDMA)) or polymeric (e.g., poly(ethylene glycol) diacrylate (PEGDA), polyurethanes), based on their molecular size and functionality. Physical crosslinkers, involving ionic interactions or hydrogen bonding, are also used, especially in hydrogels. Additionally, photo-crosslinkers, such as certain acrylates and methacrylates, are activated by UV or visible light and are particularly suitable for vat photopolymerization processes [ 109 ]. Crosslinking improves mechanical toughness, reduces chain mobility, enhances thermal stability, and increases chemical resistance, making it critical for durable, high-performance applications. The  compatibility between materials  in multi-material additive manufacturing using vat photopolymerization techniques represents a significant challenge that affects the quality, mechanical integrity and overall functionality of printed components [ 105 ]. Specifically, chemical compatibility is a primary concern: different materials frequently exhibit varying polymerization rates and mechanisms. For example, combining materials that cure through different photoinitiators or polymerization pathways, such as radical versus cationic polymerization, can result in incomplete curing and weak interfaces [ 110 ]. It is therefore essential to ensure that the materials have compatible functional groups to form strong interfacial bonds in order to mitigate this issue. Selecting the appropriate crosslinker is essential for ensuring compatibility with the base polymer and other materials. Incompatible crosslinkers can result in weak interfaces and poor mechanical properties [ 111 ,  112 ]. Therefore, it is crucial to carefully control the crosslinking density in order to achieve the desired balance of mechanical properties and flexibility. High crosslinking density can make the material too brittle, while low density may not provide sufficient mechanical strength. Furthermore, the conditions under which crosslinking occurs, such as temperature, UV exposure, and the presence of catalysts, must be optimized to ensure uniform and complete crosslinking throughout the printed object [ 107 ,  113 ,  114 ].",
+        "The compatibility of materials is further complicated by  environmental factors  such as moisture sensitivity and UV stability [ 115 ]. Some photopolymers are sensitive to moisture, which affects their curing and long-term stability. Furthermore, materials that degrade or change properties under prolonged UV exposure can create inhomogeneities, reducing the durability of the final product [ 116 ].",
+        "Thermal and mechanical properties  also play a crucial role. A mismatch in the coefficients of thermal expansion between materials can induce stresses at the interface during temperature changes, leading to cracks or delamination. This issue is particularly problematic in applications subjected to thermal cycling [ 117 ]. Additionally,  differences in mechanical properties , such as stiffness and elasticity, can create stress concentrations at the interface. The use of gradient materials or the design of a gradual transition in material properties can help alleviate these stresses [ 107 ,  118 ].",
+        "Moreover, the microfluidic application poses additional requirements on the selected materials: transparency is often required to enable optical inspection inside the microfluidic device, compatibility with high-temperature treatments that may be required for sterilization [ 119 ,  120 ] and biocompatibility [ 121 ].",
+        "Table  5  provides an overview of various biocompatible resins and hydrogels that can be used in multi-material light-based printing. It includes information regarding their printing resolution, the printing technology and distinguishes between custom-made and commercially available options. Table 5 Overview of biocompatible resins and hydrogels in light-based 3D printing Materials Type of materials Minimum resolution ( \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${\\upmu}$$\\end{document} m) Method Development References PEDOT:PSS Hydrogel 70 DLP Custom made [ 122 ] FLECLC01 Resin 100 DLP Commercially available [ 122 ] PEGDA Hydrogel 7 DLP,SLA,TPP Custom made [ 98 ,  122 ,  123 ,  124 – 125 ] PCT Hydrogel 25 DLP Custom made [ 124 ] GelMA Hydrogel 36 DLP,SLA Custom made [ 98 ,  124 ,  126 ,  127 ] Hydroxyethyl Resin 70 DLP Custom made [ 122 ,  123 ] Globular proteins Resin 7 TPP Custom made [ 125 ,  128 ,  129 ] PETA Resin 7 TPP Custom made [ 125 ] Hyaluronic acid Hydrogel 200 DLP,SLA Custom made [ 98 ,  126 ,  127 ]",
+        "From the table two observations can be made. First of all, most of the biocompatible materials employed in light-based 3D printing are custom made, due to the early stage of development of this technology. Secondly, several hydrogels are used. This is due to their unique properties and potential biomedical applications. Having a high water content, they provide flexibility and biocompatibility, making them ideal for the development of medical devices. However, the printing of hydrogels is challenging due to their low crosslinking density, leading to mechanical weaknesses. Researchers address this using a combination of stable and hydrolyzable crosslinkers, such as PEG-dimethacrylate, to balance structure integrity and to control the amount of water content [ 130 ]."
+      ]
+    },
+    {
+      "heading": "Hybrid additive manufacturing",
+      "paragraphs": [
+        "Hybrid Additive Manufacturing (HAM) combines additive and subtractive manufacturing processes, such as 3D printing with CNC machining, to enhance the precision and functionality of the final product. HAM typically involves building the part using additive manufacturing techniques and then refining it with subtractive processes to achieve the desired surface finish and dimensional accuracy. HAM enables the integration of rigid structural components with flexible, functional parts, resulting in microfluidic devices that offer enhanced durability and performance. This approach leverages the strengths of various printing technologies, allowing for the creation of complex, multi-material systems tailored for advanced microfluidic applications. The build platform and the tool head move in coordinated motions to switch between additive and subtractive operations seamlessly, allowing high precision and complex geometries to be achieved in a single setup [ 30 ]. As an example of the use of HAM, Peng et al. [ 131 ] explored the integration of hybrid additive manufacturing (HAM) technologies in the design and production of complex mechanical systems. The study focused on combining DLP with DIW to create components with enhanced mechanical properties and functional capabilities. This research highlights the importance of material selection and process optimization in achieving high-performance products through advanced manufacturing techniques.",
+        "Hybrid manufacturing strategies combining 3D printing with laser micromachined lamination have been used to fabricate stand-alone microfluidic devices with embedded channels and manifolds,reducing fabrication complexities, as well as allowing more complex designs, including flow in all three directions and transverse multilayer flow. However, the HAM literature in multi-material microfluidics appears limited. Ruiz et al. [ 132 ] examines the HAM technique, which combines different 3D printing methods to fabricate microfluidic devices with both hard and soft materials. Du et al. reports hybrid 3D-printed microfluidic systems integrating multiple materials and functional components, such as fluidic channels and embedded electrodes, through multi-material and multi-scale printing method based on the combination of a multi-material aerosol jet printing (AJP) head with dual ink atomizers and an extrusion printing (EP) -based direct ink writing head.",
+        "Additional approaches include print–pause–print workflows and the combination of different printing technologies, such as FDM and SLA, to produce hard–soft composite microfluidic devices, as well as hybrid systems that merge paper-based microfluidics with 3D-printed polymer structures."
+      ]
+    },
+    {
+      "heading": "Conclusion",
+      "paragraphs": [
+        "This review presents the emerging field of multi-material 3D printing for microfluidics, with a focus on the latest advancements in multi-material light-based 3D printing techniques. A comparison of the unique advantages and limitations of each multi-material additive manufacturing technique is presented in Tables  1  and  2 . The affordability of the different printers is also presented. This is a relevant aspect, as cost is directly related to the potential for broader adoption of the technology, including in \"non-technical\" settings, such as biological laboratories, for the fabrication of custom microfluidic systems.",
+        "FFF is intrinsically a multi-material printing technique and it enables large printing volumes: cm-scale devices can be fabricated. However, the printing resolution is quite low, making FFF less suitable for the fabrication of microfluidic devices. DIW stands out for its ability to handle a wide range of materials, create complex geometries, and enable multi-material printing, but it requires precise control over ink rheology and process parameters to ensure consistent results. PolyJet technology is as a versatile solution, offering high-resolution, multi-material capabilities and devices with a size in the cm-range can be created. The downside of this technology is the material availability, which remains a significant challenge. Light-based technologies like DLP and SLA offer high resolution and they enable for printing cm-scale devices but commercially available systems lack multi-material capabilities. TPP offers the highest resolution (nanometers) and, as previously mentioned, there is a commercially available add-on for Nanoscribe printers that enables multi-material integration (Heteromerge) [ 94 ]. However, the overall dimension of the printed device is small (mm-scale).",
+        "Research, as presented in this review paper, shows promising results to enable multi-material printing for light-based additive manufacturing. Over the past decade, this research field has experienced remarkable growth, as evidenced by the development of the various concepts discussed in this paper. A comparison between the approaches is presented in Table  4 . Among these, the microfluidic approach appears to be the most promising for large-scale implementation and broader adoption, as it enables seamless exchange of resin and solvents. In contrast, the single-tank approach requires manual switching of resins, which increases the likelihood of user error and leads to longer processing times, reducing overall reliability. The multi-tank approach is relatively straightforward to implement and minimizes cross-contamination between different resins; however, it faces physical constraints that limit the number of tanks that can be integrated. Finally, the material-based approach presents an intriguing alternative, but it remains hindered by the lack of commercially available resins and persistent contamination issues.",
+        "Understanding the characteristics and limitations of each AM technology is essential for selecting the appropriate technology for the intended microfluidic application. Looking ahead, the challenges highlighted in this review demonstrate the need for continued research and development to optimize multi-material light-based 3D printing process, which is the most promising technology to combine high-resolution and multi-material integration. In addition, it is imperative to increase the number of potential biocompatible materials, improve material compatibility, and enhance cleaning mechanisms to fully realize the potential of this advanced manufacturing technology. More fundamental knowledge is needed to understand the interactions between different materials during the printing process, develop new materials with enhanced properties, and refine the design of printing systems for greater precision and reliability. Additionally, advancements in post-processing techniques are essential to ensure the functionality and longevity of printed devices. We expect that the development of advanced computer-aided design tools and simulation software would be of paramount importance in addressing the aforementioned compatibility issues. Effective design tools must simulate and optimize the interface between different materials, taking into account material properties, environmental conditions, and specific application requirements. These tools are of vital importance in ensuring that the printed part meets the desired performance criteria [ 34 ]. Improvements in control systems are required to enhance the accuracy and reliability of multi-material 3D printing [ 104 ].",
+        "Furthermore, the transition of high-resolution multi-material 3D printing from lab prototypes to commercially available systems faces key challenges. In addition to the ones presented before, repeatability needs to be ensured by print process optimization and improvements in speed and cost-effectiveness are crucial to make multi-material 3D printing competitive with traditional manufacturing methods.",
+        "In conclusion, across microfluidic applications ranging from fluid manipulation components such as mixers, pumps, valves, and droplet generators to functionally integrated systems for sensing, cell handling, drug delivery, and organ-on-chip modeling, device performance increasingly depends on the seamless integration of soft, rigid, conductive, and biofunctional materials within a single architecture. This diversity of application-driven requirements highlights multi-material additive manufacturing as a critical enabler for realizing compact, multifunctional microfluidic systems that combine actuation, sensing, fluid control, and biological interfaces without complex assembly. Looking ahead, multi-material additive manufacturing is expected to drive a shift toward fully integrated, application-specific microfluidic devices, accelerating the development of scalable, customizable, and high-performance microfluidic technologies, enhancing the accessibility, and efficiency of sophisticated liquid handling and diagnostic procedures. As the field progresses, multi-material additive manufacturing is poised to redefine the landscape of lab-on-a-chip systems, biosensors, and point-of-care diagnostics, opening new avenues for rapid prototyping, personalized healthcare, and on-demand device fabrication.",
+        "Supporting Information  No supplementary information"
+      ]
+    }
+  ],
+  "tables": [
+    {
+      "caption": "Comparison of extrusion-based additive manufacturing techniques for microfluidic fabrication",
+      "headers": [
+        "Technique",
+        "Working principle",
+        "Minimum channel size",
+        "Pros",
+        "Cons",
+        "Multi-material capability",
+        "References"
+      ],
+      "rows": [
+        [
+          "Fused Filament Fabrication (FFF) Extrusion of molten thermoplastic polymer",
+          "",
+          "Typically  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\ge $$\\end{document} 500  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${\\upmu}$$\\end{document} m; minimum channel width  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\sim $$\\end{document} 170  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${\\upmu}$$\\end{document} m",
+          "Low cost (200–2000 €), widely accessible; suitable for rapid prototyping",
+          "Limited resolution; rough internal surfaces",
+          "Commercial multi-material systems are available, but material choice is generally limited to thermoplastics",
+          "[ 11 ,  55 ]"
+        ],
+        [
+          "PolyJet (PJ) Jetting of liquid photopolymer",
+          "",
+          "Channels  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\ge $$\\end{document} 205  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${\\upmu}$$\\end{document} m demonstrated; below  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\sim $$\\end{document} 200  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${\\upmu}$$\\end{document} m challenging",
+          "Good surface finish; moderate resolution; channels can be self-supported using uncured resin",
+          "Support removal/cleaning becomes problematic for small channels; expensive equipment (20K–500K €); features below  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\sim $$\\end{document} 50–100  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${\\upmu}$$\\end{document} m may be difficult",
+          "Excellent multi-material capability, well-suited for integrated valves/gaskets/seals; limited material choice due to proprietary materials",
+          "[ 11 ]"
+        ],
+        [
+          "Direct Ink Writing (DIW) Continuous extrusion through a nozzle",
+          "",
+          "Channels down to  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\sim $$\\end{document} 32  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${\\upmu}$$\\end{document} m wide and  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\sim $$\\end{document} 30  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${\\upmu}$$\\end{document} m high using fast-curing inks",
+          "High-resolution features; direct printing of functional inks, e.g., conductive materials and hydrogels",
+          "Often planar/open structures; enclosed 3D microchannels remain challenging; strong dependence on ink rheology",
+          "Multi-material printing via multiple inks or printheads",
+          "[ 47 ]"
+        ]
+      ],
+      "header_groups": [],
+      "table_alignment_status": "resolved",
+      "row_provenance": [
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 7
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 7
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 7
+          }
+        ]
+      ],
+      "tbody_alignment_status": "resolved"
+    },
+    {
+      "caption": "Comparison of light-based additive manufacturing techniques for microfluidic fabrication",
+      "headers": [
+        "Technique",
+        "Working principle",
+        "Minimum channel size",
+        "Pros",
+        "Cons",
+        "Multi-material capability",
+        "References"
+      ],
+      "rows": [
+        [
+          "Stereolitho- graphy (SLA) Photopolymerization with a UV laser source",
+          "",
+          "Custom systems: 18  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${\\upmu}$$\\end{document} m  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\times $$\\end{document}  20  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${\\upmu}$$\\end{document} m; commercial SLA typically 50–100  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${\\upmu}$$\\end{document} m without specialized resins",
+          "Good resolution and smooth internal surfaces; entry-level resin SLA printers have a low price, typically 500–2000 €",
+          "Uncured resin removal from enclosed channels can be difficult; material options are largely limited to UV-curable resins",
+          "Generally single-material; multi-resin approaches are mostly research-level",
+          "[ 69 ]"
+        ],
+        [
+          "Digital Light Processing (DLP) Photopolymerization with a digital micromirror device",
+          "",
+          "18  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${\\upmu}$$\\end{document} m  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\times $$\\end{document}  20  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${\\upmu}$$\\end{document} m demonstrated; standard microfluidics typically  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\ge $$\\end{document} 75–100  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${\\upmu}$$\\end{document} m",
+          "High XY resolution and fast printing; good surface quality for precise microstructures; price range from 500–2000 € for entry-level systems to >5000 € for professional printers",
+          "Minimum feature size is constrained by pixel size; cleaning enclosed channels remains challenging",
+          "Primarily single-material; emerging multi-resin concepts remain complex and mostly at the research stage",
+          "[ 11 ]"
+        ],
+        [
+          "Masked stereolithography (mSLA) Photopolymerization with an LCD screen",
+          "",
+          "Limited by pixel size ( \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\sim $$\\end{document} 18–35  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${\\upmu}$$\\end{document} m) and scattering; embedded channels commonly  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\ge $$\\end{document} 75  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${\\upmu}$$\\end{document} m",
+          "Low-cost, typically 500–1000 € for entry-level systems; useful for microfluidic channels around 75–100  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${\\upmu}$$\\end{document} m",
+          "LCD pixel bleeding and light scattering reduce fidelity",
+          "Normally single-material; resin swapping for multi-material microfluidics is possible but typically still at the research stage",
+          "[ 70 ]"
+        ],
+        [
+          "Two-Photon Polymerization (TPP) Photopolymerization via two-photon absorption",
+          "",
+          "<1  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${\\upmu}$$\\end{document} m to 10  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${\\upmu}$$\\end{document} m",
+          "Highest available resolution, including sub-micron features; enables micro-/nano-fluidic components",
+          "Limited by build volume, throughput, and scalability; very high equipment cost (>500K€)",
+          "Multi-material printing is possible via sequential writing/material exchange, but most systems operate with a single photoresist per run",
+          "[ 71 ]"
+        ]
+      ],
+      "header_groups": [],
+      "table_alignment_status": "resolved",
+      "row_provenance": [
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 7
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 7
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 7
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 7
+          }
+        ]
+      ],
+      "tbody_alignment_status": "resolved"
+    },
+    {
+      "caption": "Comparison of multi-material approaches for light-based additive manufacturing",
+      "headers": [
+        "Multi-material approach",
+        "Switching",
+        "3D printing technique",
+        "Materials",
+        "Cleaning between material exchange",
+        "Microfluidic application",
+        "Switching time",
+        "References"
+      ],
+      "rows": [
+        [
+          "Multiple tanks",
+          "Manual",
+          "SLA",
+          "PEG-DA in various Mw",
+          "Cleaning the tank to avoid cross contamination",
+          "Porous barrier within transparent microfluidic channels",
+          "Minutes",
+          "[ 76 ,  87 ]"
+        ],
+        [
+          "Multiple tanks",
+          "Linear translation",
+          "DLP",
+          "Hydrogels, functional polymers, ceramics acrylic based resins",
+          "Spinning platform or dedicated rinsing tank",
+          "A blood vessel system consisting of bi-colored hydrogels",
+          "30 s-5 min",
+          "[ 75 ,  88 ,  89 ]"
+        ],
+        [
+          "Multiple tanks",
+          "Rotating VAT carousel",
+          "SLA",
+          "Commercially available materials, diluted with (2) propoxylated neopentyl glycol diacrylate (PNGD)",
+          "Manual cleaning with isopropyl alcohol",
+          "Microfluidic application; not shown",
+          "Not mentioned",
+          "[ 74 ]"
+        ],
+        [
+          "Single tank",
+          "Changing the deposition bath (particle suspension) between steps, while spatial selectivity is controlled by the programmed surface charges on the printed object",
+          "SLA",
+          "Metallic, ceramic, semiconducting and magnetic materials",
+          "Cleaning through ethanol rinse and air-dried",
+          "Microfluidic application not shown; showcased devices with 3D electronic interfaces",
+          "Not mentioned",
+          "[ 77 ]"
+        ],
+        [
+          "Single tank",
+          "Local deposition of resin using extrusion heads",
+          "DLP",
+          "Formlabs commercial resins",
+          "No cleaning needed",
+          "Microfluidic application not shown",
+          "Not mentioned",
+          "[ 90 ]"
+        ],
+        [
+          "Single tank",
+          "Vat inclination system and embedded peristaltic pumps for injection and removal of resins",
+          "DLP",
+          "Flexible, rigid, water soluble, fluorescent, phosphorescent, and conductive (containing PEDOT or copper nanoparticles) resins",
+          "The vat washing procedure is able to clean the previously printed layers since the volume of solvent injected is enough to partially cover the building platform",
+          "Microfluidic channels of widths down to 43 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${\\upmu}$$\\end{document} m, capillary microchip electrophoresis devices with integrated conductive electrodes, straight channels surrounded by spiral microchannel architectures",
+          "Flow time of 60 s, it was possible to recover 95 % of the material in the vat",
+          "[ 78 ]"
+        ],
+        [
+          "(Micro)fluidic",
+          "Within the printhead",
+          "Optical fiber is integrated in the printhead",
+          "PEGDA-based hydrogels",
+          "Flushing and injecting subsequent material",
+          "Scaffolds for cell patterning and spheroid engineering",
+          "90 s",
+          "[ 82 ]"
+        ],
+        [
+          "(Micro)fluidic",
+          "From the build platform, through microfluidic ducts engineered within the growing part (iCLIP)",
+          "DLP",
+          "Acrylate, epoxy, carbon nanotube filled resins",
+          "Not needed if all injected resin is used during printing",
+          "Microfluidic application not shown",
+          "Depended on resin viscosity",
+          "[ 91 ]"
+        ],
+        [
+          "(Micro)fluidic",
+          "Fluidic cell consists of a printing chamber with integrated microfluidic inlet and outlet channels, a build platform with an embedded pumping channel, and optical windows",
+          "Custom made DLP, TPP, SLA",
+          "PEGDA-based resins, GelMA-based bioinks, commercial photopolymer resins, custom-developed PEGDA/NIPAAm-based resins, photoresists incorporating fluorescent semiconductor quantum dots and organic dyes, nonfluorescent photoresists",
+          "Flushing and injecting subsequent material",
+          "3-channel hydrophobic (PEGDA 250), microfluidic device with hydrophilic (PEGDA 6k), central channel separated by an array of micro-posts / Bilayer micro-capillary structure with a hollow channel (inner diameter of 100  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${\\upmu}$$\\end{document} m) /continuous or discrete gradients of desired (bio)inks",
+          "Continuous, within a few seconds",
+          "[ 61 ,  79 ,  81 ,  92 ]"
+        ],
+        [
+          "Material",
+          "No switching",
+          "mSLA",
+          "PEGDA-based resins, modified with photoacid generator (PAG) in combination with pH responsive dyes",
+          "No cleaning needed",
+          "Microfluidic application not shown",
+          "No switching",
+          "[ 86 ]"
+        ],
+        [
+          "Material",
+          "No switching",
+          "Customized DLP printer with high intensity LED sources",
+          "Dual photocurable resin is applied containing multi-functional acrylates, which are cured by a radical induced chain growth reaction at 405 nm, and bi-functional epoxy monomers, which additionally undergo cationic curing upon UV exposure (365 nm)",
+          "No cleaning needed",
+          "Microfluidic application not shown",
+          "No switching",
+          "[ 83 ]"
+        ]
+      ],
+      "header_groups": [],
+      "table_alignment_status": "resolved",
+      "row_provenance": [
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 7
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 8
+          }
+        ],
+        [
+          {
+            "source": "carried",
+            "source_row_index": 0,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 7
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 8
+          }
+        ],
+        [
+          {
+            "source": "carried",
+            "source_row_index": 0,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 7
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 8
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 7
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 8
+          }
+        ],
+        [
+          {
+            "source": "carried",
+            "source_row_index": 3,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 7
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 8
+          }
+        ],
+        [
+          {
+            "source": "carried",
+            "source_row_index": 3,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 7
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 8
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 7
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 8
+          }
+        ],
+        [
+          {
+            "source": "carried",
+            "source_row_index": 6,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 7
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 8
+          }
+        ],
+        [
+          {
+            "source": "carried",
+            "source_row_index": 6,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 8,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 8,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 8,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 8,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 8,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 8,
+            "source_col": 7
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 8,
+            "source_col": 8
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 9,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 9,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 9,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 9,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 9,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 9,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 9,
+            "source_col": 7
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 9,
+            "source_col": 8
+          }
+        ],
+        [
+          {
+            "source": "carried",
+            "source_row_index": 9,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 10,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 10,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 10,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 10,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 10,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 10,
+            "source_col": 7
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 10,
+            "source_col": 8
+          }
+        ]
+      ],
+      "tbody_alignment_status": "resolved"
+    },
+    {
+      "caption": "Pros and cons of multi-material approaches",
+      "headers": [
+        "Multi-material approach",
+        "Pros",
+        "Cons"
+      ],
+      "rows": [
+        [
+          "Multiple tanks",
+          "Simple and rapid method with low cost; compatible with a broad range of materials and scalable to multi-material printing, though ultimately limited by the number of available vats or tanks",
+          "Often requires human intervention; susceptible to vibration and stability issues (e.g., rotating print beds); constrained by resin viscosity, shadowing, trapped volumes, surface tension effects, and scalability limited by space limitations for multiple tanks or carousel systems"
+        ],
+        [
+          "Single tank",
+          "Scalable implementation; compatible with several light-based 3D printing techniques; supports integration of  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\ge $$\\end{document} 4 materials within a single structure; affordable and relatively easy to implement",
+          "High material waste; resolution can depend on precise resin localization if a deposition process is involved; high-viscosity resins can increase vat filling, drainage, and recoating times and may complicate complete interlayer filling. Low-viscosity resins facilitate resin exchange and recoating; however, viscosity alone does not determine mechanical performance, which is primarily governed by resin chemistry, monomer/oligomer structure, crosslinking density, filler content, degree of conversion, curing conditions, and post-processing"
+        ],
+        [
+          "(Micro)fluidic",
+          "Fully integrated system enabling the integration with high-resolution printing techniques; scalable vat-free approach with enhanced printing speeds; supports printing of high-viscosity resins and processing of multiple resins; enables fabrication of complex 3D structures with programmable lateral, vertical, discrete, or gradient material variations; relatively easy to scale",
+          "High material waste and extensive parameter tuning required; risk of resin contamination during multimaterial printing, leading to additional waste; claims of minimal contamination are not always experimentally verified; printable structure height may be limited by the design of the fluidic chamber; material consumption increases with the number of materials due to resin mixing during material switching, reducing throughput especially for highly viscous resins"
+        ],
+        [
+          "Material",
+          "Single-step fabrication with fast printing speeds and good interlayer adhesion; thermally promoted diffusion can improve interfacial bonding between soft and rigid domains, enhancing mechanical continuity across material interfaces",
+          "Limited material availability and functional diversity (often restricted to color changes); lack of sharp material interfaces due to diffusion of photo-released species, which compromises multi-material spatial resolution; overall approach is not easily scalable"
+        ]
+      ],
+      "header_groups": [],
+      "table_alignment_status": "resolved",
+      "row_provenance": [
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 3
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 3
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 3
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 3
+          }
+        ]
+      ],
+      "tbody_alignment_status": "resolved"
+    },
+    {
+      "caption": "Overview of biocompatible resins and hydrogels in light-based 3D printing",
+      "headers": [
+        "Materials",
+        "Type of materials",
+        "Minimum resolution ( \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${\\upmu}$$\\end{document} m)",
+        "Method",
+        "Development",
+        "References"
+      ],
+      "rows": [
+        [
+          "PEDOT:PSS",
+          "Hydrogel",
+          "70",
+          "DLP",
+          "Custom made",
+          "[ 122 ]"
+        ],
+        [
+          "FLECLC01",
+          "Resin",
+          "100",
+          "DLP",
+          "Commercially available",
+          "[ 122 ]"
+        ],
+        [
+          "PEGDA",
+          "Hydrogel",
+          "7",
+          "DLP,SLA,TPP",
+          "Custom made",
+          "[ 98 ,  122 ,  123 ,  124 – 125 ]"
+        ],
+        [
+          "PCT",
+          "Hydrogel",
+          "25",
+          "DLP",
+          "Custom made",
+          "[ 124 ]"
+        ],
+        [
+          "GelMA",
+          "Hydrogel",
+          "36",
+          "DLP,SLA",
+          "Custom made",
+          "[ 98 ,  124 ,  126 ,  127 ]"
+        ],
+        [
+          "Hydroxyethyl",
+          "Resin",
+          "70",
+          "DLP",
+          "Custom made",
+          "[ 122 ,  123 ]"
+        ],
+        [
+          "Globular proteins",
+          "Resin",
+          "7",
+          "TPP",
+          "Custom made",
+          "[ 125 ,  128 ,  129 ]"
+        ],
+        [
+          "PETA",
+          "Resin",
+          "7",
+          "TPP",
+          "Custom made",
+          "[ 125 ]"
+        ],
+        [
+          "Hyaluronic acid",
+          "Hydrogel",
+          "200",
+          "DLP,SLA",
+          "Custom made",
+          "[ 98 ,  126 ,  127 ]"
+        ]
+      ],
+      "header_groups": [],
+      "table_alignment_status": "resolved",
+      "row_provenance": [
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 6
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 6
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 6
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 6
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 6
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 6
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 6
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 6
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 8,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 8,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 8,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 8,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 8,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 8,
+            "source_col": 6
+          }
+        ]
+      ],
+      "tbody_alignment_status": "resolved"
+    }
+  ]
+}

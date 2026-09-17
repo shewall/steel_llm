@@ -1,0 +1,666 @@
+{
+  "doi": "10.1007/s10845-025-02692-4",
+  "title": "MeltpoolINR: predicting temperature field, melt pool geometry and their rate of change in laser powder bed fusion",
+  "abstract": "Abstract We present a data-driven, differentiable neural network model designed to learn the temperature field, its gradient, and the cooling rate, while implicitly representing the melt pool boundary as a level set in laser powder bed fusion. The physics-guided model combines fully connected feed-forward neural networks with Fourier feature encoding of the spatial coordinates and laser position. Notably, our differentiable model allows for the computation of temperature derivatives with respect to position, time, and process parameters using autodifferentiation. Moreover, the implicit neural representation of the melt pool boundary as a level set enables the inference of the solidification rate and the rate of change in melt pool geometry relative to process parameters. The model is trained to learn the top view of the temperature field and its spatiotemporal derivatives during a single-track laser powder bed fusion process, as a function of three process parameters, using data from high-fidelity thermo-fluid simulations. The model accuracy is evaluated and compared to a state-of-the-art convolutional neural network model, demonstrating strong generalization ability and close agreement with high-fidelity data.",
+  "journal": "Journal of Intelligent Manufacturing",
+  "year": "2025",
+  "sections": [
+    {
+      "heading": "Introduction",
+      "paragraphs": [
+        "Laser powder bed fusion (LPBF) is a prominent metal additive manufacturing process for metal parts with complex geometries. It offers remarkable flexibility in fabricating customized parts with significantly reduced lead times compared to conventional manufacturing processes. For these reasons, it finds increasing application in biomedical, aerospace, automotive, and other high-tech industries (Attaran,  4 ; Yadroitsev et al.,  56 ; Afrasiabi and Bambach,  2 ). In LPBF, part fabrication progresses through the sequential spreading of powder layers and their selective melting via a laser, leading to the formation of a melt pool and subsequent solidification. Thus, the printing process involves complex multiscale and multiphysics phenomena, including laser beam-powder interaction and melt pool formation, melt pool dynamics, and fast cooling and solidification cycles (King et al.,  20 ).",
+        "The process is controlled by adjusting a number of parameters, including laser power, scanning speed, and preheating temperature, as well as the scanning strategy (Oliveira et al.,  39 ). However, the inherent complexity of the involved physical mechanisms obscures the direct correlation between the process parameters and the quality of a fabricated part; thus, ensuring precise control over part quality remains challenging, rendering the printed parts susceptible to defects such as keyhole porosity, lack of fusion, and surface defects (Snow et al.,  47 ; Mostafaei et al.,  36 ).",
+        "This has motivated researchers to deepen their understanding of the underlying physics of the printing process (King et al.,  20 ; Soundararajan et al.,  48 ) and to develop reliable models and numerical methods to simulate, optimize, and control LPBF with computational tools (Jardin et al.,  18 ; Pham et al.,  40 ; McCann et al.,  33 ; Wang et al.,  51 ). In this direction, the first analytical model of the temperature field due to a moving point source, akin to the LPBF fabrication process, was developed by Rosenthal ( 44 ). Semi-analytical models of temperature field due to a moving heat source by incorporating idealized boundary effects have also been developed (Yang et al.,  57 ). These models are computationally efficient, but their accuracy is limited by strong simplifying assumptions such as neglecting the temperature dependence of material properties, the latent heat of fusion and the heat loss due to radiation and convection, and other simplifications regarding boundary conditions. Significant progress has also been made in detailed simulation of the LPBF process (Markl and KöMarkl,  32 ; Moges et al.,  35 ; Soundararajan et al.,  48 ) using complex mathematical models discretized with numerical methods such as finite elements (FE) (Luo and Zhao,  30 ; Dunbar et al.,  11 ), finite volumes (Acharya et al.,  1 ; Yu et al.,  58 ), smoothed particle hydrodynamics (SPH) (Afrasiabi et al.,  3 ; Fürstenau et al.,  13 ; Lüthi et al.,  31 ), Lattice Boltzmann (Zakirov et al.,  59 ), and others. These approaches have simulated specific parts of the printing process and provided crucial insights into the physics of the process and explanations for the experimental observations. However, high-fidelity simulations are computationally very expensive, prohibiting their wider application in process optimization and control.",
+        "In recent years, machine learning models have seen tremendous growth in various scientific applications. They have been employed in learning from data as well as in the direct numerical solution of partial differential equations (Karniadakis et al.,  19 ). These models can be used for quick inference, enabling the possibility of optimization and control. This has led to a surge in research focused on employing machine learning for LPBF process modeling (Wang et al.,  52 ; Mozaffar et al.,  37 ) and optimization (Liu et al.,  28 ). In recognition of the importance of the temperature field during the printing process on the part quality, considerable effort has been directed toward machine learning models that can predict the temperature field in and around the melt pool. The models presented in these works fall into two main categories: physics-informed and data-driven. A physics-informed approach that models heat transfer and melt pool fluid dynamics is presented in Zhu et al. ( 60 ). This model is not parametric, i.e. it solves the governing equations only for a prescribed set of process parameters like in a direct numerical simulation. A nonparametric PINNs approach solving only the heat conduction equation for the LPBF process is proposed in Liao et al. ( 24 ). The authors also solve an inverse problem using PINNs to identify material properties from the partially observed temperature data. A parametric solution of the heat conduction equation for the LPBF process is obtained using PINNs in Hosseini et al. ( 17 ). The proposed PINNs approaches have either modeled the physics adequately or obtained a parametric solution to only the heat conduction equation, but not both. Among the data-driven approaches, Chen et al. ( 7 ) proposes a method to learn the temperature field around the melt pool by learning a parametrization of isotherms and reconstruction of the temperature field through interpolation using data from thermal-fluid flow simulations. In Ren et al. ( 42 ), the temperature field obtained from the FE solution of only the heat transfer equation for a variety of scanning paths is learned using a combination of a recurrent neural network and a fully connected feed-forward network. Similarly obtained temperature field data for multilayer printing are learned using a fully connected feed-forward network in Pham et al. ( 41 ). To accurately learn the temperature field in the melt pool from the high-fidelity data obtained from a computational fluid dynamics simulation, a model based on a convolutional neural network (CNN) is employed in Hemmasian et al. ( 16 ). In Sideris et al. ( 46 ), an uncertainty-aware temperature model is proposed by combining physics-informed and parametric regressors utilizing heat transfer equation and experimental data.",
+        "In the LPBF process, the solidification of the melt pool typically entails high cooling rates and large thermal gradients which depend on the process parameters (Bertoli et al.,  5 ). Notably, the cooling rates and thermal gradients near the melt pool boundary define the solidification rate and have significant influence on the microstructure (Lienert et al.,  25 ; Wei et al.,  53 ; DebRoy et al.,  10 ) and on residual stresses (Kruth et al.,  22 ; Li et al.,  26 ; Fang et al.,  12 ), and consequently on the mechanical properties and geometric accuracy of the fabricated part (Levkulich et al.,  23 ). The construction of a solidification map (Kou,  21 ; Blecher et al.,  6 ) also relies on the knowledge of solidification rate and thermal gradient near the melt pool boundary. Furthermore, for a gradient-based optimization of the process parameters, the temperature field should be represented as a sufficiently smooth function of the spatiotemporal coordinates and of the process parameters, such that its derivatives can be computed accurately. Hence, a model that accurately predicts the temperature field, melt pool boundary, thermal gradient and cooling rate at the melt pool boundary, and their change due to a change in the process parameters is desired. However, none of the works in the literature has focused on the development of such a model. Notably, (semi)-analytical models yield such relations (Rosenthal,  44 ; Yang et al.,  57 ), however, their accuracy is limited. As mentioned earlier, direct numerical solutions are not parametric and can provide accurate fields for only a prescribed set of process parameters, besides being computationally expensive. Parametric PINNs-based surrogate models (Liao et al.,  24 ; Hosseini et al.,  17 ) can predict temperature field, thermal gradient, and cooling rate accurately and fast; however, they have not been employed for the prediction of melt pool evolution and its dependence on the process parameters. Furthermore, the reported approaches model physics only partially i.e. they solve only the thermal conduction equation. Among the data-driven machine learning approaches (Chen et al.,  7 ; Ren et al.,  42 ; Ren and Wang,  43 ; Pham et al.,  41 ; Hemmasian et al.,  16 ; Sideris et al.,  46 ; Xu et al.,  55 ), focus has been on learning the temperature field and not the thermal gradient and cooling rate. Also, they have not been applied to predict the melt pool evolution and its dependence on the process parameters.",
+        "In this paper, we propose an efficient data-driven approach by developing a differentiable model based on fully connected feed-forward neural networks, commonly known as multilayer perceptrons (MLPs), for learning the temperature field, thermal gradient, and cooling rate, inspired by the implicit neural representation of 3D objects (Mildenhall et al.,  34 ). We call our model MeltpoolINR which stands for “melt pool implicit neural representation”. Unlike CNNs, MeltpoolINR learns a resolution-independent continuous representation of the temperature field with advantages in the computation of the derivatives of the field and of the melt pool boundary. The inputs to the model are spatial coordinates, laser position, and the process parameters. We also employ Fourier feature encoding of coordinates and laser position which are well known to enable MLPs to learn sharp features in the data (Tancik et al.,  49 ) such as in the temperature field and its derivatives near the melt pool boundary. Furthermore, to accurately capture the extremely sharp temperature variation at the front of the melt pool boundary, we include an exponential term in the expression for the temperature inspired by Rosenthal’s solution for a moving heat source (Rosenthal,  44 ). Additionally, we employ the level-set method to represent the melt pool boundary implicitly and to model its evolution. We perform Sobolev training (Czarnecki et al.,  9 ) of our model to learn the temperature field and its derivatives accurately using the high-fidelity physics-based data generated from SPH process simulations. In this work, we demonstrate the effectiveness of our approach in learning a 2D cross-section (top view) of the temperature field and its derivatives in single-track printing. The novel contributions of this work are threefold: (a) development of a differentiable neural network capable of learning the temperature field, thermal gradient and cooling rate, and providing the derivative of the temperature with respect to the process parameters using auto-differentiation, (b) implicit neural representation of the melt pool boundary as a level set to learn its evolution and infer solidification rate, and (c) inference of the rate of change of melt pool features with respect to the process parameters.",
+        "The remainder of this paper is organized as follows. The data generation method is briefly outlined in Sect.  2 . The machine learning model and the level-set method are described in Sect.  3 . The results are presented in Sect.  4  and discussed in Sect.  5 , respectively. The paper ends with conclusions in Sect.  6 ."
+      ]
+    },
+    {
+      "heading": "Data generation",
+      "paragraphs": [
+        "The dataset for training and validating the machine learning model is obtained by SPH numerical simulations. SPH, introduced in Gingold and Monaghan ( 15 ) and Lucy ( 29 ), is a particle-based numerical method widely used to solve differential equations describing large deformations, fluid flow, and phase transformations. In SPH, the continuum body is discretized into finite particles, whereby each particle interacts with its neighbors according to the governing physical equations. Here, we use a thermo-fluid SPH approach, combined with a ray-tracing laser model introduced in Lin et al. ( 27 ), to simulate the single-track laser scanning process. As follows, we summarize the mathematical model and SPH discretization. For full details see (Lin et al.,  27 ; Lüthi et al.,  31 ).",
+        "We simulate a laser scanning process over a single track, i.e. the elementary process into which an entire LPBF process can be decomposed. In total 210 simulations are performed for different values of the process parameters, i.e. laser power ( P ), laser scanning speed ( v ), and initial substrate temperature ( \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$T_{pre}$$\\end{document} ), using all combinations of the values in Table  1 . Here, the laser power and the laser scanning speed can be set in the LPBF machine for the scanning of individual tracks, whereas the initial substrate temperature represents the substrate heat accumulation by previous scanning. In the present study, we do not account for the randomly distributed particle geometry in the powder bed, in order to limit the computational cost. After the simulation, a post-processing step extracts the desired fields at the top surface from the SPH numerical results. The data for each case have the same dimension of [100, 128, 64] wherein 100 is the number of time steps and [128, 64] are the numbers of grid points in  x  and  y  directions (Fig.  1 ), respectively. Table 1 Values of the process parameters in the dataset Laser power ( P ) [W] 80, 120, 160, 200, 240, 280 Laser scanning speed ( v ) [m/s] 0.75, 1, 1.25, 1.5, 1.75, 2.25, 2.5 Initial substrate temperature ( \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$T_{pre}$$\\end{document} ) [K] 300, 340, 380, 420, 460",
+        "In every simulated single-track process, a Gaussian laser beam with spot diameter 80  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\mu $$\\end{document} m pointing vertically downwards scans the top surface of a Ti6Al4V substrate. The laser power and scanning speed do not change during each process. The substrate is simplified as a cuboid of dimensions  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$800\\times 400\\times 400$$\\end{document} \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\mu $$\\end{document} m, as shown in Fig.  1 a. The laser axis moves along the midline of the top surface of the substrate in the  y  direction, as depicted in Fig.  1 b. The scanning path is 600  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\mu $$\\end{document} m long and its starting point is positioned with an offset of 100  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\mu $$\\end{document} m to the left edge of the top surface. At the beginning of the process, the substrate has a uniform initial temperature. The material properties of the Ti6Al4V alloy for the simulations are listed in Table  2 . The thermal conductivity and isobaric specific heat capacity are temperature-dependent and estimated using their values in the solid and liquid phases. Fig. 1 SPH simulation setup:  a  geometry of the substrate;  b  boundary conditions on the lateral faces and laser beam axis scanning track;  c  boundary conditions on the top and bottom faces Table 2 Material properties of Ti6Al4V alloy and atmospheric conditions of the simulated process Lin et al. ( 27 ); Cummins et al. ( 8 ) Property / Atmospheric condition Symbol Value Unit Reference density \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$ \\rho _{0} $$\\end{document} 4420 kgm −3 Solid thermal conductivity constant \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$k_{S}$$\\end{document} 33.4 Wm −1 K −1 Liquid thermal conductivity constant \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$k_{L}$$\\end{document} 19 Wm −1 K −1 Solid isobaric specific heat capacity constant \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$c_{p_{S}}$$\\end{document} 830 Jkg −1 K −1 Liquid isobaric specific heat capacity constant \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$c_{p_{L}}$$\\end{document} 546 Jkg −1 K −1 Dynamic viscosity \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\mu $$\\end{document} 0.005 kgm −1 s −1 Surface tension \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\sigma _T$$\\end{document} 1.493 Nm −1 Surface tension gradient coefficient \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\sigma _T'$$\\end{document} \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$1.9\\times 10^{-4}$$\\end{document} Nm −1 K −1 Solidus temperature \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$T_{S}$$\\end{document} 1878 K Liquidus temperature \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$T_{L}$$\\end{document} 1933 K Reference temperature of evaporation \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$T_v$$\\end{document} 3133 K Specific enthalpy of melting \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$H_{m}$$\\end{document} \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$2.9 \\times 10^{5}$$\\end{document} Jkg −1 Specific enthalpy of evaporation \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$H_v$$\\end{document} \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$9.83 \\times 10^{6}$$\\end{document} Jkg −1 Atmospheric pressure \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$P_{atm}$$\\end{document} \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$10^{5}$$\\end{document} Pa Atmospheric temperature \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$T_{atm}$$\\end{document} 300 K Convective heat transfer coefficient \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$h_c$$\\end{document} 19 Wm −2 K −1 Emissivity \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\epsilon $$\\end{document} 0.23 − Molar mass \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$M_m$$\\end{document} 0.048 kgmol −1",
+        "We solve the equations of incompressible fluid flow and heat transfer in the Lagrangian form: 1 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\begin{aligned} \\left\\{ \\begin{aligned} \\frac{d\\rho }{dt}&= -\\rho \\nabla \\cdot \\textbf{u} \\\\ \\rho \\frac{d\\textbf{u}}{dt}&= -\\nabla p + \\mu \\nabla ^2 \\textbf{u} + \\rho \\textbf{g} + \\textbf{b}^s + \\textbf{b}^w + \\textbf{b}^r \\\\ \\rho c_p \\frac{dT}{dt}&=\\nabla \\cdot (k \\nabla T) + \\textbf{T}:\\nabla \\textbf{u} + q^{rc} + q^l + (q^{b}) \\end{aligned} \\right. \\end{aligned}$$\\end{document} Here  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\rho $$\\end{document}  denotes the density,  t  the time,  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\textbf{u}$$\\end{document}  the velocity,  p  the pressure,  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\mu $$\\end{document}  the dynamic viscosity, and  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\textbf{g}$$\\end{document}  the gravity acceleration.  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\textbf{b}^s$$\\end{document} ,  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\textbf{b}^w$$\\end{document}  and  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\textbf{b}^r$$\\end{document}  are the body forces induced respectively by surface tension, wetting effect, and recoil pressure of evaporation.  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$c_p$$\\end{document}  is the isobaric specific heat capacity,  k  the thermal conductivity,  T  the temperature, and  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\textbf{T}$$\\end{document}  the shear stress tensor.  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$q^{rc}$$\\end{document}  is the heat loss induced by evaporation,  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$q^{l}$$\\end{document}  the laser heat input which is computed by a ray-tracing laser heat source model, and  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$q^{b}$$\\end{document}  is the heat loss induced by boundary conditions which is only applied to the surface.",
+        "As depicted in Fig.  1 b and c, the four vertical faces of the substrate are subjected to adiabatic boundary conditions, hence  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$q^{b}=0$$\\end{document} . The top face experiences convective and radiative heat loss to the environment, with the atmospheric conditions in Table  2 , hence 2 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\begin{aligned} q^{b} = -\\frac{h_c(T-T_{atm}) + \\epsilon \\sigma (T^4 - T_{atm}^4)}{\\Delta x} \\end{aligned}$$\\end{document} where  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$h_c$$\\end{document}  is the convective heat loss coefficient,  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$T_{atm}$$\\end{document}  the atmospheric temperature,  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\epsilon $$\\end{document}  the emissivity,  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\sigma $$\\end{document}  the Stefan–Boltzmann constant, and  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\Delta x$$\\end{document}  the minimum discretization spacing. The bottom face maintains a constant initial temperature. In the simulation, this boundary condition is achieved by adding two layers of ghost SPH particles below the substrate. During the time integration, the temperature of the ghost SPH particles remains the initial substrate temperature. The ghost particles thus conduct heat from interior SPH particles.",
+        "To reduce the computational cost, we deploy an adaptive spatial resolution scheme in SPH which refines and coarsens the particle cloud at selected time integration steps. The minimum discretization spacing of SPH is 6.3  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\mu $$\\end{document} m, and the time integration step is 6.3 ns. Fig. 2 Generation of temperature data for the dataset from SPH particles at one time frame;  a  vertical projection of filtered top surface particles to a uniform grid on a 2D plane;  b  computation of temperature at a grid point  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$(\\textbf{x}_0)_{data}$$\\end{document}  by SPH interpolation;  c  post-processed temperature field data of dimension [128, 64] at one time frame",
+        "The post-processing of the numerical solution follows three steps. First, from the SPH simulations, the fields at the 100 uniformly spaced time frames covering the whole process are saved to generate the 2D field data. Secondly, as Fig.  2 a depicts, the top surface particles for ray-tracing, which are determined by the method in Lin et al. ( 27 ), are filtered out and projected vertically onto a horizontal plane. A uniform  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$128\\times 64$$\\end{document}  grid along the  x  and  y  directions is created on the horizontal plane. Thirdly, the 2D data consisting of the field variables on the grid points are computed by a 2D SPH interpolation with a renormalization denominator from the surface particles as follows: 3 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\begin{aligned} f(\\textbf{x}_0)_{data} = \\frac{\\sum _{j} f(\\textbf{x}_j)_{SPH} W[|(\\textbf{x}_0)_{data}-(\\textbf{x}_j)_{SPH}|,h)](V_j)_{SPH}}{\\sum _{j} W[|(\\textbf{x}_0)_{data}-(\\textbf{x}_j)_{SPH}|,h)](V_j)_{SPH}} \\end{aligned}$$\\end{document} Here,  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$f(\\textbf{x}_0)_{data}$$\\end{document}  is the value of a field variable at position  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$(\\textbf{x}_0)_{data}$$\\end{document} ,  j  denotes a particle in the neighborhood of  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$(\\textbf{x}_0)_{data}$$\\end{document}  with position  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$(\\textbf{x}_j)_{SPH}$$\\end{document} , and  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$W[\\cdot ,\\cdot ]$$\\end{document}  is the kernel function, a weighting function whose value depends on  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$|(\\textbf{x}_0)_{data}-(\\textbf{x}_j)_{SPH}|$$\\end{document}  and on the smoothing length  h . The neighboring particles of  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$(\\textbf{x}_0)_{data}$$\\end{document}  are the particles in the support domain of the kernel function  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$W(|(\\textbf{x}_0)_{data}-\\textbf{x}|,h)$$\\end{document} .  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$(V_j)_{SPH}$$\\end{document}  is the volume of particle  j . Here, we use as kernel function the 2D Wendland quintic function presented in Wendland ( 54 ) with a smoothing length of 4.725  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\mu $$\\end{document} m. Figure  2 b schematically shows the relationship between top surface SPH particles and grid point at  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$(\\textbf{x}_0)_{data}$$\\end{document}  in the SPH interpolation. Finally, at each time frame, field variables including the temperature  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$T_{data}$$\\end{document} , the temperature gradient in  x -direction  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$(\\partial _x T)_{data}$$\\end{document} , the temperature gradient in y direction  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$(\\partial _y T)_{data}$$\\end{document} , and the temporal temperature gradient  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$(\\partial _t T)_{data}$$\\end{document}  at the 2D uniform grid are generated (Fig.  2 c)."
+      ]
+    },
+    {
+      "heading": "Methodology",
+      "paragraphs": [
+        "In this section, we describe first our machine learning approach, and then the level set method, useful for the implicit representation of the melt pool."
+      ]
+    },
+    {
+      "heading": "Machine learning approach",
+      "paragraphs": [
+        "Fig. 3 The architecture of MeltpoolINR with the Fourier feature mapping of the spatial coordinates and laser position",
+        "We learn the top view of the temperature field, its gradient, and its time derivative in a single-track LPBF using a physics-guided Fourier feature network (Mildenhall et al.,  34 ; Tancik et al.,  49 ; Garbin et al.,  14 ) based on MLPs, which we denote as MeltpoolINR (Implicit Neural Representation of the melt pool) (Fig.  3 ). The architecture consists of four MLPs each employing the hyperbolic tangent ( \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\tanh $$\\end{document} ) activation function:  Spatial MLP: The inputs to this MLP are the transformed spatial coordinates of points in the printing domain and the laser position,  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$x_l$$\\end{document} . First, the  x -coordinate of points is transformed to the coordinate attached to the laser moving in the  x -direction by setting  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\xi =x-x_l$$\\end{document} . Then Fourier feature mapping is applied to  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\xi $$\\end{document} ,  y , and  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$x_l$$\\end{document}  and the input to the network is constructed by appending values of  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\xi $$\\end{document} ,  y , and  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$x_l$$\\end{document}  to their corresponding Fourier feature maps. The network consists of 4 hidden layers with 64 neurons in each layer. Parameter encoder: This network takes the process parameters as input and encodes them in a latent space. It consists of 2 hidden layers with 64 neurons in each layer. Joint MLP: The outputs of the Spatial MLP and the Parameter encoder are concatenated and supplied as input to this network. This network also consists of 2 hidden layers with 64 neurons in each layer. Exponent MLP: Rosenthal’s solution for a moving heat source (Rosenthal,  44 ) involves an exponential term in which the exponent includes laser velocity and thermal diffusivity. Here, we learn the exponent using a small MLP which consists of 2 hidden layers with 5 neurons in each layer. The temperature field and its derivatives vary sharply near the melt pool boundary which is challenging for an MLP to learn. To overcome this, we augment the NN architecture with two features: (a) Fourier feature mapping, and (b) the inclusion of an exponential term in the output based on Rosenthal’s solution for a moving heat source (Rosenthal,  44 ). Fourier feature mapping enables MLPs to learn high-frequency features and is extensively employed in computer vision for this purpose (Mildenhall et al.,  34 ; Tancik et al.,  49 ; Garbin et al.,  14 ). Furthermore, the sharply changing temperature field and its derivatives at the front of the melt pool still pose a challenge. To mitigate this, we include an exponential term in the expression for the temperature (see Fig.  3 ) and learn the exponent from the data using an MLP. Note that the small parameter  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\epsilon $$\\end{document}  in the expression for the temperature smoothens the corner point, which would otherwise appear at  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\xi =y=0$$\\end{document} . Furthermore, to enforce the physical constraint that the time derivative should be equal to the negative of the x-component of the temperature gradient times the scanning speed in the steady state (see Appendix  A ), we learn the temperature field in the coordinate system attached to the laser by setting  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\xi =x-x_l$$\\end{document} . The separation of MLPs for the dense spatial coordinates and the sparse parameter set is inspired from Garbin et al. ( 14 ) and allowed us to learn using a smaller network.",
+        "We perform Sobolev training (Czarnecki et al.,  9 ) of the network using the following loss function: 4 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\begin{aligned} \\mathcal {L}=&||T_{\\theta }-T_{data}|| + w_{x}||\\partial _x T_{\\theta } - (\\partial _x T)_{data}||\\nonumber \\\\&+ w_{y}||\\partial _y T_{\\theta } - (\\partial _y T)_{data}|| + \\nonumber \\\\&w_t||\\partial _t T_{\\theta } - (\\partial _t T)_{data}||, \\end{aligned}$$\\end{document} where  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$T_{\\theta }$$\\end{document}  is the learned temperature, and  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\partial _x T_{\\theta }$$\\end{document} ,  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\partial _y T_{\\theta }$$\\end{document} , and  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\partial _t T_{\\theta }$$\\end{document}  are its derivatives with respect to  x ,  y , and  t , respectively, whereas  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$T_{data}$$\\end{document} ,  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$(\\partial _x T)_{data}$$\\end{document} ,  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$(\\partial _y T)_{data}$$\\end{document} ,  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$(\\partial _t T)_{data}$$\\end{document}  are provided in the dataset. For the loss weights, we set  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$w_{x}=w_{y}=w_{t}=0$$\\end{document}  for the first 50 epochs of training to focus on learning only the temperature field. After that, we change them to  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$w_{x}=5$$\\end{document} ,  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$w_{y}=1$$\\end{document}  and  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$w_t=5$$\\end{document} .",
+        "To assess the accuracy of MeltpoolINR, we also train a CNN-based model. In the CNN, the temperature and its  x ,  y , and  t  derivatives are the four independent network outputs, while the loss function remains the same as in ( 4 ). By treating the temperature and its derivatives as independent outputs, we allow the CNN to potentially overfit the data. The CNN, resembling the network in Ogoke et al. ( 38 ), comprises an MLP with 2 hidden layers and 1024 neurons followed by 5 sets of layers, each consisting of upsampling, convolution, and activation layers. We utilize Leaky ReLU as the activation function. See Appendix  B  for the details of the architecture. The CNN outputs a 4-channel field of  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$128 \\times 64$$\\end{document}  pixels, the four channels being the temperature and its  x ,  y , and  t  derivatives. For this network, we set  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$w_{x}=w_{y}=w_t=0.1$$\\end{document}  in the loss function in ( 4 ). Note that we choose these weights through hyperparameter tuning and the differences in the two architectures lead to significantly different weighting of the losses.",
+        "In training, we employ the ADAM optimizer with a learning rate of  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$5\\times 10^{-4}$$\\end{document} . We use MSE loss, as expressed below: 5 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\begin{aligned} & ||u|| = \\frac{1}{n_{P3} n_{P2} n_{P1} n_{t} n_{y} n_{x}}\\sum _{n=0}^{n_{P3}} \\sum _{m=1}^{n_{P2}} \\sum _{l=1}^{n_{P1}} \\sum _{k=1}^{n_{t}} \\sum _{j=1}^{n_{y}} \\sum _{i=1}^{n_{x}} \\nonumber \\\\ & u(x^i,y^j,x_l^k,P_1^l,P_2^m,P_3^n)^2, \\end{aligned}$$\\end{document} where  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$n_{x},~n_{y},~n_{t},~n_{P1},~n_{P2}$$\\end{document} , and  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$n_{P3}$$\\end{document}  are the numbers of grid points in the  x ,  y ,  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$x_l$$\\end{document} ,  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$P_1$$\\end{document} ,  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$P_2$$\\end{document} , and  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$P_3$$\\end{document}  directions, respectively. Also, for the CNN,  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$x_l$$\\end{document}  is replaced with  t  above. We randomly separate the data into training and testing cases, and use 90% of the data for training and the remaining 10% for testing."
+      ]
+    },
+    {
+      "heading": "Level set method",
+      "paragraphs": [
+        "We aim to learn the geometry of the melt pool, its evolution over time, and its dependence on the process parameters. To accomplish this, we utilize an implicit representation of the melt pool boundary, expressed as the zero level-set of a level-set function  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\phi (x,y,t,\\textbf{P})$$\\end{document} , where  x ,  y  and  t  are the spatial and temporal coordinates, and  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\textbf{P}$$\\end{document}  denotes the vector of the process parameters. The evolution of  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\phi $$\\end{document}  is governed by the following equation (Sethian et al.,  45 ): 6 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\begin{aligned} \\frac{\\partial \\phi }{\\partial t}+F|\\nabla \\phi |=0, \\end{aligned}$$\\end{document} where  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$F=F(x,y,t,\\textbf{P})$$\\end{document}  is the speed function governing the evolution of the level set,  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\nabla $$\\end{document}  denotes the spatial gradient, and  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$|\\cdot |$$\\end{document}  is the Euclidean norm. When  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\phi $$\\end{document}  is known and  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$|\\nabla \\phi |\\ne 0$$\\end{document} , ( 6 ) can be used to compute the speed function through: 7 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\begin{aligned} F = -\\frac{1}{|\\nabla \\phi |}\\frac{\\partial \\phi }{\\partial t}. \\end{aligned}$$\\end{document} Since the isotherms at the solidus ( \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$T_S$$\\end{document} ) and liquidus ( \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$T_L$$\\end{document} ) temperatures define the melt pool boundary and the location of initiation of the solidification process, respectively, we define the level-set function using the temperature field as follows: 8 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\begin{aligned} \\phi =\\frac{T}{T_0}-1, \\end{aligned}$$\\end{document} where one can set  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$T_0=T_S$$\\end{document}  to track the melt pool and  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$T_0=T_L$$\\end{document}  to track the initiation of the solidification process. The speed function  F  in the part of the isotherm at  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$T_L$$\\end{document} , where the melt is solidifying, equals the solidification rate. For simplicity, we set  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$T_0=(T_S+T_L)/2$$\\end{document}  in this work.",
+        "The printing process can be optimized by controlling the melt pool geometry. The gradient-based optimization of the process parameters then requires the computation of the rate of change of the melt pool geometry and of its relevant features (i.e. width, length, aspect ratio) at a given time with respect to the process parameters. This computation is also facilitated by the level-set approach described by the following equation: 9 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\begin{aligned} \\frac{\\partial \\phi }{\\partial P_i}+F^P_i|\\nabla \\phi |=0, \\end{aligned}$$\\end{document} where  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$P_i$$\\end{document}  is the  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$i_{th}$$\\end{document}  process parameter and  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$F^P_i\\Delta P_i$$\\end{document}  is the change in the melt pool boundary at the given time if one chooses  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$P_i+\\Delta P_i$$\\end{document}  as the process parameter instead of  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$P_i$$\\end{document}  (where  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\Delta P_i$$\\end{document}  is small). Consequently, the rate of change of the length ( l ), width ( w ), and aspect ratio ( \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$AR=w/l$$\\end{document} ) of the melt pool with a change in the process parameter  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$P_i$$\\end{document}  can be estimated via: 10 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\begin{aligned}&\\frac{\\partial l}{\\partial P_i} = F^P_i(x_{\\max }, y, t, \\textbf{P})+F^P_i(x_{\\min }, y, t, \\textbf{P}), \\end{aligned}$$\\end{document} 11 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\begin{aligned}&\\frac{\\partial w}{\\partial P_i} = F^P_i(x, y_{\\max }, t, \\textbf{P})+F^P_i(x, y_{\\min }, t, \\textbf{P}), \\end{aligned}$$\\end{document} 12 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\begin{aligned}&\\frac{\\partial (AR)}{\\partial P_i} = \\frac{1}{l}\\left[ \\frac{\\partial w}{\\partial P_i} - AR \\frac{\\partial l}{\\partial P_i}\\right] , \\end{aligned}$$\\end{document} where we are assuming that the printing direction is parallel to the  x  axis (Fig.  1 ),  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$x_{\\max }$$\\end{document}  and  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$x_{\\min }$$\\end{document}  are the  x -coordinates of the extremes of the melt pool in the  x  direction, and  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$y_{\\max }$$\\end{document}  and  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$y_{\\min }$$\\end{document}  are the  y -coordinates of the extremes of the melt pool in the  y  direction."
+      ]
+    },
+    {
+      "heading": "Results",
+      "paragraphs": [
+        "This section presents the assessment of our proposed model and demonstrates the inference of the change in the melt pool geometry with the process parameters."
+      ]
+    },
+    {
+      "heading": "Assessment of the model",
+      "paragraphs": [
+        "We evaluate the goodness of fit for field quantities using the coefficient of determination ( \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$R^2$$\\end{document} ) values. To assess the accuracy of the prediction of the melt pool geometry, we utilize the Chamfer distance metric − see Appendix  C . Fig. 4 Goodness of fit of the temperature field and its derivatives for the entire domain and at the melt pool boundary i.e. interface (left); Chamfer distance between the melt pool boundary in the data and the prediction (right)",
+        "Figure  4  shows the evaluation metrics computed on the test data set. Both models learn the temperature field accurately, but MeltpoolINR performs better than CNN in learning the temperature gradient and cooling rate, even though the CNN learns the temperature field and its spatial and temporal gradients as independent fields. Additionally, the gradients at the melt pool boundary are assessed. Here too, the performance of MeltpoolINR is better than the CNN. Furthermore, a comparison of the Chamfer distances for the two models shows that MeltpoolINR outperforms CNN. Even though the  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$R^2$$\\end{document}  values for the temperature field predicted by MeltpoolINR and the CNN are comparable, the CNN performs comparatively poorly in learning the melt pool geometry. Fig. 5 Temperature field and its derivatives at time 202 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\mu $$\\end{document} s for a substrate preheating temperature of 380 K, laser power 160 W, and scanning speed 1.25 m/s. The difference between the ground truth and the outputs of the networks is also shown as an error",
+        "Next, we investigate the spatial distribution of errors within the domain. Figure  5  compares the network outputs for a test case with the ground truth obtained from the SPH simulation. The error, defined as the difference between the network output and the ground truth, is also shown. We observe that while MeltpoolINR learns the melt pool boundary correctly, the CNN exhibits a pronounced step-like error profile. The fields obtained from the CNN have a comparatively higher error, as expected based on the goodness of fit shown in Fig.  4 . Furthermore, the errors are localized. As expected, the parts of the domain with steeper slopes of the temperature field are challenging to learn and errors are localized in those regions. Fig. 6 MeltpoolINR: RMSE in the temperature field, its gradient, and the cooling rate at different laser power and scanning speeds for the initial substrate temperature of 380 K. Crosses denote training data, and circles denote test data",
+        "To investigate the error variation with the choice of the process parameters, we focus our attention on MeltpoolINR. Figure  6  shows the root mean squared error (RMSE) in the temperature field, and in its spatial and temporal gradients (see Appendix  D  for the errors for the complete set of process parameters). We observe that the errors in the test cases (shown by filled circles) are similar in magnitude to those of the surrounding training cases. This is an indicator of the generalizability of our model. The error increases for scenarios characterized by high power and low speed. This can be attributed to a qualitative change in the temperature profile indicated by the change in the melt pool shape. In contrast to other cases, the melt pool at high power and low speed is narrower at the front and wider at the back (see Fig.  17 ). Fig. 7 MeltpoolINR: RMSE in the temperature gradient and in the cooling rate at the melt pool boundary together with the error in the melt pool boundary at different laser power and scanning speeds for the initial substrate temperature of 380 K. Crosses denote training data, and circles denote test data",
+        "We also assess the model performance in learning the melt pool boundary, as well as the temperature gradient and the cooling rate at the boundary, as shown in Fig.  7 . A comparison of the scale of the error bars between Figs.  6  and  7  reveals that the temperature gradient and the cooling rate at the boundaries are learned with significantly better accuracy. This observation is consistent with the spatial distribution of errors shown in Fig.  5 , which reveals that the errors are localized inside the melt pool for MeltpoolINR. Moreover, these errors do not exhibit a strong dependence on the laser power and scanning speed, unlike in Fig.  6 . However, the variation of the errors in the melt pool geometry with laser power and speed exhibits a similar pattern as observed in Fig.  6 ."
+      ]
+    },
+    {
+      "heading": "Inference of the melt pool features",
+      "paragraphs": [
+        "Fig. 8 MeltpoolINR: speed function at the melt pool boundary for a laser power of 160 W, a scanning speed of 1.25 m/s, and an initial substrate temperature of 380 K at time 202  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\mu $$\\end{document} s (left); Speed function at the melt pool boundary for four different combinations of process parameters (right)",
+        "In this section, we demonstrate the capability of the model to predict the change in the melt pool geometry by predicting the solidification rate and the change in the melt pool length and aspect ratio when the process parameters are changed. First, we compute the speed function ( F ) at the melt pool boundary using ( 7 ), as shown in Fig.  8 . The melt pool boundary is parameterized by angle  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\theta $$\\end{document} , as shown in the inset in Fig.  8 , to show the variation of  F .  F  obtained from the simulation data and MeltpoolINR are in close agreement. Note that the noise in the simulation data arises due to the interpolation from the grid data required to determine the melt pool boundary and to estimate the temperature gradient and cooling rate at the boundary. In contrast, MeltpoolINR does not require such interpolation.  F  exhibits sharper variation at the front (near  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\theta =0$$\\end{document} ) and back (near  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\theta =\\pm \\pi $$\\end{document} ) of the melt pool boundary, where the curvature of the boundary is high. Away from these points, it changes slowly. Additionally,  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$F>0$$\\end{document}  indicates the solidification rate. The variation of  F  with a change in the chosen process parameters is also illustrated in Fig.  8 . At the smallest laser power and scanning speed,  F  changes gradually from the front of the melt pool to the back. With increasing power and speed, the melt pool stretches and  F  plateaus in the two sections of the boundary. Near the front and the back of the melt pool, again  F  exhibits sharp changes. These variations in the solidification rate, which our model can infer, are crucial for understanding the microstructure evolution in LPBF.",
+        "Additionally, we estimate the melt pool length and aspect ratio and investigate their rate of change with respect to laser power, scanning speed, and initial substrate temperature at a given time. Fig. 9 MeltpoolINR: variation of the length and aspect ratio of the melt pool and their rate of change with respect to laser power for a scanning speed of 1.25 m/s and an initial substrate temperature of 380 K at time 202  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\mu $$\\end{document} s",
+        "Figure  9  illustrates their variation with the laser power at a given time, scanning speed, and substrate initial temperature. The values obtained from MeltpoolINR closely align with the ground truth. Increasing power leads to a significant increase in the melt pool length and a considerable decrease in the aspect ratio for most of the power range. The rate of increase of the length lies in a narrow range of values. The rate of change of the aspect ratio for higher values of power indicates that the aspect ratio does not change considerably with increasing power even though the melt pool length increases. This can be attributed to the qualitative change in the melt pool geometry between 240 and 280 W at a scanning speed of 1.25 m/s observed in Fig.  17 . Fig. 10 MeltpoolINR: variation of the length and aspect ratio of the melt pool and their rate of change with respect to scanning speed for a laser power of 160 W and an initial substrate temperature of 380 K at time 202  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\mu $$\\end{document} s",
+        "Figure  10  shows the variation of the melt pool length and aspect ratio with respect to scanning speed at a given time, laser power, and substrate initial temperature. The length and aspect ratio decrease with increasing scanning speed. Compared to the case of laser power variation, the change in the length and aspect ratio over the complete range of scanning speed is considerably smaller. Furthermore, the rate of change in melt pool length is approximately constant ( \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\approx -40~\\mu s$$\\end{document} ) for scanning speed in the range  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$1.25 - 2.25~m/s$$\\end{document} . This is in agreement with the experimental trend reported in Wang et al. ( 50 ). However, for very low or very high scanning speeds, our plot exhibits a substantial deviation from the constant value that also qualitatively agrees with (Wang et al.,  50 ). The nonlinear behavior at low scanning speeds can stem from high power absorption leading to defect formation and complex fluid dynamics of the melt pool. The nonlinear behavior at high scanning speeds may arise from insufficient power absorption. Note that the maximum error in the length and aspect ratio prediction is  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\approx 5\\%$$\\end{document} . Fig. 11 MeltpoolINR: variation of the length and aspect ratio of the melt pool and their rate of change with respect to initial substrate temperature for a laser power of 160 W and a scanning speed of 1.25 m/s at time 202  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\mu $$\\end{document} s",
+        "Figure  11  shows the variation of the melt pool length and aspect ratio with respect to substrate initial temperature at a given time, laser power, and scanning speed. The length and aspect ratios increase with increasing substrate initial temperature. However, compared to the cases of the laser power and scanning speed variation, the length and aspect ratio are least sensitive to the variation of the substrate’s initial temperature. This lack of sensitivity to the initial temperature of the substrate can be understood from a comparison of the thermal energy supplied by laser and the thermal energy needed to raise the substrate initial temperature. During the fabrication process, powder needs to absorb sufficient thermal energy to raise its temperature from the initial substrate temperature to the liquidus temperature (1933 K) and to melt (enthalpy of melting). Laser power and scanning speed control the supply of this thermal energy. It is considerably larger than the thermal energy supplied to the substrate in advance by raising its temperature to values up to 460 K from 300 K. Consequently, by raising the initial temperature of the substrate, we do not change the melt pool formation process substantially. Consequently, compared to laser power and scanning speed, the initial substrate temperature does not have a strong effect on the length and aspect ratio of the melt pool. Note that the maximum error in the length and aspect ratio prediction is  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$<5\\%$$\\end{document} ."
+      ]
+    },
+    {
+      "heading": "Discussion",
+      "paragraphs": [
+        "Our aim was to develop a model that accurately predicts the temperature field, melt pool boundary, thermal gradient and cooling rate at the melt pool boundary, and the change in them due to a change in the process parameters in LPBF. We show that MeltpoolINR exhibits strong generalization capability and accurately predicts the temperature field, temperature gradient, and cooling rate as confirmed by Fig.  4 . The model also accurately predicts the melt pool boundary as shown in Fig.  4 . The implicit neural representation of the melt pool as a level set allows the prediction of the melt pool evolution accurately as shown in Fig.  8 . This feature also facilitates the investigation of the dependence of the solidification rate on the process parameters. Furthermore, the model predicts the change in the melt pool geometry with a change in the process parameters in close agreement with the simulation results.",
+        "While the proposed model has demonstrated its effectiveness in surrogate modeling of the top-view temperature field, its gradient, and the cooling rate in a single-track LPBF process, extending it to real printing scenarios requires addressing both spatial and process complexities. Specifically, transferring the surrogate data to the full 3D spatial domain is essential for determining the molten track geometry and microstructure, as subsurface temperature information serves as a direct indicator of these features. For this purpose, the current SPH thermo-fluid model already offers sufficient fidelity. Only minor modifications to the ML model are required, such as incorporating the z-direction as an input and introducing a phase indicator to distinguish between the workpiece and surrounding atmosphere. These adjustments would entail additional computational cost during training.",
+        "Furthermore, real LPBF fabrication involves multiple scanning tracks, where thermal history and track-to-track interactions become critical. The current model lays a solid foundation for melt pool-scale prediction, but multi-track modeling would require incorporating parameters such as hatch spacing, layer thickness, scan paths, and laser dynamics. Coupling the surrogate model with a part-scale framework (either numerical or learning-based) presents a viable path to achieving high-fidelity process simulation at tractable computational cost."
+      ]
+    },
+    {
+      "heading": "Conclusions",
+      "paragraphs": [
+        "In the LPBF process, the temperature field, its gradient, and cooling rate along with the melt pool morphology have a critical influence on the properties of fabricated parts. Their quick inference is necessary to model microstructure and residual stresses accurately. Additionally, optimizing the process parameters requires the rate of change of the temperature field and melt pool features with respect to the process parameters. We addressed these challenges in this work by developing and training a differentiable model based on MLPs with Fourier feature encoding. The model predicts a top view of the temperature field, its gradient, and the cooling rate. The accuracy of the prediction is demonstrated by comparison with predictions from a state-of-the-art CNN-based model trained on the same data. Furthermore, by implicitly representing the melt pool boundary as a level set, we quantify the solidification rate and predict the rate of change of the melt pool geometry with respect to the process parameters.",
+        "This study focused on learning the top view of fields in a single-track LPBF process to demonstrate the effectiveness of our approach. Future research can extend this framework to 3D geometries for multi-track printing scenarios. The quantification of uncertainties in the predictions of the network will also be addressed in the future."
+      ]
+    }
+  ],
+  "tables": [
+    {
+      "caption": "Values of the process parameters in the dataset",
+      "headers": [
+        "Laser power ( P ) [W]",
+        "80, 120, 160, 200, 240, 280"
+      ],
+      "rows": [
+        [
+          "Laser scanning speed ( v ) [m/s]",
+          "0.75, 1, 1.25, 1.5, 1.75, 2.25, 2.5"
+        ],
+        [
+          "Initial substrate temperature ( \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$T_{pre}$$\\end{document} ) [K]",
+          "300, 340, 380, 420, 460"
+        ]
+      ],
+      "header_groups": [],
+      "table_alignment_status": "resolved",
+      "row_provenance": [
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 2
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 2
+          }
+        ]
+      ],
+      "tbody_alignment_status": "resolved"
+    },
+    {
+      "caption": "Material properties of Ti6Al4V alloy and atmospheric conditions of the simulated process Lin et al. ( 27 ); Cummins et al. ( 8 )",
+      "headers": [
+        "Property / Atmospheric condition",
+        "Symbol",
+        "Value",
+        "Unit"
+      ],
+      "rows": [
+        [
+          "Reference density",
+          "\\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$ \\rho _{0} $$\\end{document}",
+          "4420",
+          "kgm −3"
+        ],
+        [
+          "Solid thermal conductivity constant",
+          "\\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$k_{S}$$\\end{document}",
+          "33.4",
+          "Wm −1 K −1"
+        ],
+        [
+          "Liquid thermal conductivity constant",
+          "\\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$k_{L}$$\\end{document}",
+          "19",
+          "Wm −1 K −1"
+        ],
+        [
+          "Solid isobaric specific heat capacity constant",
+          "\\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$c_{p_{S}}$$\\end{document}",
+          "830",
+          "Jkg −1 K −1"
+        ],
+        [
+          "Liquid isobaric specific heat capacity constant",
+          "\\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$c_{p_{L}}$$\\end{document}",
+          "546",
+          "Jkg −1 K −1"
+        ],
+        [
+          "Dynamic viscosity",
+          "\\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\mu $$\\end{document}",
+          "0.005",
+          "kgm −1 s −1"
+        ],
+        [
+          "Surface tension",
+          "\\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\sigma _T$$\\end{document}",
+          "1.493",
+          "Nm −1"
+        ],
+        [
+          "Surface tension gradient coefficient",
+          "\\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\sigma _T'$$\\end{document}",
+          "\\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$1.9\\times 10^{-4}$$\\end{document}",
+          "Nm −1 K −1"
+        ],
+        [
+          "Solidus temperature",
+          "\\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$T_{S}$$\\end{document}",
+          "1878",
+          "K"
+        ],
+        [
+          "Liquidus temperature",
+          "\\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$T_{L}$$\\end{document}",
+          "1933",
+          "K"
+        ],
+        [
+          "Reference temperature of evaporation",
+          "\\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$T_v$$\\end{document}",
+          "3133",
+          "K"
+        ],
+        [
+          "Specific enthalpy of melting",
+          "\\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$H_{m}$$\\end{document}",
+          "\\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$2.9 \\times 10^{5}$$\\end{document}",
+          "Jkg −1"
+        ],
+        [
+          "Specific enthalpy of evaporation",
+          "\\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$H_v$$\\end{document}",
+          "\\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$9.83 \\times 10^{6}$$\\end{document}",
+          "Jkg −1"
+        ],
+        [
+          "Atmospheric pressure",
+          "\\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$P_{atm}$$\\end{document}",
+          "\\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$10^{5}$$\\end{document}",
+          "Pa"
+        ],
+        [
+          "Atmospheric temperature",
+          "\\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$T_{atm}$$\\end{document}",
+          "300",
+          "K"
+        ],
+        [
+          "Convective heat transfer coefficient",
+          "\\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$h_c$$\\end{document}",
+          "19",
+          "Wm −2 K −1"
+        ],
+        [
+          "Emissivity",
+          "\\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\epsilon $$\\end{document}",
+          "0.23",
+          "−"
+        ],
+        [
+          "Molar mass",
+          "\\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$M_m$$\\end{document}",
+          "0.048",
+          "kgmol −1"
+        ]
+      ],
+      "header_groups": [],
+      "table_alignment_status": "resolved",
+      "row_provenance": [
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 8,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 8,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 8,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 8,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 9,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 9,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 9,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 9,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 10,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 10,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 10,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 10,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 11,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 11,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 11,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 11,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 12,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 12,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 12,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 12,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 13,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 13,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 13,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 13,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 14,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 14,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 14,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 14,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 15,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 15,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 15,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 15,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 16,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 16,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 16,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 16,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 17,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 17,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 17,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 17,
+            "source_col": 4
+          }
+        ]
+      ],
+      "tbody_alignment_status": "resolved"
+    }
+  ]
+}

@@ -1,0 +1,419 @@
+{
+  "doi": "10.1007/s40194-026-02548-2",
+  "title": "Computational framework for microstructure identification and hardness prediction in ultrahigh-strength steel components fabricated by wire-arc directed energy deposition",
+  "abstract": "Abstract This work predicts multiple reheat thermal histories and resulting microstructure and hardness of wire-arc directed energy deposition (WA-DED) fabricated components through development and validation of a computational modeling framework. The framework combines a finite element analysis (FEA) process model, a calibrated dual double ellipsoid Gaussian (DDEG) heat source, a thermal history-based microstructure identification procedure, and thermal history-property relationships. The framework was demonstrated and validated through accurate predictions of measured thermal histories, characterized microstructures, and measured hardness of a single bead per layer ultrahigh-strength steel WA-DED build. It was predicted that WA-DED process generates a transient temperature field along the build height. Deposition of the final layer remelts the previously deposited layer, forming as-solidified fresh martensite in the top two layers. The layer below is supercritically reheated, forming an affected zone (HAZ) with coarse- and fine-grained fresh martensite. The fresh martensite in the top three layers has hardness of 500–530 HV 0.5 . The material below the three top layers is tempered by subcritical reheats. The latter generate cyclic hardness variation along the build height from 370 HV 0.5 , in tempered fine- and coarse-grained HAZ regions, to 450 HV 0.5  in tempered intercritically reheated coarse-grained HAZ regions. This work represents the first application of a calibrated DDEG heat source in a WA-DED FEA process model, thermal history-based HAZ microstructure identification, and HAZ-specific tempering response relationships, for microstructure and hardness prediction in a WA-DED fabricated build. The demonstrated computational framework provides a basis for component property optimization by predicting the distribution of microstructures and hardness as a function of WA-DED process parameters.",
+  "journal": "Welding in the World",
+  "year": "2026",
+  "sections": [
+    {
+      "heading": "Introduction",
+      "paragraphs": [
+        "There has been recent interest in metal additive manufacturing (MAM) of ultrahigh-strength steel components (UHSS). This interest stems from a combination of the potential time and cost savings in low-volume, complex component production compared to conventional manufacturing, as well as the difficulty of heat treating or processing large-format steel components [ 1 ,  2 – 3 ]. MAM studies have been performed on a wide range of UHSS, from low-alloy to precipitation hardened stainless steels (PHSS) [ 4 ,  5 – 6 ]. Most of the published research addressed maraging, PHSS, and secondary hardening steels, while only 1% focused on medium alloyed UHSS containing 5–10% alloying additions and 0.25–0.5 wt.% C [ 7 ]. The wide compositional space of UHSS alloys can produce components with vastly different properties, limiting the applicability of existing findings to medium alloyed UHSS [ 5 ,  8 ,  9 – 10 ]. Mechanical properties of UHSS components are also dependent upon MAM process parameters, separate from manufacturing defects [ 5 ,  6 ,  11 ,  12 ]. Furthermore, the performance of UHSS components produced by MAM can be significantly different from conventionally manufactured components, especially in the as-built condition [ 5 ,  6 ,  10 ]. This extends to differences in component properties between MAM fabrication processes, such as laser powder bed fusion (LPBF) compared to wire-arc directed energy deposition (WA-DED) [ 6 ,  13 ].",
+        "Accurate prediction of microstructures and properties in components fabricated by WA-DED requires reliable simulation of the complex, multi-reheat thermal cycling. The coupling of finite element analysis (FEA) process models and a heat source model is a common approach to macro-scale predictions of WA-DED [ 14 ,  15 ]. A double ellipsoid Gaussian (DEG) [ 15 ] is perhaps the most widely used, though the DEG has been unreliable in certain conditions [ 15 ,  16 ]. A new, dual double ellipsoid Gaussian (DDEG) heat source has shown more accurate thermal history predictions when compared to the DEG [ 17 ]. Recent works have linked process-microstructure-properties relationships for WA-DED fabrication of steels by combining FEA predicted thermal histories with continuous cooling transformation (CCT) based models to predict hardness [ 18 ,  19 ]. However, these approaches that rely on cooling at some rate from an austenitic state cannot account for property differences due to process-induced tempering cycles. This presents a significant limitation for hardenable steels that form martensitic microstructures across a wide range of fabrication conditions, where properties are strongly affected by in-process tempering. Tempering of martensitic microstructures is a complex process involving carbon redistribution, coarsening of the substructure, sequential precipitation and growth of various carbide species, dislocation recovery, and recrystallization [ 20 ,  21 – 22 ]. Rigorous frameworks which can model different tempering effects exist, such as the Kampmann-Wagner [ 23 ] or Svoboda-Fischer-Fratzl-Kozeschnik [ 24 ,  25 ] used to model carbide and nitride precipitation in conventional quench and temper heat treatments [ 26 ] or even non-isothermal temper bead welding processes [ 27 ]. However, the interactions between the different tempering effects and their related impact on hardness become increasingly complex during multiple, non-isothermal tempering reheats. Thus, empirical approaches have been utilized as alternatives to kinetics based modeling efforts [ 28 ,  29 ,  30 ,  31 – 32 ].",
+        "Tempering parameters bridge the gap by relating the hardness of martensitic microstructures to the experienced tempering cycle. The Hollomon-Jaffe, and later Grange-Baughman parameter (GBP), correlate hardness changes to isothermal tempering conditions through the assumption that softening is related to a diffusion-type law [ 28 ,  33 ,  34 ,  35 – 36 ]. GBP was later modified to correlate hardness with non-isothermal tempering during induction heat treatments [ 29 ]. A parallel approach uses a tempering ratio, which quantifies tempering kinetics using a Johnson–Mehl–Avrami-Kolmogorov (JMAK) equation [ 30 ]. This approach shares similar underlying assumptions with GBP. The tempering ratio and modified GBP have been applied to predict hardness of steels subjected to multiple, non-isothermal tempering cycles in temper bead and multipass welding processes [ 31 ,  37 ,  38 ]. Thus far, only the tempering ratio has been applied to an additive manufacturing process [ 32 ]. However, that work assumed a single JMAK-based tempering ratio was suitable to predict in-process tempering effects of all martensitic microstructures formed by the varied austenitizing conditions in specific heat affected zone (HAZ) regions. In contrast, the modified GBP approach used distinct tempering response relationships in conjunction with a thermal-history based microstructure identification procedure to successfully predict microstructure and hardness after tempering in the coarse grain HAZ (CGHAZ), fine grain HAZ (FGHAZ), and intercritical HAZ (ICHAZ) in temper bead welding [ 31 ,  37 ]. Temper bead welding has analogous tempering cycles to those experienced during WA-DED processes; however, a computational framework combining an FEA process model, microstructure identification procedure, and modified GBP tempering response relationships has not yet been applied to WA-DED fabrication.",
+        "The objective of this work was to predict the transient temperature field and resulting microstructural and hardness variations in WA-DED manufacturing of UHSS components. This objective is achieved through demonstration and experimental validation of a computational framework, combining an FEA process model, a calibrated DDEG heat source [ 17 ], thermal history-based HAZ microstructure identification procedure, and HAZ-specific tempering response relationships."
+      ]
+    },
+    {
+      "heading": "Materials and methods",
+      "paragraphs": []
+    },
+    {
+      "heading": "Experimental WA-DED builds",
+      "paragraphs": [
+        "A single bead per layer build was fabricated using a WA-DED/pulsed gas metal arc welding (GMAWp) process with metal-cored filler metal of a medium alloyed martensitic UHSS. The as-deposited UHSS composition and International Institute of Welding carbon equivalent (CE IIW ) [ 39 ] are shown in Table  1 . The WA-DED process parameters are shown in Table  2 . Preheat and interpass temperatures were applied to mitigate previously encountered cold cracking. No post weld heat treatment or stress relief heat treatment was performed after build completion. The starting position of each bead was alternated to avoid excessive material deposition at each end of the build. The target build height was approximately 127 mm, resulting in deposition of 64 layers. The length of the first three layers was 254 mm, while all subsequent layers were 229 mm in length. An FEA model representing the build geometry is shown in Fig.  1 .\n Table 1 As-deposited UHSS composition El C Cr Mo Mn Ni Si V Cu N S P Fe CE IIW Wt.% 0.284 2.86 1.03 0.67 1.08 1.1 0.14 0.079 0.004 0.0095 0.0057 Bal 1.28 Table 2 WA-DED process parameters used in the UHSS wall fabrication Process Current (A) Voltage (V) WFS (mm/s) TS (mm/s) AIH (KJ/mm) Preheat, °C Interpass, °C Weave Width (mm) Weave Freq. (Hz) Weave Dwell (s) GMAWp 174 17.3 104 5.93 0.819 100 130 0.7 1 0.25 Fig. 1 a  A representative geometry depicting the UHSS fabricated by WA-DED and  b  the 2D mesh of each bead",
+        "The instantaneous current and voltage were measured in situ using a data acquisition (DAQ) system with a sampling rate of 5 kHz to obtain average instantaneous heat input (AIH). AIH was calculated using Eq.  1  to better represent the GMAWp process, in contrast to the standard heat input measurement, which utilizes averaged voltage and current values.",
+        "1 A I H = ∑ i = 1 n I i ∗ V i n TS \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$AIH= \\frac{\\sum_{i=1}^{n}\\frac{{I}_{i}*{V}_{i}}{n}}{TS}$$\\end{document}",
+        "Here,  I i \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${I}_{i}$$\\end{document}  and  V i \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${V}_{i}$$\\end{document}  are the measured instantaneous current (A) and voltage (V) values,  n \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$n$$\\end{document}  is the number of discrete voltage and current measurements, and  TS \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$TS$$\\end{document}  (mm/s) is the welding travel speed. Arc efficiency was not included in the AIH calculation but was accounted for in the heat source calibration in Section  2.3 . In situ WA-DED thermal histories were recorded using seven type K thermocouples aligned along the travel direction. A three-layer build was sectioned to determine the thermocouple locations relative to the fusion boundary of as-deposited beads. The thermocouples were located 0.03 mm to 0.63 mm below the estimated fusion boundary of the next bead to ensure successful data collection during bead deposition. The thermocouples were sleeved through 1.8 mm diameter ceramic insulators and welded in drilled holes in the underside of the third layer by a capacitor discharge welder, as shown in Fig.  2 . Thermal history data was recorded by an InstruNet i100 DAQ and InstruNet data collection software at 1 kHz sampling rate. Fig. 2 A view of the first three beads, depicting the cross-section of a drilled hole for thermocouple welding"
+      ]
+    },
+    {
+      "heading": "Metallurgical characterization",
+      "paragraphs": [
+        "A cross-section parallel to the YX plane in Fig.  1  was extracted at the middle length of the build and included the top final 19 layers. Microstructural evolution with respect to build height was characterized by light optical microscopy (LOM), and scanning electron microscopy (SEM). Specimens for LOM were polished to 1 μm diamond paste and then etched in 2% Nital. SEM imaging specimens were vibratory polished to 0.05 μm colloidal silica before etching with 2% Nital or were left as-polished. Secondary electron (SE) imaging was performed using the Everhart–Thornley Detector (ETD) and in-column detectors (T2 and T3) at a range of accelerating voltages and currents. Electron backscatter diffraction (EBSD) was performed at hardness indents using 20 kV, 6.4 nA, and a 0.5 μm step size for region-specific characterization. All EBSD data was spherically indexed using a simulated BCC (ferrite/martensite) master pattern. Negligible differences were seen when indexing with a simulated BCT (martensite) master pattern. Parent austenite grain (PAG) reconstruction was performed using the Nishiyama-Wasserman relationship. Hardness changes with respect to build height were measured by automated hardness mapping using a 500 g load with 250 μm spacing between indents."
+      ]
+    },
+    {
+      "heading": "FEA modeling of WA-DED MAM",
+      "paragraphs": [
+        "An FEA model including the first 15 beads, 2.3 mm height and 9.5 mm wide each, of the WA-DED build was created using SysWeld™ software (Fig.  1 a). The FEA model cross section, parallel to the XY plane, was meshed using the 2D auto-mesh tool of SysWeld™ with quad-type elements of 250 μm to match the hardness map spacing (Fig.  1 b). The substrate used the same element size in a 30 × 5 mm area below the first layer but coarsened to 0.5 mm and 1 mm element sizes with increasing distance from the first layer. The 3D FEA model was created by sweeping the 2D mesh 130 mm in the travel direction, approximately half the size of the actual substrate, with an element size of 2 mm. The resulting hexahedral elements are a standard type used in FEA modeling of WA-DED [ 14 ]. The skin elements on the substrate had a convective cooling condition of 100 °C to represent the 100 °C substrate preheat, held for the entirety of build fabrication. The skin elements of each layer had a convective cooling condition of 20 °C to represent the ambient environment. Additionally, the interpass temperature of 130 °C was simulated using the end temperature condition in SysWeld™. Thermophysical properties of the UHSS, specific heat capacity, density, thermal conductivity, and solidus temperature were unknown and estimated using the TCFE12 database in Thermo-Calc 2023b. Temperature-dependent, equilibrium thermophysical properties of austenite and ferrite were used. Thermophysical properties of martensite could not be calculated, and the ferrite properties were used instead. During the simulation, the properties were weighted by the local phase fractions with phase evolution driven by a JMAK-based model for the martensite-austenite reversion on heating and the Koistinen-Marburger model for the martensite transformation on-cooling [ 40 ].",
+        "FEA simulations of the WA-DED process were performed using the travel speed and AIH listed in Table  2 . A dual double ellipsoid Gaussian (DDEG) heat source was calibrated and used to represent the energy input of the WA-DED process parameters in Table  2 . The calibration procedure, heat source geometry, arc efficiency, and heat source parameters are described in detail in [ 17 ]. The DDEG heat source model [ 17 ] can be used in FEA simulations of various arc-welding processes. However, it needs to be calibrated to accurately represent a given set of welding or WA-DED process parameters. The FEA simulations predicted the multiple-reheat thermal histories experienced in each node of the FEA model shown in Fig.  2 . The prediction accuracy was validated by comparison of simulated and experimentally recorded thermal histories. The simulation accuracy was further validated by comparison against a 100-µm element size mesh in the XY plane which produced peak temperature differences below 4% across six consecutive thermal cycles."
+      ]
+    },
+    {
+      "heading": "Microstructure and hardness prediction",
+      "paragraphs": []
+    },
+    {
+      "heading": "Microstructure prediction",
+      "paragraphs": [
+        "The local microstructure in the WA-DED build was predicted using a computational post processing procedure. The latter compares the sequence of FEA predicted peak temperatures, experienced in each FEA node, to the solidus (T S ), grain growth (GG), A C1 , and A C3  temperatures, and a minimum tempering temperature (MTT). A T s  temperature of 1330 °C was determined from a Thermo-Calc Scheil simulation. GG of 1000 °C, A C1  of 829 °C, A C3  of 910 °C, and MTT of 350 °C were experimentally determined during the development of a continuous cooling transformation (CCT) diagram of the tested steel [ 41 ]. That CCT diagram demonstrated a primarily martensitic transformation, M S  = 350 °C, within a wide range of cooling rates, including those encountered in WA-DED. Therefore, the postprocessing procedure assumed austenite to martensite transformation on cooling from temperatures above the A C1  temperature. This assumption was supported by the martensitic microstructure identified by metallurgical characterization performed in Section  3 .",
+        "The sequence of thermal cycles and peak temperatures used in microstructure identification are demonstrated in Figs.  3  and  4 . The range of microstructures predicted using this approach includes: (1) fresh or tempered martensite (FM, TM) in as-solidified (AS) metal, coarse grained and fine grained HAZ (CG-, FG-HAZ), and (2) FM + TM mixture in AS metal, intercritical HAZ (ICHAZ), and intercritically reheated CGHAZ and FGHAZ (IC-CGHAZ and IC-FGHAZ). Fig. 3 Thermal sequences that identify as-solidified, FM, and FM + TM HAZ microstructures Fig. 4 Thermal sequences that identify TM HAZ microstructures"
+      ]
+    },
+    {
+      "heading": "Hardness prediction",
+      "paragraphs": [
+        "Tempering response relationships for the HAZ regions of the tested steel were developed using the modified Grange-Baughman Parameter (GBP) approach, which accounts for the tempering effect of multiple non-isothermal reheats [ 31 ]. Using the Gleeble™ 3800, CGHAZ, IC-CGHAZ, FGHAZ, and ICHAZ microstructures were simulated and subjected to single and multiple reheats in the temperature range between the A C1  temperature and the MTT [ 41 ,  42 ]. The simulated thermal histories reflected the context of a single pass per layer WA-DED build, where the deposited metal is subjected to tempering reheats with gradually decreasing peak temperatures.",
+        "Test specimens with simulated non-tempered and reheat-tempered HAZ microstructures were subjected to Vickers hardness testing. The respective GBP values were calculated using the approach defined in [ 31 ] and the measured hardness values for tempered CG-, FG-, IC-, and IC-CG HAZ microstructures. The developed hardness-GBP relationships are shown in Eqs.  2 – 5 . As-deposited and fresh martensite HAZ microstructures, which did not receive a tempering reheat, were assigned measured average hardness values. These were 550 HV 0.5  for as-solidified metal and FM-CGHAZ, 520 HV 0.5  for FM FGHAZ, and 570 HV 0.5  for the FM + TM IC-CGHAZ regions. The developed tempering response relationships (Eqs.  2 – 5 ) are specific to multiple reheat processing, e.g., WA-DED and multipass groove welding, of the tested UHSS. Different steel—fabrication process combinations would require development of separate tempering response relationships.",
+        "The FEA-predicted thermal history at each FEA node and the corresponding HAZ microstructures and tempering response relationships were applied to predict microstructure and hardness distribution in the cross-section of the WA-DED build. These predictions were validated through metallurgical characterization and hardness measurements along the build cross-section.",
+        "2 C G H A Z H a r d n e s s H V = - 6.267 ∗ 10 - 7 G B P 2 + 0.01993 G B P + 339.8 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$CGHAZ\\, Hardness \\,\\left(HV\\right)= -6.267*{10}^{-7}{\\left(GBP\\right)}^{2}+0.01993\\left(GBP\\right)+339.8$$\\end{document}",
+        "3 I C - C G H A Z H a r d n e s s H V = - 9.628 ∗ 10 - 7 G B P 2 + 0.03635 G B P + 163.7 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$IC-CGHAZ \\,Hardness \\,\\left(HV\\right)= -9.628*{10}^{-7}{\\left(GBP\\right)}^{2}+0.03635\\left(GBP\\right)+163.7$$\\end{document}",
+        "4 F G H A Z H a r d n e s s H V = - 1.231 ∗ 10 - 6 G B P 2 + 0.04654 G B P + 30.81 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$FGHAZ \\,Hardness\\, \\left(HV\\right)= -1.231*{10}^{-6}{\\left(GBP\\right)}^{2}+0.04654\\left(GBP\\right)+30.81$$\\end{document}",
+        "5 I C H A Z H a r d n e s s H V = - 1.338 ∗ 10 - 6 G B P 2 - 0.04964 G B P - 5.43 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$ICHAZ \\,Hardness \\,\\left(HV\\right)= -1.338*{10}^{-6}{\\left(GBP\\right)}^{2}-0.04964\\left(GBP\\right)-5.43$$\\end{document}"
+      ]
+    },
+    {
+      "heading": "Results",
+      "paragraphs": [
+        "A 64-layer tall, single pass per layer, defect-free UHSS build was fabricated using the WA-DED process parameters in Table  2 . A cross section of the top 35 mm of the build, average hardness variations, and the experimental hardness map, are shown in Fig.  5 . Due to arc weaving, layer-to-layer fusion boundary spacing was inconsistent. Therefore, repeating darker and lighter tempered regions regularly corresponded to harder and softer regions and were used to identify layers. The top three layers showed no such features and were identified by fusion boundaries. For clarity of the following analyses and discussion, the top layer and the underlying 18 layers are referred to as TL and TL-1 through TL-18, respectively. Fig. 5 Microstructure and hardness in the top 19 layers of the WA-DED build:  a ) and  b ) average hardness variation and hardness map;  c ) fusion boundaries in layers TL through TL-8",
+        "The average hardness plot and hardness map in Fig.  5  identified uniform hardness in layers TL through TL-2, within the range of 500 to 530 HV. A sharp hardness transition to about 370 HV was seen in TL-3, followed by consistent hardness variations between 370 and 450 HV in layers TL-4 through TL-18. Representative microstructures and local hardness values in these three distinct zones of the WA-DED build are shown in Figs.  6 ,  7 ,  8 , and  9 . These microstructures varied by the presence of interdendritic segregation, solidification grain boundaries and/or prior austenite grain boundaries (SGBs/PAGBs), PAG refinement, and density of carbide precipitation. Coarse sub-grains with indication of carbide precipitation, found in fresh martensitic microstructures and labeled as (M/B) in Figs.  6 b, d and 7b, resemble the substructure of auto-tempered martensite or coalesced bainite. The potential for martensite auto-tempering or bainite transformation in the tested UHSS is discussed in Section  5.1 . Figure  10  compares the area fraction distribution of prior austenitic grain (PAG) diameters in the TM-CGHAZ, TM-FGHAZ, and IC-CGHAZ regions which are identified in Fig.  9 . Average PAG diameters of 53.7 μm, 119.7 μm, and 138.5 μm, were respectively determined for the IC-CGHAZ, TM-FGHAZ, and TM-CGHAZ regions. Fig. 6 As-solidified fresh martensite in the as-solidified layer TL ( a ,  b ) and in the remelted layer TL-1 ( c ,  d ):  a  and  c  Interdendritic segregation with  b  and  d  fresh martensitic substructure (M), auto-tempered martensite or coalesced bainite (M/B), and SGBs/PAGBs Fig. 7 Microstructure in layer TL-2 after single reheat above A C3 :  a  FM-CGHAZ with preserved interdendritic segregation and  b  fresh martensite substructure, a PAGB, and;  c  FM-FGHAZ with preserved interdendritic segregation and  d  fresh martensitic substructure with fine fresh martensite regions (Fine FM) Fig. 8 Microstructure in layer TL-3 after single tempering reheat:  a  FM + TM IC-CGHAZ with preserved interdendritic segregation,  b  mixture of fresh and tempered martensite with refined PAGs, and  e  lesser carbide density at the top of TL-3;  c  TM-CGHAZ with no preserved interdendritic segregation,  d  tempered martensite, and  f  higher carbide density at lower half of TL-3 Fig. 9 Microstructure in layer TL-7 after 4 tempering reheats and at the top of layer TL-8 after 5 tempering reheats:  a  Hardness map of layers TL-5 through TL-9 of;  b  respective microstructural gradient of reconstructed parent austenite grains in  c  TM-FGHAZ,  d ,  e  TM-IC-CGHAZ,  f  TM-CGHAZ, and  g  TM-FGHAZ Fig. 10 Area fraction of the reconstructed parent austenite grain diameters in Fig.  9 c – g  regions: TM-IC-CGHAZ, TM-FGHAZ, and TM-CGHAZ in layers TL-7 to TL-8",
+        "An FEA-generated contour plot of the transient temperature field, predicted microstructures, and predicted hardness maps of layers TL to TL-11 of the WA-DED build are shown in Fig.  11 . The predicted hardness and microstructure map was generated by a post-processing computational module. The module extracts simulated thermal histories from FEA nodes in Fig.  11 a, identifies the related microstructural categories based on the sequence of experienced peak temperatures (Fig.  11 b), and applies a respective tempering response relationship, Eqs.  2  through  5 , resulting in Fig.  11 c. Fig. 11 a  FEA cross section at mid-length with transient temperature contour and  b ,  c , the corresponding predicted microstructure and hardness maps",
+        "Local thermal histories extracted from the top 4 layers of the FEA model (Fig.  12 a) are shown in Fig.  12 b. These thermal histories represent the formation of fresh martensite as follows: (1) FM-AS in TL and TL-1, (2) FM-CGHAZ and FM-FGHAZ in TL-2, and (3) FM + TM-IC-CGHAZ at the top of TL-3. Typical multiple-reheat thermal histories representing the formation of fully tempered martensite in TL-3 through TL-11 (Fig.  13 a) are shown in Fig.  13 b. These include thermal histories of TM-CGHAZ, TM-FGHAZ, and TM-IC-CGHAZ microstructures. Fig. 12 a  FM microstructure locations in layers TL through TL-3 at mid-length FEA cross section and  b  the corresponding thermal histories Fig. 13 a  TM microstructure locations in layer TL-11 at mid-length FEA cross section and,  b  the corresponding thermal histories"
+      ]
+    },
+    {
+      "heading": "FEA modeling framework validation",
+      "paragraphs": [
+        "Experimentally recorded thermal histories with remelting, intercritical, and tempering reheats are compared to the FEA predicted thermal histories near the thermocouple tip location in Fig.  14 . The average peak temperature differences (ΔT P ) between measured and predicted effective tempering cycles (ETCs), for thermal cycles with peak temperatures above MTT, are compared in Table  3 . The comparison demonstrates a good correlation of the predicted ETCs to the measured ones, which is essential for reliable tempering response and hardness predictions using the GBP relationships defined in Eqs.  2  through  5 . The time shift in predicted vs. measured ETCs is a result of limitation in the recording durations.\n Table 3 Average ΔT P  of predicted and measured thermal cycles, T X Cycle T 1 T 2 T 3 T 4 T 5 T 6 T 7 T 8 T 9 Avg. ΔT P  (°C) 14 11 5 3 21 17 14 8 4 Fig. 14 Thermal history validation",
+        "The predicted microstructure and hardness maps are compared to the measured hardness map in Fig.  15 . The predicted hardness (Fig.  15 b) and measured hardness (Fig.  15 c) demonstrate similar harder and softer regions through layers TL-3 to TL-18. The harder regions typically correspond to the TM-IC-CGHAZ while softer regions correspond to the TM-CGHAZ and TM-FGHAZ in Fig.  15 a. The assigned hardness values of the FM regions in layers TL through TL-3 (see Section  2.4.2 ) overestimated the measured hardness in the WA-DED build. Fig. 15 a ,  b  Predicted microstructure and predicted hardness were compared to,  c  the measured hardness in layers TL through TL-18",
+        "The predicted and experimentally measured average hardness across layers TL-3 through TL-18 is compared in Fig.  16 . The predicted confidence interval (CI) was computed from the fitted quadratic Hardness-GBP polynomials in Eqs.  2  through  5  and represents the predicted mean hardness range along the build direction with 99% probability. The min–max range captures the full range of hardness measurements at all build height positions. The overlap percentage represents the fraction of build height over which the predicted 99% CI and measured min–max range share at least partial overlap, indicating physically consistent predictions. There was 94.5% overlap between the predicted 99% CI and measured min–max hardness range along layers TL-3 through TL-18. Fig. 16 FEA modeling approach validation by comparison of predicted to measured average hardness distribution in layers TL-3 through TL-18",
+        "Additional validation of the demonstrated WA-DED process modeling framework is provided by comparing predicted to characterized microstructures in Figs.  9  and  10 . The sequence of predicted microstructures in layer TL-7 and the top of layer TL-8, of TM-FGHAZ, TM-IC-CGHAZ, TM-CGHAZ, and TM-FGHAZ, was validated by the measured hardness in Fig.  9 b and the distribution of PAG diameter area fractions in Fig.  10 . The TM-IC-CGHAZ, which was predicted to undergo partial austenitization, had the lowest measured average PAG size and lowest range of PAG size area fraction distribution, followed by the TM-FGHAZ and TM-CGHAZ. This experimentally identified sequence of TM-FGHAZ, TM-IC-CGHAZ, TM-CGHAZ, and TM-FGHAZ microstructures corresponds to the predicted sequence of microstructures in layers TL-5 through TL-11, as shown in Figs.  11 b and  15 a."
+      ]
+    },
+    {
+      "heading": "Discussion",
+      "paragraphs": [
+        "This work demonstrated and validated a computational modeling framework for process-microstructure-hardness predictions in WA-DED of UHSS. The computational framework utilized an FEA model and a calibrated heat source of the WA-DED process, in combination with thermal history-based microstructure identification procedure and thermal history-hardness relationships of the tested UHSS. This approach reliably predicted the multiple reheat thermal histories and resulting microstructural and hardness variations in a single bead per layer WA-DED build of the UHSS. These predictions are discussed below in parallel with the characterized microstructure and hardness of the build’s three distinct zones shown in Fig.  5  and predicted in Fig.  15 ."
+      ]
+    },
+    {
+      "heading": "Layers TL and TL-1: As-solidified",
+      "paragraphs": [
+        "The microstructure in layers TL and TL-1 exhibited as-solidified dendritic morphology with a martensitic substructure and hardness values in the range of 500 to 530 HV, which are representative of fresh martensite for the tested steel [ 42 ] (Fig.  6 ). The as-solidified microstructure in TL-1 is indicative of a complete layer remelt by subsequent deposition of TL. Remelting of each as-deposited layer in the WA-DED build was predicted by the transient temperature field in Fig.  12 a, and by the multiple reheat thermal histories in Figs.  12 b and  13 b.",
+        "The microstructure of as-solidified metal and FM-HAZ regions of the WA-DED build is primarily martensitic (Fig.  6 ). This is supported by the high hardenability of the tested UHSS (CE IIW  of 1.28, Table  2 ). In addition, only martensitic transformations, M S  of 350 °C, were determined by dilatometry in the CGHAZ of this steel in a range of long cooling rates exceeding those experienced in WA-DED [ 41 ,  42 ]. Therefore, the coarse sub-grains containing precipitates in the as-solidified metal (Fig.  6 b, d) and FM-CGHAZ regions (Fig.  7 b) are most probably formed through martensite auto-tempering. This is supported by the measured M S  of 350 °C for the UHSS [ 41 ] being above the typical isothermal tempering temperature range of 150 to 240 °C for ε-carbide precipitation [ 43 ,  44 ]. Additionally, the preheat of 100 °C and interpass of 130 °C in Table  2  likely lengthen the duration spent in this tempering window.",
+        "However, the presence of bainitic constituents cannot be excluded. Distinguishing between auto-tempered martensite and coalesced bainite is a particularly difficult task. The ATM constituents, indicated in Figs.  6 b, d and  7 b, have morphological similarity to both coalesced bainite and auto-tempered martensite [ 45 ,  46 – 47 ]. Notably, similar constituents have previously been identified as auto-tempered martensite with ε-carbide in a comparable UHSS [ 48 ]. ε-carbide replaces cementite as the silicon addition in the UHSS suppresses cementite formation [ 43 ]. However, the replacement of cementite with ε-carbide does not inhibit the bainite transformation in any way; in fact, bainitic transformations with ε-carbide instead of cementite have been reported in multiple steels [ 49 ]. That said, the combination of continuous cooling conditions, plate-like coalesced bainite morphology, and ε-carbide precipitation has not yet been reported. This alone could justify identifying the ATM constituents as simply auto-tempered martensite. However, the segregation present in Figs.  6 ,  7 , and  8 a adds further complexity, requiring consideration of differences in local silicon content and whether cementite is similarly suppressed from the dendrite core to interdendritic regions. This concern is reinforced by the ample evidence of interdendritic segregation, which was measured in a previous work on cracking during WA-DED of the UHSS, where silicon enrichment was found at interdendritic regions [ 50 ]. With all of this in mind, the discussion is simplified to consider the microstructures as entirely martensitic until transmission electron microscopy is combined with dilation data, and it is acknowledged that the ATM constituent identification remains ambiguous."
+      ]
+    },
+    {
+      "heading": "Layers TL-2: fresh martensite HAZs",
+      "paragraphs": [
+        "Layer TL-2 was predicted to experience supercritical reheating (above A C3 ) and form fresh martensite on cooling, as shown with the FM-CGHAZ and FM-FGHAZ microstructures in Fig.  11 b and predicted thermal histories in Fig.  12 . Figure  7  shows preserved dendritic morphology with martensitic substructure in TL-2, indicating full re-austenitization above the A C3  temperature. The coarser and finer martensitic substructures, found respectively at the top and bottom of TL-2, along with high hardness, are representative of fresh martensite CGHAZ and FGHAZ microstructures. The existence of fresh martensite in the final layers has been both predicted by previous modeling efforts and characterized in previous studies of WA-DED of similar steels [ 51 ,  52 ]. The preservation of dendritic morphologies and coarse martensitic substructures after full re-austenitization cycles has also been reported [ 52 ]."
+      ]
+    },
+    {
+      "heading": "Layers TL-3 and below: tempered martensite HAZs",
+      "paragraphs": [
+        "The top of layer TL-3 was predicted to experience a third reheat in the CGHAZ temperature range during deposition of TL-1, followed by a fourth reheat in the ICHAZ range (between A C1  and A C3 ) during deposition of TL (Fig.  12 ). This formed a mixed microstructure of fresh and tempered martensite, indicated in Fig.  11 b. The rest of TL-3 received the first tempering reheat between the A C1  and the MTT temperatures, as evidenced by transient temperature field in Fig.  12 . These predictions correlate well with the TL-3 microstructures shown in Fig.  8 . The top of TL-3 exhibits a mixed microstructure of fresh and tempered martensite with refined PAGs compared to layers TL through TL-2, with limited precipitation of carbides (Fig.  8 a, b, and e). The hardness was typical of the FM + TM-IC-CGHAZ microstructure in the tested steel [ 42 ]. The microstructure in the bottom part of TL-3 is representative of tempered martensite with high density of finely dispersed carbides, as shown in Fig.  8 c, d, and f.",
+        "Reheat cycles 5 through 11 were predicted to apply tempering reheats between the A C1  and MTT temperatures to layers TL-4 through TL-10 (Fig.  13 ). These reheats tempered the original FM microstructures formed during the third and fourth reheat cycles to form TM-CGHAZ, TM-FGHAZ, and TM-IC-CGHAZ microstructures. These predictions correlate well with the microstructure and hardness variations in TL-7 and in the top portion of TL-8, which experienced multiple tempering reheats (Fig.  9 ). The lower hardness values and coarse-grained microstructure at indents c), f), and g) are indicative of TM CG- and FGHAZ microstructures, while the finer grain size and higher hardness at indents d) and e) correspond to the TM-IC-CGHAZ. In comparison to the TM CG- and FGHAZ regions, TM-IC-CGHAZ regions were predicted to receive a lower temperature temper (Fig.  13 b), contributing to the higher measured and predicted hardness values. The variations in PAG size and PAG size area fractions among these regions (Fig.  10 ) reflected the predicted peak temperatures of last reheats above the A C1  prior to tempering shown in Fig.  13 . The TM-IC-CGHAZ regions had an average PAG sizes of 53.7 μm and PAG area fraction variation concentrated between 32 and 79 μm. The TM-CGHAZ and TM-FGHAZ regions had broader ranges of PAG area fraction variation, from 50 to 200 μm, and average PAG sizes of 138.5 μm and 119.7 μm, respectively. Prior to tempering, the TM-IC-CGHAZ experienced a partial austenitization, resulting in finer PAGs compared to the TM-CGHAZ and TM-FGHAZ regions.",
+        "The 12th cycle reheats of TL-11 in Fig.  13 b were below the MTT and are not expected to have provided additional tempering. The average hardness distribution in Fig.  5  and the measured and predicted hardness maps in Fig.  14  show that the most significant tempering, in the range of 50 to 130 HV 0.5 , occurs during the first intercritical reheat of layer TL-3 and the first two reheats below the A C1  temperature in TL-4 and TL-5. The hardness in all layers below TL-5 varied between 370 HV 0.5  in the coarser-grained TM-CG and TM-FGHAZ regions and 450 HV 0.5  in the finer-grained IC-CGHAZ, as identified in Figs.  9  and  10 . Previous work has shown that initial, high-temperature subcritical reheats in multipass welding of creep resistant steel had the strongest tempering effect [ 31 ]. While the steels in the previous and current work displayed similar softening behavior, this may not be consistent for steels with strong secondary hardening effects.",
+        "This study demonstrates that the analyzed WA-DED process generated a quasi-stationary temperature, phase transformations and microstructure field in the tested UHSS, which covers the top 19 layers and travels up the build direction with the speed of building. This field contains FM microstructures in the top 3 layers and is gradually tempered in layers TL-3 through TL-10, with the strongest tempering effect (reduction in hardness) occurring in TL-3 through TL-5. The height/number of layers with FM and gradually tempered microstructures, and the final microstructure and hardness of the build depends on the non-equilibrium phase transformation temperatures of the alloy and can be controlled by the WA-DED process parameters.",
+        "A cyclic hardness pattern like that in Fig.  5  was related to different predicted tempering temperatures at specific build heights in previous modeling of WA-DED fabrication of martensitic stainless steel structures [ 53 ]. Mechanisms by which specific HAZ microstructures soften differently from similar tempering cycles were not studied in this work; however, similar behavior was seen in P91B steel [ 54 ]. Additionally, the existence of multiple tempering behaviors along the build direction has been previously associated with super- and intercritical reheat history prior to tempering in WA-DED of martensitic stainless steel [ 55 ]. None of these previous research efforts have quantified the different HAZ tempering response relationships to predict hardness as done in this work.",
+        "In comparison to prior studies, the approach presented here provides a complete FEA-based computational framework, combining predicted multiple reheat thermal histories with microstructure identification and microstructure-specific tempering response to predict cyclic microstructural and hardness patterns along the build height. The demonstrated computational framework is applicable to WA-DED and welding process modeling for prediction of multiple reheat thermal histories in metallic alloys. Such applications require selection and calibration of representative heat sources and utilization of representative thermophysical properties. The demonstrated procedure for microstructure identification is applicable to steels undergoing full transformation to martensite within the range of process generated cooling rates. Hardness prediction requires development of steel-specific tempering response relationships."
+      ]
+    },
+    {
+      "heading": "Summary and conclusions",
+      "paragraphs": [
+        "The computational modeling framework for WA-DED demonstrated successful multiple reheat thermal history, microstructure, and hardness predictions by combining an FEA process model, a calibrated DDEG heat source, a thermal history-based microstructure identification procedure, and HAZ-specific tempering response relationships. It was predicted that: The simulated WA-DED process generates a transient temperature field along the build height which includes a top solidifying layer (TL), a completely remelted underlying layer (TL-1), a supercritically reheated TL-2, TL-3 which undergoes a supercritical reheat followed by single intercritical or single subcritical reheat, and eight layers (TL-4 through TL-11) experiencing multiple subcritical tempering cycles. The temperature field is reflected in a transient microstructural field containing as-solidified martensite in TL and TL-1; CG- and FG-HAZ martensite in TL-2; mixture of fresh and tempered martensite (IC-CGHAZ), and tempered martensite (TM-CGHAZ) in TL-3; a periodic sequence of tempered martensite IC-CGHAZ, CGHAZ, and FGHAZ microstructures in each build layer below TL-3. The most substantial tempering of the fresh martensite in TL, TL-1, and TL-2, from above 500 HV 0.5  down to 450 HV 0.5 , occurs during the intercritical reheat in TL-3, and down to 390 HV 0.5 , during subcritical reheats in TL-3 and TL-4. The multiple reheat thermal histories induced by the WA-DED process generate a consistent pattern of hardness variation between 450 and 350 HV 0.5  in all layers below TL-4, with a harder TM-IC-CGHAZ and softer TM-FGHAZ and TM-CGHAZ microstructures.",
+        "The predictive accuracy of the computational framework was validated by comparison of predicted to experimentally measured thermal histories and hardness maps, and comparison of predicted to characterized microstructures. The FEA process model with a calibrated DDEG heat source reliably predicted the multiple reheat thermal histories with peak temperature difference to measured thermal cycles ranging from 3 to 21 °C. A 94.5% overlap between the 99% confidence interval of predicted hardness and the variation range of measured hardness was demonstrated for the tempered microstructures in layers of TL-3 through TL-18. The predicted sequence of TM-IC-CGHAZ, TM-CGHAZ, and TM-FGHAZ microstructures in the tempered layers below TL-4 was validated by measured PAG diameters of 53.7 μm, 138.5 μm, and 119.7 μm, respectively.",
+        "The validated computational framework provides a basis for component property optimization by controlling the distribution of specific microstructures and hardness in UHSS components through optimizing WA-DED process parameters."
+      ]
+    }
+  ],
+  "tables": [
+    {
+      "caption": "As-deposited UHSS composition",
+      "headers": [
+        "El",
+        "C",
+        "Cr",
+        "Mo",
+        "Mn",
+        "Ni",
+        "Si",
+        "V",
+        "Cu",
+        "N",
+        "S",
+        "P",
+        "Fe",
+        "CE IIW"
+      ],
+      "rows": [
+        [
+          "Wt.%",
+          "0.284",
+          "2.86",
+          "1.03",
+          "0.67",
+          "1.08",
+          "1.1",
+          "0.14",
+          "0.079",
+          "0.004",
+          "0.0095",
+          "0.0057",
+          "Bal",
+          "1.28"
+        ]
+      ],
+      "header_groups": [],
+      "table_alignment_status": "resolved",
+      "row_provenance": [
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 7
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 8
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 9
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 10
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 11
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 12
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 13
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 14
+          }
+        ]
+      ],
+      "tbody_alignment_status": "resolved"
+    },
+    {
+      "caption": "WA-DED process parameters used in the UHSS wall fabrication",
+      "headers": [
+        "Process",
+        "Current (A)",
+        "Voltage (V)",
+        "WFS (mm/s)",
+        "TS (mm/s)",
+        "AIH (KJ/mm)",
+        "Preheat, °C",
+        "Interpass, °C",
+        "Weave Width (mm)",
+        "Weave Freq. (Hz)",
+        "Weave Dwell (s)"
+      ],
+      "rows": [
+        [
+          "GMAWp",
+          "174",
+          "17.3",
+          "104",
+          "5.93",
+          "0.819",
+          "100",
+          "130",
+          "0.7",
+          "1",
+          "0.25"
+        ]
+      ],
+      "header_groups": [],
+      "table_alignment_status": "resolved",
+      "row_provenance": [
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 7
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 8
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 9
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 10
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 11
+          }
+        ]
+      ],
+      "tbody_alignment_status": "resolved"
+    },
+    {
+      "caption": "Average ΔT P  of predicted and measured thermal cycles, T X",
+      "headers": [
+        "Cycle",
+        "T 1",
+        "T 2",
+        "T 3",
+        "T 4",
+        "T 5",
+        "T 6",
+        "T 7",
+        "T 8",
+        "T 9"
+      ],
+      "rows": [
+        [
+          "Avg. ΔT P  (°C)",
+          "14",
+          "11",
+          "5",
+          "3",
+          "21",
+          "17",
+          "14",
+          "8",
+          "4"
+        ]
+      ],
+      "header_groups": [],
+      "table_alignment_status": "resolved",
+      "row_provenance": [
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 7
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 8
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 9
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 10
+          }
+        ]
+      ],
+      "tbody_alignment_status": "resolved"
+    }
+  ]
+}

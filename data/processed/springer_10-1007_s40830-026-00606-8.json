@@ -1,0 +1,734 @@
+{
+  "doi": "10.1007/s40830-026-00606-8",
+  "title": "Correlations between Microstructure and Mechanical Properties for Laser Powder Bed Fusion Fabricated Ta/Fe–Mn-Si Metal Matrix Composites Revealed by Machine Learning",
+  "abstract": "Abstract Metal matrix composites (MMCs) offer a promising strategy to enhance the mechanical and functional properties of metals by tailoring reinforcement phases and microstructures. This study investigates the correlation between microstructural features and mechanical properties of Ta-reinforced Fe–Mn-Si MMCs fabricated by laser powder bed fusion (LPBF) for biomedical applications. Sixteen heat treatment conditions were applied to tailor microstructures, which were quantified using electron backscatter diffraction and used as input for an XGBoost-based machine learning model. The model demonstrated high predictive accuracy for yield strength (YS), elongation, and strain-hardening capability (UTS/YS). Feature importance analysis identified geometrically necessary dislocation density, grain size, and the length of high-angle boundaries as key determinants. The results reveal that precipitation hardening, recrystallization, and transformation-induced plasticity significantly influence mechanical behavior. The optimal condition (1100 °C, 3 h) yielded a MMC with a YS of 216 MPa, elongation of 12.6%, and a strain-hardening ratio of 2.96, satisfying the criteria of mechanical behaviour for temporary implant use. This work presents a data-driven strategy for designing LPBF-fabricated MMCs with enhanced biomechanical performance.",
+  "journal": "Shape Memory and Superelasticity",
+  "year": "2026",
+  "sections": [
+    {
+      "heading": "Introduction",
+      "paragraphs": [
+        "To address the increasing medical treatment requirements of aging populations, there is a need to develop new metallic biomaterials that are cost-effective, have good shape memory properties, and excellent biomechanical properties. Fe–Mn-Si shape memory alloys (SMAs) are promising candidates due to their good shape memory performance and relatively low cost. Previous studies have found that alloying Fe–Mn-Si with tantalum could achieve pronounced shape memory properties with a total recoverable ratio of up to 80%, which motivates the development of Ta/Fe–Mn-Si metal matrix composites (MMCs) [ 1 ]. For biomedical uses, especially in devices such as cardiovascular stents, alloys must also meet minimum mechanical requirements. It is commonly accepted that materials used for temporary implantation require a yield strength of more than 200 MPa [ 2 ,  3 ] while even higher-strength alloys can reduce the amount of material required for various biomedical applications. Additionally, the ductility and the strain-hardening rate are important for determining the feasibility of biomedical alloys, and an elongation of more than 10% is often desired to make them easy to manufacture and deploy in the human body [ 4 ]. Furthermore, strain-hardening, which is often quantified as the ratio of ultimate tensile to yield strength (UTS/YS), is another critical factor that needs to be considered. For example, the uniform dilatation of stents requires pronounced strain hardening to avoid the physical irritation associated with non-uniform dilatation [ 4 ].",
+        "MMCs offer an attractive approach to biomaterials design where controlling the type, size, and quantity of reinforcement allows for the customization of functional [ 5 ] and mechanical properties [ 6 ,  7 ]. Conventional fabrication techniques like casting and powder metallurgy often lead to high costs [ 8 ,  9 ], particle segregation [ 10 ,  11 – 12 ], and insufficient bonding between the reinforcing particles and the matrix [ 13 ]. Recently, additive manufacturing by laser powder bed fusion (LPBF) has shown promising potential for producing intricately shaped MMC components with high precision, reduced production times, and low elemental segregation [ 14 ,  15 – 16 ]. LPBF has been successfully employed to manufacture ceramic particle reinforced iron-based MMCs [ 17 ,  18 ,  19 – 20 ]. One benefit of LPBF-fabricated MMCs is higher strength by Zener pinning grain refinement [ 21 ,  22 ], by the formation and dissociation of particles [ 23 ], or due to the high dislocation density caused by the large elastic and thermal mismatch between the matrix and particles [ 24 ,  25 ]. Moreover, the ductility of the MMCs can also be enhanced through grain refinement, as a finer grain structure increases the probability of grains being oriented along favorable slip systems, thereby facilitating dislocation motion and accommodating plastic deformation [ 20 ,  26 ]. Controlling key factors, like grain size, dislocation density, and particle precipitation, can help enable the development of LPBF-fabricated MMCs with favorable mechanical performance for biomedical applications. However, to fully understand the correlations between the microstructural features and mechanical properties, a traditional trial-and-error method is expensive and time-consuming because of the large number of experiments required. The emergence of machine learning (ML) offers a transformative approach to this research paradigm [ 27 ]. ML techniques enable efficient exploration of microstructure-property relationships through substantial reduction in experimental iterations and accelerated discovery of optimized material configurations [ 28 ]. This approach is particularly critical for LPBF-fabricated Ta/Fe–Mn–Si metal matrix composites, where mechanical behaviour is governed by multiple microstructural features, such as grain morphology, dislocation structures, and precipitates. By directly incorporating quantitatively characterized microstructural features as model inputs, microstructure-based ML enables a physically meaningful mapping between microstructure and mechanical response, which allows the identification of the dominant features controlling mechanical performance [ 29 ]. This data-driven methodology not only enhances research efficiency but also provides new insights into complex material behaviors that conventional approaches may overlook.",
+        "However, studies on the correlations between microstructure and mechanical properties for LPBF-processed MMC biomaterials are scarce and should also consider LPBF-specific defects such as microstructural inhomogeneity, voids, unmelted inclusions and intermetallic compounds. These defects often arise due to the substantial differences in the thermophysical properties of dissimilar materials [ 30 ,  31 – 32 ] and can cause poor mechanical and functional performance [ 32 ,  33 ]. Post-heat treatments have commonly been utilized to enhance mechanical properties by improving the compositional uniformity and mitigating some of the defects induced by LPBF [ 31 ,  34 ,  35 ]. However, it is not straightforward to design heat treatments for LPBF-fabricated MMCs that give a positive influence on the mechanical properties due to their complex microstructures. ML approaches have the potential to accelerate heat treatment optimization; however, so far, most machine learning applications in material science have focused on establishing correlations between the chemical compositions and processing parameters with the mechanical properties while neglecting the microstructural features that govern the underlying mechanisms [ 36 ]. In addition, process-property correlation approaches suffer from prohibitive data requirements [ 37 ] and inherent interpretability limitations as statistical black-box models, which hinder our understanding of the underlying microstructure-property linkages [ 27 ].",
+        "In the present study, the LPBF-fabricated Ta/Fe–Mn-Si MMCs were developed as metallic biomaterials. An ML model was employed to investigate the interconnections between microstructure and mechanical performance after various heat treatments. Electron backscatter diffraction (EBSD) images were used to quantitatively extract microstructural properties. The ML model results were analyzed from the perspective of materials science to make the structure–property relationships interpretable. In addition, the LPBF-fabricated Ta/Fe–Mn–Si MMCs exhibit excellent mechanical properties (i.e., 216 MPa yield strength, 12.58% elongation, and 2.96 UTS/YS ratio). Overall, this work demonstrates both the mechanical potential of the proposed MMC system and the effectiveness of a microstructure-based ML framework for the development of advanced biomedical materials."
+      ]
+    },
+    {
+      "heading": "Methodology",
+      "paragraphs": []
+    },
+    {
+      "heading": "LPBF Processing and Heat Treatment",
+      "paragraphs": [
+        "Gas-atomized, pre-alloyed spherical Fe-30Mn-6Si (wt.%) SMA powders and Ta powders were obtained from Beijing Yanbang New Material Technology Co. Ltd. and LPW Technology, respectively, for this study. The 15–63 μm Fe–Mn-Si alloy powder and the 15–45 μm Ta powder were mixed by a tubular mixer using Ta composition of 0.5 wt.% for fabricating MMC specimens by LPBF. The powders were mixed for 6 h at a rotational speed of ~ 101 rpm to ensure homogeneity. The diameter distributions and the morphologies of the powders and the homogenous mixture are shown in Fig.  1 . Fig. 1 Backscatter electron (BSE) images showing the morphologies of the  a  Fe–Mn-Si powder,  b  Ta powder,  c  and the Ta/Fe–Mn-Si MMC powder mixture. In  d  the diameter distributions of the Fe-30Mn-Si and Ta powders are shown",
+        "The Ta/Fe–Mn-Si MMC (0.5 wt.% Ta) specimens were fabricated using a Concept Laser 200R LPBF 3D printer with a 200 W continuous wave laser and an 80 μm laser spot size in a high-purity argon environment with less than 0.3% oxygen. A bidirectional scan strategy with a 90-degree layer rotation was employed, maintaining a layer thickness of 0.03 mm and hatch spacing of 0.1 mm. A 100 mm/s laser scanning speed and 200 W laser power were used for producing both 5 × 5 × 5 mm 3  cubes for microstructural investigations and dog-bone-shaped tensile bars (see Fig.  S1  of the Supplementary Information) for mechanical testing. The volumetric laser energy density (VED) was calculated to be 166.67 J/mm 3  according to: 1 V E D = P h × t × v , \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$VED = \\frac{P}{h \\times t \\times v},$$\\end{document} where  P  is the laser power (W),  v  is the laser scanning speed (m/s),  h  is the hatch spacing, and  t  is the layer thickness (m). The printing parameters were confirmed in a previous study to achieve high-density, defect-free parts, and these results have been published in our previous study [ 38 ].",
+        "To investigate the relationship between microstructural and mechanical properties of the Ta/Fe–Mn-Si MMC, 16 different heat treatment conditions with 8 different temperatures from 400 to 1100 with 100 ℃ intervals and 2 different times of 0.5 and 3 h, and subsequently furnace-cooled, were applied in this research. The selected temperature range and holding times were designed to regulate the phase transformation between γ-austenite and ε-martensite in Fe–Mn–Si SMA system, promote partial recrystallization, and adjust the phase stability of the γ-austenitic matrix."
+      ]
+    },
+    {
+      "heading": "Microstructural Characterization and Mechanical Testing",
+      "paragraphs": [
+        "For microstructural analysis under different heat treatment conditions, both as-built and heat-treated cubes were mounted, ground to 2500 grit, and polished using 3 and 1 μm diamond suspensions, followed by 0.04 μm colloidal silica. The prepared specimens were then examined by scanning electron microscopy (SEM) and electron backscatter diffraction (EBSD). SEM and EBSD were performed using a JEOL-7001F Schottky field emission scanning electron microscope. Backscatter electron (BSE) mode was used to observe the morphology of the grain structure and the distribution of unmelted Ta particles on the mounted and polished cubes. Energy dispersive spectroscopy (EDS) attached to the SEM was used to analyze the compositional distribution of the samples. For all EBSD measurements, an acceleration voltage of 20 kV and a step size of 1 μm over an area of 552 × 440 μm 2  were used. EBSD data obtained with a confidence index above 0.1 were processed using OIM software. Average grain size (GS), phase fraction (PF), average grain shape aspect ratio (AR), geometrically necessary dislocation (GND) density, and the length of high and low-angle grain boundaries (LABs and HABs) were determined from the EBSD measurements.",
+        "Tensile testing was conducted using an Instron 34MT machine to assess the mechanical properties. Tensile tests were carried out according to the ASTM E8 standard [ 39 ] using flat dog-bone shaped MMC samples (Fig.  S1  of the Supplementary Information) to study their mechanical behavior. Five samples per heat treatment condition were tested, loaded perpendicular to building direction (BD) until fracture with a 0.5 mm/min displacement rate. A laser extensometer used for precisely measuring strain and the ultimate tensile strength (UTS), yield strength (YS), tensile elongation, and strain-hardening capability (defined as UTS/YS) was derived from the tensile stress–strain curves. After testing, SEM was used to observe the fracture surfaces of the tensile samples."
+      ]
+    },
+    {
+      "heading": "Simulation of the Thermal Field",
+      "paragraphs": [
+        "Computational fluid dynamics (CFD) analyses were performed to investigate the thermal profiles and cooling rates in the LPBF-processed Ta 0.5 /Fe–Mn-Si 99.5  (wt.%) MMC. Three tracks of LPBF simulations were executed utilizing the commercial CFD software, Flow-3D. This software effectively models both the powder bed dynamics and the laser sintering process. In developing the powder bed model, the movement of powder particles and the recoating mechanism were incorporated. Furthermore, principles of mass, momentum, and energy conservation were adhered to throughout each simulation scenario. The governing equations for these simulations are delineated as follows: 2 M a s s : ∇ · ρ υ → = 0 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$Mass \\, :\\,\\nabla \\cdot \\left( {\\rho \\overrightarrow {\\upsilon } } \\right) = 0$$\\end{document} 3 M o m e n t u m : ∂ ∂ t · ρ υ → + ρ υ → · ∇ υ → = μ ∇ 2 υ → - ∇ p + g → 1 + β T m - T \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$Momentum \\, :\\frac{\\partial }{\\partial t} \\cdot \\left( {\\rho \\overrightarrow {\\upsilon } } \\right) + \\rho \\overrightarrow {\\upsilon } \\cdot \\nabla \\overrightarrow {\\upsilon } = \\mu \\nabla^{2} \\overrightarrow {\\upsilon } - \\nabla p + \\overrightarrow {g} \\left[ {1 + \\beta \\left( {T_{m} - T} \\right)} \\right]$$\\end{document} 4 E n e r g y : ∂ ∂ t · ρ H + ρ υ → · ∇ H = ∇ · k ∇ T + q \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$Energy\\,:\\,\\frac{\\partial }{\\partial t} \\cdot \\left( {\\rho H} \\right) + \\rho \\overrightarrow {\\upsilon } \\cdot \\nabla H = \\nabla \\cdot k\\nabla T + q$$\\end{document}",
+        "In the model,  ρ  represents the density,  υ  denotes the velocity of the molten fluid,  t  symbolizes time,  μ  indicates the viscosity,  p  is the pressure, and  g  is the acceleration due to gravity (9.8 m/s 2 ). Additionally,  β  is the thermal expansion coefficient,  T m  refers to the temperature of the liquidous phase,  H  is the enthalpy, and  k  signifies the thermal conductivity. Moreover,  q  is defined as the Gaussian heat source within the framework of the analysis: 5 q = P π r focus 2 exp - 2 r r 0 2 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$q = \\frac{P}{{\\pi r_{focus}^{2} }}\\exp \\left[ { - \\left( {\\frac{\\sqrt 2 r}{{r_{0} }}} \\right)^{2} } \\right]$$\\end{document}",
+        "In the model,  P  represents laser power, while  r focus ,  r , and  r 0  denote the radii of the focal plane, melt plane, and the originating lens, respectively. The material properties relevant to the simulation were determined using Thermo-Calc, shown in Fig. S2 of the Supporting Information."
+      ]
+    },
+    {
+      "heading": "Machine Learning Model",
+      "paragraphs": []
+    },
+    {
+      "heading": "Data Selection and Dataset Establishment",
+      "paragraphs": [
+        "The measurement data consists of microstructure and mechanical properties of the LPBF-produced Ta/Fe–Mn-Si MMCs as a function of the temperature and duration of heat treatment. Microstructural properties play a critical role in determining the mechanical properties. For example, the matrix alloy of the MMC, Fe–Mn-Si SMAs, consists of two main phases, fcc-austenite and hcp-martensite, of which the stiffness varies owing to the different crystalline structure. Therefore, the phase fraction of fcc-austenite (FCC-PF) must be considered in this research. Additional microstructural features, such as the grain size of fcc-austenite (FCC-GS), grain size of hcp-martensite (HCP-GS), grain aspect ratio of fcc-austenite (FCC-AR), grain aspect ratio of hcp-martensite (HCP-AR), and the relative length of high or low-angle boundaries (HABs and LABs) are also necessary for understanding the mechanical properties of the MMCs. Moreover, the form of the MMC reinforcing particles also significantly influences the mechanical performance of the materials by altering the geometrically necessary dislocation density of fcc-austenite and hcp-martensite (FCC-GNDs and HCP-GNDs). As a result, these factors are all involved in determining YS, elongation, and strain-hardening capability, where the strain-hardening capability is defined as the ratio of UTS to yield strength (UTS/YS). 16 training datasets (under 16 different heating conditions) that are composed of the 9 microstructural features as input variables and 3 mechanical properties as output variables were used for ML. All input and output variables are listed in Table  S1  of the Supporting Information."
+      ]
+    },
+    {
+      "heading": "Machine Learning Model Building and Evaluation",
+      "paragraphs": [
+        "In this study, the XGBoost algorithm was employed for machine learning due to its efficiency and maturity as a boosting-based decision tree model. This model has been widely applied to regression, classification, and ranking tasks [ 40 ]. Thus, this model was selected to use as the ML model to study the correlation between the input microstructural features and output mechanical property variables.",
+        "In addition, this study used two common metrics for assessing the accuracy of the ML results, the coefficient of determination (R 2 ) and root mean square error (RMSE). The calculation of the two statistical parameters is listed, 6 R 2 = 1 - ∑ i = 1 n y i - y ^ i 2 ∑ i = 1 n y i - y ¯ i 2 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$R^{2} = 1 - \\frac{{\\mathop \\sum \\nolimits_{i = 1}^{n} \\left( {y_{i} - \\hat{y}_{i} } \\right)^{2} }}{{\\mathop \\sum \\nolimits_{i = 1}^{n} \\left( {y_{i} - \\overline{y}_{i} } \\right)^{2} }}$$\\end{document} 7 R M S E = 1 n ∑ i = 1 n y i - y ^ i 2 , \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$RMSE = \\sqrt {\\frac{1}{n}\\sum\\nolimits_{i = 1}^{n} {\\left( {y_{i} - \\hat{y}_{i} } \\right)^{2} } } ,$$\\end{document} where y i  means the measured value,  yi ^ \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\widehat{yi}$$\\end{document}  stands for the predicted value of the dependent variable by the ML model,  yi ¯ \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\overline{yi }$$\\end{document}  is the mean value of the dependent variable, and  n  represents the number of datasets. When the percentage of  R 2  reaches or exceeds 90%, it indicates that the accuracy of the ML model is quite good and reliable for analysis [ 29 ]."
+      ]
+    },
+    {
+      "heading": "Results",
+      "paragraphs": []
+    },
+    {
+      "heading": "Thermal Profile and Microstructural Evolution During the LPBF Process",
+      "paragraphs": [
+        "From Fig.  2 b, the BSE observation on the morphology of the as-built Ta/Fe–Mn-Si MMC shows the concentration of unmelted Ta, denoted by the red arrows. The existence of unmelted Ta is due to its high melting temperature (~ 3293 K). As the simulation results show in Fig.  2 a, the simulated temperature in some passes exceeds the melting point of Ta, although experimentally it is observed that not all of the Ta particles reach their melting point, which results in the observed unmelted Ta particles. As shown in Figs.  3  and S3, part of the Ta was dissolved into the matrix, and its amount varied with the heating temperature. In addition, some Ta atoms diffused along the grain boundaries, with the extent of diffusion also being dependent on the heating temperature. It has been reported that the diffusion coefficient of Ta in the Fe matrix is above 1 × 10 −20  m 2 /s when heating at a temperature above ~ 500 ℃, which has the fastest diffusing rate among many other elements such as Mn, Cr, V, and W, therefore leading to the diffusion of Ta within the grain boundaries [ 41 ]. However, it is worth noting that the concentration of unmelted Ta particles remains below a rather low level of less than 0.1 vol.% ( < 0.2 wt.%). Since the amount of unmelted tantalum is only 0.1 vol.%, the γ-austenite and ε-martensite are the only two phases analyzed in the EBSD compositional map in Fig.  2 b. In the as-built Ta/Fe–Mn-Si MMC, ~ 86% γ-austenite with a minor amount of ε-martensite phase was observed, and the grain morphology on the sample was irregular with both planar and curved grain boundaries (Figs.  2 b,  3 ). Fig. 2 a  The 3-track temperature evolution at the same x and z-axis ( x  = 100 μm and  z  = 3 μm). The red solid curve indicates the temperature evolution of the first track, the yellow dash-dot curve shows the temperature evolution of the second track, and the blue dot curve corresponds to the temperature evolution of the third track. The green straight dash line shows the melting point of Ta;  b  BSE image, EBSD phase distribution map and EBSD inverse pole figure map of the as-built Ta/Fe–Mn-Si MMC Fig. 3 The evolution of unmelted Ta particles and Ta-enriched area in backscattered diffraction electron (BSE) images and the EDS point analysis of the Ta/Fe–Mn-Si MMC samples after  a  400 ℃ for 3 h;  b  700 ℃ for 3 h; and  c  1100 ℃ for 3 h. The transition zone of Ta from unmelted Ta particles was marked in orange arrows, the Ta-enriched grain boundaries were marked in blue arrows, and the Ta precipitates were marked in red arrows"
+      ]
+    },
+    {
+      "heading": "Microstructural Evolution Under Different Heat Treatment Conditions",
+      "paragraphs": [
+        "The microstructural evolution maps from EBSD, including inverse pole figure (IPF), phase distribution, Kernal angle misorientation (KAM), and grain boundary character maps, for the samples heat treated at temperatures of 400, 500, 600, 700, 800, 900, 1000, and 1100 ℃ for 0.5 h are shown in Fig.  4 . The nine inputs for machine learning were deduced from the EBSD maps, and the values are given in Table S2 of the Supporting Information. And the data of the as-built sample was also shown in Table S2 for comparison. Fig. 4 EBSD IPF, phase distribution, KAM, and grain boundary character maps for LPBF-fabricated Ta/Fe-30Mn-6Si MMC samples after 0.5 h of heat treatment at temperatures from 400 to 1100 ℃",
+        "According to Fig.  4  and Table S2, when the temperature was below 800 ℃, the FCC-PF all kept above 86% with a minor ε-martensite fraction of less than 14%. The FCC-PF increased from 86.0% to 99.7% when the heating temperature rose from 400 to 700 ℃. Meanwhile, the FCC-GS shows a slight increase from ~ 38 to 43 μm, and subsequently, the HABs decrease from 6.29 to 4.3 cm. When the heating temperature reaches 800 ℃, FCC-PF decreases to 89.6% with an increase in the phase fraction of ε-martensite up to 10.4% compared to that heated at 700 ℃, which probably indicates the initiation of the martensitic phase transformation that has been revealed by a previous study [ 42 ]. Besides, the increase of γ-austenite grain sizes (~ 39 to ~ 49 μm) occurs. Further increasing the heating temperature from 800 to 1100 ℃ leads to a reduction of FCC-PF from 89.6 to 27.5% and a continuing increase in phase fraction of HCP-martensite from 10.4 to 72.5%. Additionally, FCC-GS begins to reduce from ~ 48 to 16 μm, and conversely, HCP-GS starts to grow up to ~ 27 μm. Moreover, the FCC-GNDs were increasing from 41.02 to 52.13 × 10 12 /m 2  with further increasing the heating temperature from 900 to 1100 ˚C.",
+        "The microstructural evolution maps for the LPBF-fabricated Ta/Fe-30Mn-6Si MMC samples that were heat treated for 3 h at temperatures from 400 to 1100 ℃ are shown in Fig.  5 . The microstructural property values deduced from the EBSD maps are shown in Table S3 of the Supplementary Information. And the data of the as-built sample was also added to Table S3 for comparison. Fig. 5 EBSD IPF, phase distribution, KAM, and grain boundary character maps for LPBF-fabricated Ta/Fe-30Mn-6Si MMC samples after 3 h of heat treatment at temperatures from 400 to 1100 ℃",
+        "From Fig.  5 , it was shown that FCC-PF kept above 87% with a minor ε-martensite fraction of less than 13% when the temperature was below 700 ℃. A slight increase of the FCC-PF occurred from 87 to 98.3% when the heating temperature rose from 400 to 600 ℃. Meanwhile, the FCC-GS shows a slight increase from ~ 32 to 37 μm, and subsequently, the HABs decrease from 9.85 to 5.31 cm. When the heating temperature reaches 800 ℃, FCC-PF starts to decrease to 56.5% with an increase in the phase fraction of ε-martensite (43.5%), which indicates the possible martensitic phase transformation at this stage. Besides, when the heating temperature reaches 800 °C, the FCC-GS starts to drop to ~ 26 μm, and the length of HABs reaches up to 9.71 cm. Notably, increasing the heating temperature from 800 to 1100 ℃ leads to FCC-PF continuing to decrease from 98.3 to 25.2%, and an increase in the fraction of ε-martensite occurs (from 1.7% to 74.8%). Besides, the FCC-GS begins to reduce from ~ 44 to 12 μm, and conversely, HCP-GS starts to grow up to ~ 22 μm. Furthermore, the FCC-GNDs gradually begin to increase up to 56.58 × 10 12 /m 2 . Notably, when the heat treatment temperature exceeds 900 °C, pronounced microstructural changes occur in both heating durations, characterized by a substantial reduction in FCC phase fraction, accelerated growth of ε-hcp martensite, and a concurrent increase in FCC-GND density. These changes indicate the combined activation of recrystallization and martensitic phase transformation when heating above 900 ℃.",
+        "Compared to microstructures when heating above 700 ̊C for 0.5 h, prolonging the heating time to 3 h, the average FCC-GNDs increases by 7%. In addition, the increase in FCC-PF at the temperature of 700 ̊C heating for 3 h compared to that increase at 800˚C heating for 0.5 h probably indicates the early initiation of the martensitic phase transformation with prolonging the heating time."
+      ]
+    },
+    {
+      "heading": "Mechanical Properties",
+      "paragraphs": [
+        "Figure  6  and Table  1  compare the tensile stress–strain curves of the LPBF-fabricated Ta/Fe-30Mn-6Si MMCs before and after the 16 different heating treatments. It shows that for both 0.5 h and 3 h heating times, the YS increases as the temperature rises from 400 to 800 °C and then drops abruptly when the temperature reaches 900 °C before increasing again as the temperature rises to 1100 ̊C. The elongation and strain-hardening rate (UTS/YS) show a converse trend to YS up to 800 ˚C when heating for 0.5 h, or 700 ̊C when heating for 3 h, where the minimal values occur. Importantly, when the heating temperature exceeded 900 ℃, the microstructure was characterized by the coexistence of the recrystallization process, a high fraction of ε-martensite, and an elevated FCC-GND density. This combined microstructural evolution plays a critical role in determining the mechanical properties, particularly the reduction in yield strength and the enhancement of ductility and strain-hardening capability observed at these temperatures. Fig. 6 Stress–strain curves for the LPBF-fabricated Ta/Fe-30Mn-6Si MMC samples before and after heat treatment for  a  0.5 h and  b  3 h at temperatures from 400 to 1100 ℃ with the tensile loading perpendicular to BD Table 1 Summary of YS, elongation, and strain-hardening ratio derived from stress–strain curves of the Ta/Fe-30Mn-6Si MMC after the 16 different heat treatments Time (h) Temperature (℃) YS Elongation (%) Strain-hardening ratio (UTS/YS) As built – 352 ± 27 6.4 ± 1.8 1.98 ± 0.12 0.5 400 319 ± 15 6.8 ± 1.1 2.07 ± 0.09 500 345 ± 25 6.4 ± 0.6 1.97 ± 0.18 600 375 ± 7 5.1 ± 0.3 1.92 ± 0.08 700 389 ± 12 3.0 ± 0.4 1.93 ± 0.05 800 406 ± 6 2.1 ± 0.1 1.87 ± 0.02 900 401 ± 14 3.3 ± 0.2 2.24 ± 0.06 1000 208 ± 24 8.6 ± 0.2 3.08 ± 0.27 1100 198 ± 21 10.8 ± 0.3 3.53 ± 0.26 3 400 308 ± 19 4.7 ± 0.1 2.11 ± 0.08 500 335 ± 14 4.9 ± 0.5 2.0 ± 0.10 600 348 ± 30 5.0 ± 0.2 1.95 ± 0.22 700 386 ± 9 1.8 ± 0.2 1.76 ± 0.07 800 354 ± 11 2.3 ± 0.3 1.98 ± 0.04 900 239 ± 15 5.0 ± 0.8 2.59 ± 0.29 1000 195 ± 6 9.9 ± 0.4 3.27 ± 0.27 1100 216 ± 12 12.6 ± 1.3 2.96 ± 0.16",
+        "While extending the heating time to 3 h, the elongation was increased when heating above 800 °C. It is worth noting that the highest elongation (12.6%) was achieved under the heat treatment of 1100 °C for 3 h."
+      ]
+    },
+    {
+      "heading": "Machine Learning Results",
+      "paragraphs": [
+        "Machine learning was performed individually for YS, elongation (EL), and strain-hardening capability (UTS/YS) to quantitatively evaluate the importance of the predictors in determining the mechanical properties of the heat-treated LPBF-fabricated Ta/Fe–Mn-Si MMC. According to previous research [ 43 ], the prediction reliability of the machine learning model-XGBoost is relatively high compared to other machine learning models. After evaluating both the training and testing results for YS, EL, and UTS/YS, they all show excellent accuracy with R 2  of more than 98% (Figs.  7 a–c). The dataset was augmented by introducing random noise following a normal distribution to expand the sample size from 16 to 1600 data points. The augmented data maintained the same mean as the original dataset, with the standard deviation set to 3% of the mean value. It should be noted that this augmentation approach represents an idealized assumption of experimental variability and may not fully capture the complete scatter arising from processing heterogeneity and measurement uncertainty. Subsequently, the dataset was divided into a training set (80%) and a testing set (20%). Therefore, the data distribution of the training and testing sets is closely aligned, with the model exhibiting no significant overfitting, showing that generalization error is effectively controlled. The evaluation of the model performance is shown in Fig.  7 d. The predictive model exhibited excellent performance for all evaluated mechanical properties, as shown in figure. The R 2  values were 0.99 for YS, 0.98 for EL, and 0.99 for UTS/YS, which indicates that the predicted values closely matched the experimental results. The corresponding RMSE and MAE values were low (6.05 MPa and 3.78 MPa for YS, 0.47% and 0.18% for EL, and 7.63 MPa and 3.36 MPa for UTS/YS). These two values demonstrate the strong generalization capability of the model. The MSE values (36.63 for YS, 0.22 for EL, and 58.28 for UTS/YS) further confirm that most predictions deviate minimally from the true values. The MAPE remains below 4% for all properties, which also highlights the overall accuracy and robustness of the predictive framework. To assess the reliability of the data augmentation strategy, two complementary validation approaches were employed. First, leave-one-out cross-validation (LOOCV) was applied to the original dataset to establish an unbiased performance baseline. Second, grouped K-fold cross-validation was performed on the augmented dataset to prevent data leakage between derived samples strictly. As shown in Fig. S4, compared with LOOCV on the original dataset, the grouped cross-validation on the augmented dataset achieves consistently strong predictive performance across all evaluation metrics (R 2 , RMSE, and MAPE), with no evidence of performance degradation. Although slight decreases in R 2  and corresponding error metrics are observed for YS and UTS/YS, the overall trends and error magnitudes remain comparable. Notably, predictions of EL exhibit improved stability after data augmentation. These results indicate that the proposed ± 3% noise-based data augmentation strategy does not introduce significant bias and enables a more conservative and robust assessment of the model’s generalization performance. Fig. 7 Evaluation of the prediction accuracy of the developed model for mechanical properties  a  YS,  b  EL,  c  UTS/YS, and  d  statistical summary of multiple error metrics to evaluate model performance (R. 2 : coefficient of determination; RMSE: root mean square error;  MAE  mean absolute error,  MSE  mean squared error,  MAPE  mean absolute percentage error)",
+        "According to Fig.  8 , FCC-GNDs and FCC-GS are the two most dominant factors contributing to YS compared to other input variables in the entire data set. This is likely due to the Hall–Petch strengthening effect caused by the Zener pinning effect arising from the reinforcement of Ta distributed along the grain boundaries. Nevertheless, the apparent correlation between the FCC-GNDs and the addition of tantalum may not directly indicate a causal relationship. It likely reflects the complex microstructural changes associated with recrystallization and martensitic transformation that simultaneously influence both FCC-GNDs and yield strength, which will be discussed in later section. Besides, the importance value of FCC-GS, FCC-GNDs and HABs for the strain-hardening rate is also estimated to be considerably high. Finally, the two input factors FCC-PF and HABs played the most important role in determining the elongation of the Ta/Fe–Mn-Si MMC based on ML statistical analysis. The correlation between these microstructural features and mechanical properties is discussed in Sect. 4.4. However, five input variables (FCC-AR, HCP-AR, HCP-GS, HCP-GNDs, and LABs) are excluded from further discussion, because their importance value for the three outputs is small and can be ignored. Therefore, the relationship between the total 4 predictors (FCC-PF, FCC-GS, FCC-GNDs, and HABs) and the three output variables will be further explored in this study. Fig. 8 Importance estimates for the nine input variables in predicting the three mechanical properties for the Ta/Fe–Mn-Si MMC. X-axis list corresponds to FCC-GS, FCC-PF, FCC-GNDs, FCC-AR, HCP-GS, HCP-GNDs, HCP-AR, HABs, and LABs from left to right, respectively"
+      ]
+    },
+    {
+      "heading": "Discussion",
+      "paragraphs": []
+    },
+    {
+      "heading": "Microstructural Evolution",
+      "paragraphs": [
+        "Previous studies on Fe–Mn–Si-based alloys containing relatively low Mn and high Cr or Si contents have reported initial solidification into δ-ferrite at low energy densities, followed by a δ → γ solid-state transformation as the energy input increases [ 44 ,  45 ]. In contrast, this mechanism is unlikely for the present composition, which is enriched in γ-stabilizing elements (Mn) and contains fewer δ-stabilizers (Cr, Si). Thermodynamic assessments of the Fe–Mn–Si system by Forsberg et al. [ 46 ] indicate that alloys with comparable compositions solidify directly from the liquid phase into γ-austenite without passing through a δ-ferrite stage. During LPBF, the extremely high cooling rates (~ 10 5 –10⁷ K/s, as estimated in Fig.  2 a) can retain this γ phase in a metastable state at ambient temperature or promote partial transformation to ε-martensite upon cooling. The EBSD results in Fig.  2 b, showing predominantly γ-austenitic grains with limited ε-martensite, are consistent with this direct-solidification and subsequent transformation behaviour.",
+        "After applying various heat treatments, when heating for 0.5 h, the increase in FCC-PF upon heating between 400 and 700 ̊ C is attributed to the reverse martensitic phase transformation of Fe–Mn-Si SMAs at elevated temperatures [ 47 ,  48 – 49 ]. Notably, while increasing the heat temperature from 400 to 700 ̊ C, the ε-martensite not only transforms to γ-austenite, but the pre-existing γ-austenite also starts to grow upon heating. One of the possible reasons for the increase in HABs and reduction in FCC-PF upon heating above 800 ℃ is the occurrence of recrystallization that leads to the reduction in dislocation density, which promotes the formation of ε-HCP-martensite that has been revealed in previous research [ 42 ]. In addition, this enhanced martensite phase transformation can also cause lattice distortion, which would lead to increased stress in the γ-austenite, therefore leading to an increase in FCC-GNDs with the increase in heating temperature from 800 to 1100℃. Additionally, another possible factor that causes the rise in FCC-GNDs with increased heating temperature is attributed to the evolution of Ta precipitates upon heating, which has been shown in Fig.  3 . And the decrease of FCC-PF when heating at 700 ̊C for 3 h indicates the early initiation of the martensitic transformation with prolonged heating time from 0.5 to 3 h. This phenomenon is attributed to recrystallization requires both time and temperature, and it occurs more slowly at lower temperatures. Recrystallization lowers the dislocation density, therefore facilitating the phase transformation behaviours [ 50 ]."
+      ]
+    },
+    {
+      "heading": "The correlation Between Microstructures and Mechanical Properties",
+      "paragraphs": [
+        "Based on the ML results in Fig.  8 , the changes in YS and strain-hardening capability with changing annealing temperature are plotted in Figs.  8 a–d for both 0.5 and 3 h annealing times, showing the correlations between the mechanical properties and the two most important microstructural characteristics identified by the ML model."
+      ]
+    },
+    {
+      "heading": "YS and Strain-Hardening Capability",
+      "paragraphs": [
+        "ML results (Fig.  8 ) and Figs.  9 a–b indicate that FCC-GNDs and FCC-GS play a significant role in determining the YS of the LPBF-fabricated MMC. The correlation between grain size and YS is mainly related to the Hall–Petch relationship, which states that the grain size is inversely proportional to YS. It is known that the smaller grain size leads to a larger length of HABs, therefore resulting in a proportional relationship between the HABs and YS. Besides, the influence of GNDs on the change of YS is affected by multiple factors in the evolution of Ta particles, the elemental segregation, and the residual stress arising from the LPBF process. It is reported that the coherency strains generated around the precipitates due to lattice parameter mismatches with the matrix lead to increased FCC-GNDs [ 51 ,  52 ]. When the heating temperature is below 700℃, regardless of whether it was heated for 0.5 or 3 h, there is the diffusion of tantalum along grain boundaries from residual unmelted Ta particles (transition zone), and the grain boundaries are enriched in Ta (Figs.  3 a–b and Figs. S3a–b). The diffusion of Ta leads to the probable formation of nano-scaled Ta precipitates, as the temperature increases from 400 to 700 °C, resulting in the enhanced YS through precipitate hardening based on the Orowan mechanism, which is aligned with the increase in FCC-GNDs annealed for 0.5 h. Moreover, the positive correlation between YS and FCC-GNDs may also be attributed to the segregation of solute atoms within the grain boundaries shown in Fig. S5. The enrichment of Mn and Si within the grain boundaries is attributed to the decrease in the total free energy that has been revealed by Nie. et al. [ 42 ]. The negative correlation between the FCC-GNDs and the YS for heating below 800 ℃ may be due to the release of residual stress, showing clear evidence of the effective reduction in residual stress arising from the LPBF process after heating for 3 h. Fig. 9 YS and strain-hardening capability plotted as a function of heating temperature along with the three most important microstructural characteristics identified by the ML model.  a  FCC-GS and YS;  b  FCC-GNDs, YS, and strain-hardening rate;  c  HABs and strain-hardening capability; and  d  FCC-GS and strain-hardening capability. In each case, the left plot shows the 0.5 h, and the right plot shows the 3 h annealing time",
+        "However, a sudden drop in the YS when heated to 900 ̊C with the decrease of FCC-GNDs is attributed to the occurrence of recrystallization that removes most statistically stored dislocations (SSDs) at this stage, which dominate strengthening. Although GNDs also decrease during recrystallization, they re-form upon cooling through martensitic transformation, while the low SSDs content maintains the reduced YS. For the samples heated are both 0.5 and 3 h, it is observed that the length of HABs significantly increases and the FCC-GS shows a dramatic decrease (Fig.  9 a) at heating temperatures ≥ 800 ℃ (Fig.  9 c) owing to the increased number of newly formed grains after recrystallization. It could be inferred from Figs.  9 a and c that the recrystallization has already begun at the heating temperature of 800 ℃, with full recrystallization at 1000 ℃, which is the same phenomenon that has also been observed in previous studies [ 42 ]. The percentage of recrystallization could also be evaluated by the grain orientation spread (GOS) that was measured by EBSD analysis [ 53 ]. From Fig.  10 , a considerable increase of the area with the GOS value less than 1̊ occurred when the samples were heated at 800 ℃ for 0.5 or 3 h, further confirming the occurrence of recrystallization at this stage, therefore, leading to the formation of new grains and almost free of defects and a decrease in FCC-GNDs. Since recrystallization drastically reduces dislocation density, especially SSDs, by replacing highly strained grains with new, strain-free grains, the reduction in SSDs decreases resistance to dislocation motion, therefore decreasing the total YS after heating above 900 ℃. Fig. 10 Grain orientation spread (GOS) maps of the LPBF-fabricated Ta/Fe–Mn-Si MMCs under the 16 different heat treatment conditions. Regions with the GOS value less than 1̊ are colored blue, and the regions with the GOS value larger than 1̊ are colored yellow",
+        "The considerable rise in FCC-GNDs and slight increase in YS at temperatures above 900 ̊C, regardless of heating time, can be largely explained by the increased number of precipitates at high temperatures, therefore leading to the precipitation strengthening explained by the Orowan mechanism. As depicted in Figs.  11 b–c, there is an increased number of Ta precipitates distributed evenly within the grain boundaries, but a lower Ta concentration in the matrix phase of the sample heated at 1100 ̊C compared to that heated at 700 ̊C. The formation of the precipitates is attributed to the solute-trapping effect [ 54 ] inherent in LPBF, during which the rapid cooling rate (10 6 –10 8  K/s) limits chemical diffusion [ 55 ,  56 ]. This process leads to the excess of Ta content in the supersaturated γ-austenite matrix at the low heating temperature of 400 ℃, which was shown in the EDS point analysis in Fig.  11 a. Upon heating at 700 ℃ or above (1100 ̊C), the excessive Ta contents would be rejected from the matrix, therefore leading to the increase of the normally distributed Ta precipitates, which results in an increase in FCC-GNDs and a decrease in the Ta contents within the matrix (Figs.  9 b and  11 c). Fig. 11 The correlation between the important microstructural characteristics (FCC-PF and HABs) and the elongation as a function of heating temperature,  a  FCC-PF and elongation,  b  HABs and elongation",
+        "In addition, based on Fig.  8 , the length of HABs, FCC-GS, and FCC-GNDs are the three key microstructural factors that influence the strain-hardening capability of the materials (Figs.  9 c and d). The high fraction of HABs and the correspondingly small grain size suggest a reduced mean slip distance, which limits dislocation mobility and contributes to enhanced strain hardening. The observed grain size effect on strain hardening is primarily governed by the constraint of dislocation motion within finer grains, which reduces the average slip distance available for dislocation glide [ 57 ]. This shortened slip distance promotes a higher rate of dislocation storage during plastic deformation, thereby increasing the strain-hardening capability. In addition, the strain-hardening rate could be expressed as UTS/YS; it is also highly related to the FCC-GNDs. These dislocations enhance hardening through isotropic strengthening, which is caused by interactions between mobile dislocations and the GND network, and kinematic hardening, which results from back stresses generated by the accumulated GNDs [ 58 ]. Both the yield strength (216 MPa) and strain-hardening ratio (2.96) meet the requirements of the alloys used in medical fields (like temporary implantation) when heating at 1200 ℃ for 3 h [ 2 ,  3 – 4 ]."
+      ]
+    },
+    {
+      "heading": "Tensile Elongation Ductility",
+      "paragraphs": [
+        "According to Fig.  11  and Table  1 , the low elongation of the heat-treated LPBF-processed Ta/Fe–Mn-Si MMC occurs at the heating temperature of 800 ̊C for 0.5 and 3 h, while the maximum elongation occurs at the heating temperature of 1100 ̊C for 3 h. The fracture surfaces of the MMC after the heat treatments at temperatures of 400, 700, and 1100 ̊C for 3 h are shown in Fig.  12 . In Fig.  12 a, a large area of cleavage fracture and a few ductile dimples exist on the sample heated at 400 ̊C. Therefore, the major fracture type at 400 ̊C is a brittle fracture. A small number of microcracks and porosities also exist in the sample, which could lead to fracture at the initial stage of plastic deformation. The sample heated at 700℃ exhibits the lowest elongation, a major cleavage fracture, and a slight dimple area occurred in the fracture surface of the sample, indicating the fracture type is dominated by brittle fracture (Fig.  12 b). A larger number of microcracks and lower porosity were also found in this sample, which results in the early initiation of fracture during plastic deformation, therefore leading to the lowest elongation. The fracture surface of the sample heated at 1100 ̊C exhibits a dominant ductile fracture with a large area of dimples and a small area of cleavage without any microcracks (Fig.  12 c), corresponding to the highest elongation achieved in this condition. A similar change in the morphology of the fractured surface was also shown on the samples heated for 0.5 h, which could be found in Fig. S5. Fig. 12 The tensile fracture surfaces of the LPBF-fabricated Ta/Fe–Mn-Si MMC after three different heat treatments  a  400 ℃ for 3 h;  b  700 ℃ for 3 h; and  c  1100 ℃ for 3 h. The microcracks were marked in red arrows, the cleavages were marked in yellow arrows, the porosities were marked in blue arrows, and the dimples were marked in green arrows",
+        "It is known that microcracks usually occur around the melting pool boundaries because of the thermal stress caused by the rapid temperature gradient during the LPBF process [ 59 ,  60 ]. For the samples heated for 3 h at a temperature of 800 ˚C, stress relaxation and recrystallization start (Figs.  5  and  10 ), but these processes are not homogeneous. Recrystallization tends to initiate at melt pool boundaries where dislocation density is highest. The mismatch in thermal expansion and strain recovery between the newly recrystallized fine-grained regions and the still uncrystallized matrix can locally concentrate stresses, leading to an increase in cracking along melt pool boundaries, as shown in Figs.  12 a and b. Therefore, resulting in the poorest ductility. A similar situation was for samples heated for 0.5 h, as shown in Fig. S6.",
+        "As shown in Fig.  11 , FCC-PF and HABs exhibit a strong correlation with tensile elongation. For samples heated for 0.5 and 3 h, both the HABs fraction and elongation reach their lowest values at 700 °C, while the highest elongation occurs at 1100 °C, where HABs are most abundant. This strong correlation is mainly linked to the recrystallization process rather than a direct effect of HABs on ductility. During recrystallization, the removal of SSDs lowers the yield strength and allows the material to deform more easily. The ML model captures this process through the increased HABs fraction, which reflects the extent of recrystallization rather than being the direct cause of higher elongation.",
+        "Furthermore, the FCC-PF correlation with elongation may be attributed to multiple reasons. First is the occurrence of recrystallization, which removes SSDs to lower YS and enhances elongation, while at the same time enabling the martensitic transformation to occur more easily to decrease FCC-PF. The enhanced martensitic transformation also plays a critical role in the improvement of ductility. As shown in Figs.  4  and  5 , and Tables S2 and S3, the significant rise in the quantity of ε-hcp martensite after recrystallization at the heating temperature of 900 ℃ shows clear evidence of the enhanced transformation from austenite to martensite. This is because of the possible increase in the probability of stacking faults arising from the recrystallization. The clear evidence that FCC-GNDs keep increasing at temperatures from 900 to 1100 °C (Figs.  8 b and d) could be the evidence for this phenomenon. After recrystallization, the decrease in dislocation density reduces these stress fields and lattice distortions, making the lattice more accommodating to SF formation, thus promoting ε-hcp martensite nucleation and growth. Therefore, the promoted martensitic phase transformation is beneficial for improving the elongation of the MMC, as it could delay the local necking upon tensile loading [ 42 ], which could be explained by the transformation-induced plasticity (TRIP) effect [ 60 ,  61 ] as shown in Fig.  13 . Here, necking usually occurs when strain becomes highly localized in one region; when a local neck forms, the high local stress promotes the transformation of γ-austenite into ε-martensite near the neck region. The newly formed ε-martensite strengthens the material and impedes dislocation motion, producing rapid strain hardening that retards further neck propagation. Repeated initiation and stabilization of local necks through this mechanism lead to sustained strain hardening and, consequently, large uniform elongation [ 61 ]. It should be noted that the present study is based on ex-situ microstructural characterization before and after deformation. And in-situ techniques such as SEM and EBSD would provide a deeper understanding of the dynamic evolution of martensitic transformation and dislocation structures. In addition, the heat treatments investigated in this study were limited to annealing; future work could explore multi-step heat treatment strategies to tailor microstructure–property relationships further. Besides, the present investigation focuses on laboratory-scale LPBF specimens, and further studies addressing process scalability and manufacturing reproducibility are required for practical biomedical applications. Fig. 13 Schematic illustration of the influence of martensitic transformation upon tensile loading on the ductility and the EBSD phase distribution maps of the gripping and gauge regions of the sample (1100℃, 3 h) after tensile fracture test. Red points represent the γ-fcc austenite, and green points represent the ε-hcp martensite"
+      ]
+    },
+    {
+      "heading": "Conclusions",
+      "paragraphs": [
+        "This study developed the LPBF-fabricated Ta/Fe–Mn-Si MMC as a potential biomaterial suitable for implant applications. This chapter focused on understanding the correlation between the microstructural characteristics and mechanical properties such as YS, strain-hardening capability, and elongation. Key findings are summarized as follows: The XGBoost machine learning model studied the correlation between microstructural features (FCC-GS, FCC-PF, FCC-GND, FCC-AR, HCP-GS, HCP-GND, HCP-AR, HAB and LAB) and mechanical properties (YS, EL, and UTS/YS) of LPBF-fabricated Ta/Fe–Mn-Si MMC, achieving high prediction reliability with R 2  > 0.98 and MAPE < 4%, which confirms its robustness and strong generalization performance. From ML importance score analysis results, the yield strength and strain-hardening capability are closely related to the FCC-GNDs, FCC-GS, and the length of HABs in the LPBF-fabricated Ta/Fe–Mn-Si MMC. These correlations arise primarily from the combined effects of Ta precipitate evolution during the LPBF and subsequent heat treatments, together with recrystallization-induced microstructural changes. Precipitation strengthening, which is driven by the number and distribution of Ta precipitates formed via the Oroman mechanism, predominantly contributes to the enhanced yield strength, while the length of HABs associated with grain refinement promotes strain hardening by restricting dislocation motion. At high annealing temperatures, intensified martensitic transformation increases the GND density and enhances strain-hardening capability, though at the expense of yield strength due to the removal of SSDs during recrystallization. The exceptional ductility observed in the LPBF-fabricated Ta/Fe–Mn-Si MMC is attributed to the intricate interplay between the HABs and FCC-PF, as substantiated by the ML results. From a microstructural perspective, recrystallization, which is indicated by the increased HABs, reduces the dislocation density and facilitates both homogeneous deformation and enhanced martensitic transformation. At the same time, the activation of transformation-induced plasticity (TRIP) delays local necking during tensile loading. These combined mechanisms lead to a uniform strain distribution and sustained strain hardening, therefore resulting in the superior elongation observed after heat treatment at 1100 °C for 3 h. The highest elongation (12.58%) and excellent yield strength (216 MPa), as well as a good strain-hardening capability (2.96), were achieved under the heat treatment conditions of 1100 ℃ for 3 h in the LPBF-fabricated Ta/Fe–Mn-Si MMC. These results highlight a strong potential for use in temporary implantations, meeting the required standard (yield strength ≥ 200 MPa, elongation ≥ 10%) for biomedical applications."
+      ]
+    }
+  ],
+  "tables": [
+    {
+      "caption": "Summary of YS, elongation, and strain-hardening ratio derived from stress–strain curves of the Ta/Fe-30Mn-6Si MMC after the 16 different heat treatments",
+      "headers": [
+        "Time (h)",
+        "Temperature (℃)",
+        "YS",
+        "Elongation (%)",
+        "Strain-hardening ratio (UTS/YS)"
+      ],
+      "rows": [
+        [
+          "As built",
+          "–",
+          "352 ± 27",
+          "6.4 ± 1.8",
+          "1.98 ± 0.12"
+        ],
+        [
+          "0.5",
+          "400",
+          "319 ± 15",
+          "6.8 ± 1.1",
+          "2.07 ± 0.09"
+        ],
+        [
+          "0.5",
+          "500",
+          "345 ± 25",
+          "6.4 ± 0.6",
+          "1.97 ± 0.18"
+        ],
+        [
+          "0.5",
+          "600",
+          "375 ± 7",
+          "5.1 ± 0.3",
+          "1.92 ± 0.08"
+        ],
+        [
+          "0.5",
+          "700",
+          "389 ± 12",
+          "3.0 ± 0.4",
+          "1.93 ± 0.05"
+        ],
+        [
+          "0.5",
+          "800",
+          "406 ± 6",
+          "2.1 ± 0.1",
+          "1.87 ± 0.02"
+        ],
+        [
+          "0.5",
+          "900",
+          "401 ± 14",
+          "3.3 ± 0.2",
+          "2.24 ± 0.06"
+        ],
+        [
+          "0.5",
+          "1000",
+          "208 ± 24",
+          "8.6 ± 0.2",
+          "3.08 ± 0.27"
+        ],
+        [
+          "0.5",
+          "1100",
+          "198 ± 21",
+          "10.8 ± 0.3",
+          "3.53 ± 0.26"
+        ],
+        [
+          "3",
+          "400",
+          "308 ± 19",
+          "4.7 ± 0.1",
+          "2.11 ± 0.08"
+        ],
+        [
+          "3",
+          "500",
+          "335 ± 14",
+          "4.9 ± 0.5",
+          "2.0 ± 0.10"
+        ],
+        [
+          "3",
+          "600",
+          "348 ± 30",
+          "5.0 ± 0.2",
+          "1.95 ± 0.22"
+        ],
+        [
+          "3",
+          "700",
+          "386 ± 9",
+          "1.8 ± 0.2",
+          "1.76 ± 0.07"
+        ],
+        [
+          "3",
+          "800",
+          "354 ± 11",
+          "2.3 ± 0.3",
+          "1.98 ± 0.04"
+        ],
+        [
+          "3",
+          "900",
+          "239 ± 15",
+          "5.0 ± 0.8",
+          "2.59 ± 0.29"
+        ],
+        [
+          "3",
+          "1000",
+          "195 ± 6",
+          "9.9 ± 0.4",
+          "3.27 ± 0.27"
+        ],
+        [
+          "3",
+          "1100",
+          "216 ± 12",
+          "12.6 ± 1.3",
+          "2.96 ± 0.16"
+        ]
+      ],
+      "header_groups": [],
+      "table_alignment_status": "resolved",
+      "row_provenance": [
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 5
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 5
+          }
+        ],
+        [
+          {
+            "source": "carried",
+            "source_row_index": 1,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 5
+          }
+        ],
+        [
+          {
+            "source": "carried",
+            "source_row_index": 1,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 5
+          }
+        ],
+        [
+          {
+            "source": "carried",
+            "source_row_index": 1,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 5
+          }
+        ],
+        [
+          {
+            "source": "carried",
+            "source_row_index": 1,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 5
+          }
+        ],
+        [
+          {
+            "source": "carried",
+            "source_row_index": 1,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 5
+          }
+        ],
+        [
+          {
+            "source": "carried",
+            "source_row_index": 1,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 5
+          }
+        ],
+        [
+          {
+            "source": "carried",
+            "source_row_index": 1,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 8,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 8,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 8,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 8,
+            "source_col": 5
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 9,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 9,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 9,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 9,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 9,
+            "source_col": 5
+          }
+        ],
+        [
+          {
+            "source": "carried",
+            "source_row_index": 9,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 10,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 10,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 10,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 10,
+            "source_col": 5
+          }
+        ],
+        [
+          {
+            "source": "carried",
+            "source_row_index": 9,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 11,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 11,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 11,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 11,
+            "source_col": 5
+          }
+        ],
+        [
+          {
+            "source": "carried",
+            "source_row_index": 9,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 12,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 12,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 12,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 12,
+            "source_col": 5
+          }
+        ],
+        [
+          {
+            "source": "carried",
+            "source_row_index": 9,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 13,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 13,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 13,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 13,
+            "source_col": 5
+          }
+        ],
+        [
+          {
+            "source": "carried",
+            "source_row_index": 9,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 14,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 14,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 14,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 14,
+            "source_col": 5
+          }
+        ],
+        [
+          {
+            "source": "carried",
+            "source_row_index": 9,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 15,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 15,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 15,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 15,
+            "source_col": 5
+          }
+        ],
+        [
+          {
+            "source": "carried",
+            "source_row_index": 9,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 16,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 16,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 16,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 16,
+            "source_col": 5
+          }
+        ]
+      ],
+      "tbody_alignment_status": "resolved"
+    }
+  ]
+}

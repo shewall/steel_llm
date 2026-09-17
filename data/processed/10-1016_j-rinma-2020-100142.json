@@ -1,0 +1,894 @@
+{
+  "doi": "10.1016/j.rinma.2020.100142",
+  "title": "An application of FEM in the determination of tensile properties for work-hardened carbon steel by means of small punch test",
+  "abstract": "The determination of tensile properties from a small punch (SP) test by using a finite element method (FEM) has been studied. First, a finite element (FE) simulation of the SP test using true stress-strain curves including post-necking strain data of work-hardened SM490A carbon steel specimens was conducted. The simulation was validated with actual experimental results, which showed that the FE model can effectively reproduce the load-displacement curves without using a damage modeling technique. The FE model was then used to investigate an empirical correlation between the punch loads and the material parameters, including yield strength and ultimate tensile strength. The results indicated that the empirical constants are dependent on specimen thickness and may be valid for only a limited range of test configurations and materials. To expand the applicability of the SP test in the assessment of tensile properties, an inverse finite element method (iFEM) consisting of the iterative finite element calculation, bisection method, and Ludwik’s constitutive model was developed. Through the procedure, true stress-strain curves were constructed from the simulated load-displacement curves of hypothetical materials based on the SM490A steel specimens. Finally, yield strengths and ultimate tensile strengths of the carbon steel specimens were determined and found to be within 5.2% and 2.8% discrepancies, respectively, from the uniaxial tensile test results. iFEM provides consistent estimations of tensile properties with almost no influence of specimen thickness.",
+  "journal": "Results in Materials",
+  "year": "2020",
+  "sections": [
+    {
+      "heading": "Introduction",
+      "paragraphs": [
+        "The small punch (SP) test has been proven useful in the monitoring of degradation of structural and inhomogeneous materials, such as a local area of a welded structure in a nuclear power plant, with just a small amount of material needing to be removed from an in-service component. Many studies on the prediction of fundamental material parameters through the SP test have been conducted, and it is commonly known that yield strength,  σ \n                      ys , and ultimate tensile strength,  σ \n                      uts , can be determined from a small punch load-displacement (LD) curve which consists of four regions: elastic bending, elastic-plastic bending, membrane stretching, and failure region. However, the nature of the curve is highly dependent on the specimen geometry. Also, deformation of the SP specimen during the test is considerably different from that of a uniaxial tensile test specimen. It is therefore still a challenge to establish a direct relationship between the LD curve and the stress-strain curve. As recommended by the European Code of Practice [ 1 ], yield strength and ultimate tensile strength can be extracted through either an empirical correlation or a computational modeling approach. An empirical correlation is generally not precise, and it also lacks the support of a theoretical basis and may be applicable to only a limited range of test configurations. In addition, a recent study on the correlation by Garcia et al. [ 2 ] showed that correlation constants are dependent on specimen thickness. In principle, empirical approaches can be applied to materials and test conditions for which the correlations have been shown. This corresponds with the recommendation by the European Code of Practice that the specimen thickness shall be controlled at 0.5 ​mm with the accuracy of ±1%, although in practice, such accuracy may be difficult to attain.",
+        "A mechanistic estimation can overcome these limitations, such as a computation modeling approach using the finite element method (FEM). Recent reports have investigated the use of FEM for determining the correlation between the tensile properties of a material and the SP test results. It is relatively straightforward to reproduce the initial elastic-plastic bending part of the LD curve in a finite element analysis (FEA) of the SP test [ 2 , 3 ]. For the modeling of the latter part, damage modeling techniques have been introduced in the literature (see for example [ 4 ], and [ 5 ]). These studies focused on constructing the whole stress-strain curve from the LD curve through an inverse finite element method (iFEM) by applying a neural network. Nevertheless, recent reports show that it is possible to effectively reproduce the large deformation section and the peak of the curve without using the damage modeling technique by including large strain data in the FE model [ 6 , 7 ]. Also, it is possible to estimate material properties from the LD curve by a method of matching to a database of stress-strain curves of hypothetical materials constructed from an elastic modulus and the work-hardening law, as reported by Zhong et al. [ 8 ].",
+        "In this study, a mechanistic approach was proposed for estimating the yield and ultimate strengths and stress-strain curve. Particularly, since the specimen thickness is an important factor in the empirical correlation, it was shown that the influence of specimen thickness was reasonably considered in the estimation. First, an FE model of the SP test with post-necking strain data for carbon steel with various degrees of cold working was developed. The model was then validated with experimental data. Second, the yield and ultimate strengths were predicted empirically for the LD curves obtained by FEA. The influence of specimen thickness on the prediction of tensile properties was investigated. Finally, to improve the consistency of estimating material properties from SP test results, a procedure that used a robust iFEM was proposed as a mechanistic approach."
+      ]
+    },
+    {
+      "heading": "SP test and FEA",
+      "paragraphs": []
+    },
+    {
+      "heading": "Material",
+      "paragraphs": [
+        "Specimens of SM490A carbon steel according to the JIS standard with various degrees of work-hardening were used in this study. The hardening process was applied to steel plates by a rolling process at room temperature in which the degrees of hardening were quantified by reduction of the nominal thickness of the plate by 5%, 10%, and 20%. The specimens, which were 8-mm-diameter cylindrical discs, were obtained in the through thickness direction of each plate and were denoted as SM5, SM10, and SM20 with respect to the degree of hardening; SM0 indicated a non-hardened specimen. Each disc had a thickness of approximately 0.5 ​mm and its surface was finished with #1200 emery paper. The mechanical properties and the nominal stress-strain curves are shown in  Table 1 \n                          and  Fig. 1 \n                         , respectively."
+      ]
+    },
+    {
+      "heading": "SP test configuration",
+      "paragraphs": [
+        "The SP test was carried out at room temperature using a test rig with the dimensions as shown in  Fig. 2 \n                         . The specimen was clamped by the upper and lower dies which had the diameters of 2.4 ​mm and 4 ​mm, respectively. The lower die chamfer radius was 0.156 ​mm. The punch ball was indented into the specimen at the constant speed of 0.2 ​mm per minute, controlled by the cross-head of the tensile test machine. The test load data were obtained directly from the load cell.",
+        "The deformation of the specimen was measured using the digital image correlation (DIC) technique which utilized two digital cameras positioned at different angles to take serial images of the bottom surface of the specimen during the test. By processing the images through Vic-3D correlation software, a deformation plot in three dimensions and displacement at any location of interest could be obtained as shown in  Fig. 3 \n                         . This technique was able to measure the local displacement and strain at the bottom peak of the specimen, and it excluded the displacement due to compliance of the test machine from the measurement result."
+      ]
+    },
+    {
+      "heading": "Test results versus FEA results",
+      "paragraphs": [
+        "The final thickness of each specimen was measured at four locations and an average value was taken. SP tests of two specimens for each material were carried out in this work. Variations in the specimen thickness were from 0.510 to 0.588 ​mm as shown in  Table 2 \n                         . Also included in the table is the thickness of the FE model of each material which matches the actual test specimen.",
+        "The FE model used in this work is shown in  Fig. 4 \n                         . The elastic-plastic specimen was modeled using linear reduced integration axisymmetric elements, CAX4R, provided in the Abaqus Finite Element Package. The indentation ball, upper die, and lower die were assumed to be non-deformable bodies. The tensile properties of SM490 ( Fig. 1 ) were limited to 14.7% and 2.1% elongation at tensile strength for SM0 and SM20, which is not sufficient to simulate the significant levels of specimen deformation during the SP test in an FEA. Therefore, true stress-strain curves with post-necking strain, shown in  Fig. 5 \n                         , from an earlier paper by Kamaya and Kawakubo [ 9 ] were used in the FEA; material tensile properties were specified using these true stress-strain curves of the work-hardened SM490 carbon steel specimens. The material deformation was simulated according to von Mises plasticity. It is considered that anisotropy of the specimen was not significant because the normal direction of the sample was the same as that of the cold working. The friction coefficients between the punch ball and the specimen, and between the specimen and the two dies were set to 0.2. The radius of the specimen, indentation ball, and dies were in accordance with the actual test rig. The specimen model was divided into 200 and 20 elements in the horizontal and vertical directions, respectively. Young’s modulus of 208 ​GPa and Poisson’s ratio of 0.3 were used for every specimen. The FEA used the Abaqus 6.14 standard solver with the inclusion of the nonlinear geometry (NLGEOM) option for simulation of a large inelastic deformation. In the analyses, first, the upper die was pressed to the specimen in order to fix the specimen to the die. Then, the ball was indented to the specimen.",
+        "Comparisons between the actual tests and the FE results for each material are shown in  Fig. 6 \n                         . Good agreement can be observed and the changes in load with the displacement from one region to another were simulated well, especially in the first and second regions of the curve. Accurate prediction of the displacement at the maximum load,  d \n                         max , was also obtained. The SM5 specimens are thicker, 0.587 and 0.588 ​mm, compared to the thickness of approximately 0.51–0.52 ​mm of the other specimens. Therefore, the SM5 results show higher stiffness and maximum load. FE predictions show higher stiffness due to the fact that the indentation ball and the die were modeled as rigid bodies, whereas in the actual test the compliances of both parts are involved. It has been reported [ 4 , 5 ] that a damage modeling technique such as the Gurson-Tvergaard-Needleman (GTN) model is required for the prediction of membrane stretching and failure regions of the curve. However, the present comparison indicated that the current FE model was able to adequately reproduce the LD curve up to the maximum loading point without using a more complicated constitutive model."
+      ]
+    },
+    {
+      "heading": "Empirical correlation approach",
+      "paragraphs": []
+    },
+    {
+      "heading": "Estimation of yield strength and ultimate tensile strength",
+      "paragraphs": [
+        "Yield strength and ultimate tensile strength can be empirically obtained from the small punch LD curve by using the load-tensile strength relationships proposed by Mao and Takahashi [ 10 ]: \n                            \n                               (1) \n                               \n                                  \n                                     \n                                        σ \n                                        \n                                           y \n                                           s \n                                        \n                                     \n                                     = \n                                     \n                                     α \n                                     \n                                        \n                                           P \n                                           y \n                                        \n                                        \n                                           t \n                                           2 \n                                        \n                                     \n                                  \n                               \n                            \n                         \n                         \n                            \n                               (2) \n                               \n                                  \n                                     \n                                        σ \n                                        uts \n                                     \n                                     = \n                                     β \n                                     \n                                        \n                                           P \n                                           max \n                                        \n                                        \n                                           t \n                                           . \n                                           \n                                              d \n                                              max \n                                           \n                                        \n                                     \n                                  \n                               \n                            \n                         where  α  and  β  are empirical constants, and  t  is specimen thickness. While the values of  P \n                         max  and  d \n                         max  can directly be obtained at the maximum loading point of the LD curve, identification of elastic-plastic transition load,  P \n                         y , uses the crossing point between the LD curve and a straight line parallel to the initial slope of the curve with an offset displacement. As the transition point between regions I and II is unclear, different offset displacements were proposed by several authors. One of the widely accepted proposals was made by Rodríguez et al. [ 11 ], and it gives the offset displacement equal to the specimen thickness divided by 10 ( t /10). In this work,  P \n                         y  values from several proposals, including  t /100 [ 12 ],  t /10 [ 11 ], 0.5 ​mm, 2 ​mm, and 3 ​mm [ 7 ], were considered. The offset displacements of these  P \n                         y  values are illustrated in  Fig. 7 \n                         .",
+        "It is difficult to accurately determine the value of  P \n                         y  from an experimental result, especially at the very small offset displacement close to the very beginning region of the curve which is influenced by the instability of the load cell and extensometer output. However, this difficulty can be circumvented by using FEA which, as shown in the previous comparison, can satisfactorily reproduce the LD curve of the SP test. The line parallel to the initial slope for  P \n                         y  determination was based on the analytical solution for bending of a clamped elastic circular plate. Given the loading magnitude ( P ), radius of die bore ( R ), die chamfer radius ( r ), Young’s modulus ( E ), plate thickness ( t ), and Poisson’s ratio ( υ ), the solution for the displacement at the middle of the plate ( d ) can be expressed by: \n                            \n                               (3) \n                               \n                                  \n                                     d \n                                     \n                                     = \n                                     \n                                        \n                                           P \n                                           \n                                              \n                                                 ( \n                                                 R \n                                                 + \n                                                 r \n                                                 ) \n                                              \n                                              2 \n                                           \n                                        \n                                        \n                                           16 \n                                           π \n                                           D \n                                        \n                                     \n                                  \n                               \n                            \n                         where,  \n                            \n                               D \n                               = \n                               \n                               \n                                  \n                                     E \n                                     \n                                        t \n                                        3 \n                                     \n                                  \n                                  \n                                     12 \n                                     \n                                        ( \n                                        1 \n                                        − \n                                        \n                                           υ \n                                           2 \n                                        \n                                        ) \n                                     \n                                  \n                               \n                            \n                         ."
+      ]
+    },
+    {
+      "heading": "Analysis results",
+      "paragraphs": [
+        "This investigation used the FE model with specimen thicknesses varying from 0.3 to 0.7 ​mm for each, where  P \n                         y  at the offset displacements mentioned above were obtained from each simulation. The values of  α  and  β  shown in  Fig. 8 \n                          and  Fig. 9 \n                          were derived using equations [ 1 , 2 ]. The influence of specimen thickness could be observed in each amount of work-hardening and all proposals for  P \n                         y .  P \n                         y  at the displacement of  t /10 [ 2 ] showed the least dependency on specimen thickness with the estimated  σ \n                         ys  being within ±5% discrepancy for the ±0.2 ​mm thickness variation. In the correlation for the ultimate strength, it was found that  \n                            \n                               \n                                  P \n                                  max \n                               \n                            \n                          is not properly normalized by t. \n                            \n                               \n                                  d \n                                  max \n                               \n                            \n                          which resulted in a discrepancy of over 12% for the thickness variation of ±0.2 ​mm.",
+        "With  P \n                         y  ​= ​ P \n                         \n                            t/ 10 , this investigation obtained  α  ​= ​0.383 and  β  ​= ​0.268 for the 0.5 ​mm specimen thickness while Garcia et al. [ 2 ] reported  α  ​= ​0.346 and  β  ​= ​0.277 (see  Table 3 \n                         ). These discrepancies indicated that the estimated constants depend on the material and may not be used as explicit values to estimate tensile properties. In addition, it was observed from the FE model that plastic deformation occurred at the very beginning of the SP test, i.e., below the punch displacement of 0.01 ​mm. Therefore, using  P \n                         y  at the larger offset displacement may not properly represent the elastic-plastic transition point in a low-elasticity material."
+      ]
+    },
+    {
+      "heading": "Mechanistic approach",
+      "paragraphs": [
+        "The investigation of the empirical correlation in section  3.2  showed that, although the influence of specimen thickness on the empirical constant  α  is within 5% when using  P \n                      y  ​= ​ P \n                      \n                         t /10 , the constant is 10.7% different from the value obtained from the earlier work [ 2 ]. Also, the average value of  β  varies by 3.2% from the value reported in Ref. [ 2 ]; however, the significant influence of specimen thickness is present in the estimation results. Due to the lack of consistency and supporting theory, the usefulness of the empirical correlation for SP tests is restricted. To address these limitations, an iFEM was proposed as a more reliable procedure to determine material properties from the LD curve and to exhibit less sensitivity to specimen thickness."
+      ]
+    },
+    {
+      "heading": "Determination of Ludwik’s coefficients",
+      "paragraphs": [
+        "The relationship between true stress and true plastic strain can be described using the Ludwik hardening model. This model, and the similar Hollomon model, have been used in recent studies on the determination of tensile properties from the SP test by the FE modeling technique; see for example [ 5 ], and [ 13 ] on the prediction of the LD curve up to the elastic-plastic bending region, and [ 8 ] on an estimation of yield and ultimate strengths using a database of the LD curve for hypothetical materials. The constitutive equation of Ludwik’s hardening law is written as \n                            \n                               (4) \n                               \n                                  \n                                     σ \n                                     = \n                                     \n                                        σ \n                                        y \n                                     \n                                     + \n                                     K \n                                     \n                                        ε \n                                        p \n                                        n \n                                     \n                                  \n                               \n                            \n                         where  K ,  ε \n                         p , and  n  are the strength coefficient, plastic strain, and strain hardening exponent, respectively.  σ \n                         y  is an initial yield stress which is the true stress at  ε \n                         p  ​= ​0. With the model, yield strength and ultimate strength can be calculated by using the basic relationship between the nominal and true stress-strain curves.",
+        "A robust iFEM consisting of iterative FE simulation and the bisection method was used to determine each coefficient of Ludwik’s model. The Abaqus standard was used as the solver for the LD curve output. The error between the LD curve output and the original input was calculated by the bisection method, then a new parameter (either increased or decreased from the previous parameter by half of the bisection interval) was obtained for the next repetition until the convergence criterion that the bracket size became less than 1% of the derived value was satisfied. The operation of the whole iterative procedure was controlled by a computer code using the C programming language.",
+        "The iFEM procedure was divided into two steps. First, the yield stress,  σ \n                         y , was determined by using the bisection methods. Here,  E  and  υ  were fixed at 208 ​GPa and 0.3, respectively. Since the coefficients  K  and  n  were not taken into account in the elastic part of the stress-strain curve, this procedure used the initial part of the LD curve, from zero displacement to approximately just beyond the elastic region, as input. To ensure that the influence of  K  and  n  was minimized, four calculations with extreme  K  and  n  values, including  K  ​= ​100 and 1000 and  n  ​= ​0.1 and 1, were carried out. The average value of  σ \n                         y  from the calculations was taken.",
+        "The second step was the determination of  K  and  n.  The same algorithm for the bisection method was used to determine the value of  K  for each  n  value. The  σ \n                         y  obtained from the first step was used as an input parameter and  n  was varied from  n  ​= ​0.15 to  n  ​= ​0.85 ​at intervals of 0.05. This step used the LD curve input up to the maximum loading point in the calculation. The LD curve outputs (there were 15 LD curves in total based on the number of  n  variations in the repeat calculation) were compared to the original input where the combination of the coefficients of the closest curve to the original input could be used to construct a full stress-strain curve. The iterative steps are illustrated in  Fig. 10 \n                         ."
+      ]
+    },
+    {
+      "heading": "Robustness of the iFEM",
+      "paragraphs": [
+        "The accuracy of this method was evaluated by using an LD curve of a hypothetical material based on the true stress-strain curve of SM5 with Ludwik’s coefficients  σ \n                         y  ​= ​472.1,  K  ​= ​380, and  n  ​= ​0.37, and the model thickness of 0.5 ​mm. The output coefficients determined by the iFEM were  σ \n                         y  ​= ​473.4,  K  ​= ​363.1, and  n  ​= ​0.35; all were within 5.5% of the input values. Also, the true stress-strain curve constructed from the estimated coefficient was almost identical to the true stress-strain curves from earlier work [ 9 ], as shown in  Fig. 11 \n                         .",
+        "The iFEM steps were repeated for the model with 0.3 and 0.7 ​mm thicknesses. The coefficients were also in good agreement with the original input. The estimated value of  σ \n                         y  was within 1.7% of the original input value as shown, along with the other coefficients, in  Table 4 \n                         ."
+      ]
+    },
+    {
+      "heading": "Determination of nominal yield strength and ultimate tensile strength",
+      "paragraphs": [
+        "The iFEM was used to construct true stress-strain curves from the LD curve of SM10 and SM20 simulations with specimen thickness of 0.5 ​mm. The respective results for SM10 and SM20 are shown in  Fig. 12 \n                          and  Fig. 13 \n                         . The iFEM results for SM10 and SM20 were similar to those of SM5. The constructed true stress-strain curves from the estimated coefficients showed good agreement with the true stress-strain curves from earlier work [ 9 ]. Finally, the yield strength and the ultimate tensile strength of SM5, SM10, and SM20 were calculated from the true stress-plastic strain curve and the values are shown in  Table 5 \n                         ."
+      ]
+    },
+    {
+      "heading": "Discussion",
+      "paragraphs": [
+        "The iFEM was able to construct a true stress-strain curve of a hypothetical material which was nearly identical to the original curve. In this study, all the estimated yield strengths and ultimate strengths were respectively within 5.2% and 2.8% of the original values from standard tensile tests. However, in the case of a low yield strength material, the elastic-plastic transition point, i.e. yield stress, of the LD curve may be difficult to identify due to the fact that plastic deformation occurs at the very beginning of the SP test.",
+        "The total computation process took approximately 12 ​h on a 6-CPU server. The accuracy of the estimation may be improved, with the cost of additional computation time, by narrowing the convergence criterion of the bisection method and by reducing the interval of the repeat calculation for the  n  parameter. To verify this, an examination on the prediction accuracy versus analysis time was carried out for the prediction of Ludwik’s coefficients of SM5 material as shown in  Fig. 14 \n                         .",
+        "It was found that the absolute errors of the estimated  K  and  σ \n                         y  were reduced to approximately 0.3% by narrowing the convergence bracket size of the bisection method from 5% to 1% of the derived value with the cost of approximately 40% additional calculation time. By further narrowing the convergence criteria from 1% to 0.5%, the accuracy of  K ,  Fig. 14 b, was improved to within 0.04% of the original value. However, in the case of  σ \n                         y ,  Fig. 14 a, lowering the threshold further resulted in a convergence with a discrepancy of approximately 0.3% from the actual value. This discrepancy was due to the fact that the bisection calculation in the first step of the iFEM also takes into account one or two data points beyond the yield point of the LD curve input. Subsequently, as shown in  Fig. 14 b, reducing the calculation interval for  n  from 0.15 to 0.05 can minimize the error of  K  from 12.8% to 4.4% at the cost of a doubled analysis time. Finally, if the  n  interval of 0.025 was used, the errors of  K  and  n  were reduced to approximately 1.5% but the total analysis took nearly 20 ​h.",
+        "The iFEM is robust and can be used to estimate tensile properties for different specimen thicknesses and materials. It should be noted that since FEA predictions generally show higher stiffness than actual test data, using the LD curve of an actual test as an input for the iFEM without any compliance correction will result in a lower, more conservative, prediction of tensile properties than the actual properties of the material."
+      ]
+    },
+    {
+      "heading": "Conclusions",
+      "paragraphs": [
+        "An FEA of the SP test was conducted using post-necking strain data of work-hardened SM490A carbon steel specimens. The FE model was validated with actual test results, and the predictions were found to be in good agreement with the test results. This means that, in order to simulate the LD curve including the maximum loading point, the stress-strain curve with post-necking strain is required. It was shown that damage modeling was not required to predict the maximum loading point.",
+        "The influence of specimen thickness on the empirical estimation of tensile properties was investigated using the developed FE model. The correlation constants,  \n                         α \n                       and  \n                         β \n                      , were shown to be dependent on the specimen thickness, especially in the estimation of the ultimate strength where it was also found that  \n                         \n                            t \n                            \n                            \n                               d \n                               max \n                            \n                         \n                       might not be suitable as a normalizing factor for  \n                         \n                            \n                               P \n                               max \n                            \n                         \n                      . Using  \n                         \n                            \n                               P \n                               y \n                            \n                            = \n                            \n                               P \n                               \n                                  t \n                                  / \n                                  10 \n                               \n                            \n                         \n                       for the estimation of yield strength was found to have the least dependency on the thickness; however, the correlation constant from this investigation differed by over 10% from results in earlier work and therefore it should not be used as a universal value for other materials.",
+        "A robust iFEM consisting of the iterative calculation and bisection method was proposed for the construction of a whole stress-strain curve in accordance with Ludwik’s model. Use of the iFEM provided consistency in the estimation of tensile properties of work-hardened carbon steel. In addition, the influence of specimen thickness, which occurs in the empirical correlation approach, was practically eliminated in the iFEM."
+      ]
+    },
+    {
+      "heading": "Author contribution",
+      "paragraphs": [
+        "Soratos Tantdeeravit: Writing - original draft, Formal analysis, Investigation, Visualization, Kamaya Masayuki: Conceptualization, Methodology, Writing - review & editing, Resources, Software, Supervision"
+      ]
+    },
+    {
+      "heading": "Data availability",
+      "paragraphs": [
+        "The raw/processed data required to reproduce these findings cannot be shared at this time as the data also forms part of an ongoing study."
+      ]
+    }
+  ],
+  "tables": [
+    {
+      "caption": "Mechanical properties of test material specimens (at room temperature).",
+      "headers": [
+        "SM490A material ID",
+        "Degree of work-hardening (%)",
+        "σ \n                            ys  (MPa)",
+        "σ \n                            uts  (MPa)",
+        "Elongation (%)",
+        "Reduction in area (%)",
+        "Young’s modulus (GPa)"
+      ],
+      "rows": [
+        [
+          "SM0",
+          "0",
+          "365",
+          "534",
+          "29.7",
+          "74.6",
+          "208"
+        ],
+        [
+          "SM5",
+          "5",
+          "494",
+          "572",
+          "24.0",
+          "75.6",
+          "209"
+        ],
+        [
+          "SM10",
+          "10",
+          "547",
+          "592",
+          "19.3",
+          "71.6",
+          "208"
+        ],
+        [
+          "SM20",
+          "20",
+          "607",
+          "640",
+          "15.0",
+          "69.8",
+          "207"
+        ]
+      ],
+      "header_groups": [],
+      "table_alignment_status": "resolved",
+      "row_provenance": [
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 7
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 7
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 7
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 7
+          }
+        ]
+      ],
+      "tbody_alignment_status": "resolved"
+    },
+    {
+      "caption": "SP test specimen and FE model thickness (mm).",
+      "headers": [
+        "SM490A material ID",
+        "Specimen #1",
+        "Specimen #2",
+        "FE model"
+      ],
+      "rows": [
+        [
+          "SM0",
+          "0.522",
+          "0.523",
+          "0.522"
+        ],
+        [
+          "SM5",
+          "0.587",
+          "0.588",
+          "0.587"
+        ],
+        [
+          "SM10",
+          "0.512",
+          "0.510",
+          "0.512"
+        ],
+        [
+          "SM20",
+          "0.520",
+          "0.517",
+          "0.520"
+        ]
+      ],
+      "header_groups": [],
+      "table_alignment_status": "resolved",
+      "row_provenance": [
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 4
+          }
+        ]
+      ],
+      "tbody_alignment_status": "resolved"
+    },
+    {
+      "caption": "α  and  β  for 0.5-mm-thick specimens.",
+      "headers": [
+        "Empirical constant",
+        "SM0",
+        "SM5",
+        "SM10",
+        "SM20",
+        "Average",
+        "Garcia et al. [ 2 ]"
+      ],
+      "rows": [
+        [
+          "α, P \n                            \n                            y  ​= ​ \n                               P \n                            \n                            \n                               \n                                  t \n                               /10",
+          "0.375",
+          "0.378",
+          "0.397",
+          "0.382",
+          "0.383",
+          "0.346"
+        ],
+        [
+          "Β",
+          "0.253",
+          "0.263",
+          "0.276",
+          "0.281",
+          "0.268",
+          "0.277"
+        ]
+      ],
+      "header_groups": [],
+      "table_alignment_status": "resolved",
+      "row_provenance": [
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 7
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 7
+          }
+        ]
+      ],
+      "tbody_alignment_status": "resolved"
+    },
+    {
+      "caption": "Ludwik’s coefficients determined by iFEM for various specimen thicknesses.",
+      "headers": [
+        "",
+        "Original input",
+        "0.3 ​mm",
+        "Diff. (%)",
+        "0.5 ​mm",
+        "Diff. (%)",
+        "0.7 ​mm",
+        "Diff. (%)"
+      ],
+      "rows": [
+        [
+          "σ \n                            \n                            \n                               \n                                  y",
+          "472.1",
+          "464.1",
+          "−1.69",
+          "473.4",
+          "0.29",
+          "478.1",
+          "1.27"
+        ],
+        [
+          "N",
+          "0.37",
+          "0.35",
+          "−5.40",
+          "0.35",
+          "−5.40",
+          "0.40",
+          "8.11"
+        ],
+        [
+          "K",
+          "380",
+          "385.5",
+          "1.45",
+          "363.1",
+          "−4.45",
+          "384.5",
+          "0.12"
+        ]
+      ],
+      "header_groups": [],
+      "table_alignment_status": "resolved",
+      "row_provenance": [
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 7
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 8
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 7
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 8
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 7
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 8
+          }
+        ]
+      ],
+      "tbody_alignment_status": "resolved"
+    },
+    {
+      "caption": "Yield strengths and tensile strengths determined from true stress-strain curve compared to previous data reported by Kamaya and Kawakubo [ 9 ].",
+      "headers": [
+        "",
+        "Yield strength(9) (MPa)",
+        "Ultimate strength(9) (MPa)",
+        "Yield strength iFEM (MPa)",
+        "Diff. (%)",
+        "Ultimate strength iFEM (MPa)",
+        "Diff. (%)"
+      ],
+      "rows": [
+        [
+          "SM5",
+          "494",
+          "572",
+          "471.0",
+          "−4.65",
+          "573.0",
+          "0.17"
+        ],
+        [
+          "SM10",
+          "547",
+          "592",
+          "519.0",
+          "−5.12",
+          "575.6",
+          "−2.77"
+        ],
+        [
+          "SM20",
+          "607",
+          "640",
+          "599.8",
+          "−1.19",
+          "650.1",
+          "1.58"
+        ]
+      ],
+      "header_groups": [],
+      "table_alignment_status": "resolved",
+      "row_provenance": [
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 7
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 7
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 7
+          }
+        ]
+      ],
+      "tbody_alignment_status": "resolved"
+    }
+  ]
+}

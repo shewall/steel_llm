@@ -1,0 +1,1818 @@
+{
+  "doi": "10.1007/s40194-026-02478-z",
+  "title": "Influence of surface topology on fatigue of DED-Arc specimens: a NURBS-based 3D-FEA approach",
+  "abstract": "Abstract Directed energy deposition with electric arc sources (DED-Arc) is an additive manufacturing (AM) technology for the production of metal components, particularly in the field of structural steel applications. Its ability to process high-strength low-alloy (HSLA) steels using cost-effective wire feedstock is notable. However, the as-built surface of DED-Arc components is characterised by significant waviness and irregularities due to the nature of the layerwise deposition process. These surface features act as potential stress concentrators and can have a significant effect on fatigue performance. In this study, the influence of surface topology on the fatigue behaviour of DED-Arc-manufactured components of HSLA steels is investigated. Fatigue tests were conducted on specimens in both as-built and machined surface conditions to experimentally quantify the impact of surface waviness. High-resolution 3D scanning and reverse engineering using NURBS-based surface reconstruction were employed to accurately represent real geometries in finite element simulations. Local stress distributions were evaluated to determine fatigue notch factors related to surface waviness. Furthermore, the base material was characterised experimentally by fatigue tests and the results were used in a numerical framework to estimate the fatigue life. Combining the experimental fatigue data with simulation-based notch factor evaluation enabled the development of fatigue life estimation that accounts for manufacturing-induced surface effects. The findings demonstrate the necessity of considering real surface topologies in fatigue assessments and offer a basis for improved design and qualification of AM components.",
+  "journal": "Welding in the World",
+  "year": "2026",
+  "sections": [
+    {
+      "heading": "Introduction",
+      "paragraphs": [
+        "Directed energy deposition using electric arc processes (DED-Arc), also known as wire arc additive manufacturing (WAAM), has increasing relevance in the field of additive manufacturing (AM) for manufacturing steel components with high deposition rates and design flexibility [ 1 ,  2 ,  3 ,  4 – 5 ]. In structural and offshore applications, DED-Arc offers significant advantages in terms of material efficiency and geometrical freedom [ 6 ]. However, the as-built surface condition resulting from the layerwise deposition process often exhibits waviness, irregularities, and local notches, which can impair the performance of as-built components [ 7 ]. These surface features significantly influence crack initiation under cyclic loading. As a result, the fatigue strength of as-built specimens is typically reduced compared to conventionally manufactured or machined counterparts. Previous studies have shown that machined specimens manufactured by DED-Arc exhibit improved fatigue performance due to the elimination of geometrically induced stress concentrations [ 8 ,  9 ,  10 ,  11 – 12 ]. While surface finishing methods such as milling or polishing can reduce this effect by removing critical surface features, the additional manufacturing step leads to an increase in production costs and may not be applicable to complex or internal geometries.",
+        "Hensel et al. [ 13 ] investigated DED-Arc-manufactured specimens made from HSLA and determined the effective notch stress concentration factor numerically [ 14 ]. Their results of the 2D simulations showed values ranging between 1.34 and 2.0, highlighting the variability of local stress amplification depending on the surface geometry. Zancato et al. [ 11 ] experimentally investigated the influence of the as-built surface condition on the fatigue strength of WAAM-fabricated stainless-steel specimens. By extrapolating the results to  2 ∙ 10 6 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$2\\bullet {10}^{6}$$\\end{document}  load cycles, they determined an experimental fatigue stress concentration factor of 2.27, highlighting the significant effect of surface geometry on fatigue performance. Leonetti et al. [ 9 ] determined the fatigue stress concentration factor for as-built steel components (stainless steel) both numerically and experimentally. Using the FKM Guideline, an averaged numerical fatigue notch factor of 2.0 was derived, while fatigue tests yielded an experimental value of 2.2 based on a reference of  2 ∙ 10 6 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$2\\bullet {10}^{6}$$\\end{document}  load cycles. Huang et al. [ 10 ] determined both experimental and numerical fatigue notch factors for DED-Arc-fabricated mild steel specimens. Their results showed an averaged numerical fatigue notch factor based on as-built surface scans of 1.74 confirming the consistency between simulation and test data in capturing the influence of as-built surface features. Bartsch et al. [ 15 ] numerically determined a notch factor of 5.9 for DED-Arc components with a mild steel, using a 2D-finite element approach based on the notch stress concept [ 16 ]. However, the simplified 2D modelling does not capture the full three-dimensional stress state arising from the actual as-built surface topology.",
+        "Shojai et al. [ 17 ,  18 – 19 ] applied reverse engineering techniques to assess the fatigue strength of corroded steel specimens by reconstructing the surface geometry using Non-Uniform Rational B-Splines (NURBS)–based modelling. Their work demonstrates the applicability of reverse-engineered geometries for evaluating local stress distributions in components with irregular surface conditions, highlighting the relevance of NURBS for capturing geometrically complex features in fatigue analysis. There remains a need for research into the influence of as-built surface topology on fatigue strength, because the surface waviness can significantly depend on process parameters. Understanding these effects is essential for reliably assessing the fatigue performance of DED-Arc components.",
+        "This study combines high-resolution surface scanning, reverse engineering based on NURBS, and three-dimensional finite element simulations to quantify local stress concentrations in as-built DED-Arc specimens. Fatigue tests were performed on both machined and as-built specimens under identical loading conditions to evaluate the effect of surface topology on fatigue life. The experimentally determined material parameters and numerically derived fatigue stress concentration factors were used to develop a local fatigue estimation based on the actual surface geometry."
+      ]
+    },
+    {
+      "heading": "Materials and methods",
+      "paragraphs": [
+        "Fatigue tests on machined and as-built specimens were carried out to assess the fatigue strength and to support the numerical analysis of surface-induced fatigue strength reduction. Machined specimens served to establish baseline fatigue properties and formed the basis for the fatigue life estimation in connection with the numerical investigations. As-built specimens were 3D-scanned, and the measured geometries were reconstructed using Non-Uniform Rational B-Splines (NURBS) to create accurate finite element models. Fatigue stress concentration factors were derived from these simulations. Experimental tests on as-built specimens validated the numerical estimations by the magnitude of the fatigue stress concentration factors and the correspondence between predicted stress peaks and actual failure locations."
+      ]
+    },
+    {
+      "heading": "Fatigue tests",
+      "paragraphs": []
+    },
+    {
+      "heading": "Specimen properties",
+      "paragraphs": [
+        "The fatigue specimens were extracted from thin walls produced via the DED-Arc process. This specimen orientation represents the lowest strength and was therefore selected as the critical condition [ 20 ]. All specimens were manufactured from feedstock material voestalpine Böhler AM80 HD (10NiMnMoCr8-7-6), a high-strength low-alloy (HSLA) steel developed specifically for additive manufacturing applications. The DED-Arc deposition was carried out with a cold metal transfer (CMT) process, an interpass temperature below 200 °C and a specific energy input of 2.7 kJ/cm. In Table  1 , the process parameters used for manufacturing the walls from which the fatigue specimens were extracted are summarised.\n Table 1 Process parameter of AM80 HD fatigue specimens Current/A Voltage/V Wire feed rate/(m/min) Travel speed/(cm/min) Interpass temperature/°C Shielding gas Gas flow rate/(L/min) Deposition on strategy\n 96 14.2 2.0 24 200 92% Ar–8% CO 2 16 Bidirectional",
+        "Four thin walls were manufactured, from each of which six specimens were extracted, resulting in a total of 12 as-built and 12 machined specimens available for testing. A structured naming convention encoding the main experimental parameters was used to uniquely label each fatigue specimen (see Table  2 ).\n Table 2 Naming convention of fatigue specimens Surface condition Identifier of thin-walled component Orientation Number of specimens As-built 1 to 2 V = vertical 1 to 6 Machined 3 to 4 V = vertical 1 to 6",
+        "To investigate the influence of surface condition, two specimen surface conditions were considered, as-built and machined. The machined specimens were milled to a thickness of 3.5 mm to remove the surface waviness of all specimens and polished to achieve a defined surface finish. The thicknesses of the as-built specimens are provided in Table  5  in the Appendix. To prevent crack initiation at the specimen edges, the machined specimens were additionally chamfered by a milling machine with a radius of 0.5 mm to create a controlled edge radius. This radius was applied only to the machined specimens, as the as-built specimens exhibited an irregular wavy surface where a defined machining of the edge was not feasible. Furthermore, if cracks initiate at the edge, the results are only comparable to machined specimens to a limited extent. The geometry of the fatigue specimens is shown in Fig.  1 . Fig. 1 a  Fatigue specimens alignment from DED-Arc printed wall.  b  Cut-out geometry of fatigue specimen in mm"
+      ]
+    },
+    {
+      "heading": "Test setup",
+      "paragraphs": [
+        "The fatigue tests were performed in accordance with the specifications of DIN 50100 [ 21 ] under constant load amplitude and within the high cycle fatigue (HCF). Two different testing setups were used in order to account for the different surface conditions of the machined and as-built specimens. The tests were carried out under force control. All fatigue tests (machined and as-built specimens) were conducted under load control at a stress ratio of  R  = 0.1. Fatigue tests on the machined specimens were carried out using a Schenk 160 servo-hydraulic testing machine, where the load was introduced through hydraulic wedge grips clamping the specimen ends. The test setup for the machined specimens is shown in Fig.  2 . The testing machine has a maximum applied load capacity of 160 kN and a test frequency of 50 Hz. Fig. 2 Fatigue test setup (Schenk 160 kN) for machined specimens",
+        "Fatigue tests on the as-built specimens were performed using a servo-hydraulic actuator (MTS 204.63) with a maximum load capacity of 100 kN (see Fig.  3 ). The lower adapter was mounted with a rotational joint to permit free rotation about all axes to minimise unintended bending moments during testing. The contact-based load introduction via custom adapter elements was specifically designed to avoid damage to the rough as-built surfaces. The adapter is rigidly connected to the hydraulic cylinder and transfers the load to the specimen shoulders through contact pressure (see Fig.  3  (right)). The setup was validated in preliminary tests to ensure stable and repeatable loading conditions under cyclic fatigue. Fig. 3 Fatigue test setup (MTS 204.63) for as-built specimens",
+        "Additionally, a Digital Image Correlation (DIC) system was applied to monitor the deformation behaviour of the as-built surface during testing. However, the DIC data are not part of the evaluation presented in this work. For the as-built specimens tested on the servo-hydraulic machine, test frequencies between 30 and 50 Hz were applied.",
+        "Both test setups were chosen to ensure that the load introduction reflected uniaxial boundary conditions without introducing artificial stress concentrations and bending effects. While the machined specimens benefited from conventional clamping and well-defined contact surfaces, the as-built specimens required a tailored load transfer concept to accommodate surface irregularities and avoid damage during testing. This dual setup allowed for a reliable comparison of fatigue behaviour under consistent loading conditions despite differing surface states."
+      ]
+    },
+    {
+      "heading": "Numerical flowchart",
+      "paragraphs": [
+        "The numerical investigation of surface-induced fatigue effects was based on a detailed workflow consisting of surface digitisation, geometry reconstruction, and finite element analysis, as illustrated in Fig.  4 . Fig. 4 Numerical flowchart of NURBS-based 3D-FEA",
+        "The process began with the capture of the three-dimensional geometry of the as-built specimen surface. The mesh alignment was carried out using CloudCompare v2.14.alpha. The resulting polygon mesh was subsequently processed using MeshLab 2023.12 and Fusion360 2024. In the next stage, the cleaned mesh was converted into a continuous surface using Rhino 8. This reverse engineering step was essential to avoid artificial sharp edges and mesh discontinuities that could lead to numerical singularities during stress analysis. The NURBS-based model was then used as input for the finite element simulations using Abaqus/Standard 2024. The final step involved the numerical evaluation of local stress concentration factors related to the surface topology."
+      ]
+    },
+    {
+      "heading": "3D scanning as-built surface",
+      "paragraphs": [
+        "The geometry of the as-built specimen surface was captured using a high-resolution structured-light scanner (Hexagon StereoScan neo R16.2), as shown in Fig.  5 . The specimen was mounted on a turntable using a clamping fixture to ensure stable positioning during scanning. A full 360° surface acquisition was achieved through 16 rotational increments, enabling the scanner to capture the specimen from 16 discrete perspectives without requiring manual alignment of individual scans. Before the scanning, the specimen surface was cleaned and coated with a matting spray (thickness of 10 µm) to reduce surface reflectivity and improve scan quality. Reference points were placed around the specimen to support the alignment of the multiple scans. The scanner was calibrated before the measurements, yielding a calibration accuracy of 4 µm. Fig. 5 3D scanning of fatigue specimen with high-resolution structured-light scanner (Hexagon StereoScan neo R16.2)",
+        "The resulting scan data serve as the geometric basis for the following numerical analysis. Initially, the scanner generates a point cloud of the specimen surface, capturing the geometry with high resolution. Based on this point cloud, a polygon mesh is automatically created and exported as an STL file. This file format provides a suitable input for reverse engineering and further surface processing required for finite element modelling. The maximum resolution of the polygon mesh is 12 µm based on the used working distance."
+      ]
+    },
+    {
+      "heading": "Reverse engineering",
+      "paragraphs": [
+        "The initial surface representation obtained from the 3D scan is a polygon mesh, which approximates the measured point cloud through a linear interpolation of adjacent vertices (see Fig.  6 ). The mesh consists of numerous flat triangular elements, resulting in a piecewise linear and geometrically discontinuous surface. When the polygon mesh was directly used in the finite element simulations, these artificial edges and corners introduce non-physical stress concentrations that may dominate the local stress field. Fig. 6 Polygon mesh based on the point cloud and NURBS surface reconstruction",
+        "As a consequence, it becomes difficult to isolate the actual influence of the measured surface topology, since any local variation in stress may be driven more by meshing artefacts than by the underlying geometry. To address this issue, the polygon mesh is converted into a smooth and continuous geometry using NURBS to eliminate the discontinuous surface. They are mathematical representations used to model smooth and complex geometries in computer-aided design. They define curves and surfaces using control points, basis functions, and optional weighting factors, allowing precise control over shape and continuity.",
+        "This reverse engineering approach reconstructs the surface as a composition of multiple connected NURBS patches, which are connected under continuity constraints to form a consistent solid model. An average NURBS surface edge length of 0.2 mm was selected, representing a compromise between capturing relevant surface features and computational effort. To ensure a smooth transition between adjacent surface patches, the model was constructed with curvature continuity  G 2 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${G}^{2}$$\\end{document}  at the shared boundaries. Curvature continuity  G 2 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${G}^{2}$$\\end{document}  between adjacent NURBS surfaces ensures a smooth geometric transition by fulfilling three conditions: positional continuity  G 0 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${G}^{0}$$\\end{document} , where the surfaces meet at the same location, tangential continuity  G 1 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${G}^{1}$$\\end{document} , where their surface normal are aligned, and curvature continuity itself, meaning that the curvature radius is consistent across the shared boundary. This avoids visual or mechanical discontinuities and ensures a physically realistic surface representation. In contrast to polygon meshes, NURBS surfaces capture the overall curvature of the scanned geometry while suppressing artificial discontinuities. Moreover, they require significantly fewer data points, which reduces model complexity and facilitates integration into the numerical flowchart. The NURBS patches are fitted to the original scan by referencing the point cloud and polygon mesh structure. The resulting surface quality depends on the number and arrangement of the generated NURBS patches. The median distance between the polygon mesh and the NURBS surface for the specimen shown in Fig.  6  is 1.35 µm, with a standard deviation of 3.4 µm."
+      ]
+    },
+    {
+      "heading": "Numerical analysis",
+      "paragraphs": [
+        "To evaluate the influence of the as-built surface profile on the local stress distribution, numerical simulations were carried out using three-dimensional finite element analysis (3D-FEA). Due to the surface waviness, local bending effects and stress concentrations occur, resulting in a multiaxial stress state within the parallel section, which is the highly stressed central region of the specimen with a constant width of 13 mm (see Fig.  1 b). A 2D simulation is therefore not sufficient to map the multiaxial stress state. The applied modelling approach allows for the assessment of stress concentration factors relevant to fatigue initiation under realistic surface conditions. The input geometry for the simulations was derived from the reverse-engineered NURBS surface model, which accurately represents the scanned as-built specimen geometry."
+      ]
+    },
+    {
+      "heading": "Boundary conditions",
+      "paragraphs": [
+        "The finite element simulations were carried out in Abaqus/Standard 2024 using ten-node tetrahedral elements with quadratic shape functions (element type C3D10). The material was defined as linear elastic, characterised by Young’s modulus  E \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$E$$\\end{document}  = 210 GPa and Poisson’s ratio  υ \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\upsilon$$\\end{document}  = 0.3. To replicate the physical boundary conditions, a radial constraint was applied at one specimen end using local coordinate systems, as illustrated in Fig.  7 a. Fig. 7 FE-model boundary conditions;  a  local defined coordinate system and  b  global and local coordinate system",
+        "The radial constraint reflects the boundary conditions of the experimental adapter (see Fig.  3 ), as the contact-based load introduction in the test setup allows vertical deformation of the specimen. Furthermore, lateral displacement was restricted in the simulation to reflect the experimental setup, where the specimen is laterally supported by clamped plates. The applied load corresponds to the average cross-sectional area in the parallel section, computed as the specimen’s average thickness multiplied by the constant width of 13 mm. As a result, the computed stress field directly represents the elastic static stress concentration factor. The geometry was partitioned into multiple sections to enable local control of the mesh density via seed definitions. Smaller elements were applied along the as-built surface in the parallel section. In contrast, coarser elements were used in the non-critical regions outside the area of interest to reduce computational effort while maintaining overall model stability."
+      ]
+    },
+    {
+      "heading": "Mesh sensitivity study",
+      "paragraphs": [
+        "To assess the influence of element size and surface representation on the calculated stress concentration, a mesh sensitivity study was carried out using a simplified numerical model containing only the parallel section of the specimen. This reduced the computational cost and allowed for systematic variation of mesh density. Two modelling approaches were compared: the reverse-engineered NURBS surface with continuous curvature, and a linear polygon mesh directly derived from the scan data. As shown in Fig.  8 , the polygon mesh leads to significantly increasing stress concentration factors with decreasing element size, indicating mesh dependency due to artificial discontinuities. Fig. 8 a  Mesh sensitivity study for NURBS and polygon models.  b  Difference of the input geometries",
+        "In contrast, the NURBS-based model yields stable results beyond a certain level of refinement, highlighting the importance of smooth, continuous geometry for reliable stress analysis of 3D-scanned surfaces. The polygon mesh cannot produce consistent stress values even at very fine element sizes, since the numerically discretised geometry increasingly approximates the physical geometry, which contains clear edges resulting from the linear interpolation of the discontinuous point cloud.",
+        "To determine the required mesh resolution for subsequent simulations, both global and local element size criteria were evaluated. The global mesh density was defined such that the location of the maximum stress remained unchanged upon further refinement, whereas the local element size was assessed specifically at the notch with the smallest radius of curvature. The results revealed that a global element size of 0.2 mm and a local refinement to 0.05 mm are necessary to ensure mesh-independent results (see Fig.  8 a). These thresholds were used in all subsequent simulations."
+      ]
+    },
+    {
+      "heading": "Static stress concentration factor",
+      "paragraphs": [
+        "The static stress concentration factor  K t \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${K}_{t}$$\\end{document}  is defined as the ratio of the local maximum stress  σ loc \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${\\sigma}_{loc}$$\\end{document} , which arises due to surface irregularities, to the nominal stress  σ nom \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${\\sigma}_{nom}$$\\end{document}   based on the average cross-sectional area of the parallel section [ 22 ] in Eq. ( 1 )\n:",
+        "1 K t = σ loc σ nom = Δ σ loc Δ σ nom \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${K}_{t}=\\frac{{\\sigma}_{loc}}{{\\sigma}_{nom}}=\\frac{{\\Delta \\sigma }_{loc}}{{\\Delta \\sigma }_{nom}}$$\\end{document}",
+        "Based on the 3D scan data, the average cross-sectional area was obtained by computing the mean specimen thickness on a 0.1-mm × 0.1-mm raster grid. In this study,  σ loc \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${\\sigma}_{loc}$$\\end{document}  was determined at the integration point of the element exhibiting the highest nodal stress value. This approach avoids numerical artefacts caused by stress extrapolation and ensures a more accurate evaluation of local stress peaks resulting from geometric discontinuities. The analysis shows that the as-built surface profile induces a multiaxial stress state in the parallel section, primarily dominated by the longitudinal stress component. However, due to the presence of significant secondary stresses, the von Mises equivalent stress was used as the representative quantity for evaluating the static stress concentration factor. Figure  9  illustrates the von Mises stress distribution for specimen T2V6 as a representative example. The results clearly show localised stress concentrations caused by the surface topology, with stress peaks predominantly occurring of small local notch radii, where curvature-induced amplification is most pronounced. These stress patterns reflect the wavy structure of the scanned as-built surface geometry.",
+        "Fig. 9 Fracture localisation and qualitative numerical Mises equivalent stresses of specimen T2V6  a  frontside and  b  backside",
+        "The accurate reproduction of the failure location using a NURBS-based geometry confirms the predictive capability of the model, especially in comparison to idealised geometries or simplified 2D simulations."
+      ]
+    },
+    {
+      "heading": "Fatigue stress concentration factor",
+      "paragraphs": [
+        "While the static stress concentration factor  K t \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${K}_{t}$$\\end{document}  quantifies the maximum elastic stress at a single integration point, it does not capture the extent and distribution of stress around local geometric irregularities. In fatigue-critical components, however, not only the peak stress but also the size and shape of the surrounding stress field influence crack initiation and propagation. The fatigue stress concentration factor  K f \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${K}_{f}$$\\end{document}  addresses this by incorporating the geometrical characteristics of the notch region. The fatigue stress concentration factor therefore reflects the actual reduction in fatigue life due to the as-built surface condition. It essentially represents the ratio between the fatigue performance of a machined reference specimen and that of a notched specimen, see Eq. ( 2 )\n:",
+        "2 K f = Δ σ n o m , m a c h i n e d Δ σ n o m , n o t c h e d \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$K_f=\\frac{{\\Delta\\sigma}_{nom,machined}}{{\\Delta\\sigma}_{nom,notched}}$$\\end{document}",
+        "In particular, this approach introduces a notch sensitivity factor  q , which links the static and fatigue stress concentration factors as follows in Eq. ( 3 ) [ 23 ]:",
+        "3 K f = 1 + q ( K t - 1 ) \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$K_f=1+q\\,(K_t-1)$$\\end{document}",
+        "The notch sensitivity factor  q \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$q$$\\end{document}  takes into account the notch radius  r \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$r$$\\end{document}  and the material parameter  a \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$a$$\\end{document}  and is defined by the following Neuber’s Eq. ( 4 ) [ 24 ,  25 ]:",
+        "4 q = 1 1 + a r \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$q=\\frac1{1+\\sqrt{\\frac ar}}$$\\end{document}",
+        "The parameter  a  is a material constant based on the ultimate tensile strength  f u \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${f}_{u}$$\\end{document}  (in kspi) and is calculated as follows [ 25 ,  26 ]:",
+        "5 a = 0.246 - 3.08 · 10 - 3 · f u + 1.51 · 10 - 5 · f u 2 - 2.67 · 10 - 8 · f u 3 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\sqrt a=0.246-3.08\\cdot10^{-3}\\cdot f_u+1.51\\cdot10^{-5}\\cdot f_u^2-2.67\\cdot10^{-8}\\cdot f_u^3$$\\end{document}",
+        "According to Jahns [ 27 ], the ultimate tensile strength of the material examined under as-built conditions is 851 MPa. In the following, the fatigue stress concentration factor is used both to estimate the local stress amplitudes in the notched region and to estimate the fatigue life of the specimens. The local notch radii were determined using the curvature analysis function in Rhino, based on the NURBS-reconstructed surface geometry. This approach allows for the precise evaluation of local curvature along the as-built surface."
+      ]
+    },
+    {
+      "heading": "Results",
+      "paragraphs": []
+    },
+    {
+      "heading": "Fatigue tests",
+      "paragraphs": [
+        "The results of the fatigue tests for both machined and as-built surface conditions are presented in Fig.  10  and Table  3  in the Appendix. The data illustrate the influence of surface topology on the fatigue performance of the specimens. The machined specimens exhibit a higher fatigue strength. The surface finishing significantly reduces stress concentrations and removes micro-notches, thereby delaying crack initiation and improving overall fatigue performance. The 50% regression curves were carried out on the logarithmic values of stress and number of cycles and fitted using a least squares regression with a free slope [ 21 ]. Specimens that exhibited crack initiation outside the parallel section were marked as  invalid failure location  and excluded from the regression analysis for the estimation model (see Fig.  10 ). Run-outs were also specified and not considered in the determination of the S–N curve. The regression slope obtained for the machined specimens shows a flat trend. Excluding specimens with invalid failure locations, the slope of the S–N curve was determined to be  m  = 3.2 for the as-built specimens and 64.0 for the machined condition, with a corresponding scatter  T σ \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${T}_{\\sigma }$$\\end{document}  of 1.15 for as-built and 1.08 for machined. When including the invalid failure locations in the regression, the inverse slope increases to  m  = 3.55 for the as-built specimens and decreases to  m  = 54.3 for the machined specimens; the scatter  T σ \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${T}_{\\sigma }$$\\end{document}  is 1.24 for as-built and 1.1 for machined. Fig. 10 Fatigue performance of as-built and machined specimens",
+        "The fatigue concentration factor was determined using the following Eq. ( 6 ) and is equivalent to the numerically determined fatigue concentration factor:",
+        "6 K f , e x p = Δ σ n o m , m a c h i n e d Δ σ n o m , a s - b u i l t \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${K}_{f,exp}=\\frac{{\\Delta \\sigma }_{nom,machined}}{{\\Delta \\sigma }_{nom,as-built}}$$\\end{document}",
+        "The fatigue stress concentration factor was evaluated within the range of experimentally validated as-built specimens. As a result, it can be seen that the factor varies from  K f \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${K}_{f}$$\\end{document}  = 1.84 to 4.66 which is a consequence of the diverging slope between the machined and as-built S–N curves. Further tests are necessary for a more precise description of the position and slope of the machined specimens. It should also be noted that the last data point included in the regression for the machined specimens lies at 210,000 load cycles. Consequently, the fatigue stress concentration factors calculated for higher cycle numbers are based on an extrapolation of the regression line beyond the available experimental data, which introduces additional uncertainty in the calculation of the fatigue concentration factor at low stress amplitudes."
+      ]
+    },
+    {
+      "heading": "Numerical simulation",
+      "paragraphs": [
+        "Figure  11 a illustrates the numerical procedure used to determine the fatigue stress concentration factors, exemplified for specimen T2V6. Based on the linear finite element analysis, the static stress concentration factor  K t \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${K}_{t}$$\\end{document}  is calculated from the local von Mises equivalent stress. This value is combined with the locally determined notch radius, evaluated using the curvature analysis in Rhino, to estimate the fatigue stress concentration factor  K f \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${K}_{f}$$\\end{document}  via the material-specific notch sensitivity approach. The following Fig.  11 b presents the numerical results of the calculated stress concentration factors for all investigated specimens. The boxplot visualises the statistical distribution of the data. The scatter points indicate the maximum and minimum values, the box spans the 10% to 90% quantile, and the line within the box represents the median stress concentration factor. Fig. 11 a  T2V6 numerical calculated stress concentration factor.  b  Results of different numerical concentration factors of all specimens",
+        "The results show that the static stress concentration factors  K t \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${K}_{t}$$\\end{document}  exhibit a higher scatter than  K f \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${K}_{f}$$\\end{document} . Furthermore, the median value of the fatigue stress concentration factors is consistently lower than that of the static values. This difference is attributed to the stress reduction effects caused by the local notch sensitivity based on the radii. The comparison with the experimental values was omitted, as the experimentally derived  K f \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${K}_{f}$$\\end{document}  depends on the S–N curve slope and the chosen evaluation point, making a direct comparison with the numerical factors not meaningful in this case.",
+        "Overall, the static stress concentration factor successfully identified the crack initiation site in 6 out of 8 specimens, demonstrating the suitability of the numerical approach for capturing fatigue-critical surface features (see Table  4  in the Appendix), which lists the identification of failure. In the specimens where the crack initiation site could not be clearly identified numerically, the application of the fatigue stress concentration factor resulted in several notches exhibiting comparable stress levels. The applied load corresponds to the average cross-sectional area in the parallel section of the specimen, which ensures a uniform nominal stress distribution. As a result, the von Mises equivalent stress obtained from the finite element analysis directly represents the static stress concentration factor without the need for additional normalisation. The calculated fatigue stress concentration factors are subsequently used as input for the estimation model to estimate the fatigue life of the as-built specimens.",
+        "The analysis showed that the global mesh refinement was sufficient to initially identify the most critical notches on the as-built surface. These regions were partitioned and subsequently re-meshed with a locally refined element size of 0.05 mm to ensure that the stresses at the integration point do not change (see Fig.  8 ). This two-step approach allowed for efficient use of computational resources while maintaining the accuracy required for reliable evaluation of local stress concentrations."
+      ]
+    },
+    {
+      "heading": "Fatigue life estimation",
+      "paragraphs": [
+        "To assess the impact of surface-induced stress concentrations on the fatigue life of as-built specimens, a numerical approach was used. Based on the previously calculated fatigue stress concentration factors and the material parameters derived from machined specimens, the model enables a local, geometry-based estimation of fatigue life. The estimation was performed based on the Basquin Eq. ( 7 ) [ 28 ]:",
+        "7 N = C Δ σ m \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$N=\\left(\\frac C{\\Delta\\sigma}\\right)^m$$\\end{document} The parameter  C , representing the intercept of the S–N curve, was derived from the machined specimen results and amounts to 10,429 MPa. The slope  m  was set to 4, based on similar literature values commonly reported for as-built additively manufactured steel components [ 9 ,  11 ,  12 – 13 ]. To account for the influence of surface-induced stress concentrations, the local stress  Δ σ \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\Delta \\sigma$$\\end{document}  was calculated as the product of the nominal stress  Δ σ nom \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${\\Delta \\sigma }_{nom}$$\\end{document}  and the fatigue stress concentration factor  K f \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${K}_{f}$$\\end{document}  obtained from the numerical simulations in Eq. ( 8 ):",
+        "8 Δ σ = Δ σ nom · K f \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\Delta\\sigma={\\Delta\\sigma}_{nom}\\cdot K_f$$\\end{document}",
+        "Figure  12 a shows the results of the fatigue life estimation, with the estimated fatigue life plotted against the experimentally determined life. It can be observed that most of the estimations fall within a scatter band of a factor of 3.0, indicating reasonable agreement between simulation and experiment. Most data points lie below the perfect fit curve, indicating that the model tends to underestimate fatigue life and therefore provides a conservative estimation. In Fig.  12 b, both the machined and as-built specimens are displayed in a combined S–N diagram. For the as-built condition, the local stresses, derived using the fatigue stress concentration factor, were used to represent the actual loading conditions. This allows for a direct visual comparison between both surface states, highlighting the impact of surface-induced stress amplification on fatigue performance. Furthermore, the 10% and 90% quantiles are indicated in the diagram, providing the variability of the experimental fatigue data.",
+        "Fig. 12 a  Fatigue life estimation.  b  S–N curve of local stress range for as-built and machined specimens with  m  = 4",
+        "The fatigue stress concentration factor provides a more physically meaningful approach for evaluating surface-induced stress concentrations in as-built specimens compared to static stress concentration factors. While static factors tend to overestimate the severity of local notches, often predicting unrealistically high stress peaks, the fatigue-based factor accounts for the effective influence of notch geometry under cyclic loading. Plasticity effects, such as local stress redistribution, particularly around small notches, can reduce the severity of these peaks, a behaviour that is better captured by the fatigue stress concentration factor."
+      ]
+    },
+    {
+      "heading": "Discussion",
+      "paragraphs": [
+        "The presented methodology demonstrates a combined numerical and experimental approach for assessing the influence of as-built surface topology on the fatigue performance of additively manufactured components. In the presented study, the NURBS-based surface reconstruction was implemented by dividing the as-built geometry into individual surface segments. An average NURBS surface edge length of 0.2 mm was selected, representing a compromise between capturing relevant surface features and computational effort. The minimum required NURBS patch size for representing fatigue-relevant surface features was not determined in this study. Establishing such a threshold would be valuable for future investigations to ensure a consistent balance between geometric resolution and computational efficiency. Furthermore, a higher resolution of the 3D surface scan may require a finer NURBS patch size to accurately capture the increased level of geometric detail. Consequently, the investigation of the necessary scan quality is also of critical importance for future studies aiming to achieve a reliable and efficient workflow. A comparable NURBS size was also applied in the literature, indicating that the chosen resolution in this study is consistent with other approaches for representing scan-based surface geometries in numerical fatigue analysis [ 17 ].",
+        "The experimental data points marked as  invalid failure location  represent threshold values and are shown for completeness only. These specimens were excluded from all further evaluations, including fatigue life estimation and numerical simulation, due to their failure occurring outside the parallel section. All specimens that failed outside the parallel section fractured in the transition region. Failure occurring outside the parallel section represents a general challenge in fatigue testing, as also reported in the literature [ 10 ]. The failure in some specimens may be attributed to the radius between the parallel section and the clamping area. A small transition radius can lead to elevated local stress concentrations, potentially resulting in premature failure outside the test region. Therefore, increasing the radius could be a beneficial design modification to reduce the local notch effect and ensure crack initiation occurs consistently within the uniform parallel section. Overall, it can be seen that the stress concentration of the surface exceeds the notch effect provided by the transition radius.",
+        "The fatigue life estimation was dominated by the application of the Basquin equation, with an assumed slope of  m = 4 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$m=4$$\\end{document} , whereby the choice of slope influences the estimated results. This value was selected based on similar literature reported fatigue test results for WAAM-fabricated steel components and reflects a conservative estimate for as-built DED-Arc components [ 9 ,  10 – 11 ,  13 ]. This approach provides a practical basis for comparing machined and as-built specimens. However, it must be emphasised that assuming a fixed slope in evaluating the fatigue tests introduces significant simplifications, particularly for the as-built surface condition where local defect interactions and load redistribution mechanisms may alter the fatigue behaviour. Finally, the results show that this approximation yields a reasonable estimation of fatigue life in most cases and captures the influence of surface geometry via the fatigue stress concentration factor.",
+        "The fatigue stress concentration factors determined in this study are somewhat elevated compared to values reported in the literature ( K f = \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${K}_{f}=$$\\end{document}  1.34 to 2.27) [ 9 ,  10 – 11 ,  13 ,  17 ]. However, this can be attributed to the pronounced surface waviness and specific surface characteristics of the investigated specimens as shown in Table  5  in the Appendix. The geometric deviations observed in the as-built condition, such as small local notch radii and sharp curvature transitions, are likely to cause more severe local stress amplification than in studies with smoother surface profiles or different process parameters.",
+        "Alternative approaches can be employed to account for the reduction in fatigue strength caused by local stress concentrations, particularly by considering microstructural support effects [ 19 ]. Examples include the theory of critical distance (TCD) or the support factor concept as defined in the FKM Guideline [ 29 ,  30 ]. These methods do not only consider the maximum stress at one point, but also take into account how the stress is distributed in the area around the notch."
+      ]
+    },
+    {
+      "heading": "Conclusions",
+      "paragraphs": [
+        "In this study, the influence of as-built surface topology on the fatigue performance of HSLA DED-Arc components was investigated by combining high-resolution surface scanning, reverse engineering techniques with NURBS and numerical simulations. Fatigue tests on machined and as-built specimens were conducted and used with a local fatigue estimation based on numerically derived fatigue stress concentration factors  K f \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${K}_{f}$$\\end{document} . The following conclusions are: Finite element analysis based on the von Mises equivalent stress successfully identified the experimental failure location in 6 out of 8 specimens (see Table  4  in the Appendix). For the two specimens where the predicted and actual failure locations did not coincide, the deviation in stress concentration at the fracture site remained within a comparable stress level (2% and 11%). This confirms the suitability of the proposed methodology for predicting fatigue-critical regions in as-built geometries by evaluating local stress distributions. The experimental fatigue strength of the machined specimens was higher than the results of the as-built specimens. Due to the flat slope of the S–N curve for the machined condition, the experimental fatigue stress concentration factor could only be estimated with limited precision, making it unsuitable for comparison with the numerical results. For the as-built condition, a slope of  m = 3.2 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$m=3.2$$\\end{document}  was determined. The application of a high-resolution structured-light scanner enabled the capture of the as-built surface geometry of the tested specimens. Using reverse engineering techniques, the scanned geometry was successfully converted into high-resolution NURBS-based input models, allowing a realistic representation of local stress concentration effects. NURBS surfaces are essential for integrating as-built geometries into finite element analyses, as the use of polygon meshes leads to discontinuities and non-physical stress singularities. The use of fatigue stress concentration factors enabled a more physical assessment of the surface topology influence on fatigue performance compared to static stress concentration factors. For the investigated specimens, the median fatigue stress concentration factor was 3.03, with values ranging from 1.99 to 3.44. The fatigue life estimation, based on the conservative assumption of a slope  m = 4 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$m=4$$\\end{document}  and the experimentally determined parameter  C \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$C$$\\end{document}  of the S–N curve, yielded good agreement with the test results for the as-built specimens when using the fatigue stress concentration factors to calculate the local stresses. The slope was chosen due to the limited amount of available experimental data, which constitutes a limitation of the estimation whereby the choice of slope significantly influences the estimated results. Most estimations fell within a scatter band of 3.0, with only one specimen showing an overestimation of fatigue life. These results confirm the validity of the numerical workflow for evaluating fatigue-critical surface effects using geometry and material-based fatigue stress concentration factors.",
+        "Overall, the study demonstrates that accurate surface characterisation and geometry-based fatigue assessment are essential for evaluating the performance of as-built DED-Arc components. The proposed methodology enables a local and physically motivated estimation of fatigue behaviour, providing a foundation for future design and qualification strategies in additive manufacturing. In summary, the approach developed in this work highlights the potential of topology-based fatigue assessment using reverse-engineered surfaces."
+      ]
+    }
+  ],
+  "tables": [
+    {
+      "caption": "Process parameter of AM80 HD fatigue specimens",
+      "headers": [],
+      "rows": [
+        [
+          "96",
+          "14.2",
+          "2.0",
+          "24",
+          "200",
+          "92% Ar–8% CO 2",
+          "16",
+          "Bidirectional"
+        ]
+      ],
+      "header_groups": [
+        {
+          "label": "Gas flow rate/(L/min)",
+          "start_col": 7,
+          "end_col": 8
+        }
+      ],
+      "table_alignment_status": "unresolved",
+      "row_provenance": [
+        [
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          },
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          },
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          },
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          },
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          },
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          },
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          },
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          }
+        ]
+      ],
+      "tbody_alignment_status": "no_headers_to_target"
+    },
+    {
+      "caption": "Naming convention of fatigue specimens",
+      "headers": [
+        "Surface condition",
+        "Identifier of thin-walled component",
+        "Orientation",
+        "Number of specimens"
+      ],
+      "rows": [
+        [
+          "As-built",
+          "1 to 2",
+          "V = vertical",
+          "1 to 6"
+        ],
+        [
+          "Machined",
+          "3 to 4",
+          "V = vertical",
+          "1 to 6"
+        ]
+      ],
+      "header_groups": [],
+      "table_alignment_status": "resolved",
+      "row_provenance": [
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 4
+          }
+        ]
+      ],
+      "tbody_alignment_status": "resolved"
+    },
+    {
+      "caption": "Fatigue test results as-built and machined specimens",
+      "headers": [
+        "Specimen ID",
+        "Frequency/Hz",
+        "Stress range/MPa",
+        "Number of cycles",
+        "Failure location"
+      ],
+      "rows": [
+        [
+          "T1V1",
+          "50",
+          "249.12",
+          "125.389",
+          "slightly beyond parallel length"
+        ],
+        [
+          "T1V2",
+          "50",
+          "223.43",
+          "122.543",
+          "slightly beyond parallel length"
+        ],
+        [
+          "T1V3",
+          "50",
+          "191.59",
+          "201.870",
+          "Parallel length, middle"
+        ],
+        [
+          "T1V4",
+          "50",
+          "159.97",
+          "436.857",
+          "Parallel length, near end"
+        ],
+        [
+          "T1V5",
+          "50",
+          "147.82",
+          "339.874",
+          "slightly beyond parallel length"
+        ],
+        [
+          "T1V6",
+          "50",
+          "133.55",
+          "1.865.055",
+          "slightly beyond parallel length"
+        ],
+        [
+          "T2V1",
+          "30",
+          "314.69",
+          "68.433",
+          "Parallel length, middle"
+        ],
+        [
+          "T2V2",
+          "30",
+          "346.15",
+          "32.440",
+          "Parallel length, near end"
+        ],
+        [
+          "T2V3",
+          "50",
+          "151.05",
+          "415.590",
+          "Parallel length, near end"
+        ],
+        [
+          "T2V4",
+          "50",
+          "138.46",
+          "609.658",
+          "Parallel length, middle"
+        ],
+        [
+          "T2V5",
+          "50",
+          "135.31",
+          "686.734",
+          "Parallel length, near end"
+        ],
+        [
+          "T2V6",
+          "50",
+          "129.02",
+          "1.079.585",
+          "Parallel length, near end"
+        ],
+        [
+          "T3V1",
+          "50",
+          "576.92",
+          "5.000.000",
+          "Run-out"
+        ],
+        [
+          "T3V2",
+          "50",
+          "692.31",
+          "9.537",
+          "slightly beyond parallel length"
+        ],
+        [
+          "T3V3",
+          "50",
+          "634.62",
+          "47.280",
+          "Parallel length, near end"
+        ],
+        [
+          "T3V4",
+          "50",
+          "605.77",
+          "81.949",
+          "slightly beyond parallel length"
+        ],
+        [
+          "T3V5",
+          "50",
+          "600.00",
+          "374.265",
+          "slightly beyond parallel length"
+        ],
+        [
+          "T4V1",
+          "50",
+          "611.54",
+          "5.000.000",
+          "Run-out"
+        ],
+        [
+          "T4V2",
+          "50",
+          "657.69",
+          "45.933",
+          "Parallel length, near end"
+        ],
+        [
+          "T4V3",
+          "50",
+          "646.15",
+          "108.889",
+          "Parallel length, middle"
+        ],
+        [
+          "T4V4",
+          "50",
+          "623.08",
+          "197.398",
+          "Parallel length, middle"
+        ],
+        [
+          "T4V5",
+          "50",
+          "617.31",
+          "20.401",
+          "Parallel length, near end"
+        ],
+        [
+          "T4V6",
+          "50",
+          "588.46",
+          "210.635",
+          "Parallel length, middle"
+        ]
+      ],
+      "header_groups": [],
+      "table_alignment_status": "resolved",
+      "row_provenance": [
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 5
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 5
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 5
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 5
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 5
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 5
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 5
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 5
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 8,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 8,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 8,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 8,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 8,
+            "source_col": 5
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 9,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 9,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 9,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 9,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 9,
+            "source_col": 5
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 10,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 10,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 10,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 10,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 10,
+            "source_col": 5
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 11,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 11,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 11,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 11,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 11,
+            "source_col": 5
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 12,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 12,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 12,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 12,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 12,
+            "source_col": 5
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 13,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 13,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 13,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 13,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 13,
+            "source_col": 5
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 14,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 14,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 14,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 14,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 14,
+            "source_col": 5
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 15,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 15,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 15,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 15,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 15,
+            "source_col": 5
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 16,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 16,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 16,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 16,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 16,
+            "source_col": 5
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 17,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 17,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 17,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 17,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 17,
+            "source_col": 5
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 18,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 18,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 18,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 18,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 18,
+            "source_col": 5
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 19,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 19,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 19,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 19,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 19,
+            "source_col": 5
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 20,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 20,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 20,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 20,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 20,
+            "source_col": 5
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 21,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 21,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 21,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 21,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 21,
+            "source_col": 5
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 22,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 22,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 22,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 22,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 22,
+            "source_col": 5
+          }
+        ]
+      ],
+      "tbody_alignment_status": "resolved"
+    },
+    {
+      "caption": "Numerical concentrations factors  K t  and  K f  for as-built specimens",
+      "headers": [
+        "Specimen ID",
+        "Stress concentration factor ( K t )",
+        "Notch radius/mm",
+        "Fatigue concentration factor ( K f )",
+        "Identification of failure (1 = yes, 0 = no)"
+      ],
+      "rows": [
+        [
+          "T1V3",
+          "4.20",
+          "0.15",
+          "3.08",
+          "1"
+        ],
+        [
+          "T1V4",
+          "4.16",
+          "0.33",
+          "3.26",
+          "1"
+        ],
+        [
+          "T2V1",
+          "3.87",
+          "0.32",
+          "3.04",
+          "0"
+        ],
+        [
+          "T2V2",
+          "3.06",
+          "0.38",
+          "2.50",
+          "1"
+        ],
+        [
+          "T2V3",
+          "4.53",
+          "0.27",
+          "3.44",
+          "1"
+        ],
+        [
+          "T2V4",
+          "4.10",
+          "0.18",
+          "3.01",
+          "1"
+        ],
+        [
+          "T2V5",
+          "2.35",
+          "0.40",
+          "1.99",
+          "0"
+        ],
+        [
+          "T2V6",
+          "3.50",
+          "0.38",
+          "2.82",
+          "1"
+        ]
+      ],
+      "header_groups": [],
+      "table_alignment_status": "resolved",
+      "row_provenance": [
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 5
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 5
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 5
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 5
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 5
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 5
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 5
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 5
+          }
+        ]
+      ],
+      "tbody_alignment_status": "resolved"
+    },
+    {
+      "caption": "Surface parameters as-built specimens",
+      "headers": [
+        "Specimen ID",
+        "S z \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${S}_{z}$$\\end{document}  frontside/mm",
+        "S z \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${S}_{z}$$\\end{document}  backside/mm",
+        "Mean thickness/mm",
+        "Standard deviation"
+      ],
+      "rows": [
+        [
+          "T1V1",
+          "1.84",
+          "1.54",
+          "5.58",
+          "0.34"
+        ],
+        [
+          "T1V2",
+          "1.32",
+          "1.46",
+          "5.43",
+          "0.39"
+        ],
+        [
+          "T1V3",
+          "1.94",
+          "1.65",
+          "5.43",
+          "0.41"
+        ],
+        [
+          "T1V4",
+          "2.05",
+          "1.84",
+          "5.42",
+          "0.41"
+        ],
+        [
+          "T1V5",
+          "1.36",
+          "1.66",
+          "5.39",
+          "0.39"
+        ],
+        [
+          "T1V6",
+          "1.66",
+          "1.89",
+          "5.45",
+          "0.46"
+        ],
+        [
+          "T2V1",
+          "1.09",
+          "1.80",
+          "5.46",
+          "0.36"
+        ],
+        [
+          "T2V2",
+          "1.59",
+          "1.38",
+          "5.40",
+          "0.32"
+        ],
+        [
+          "T2V3",
+          "1.52",
+          "1.81",
+          "5.40",
+          "0.38"
+        ],
+        [
+          "T2V4",
+          "1.63",
+          "1.76",
+          "5.32",
+          "0.43"
+        ],
+        [
+          "T2V5",
+          "1.33",
+          "1.43",
+          "5.44",
+          "0.35"
+        ],
+        [
+          "T2V6",
+          "1.44",
+          "1.43",
+          "5.49",
+          "0.37"
+        ]
+      ],
+      "header_groups": [],
+      "table_alignment_status": "resolved",
+      "row_provenance": [
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 5
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 5
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 5
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 5
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 5
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 5
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 5
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 5
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 8,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 8,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 8,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 8,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 8,
+            "source_col": 5
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 9,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 9,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 9,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 9,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 9,
+            "source_col": 5
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 10,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 10,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 10,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 10,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 10,
+            "source_col": 5
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 11,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 11,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 11,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 11,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 11,
+            "source_col": 5
+          }
+        ]
+      ],
+      "tbody_alignment_status": "resolved"
+    }
+  ]
+}

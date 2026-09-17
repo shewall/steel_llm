@@ -1,0 +1,391 @@
+{
+  "doi": "10.1007/s00170-026-18642-0",
+  "title": "Influence of the process parameters involved in WAAM on the quality of single-bead deposited layers of low-carbon steel",
+  "abstract": "Abstract Wire Arc Additive Manufacturing (WAAM) based on Gas Metal Arc Welding (GMAW) offers high deposition rates and scalability for large structural components. However, systematic understanding of how key process parameters influence single-bead deposit quality remains limited for low-carbon steels. This study investigates the effects of three input process parameters — arc power ( P  = 2.9, 3.3, 3.5 kW), travel speed (v = 300, 450, 600, 750 mm/min), and stand-off distance (SOD = 8, 12 mm) — on the quality of single-bead deposits of low-carbon steel (AWS ER70S-6 wire, Ø 1.0 mm) at constant wire feed rate (Sw = 171.4 mm/s). A full factorial design comprising 24 conditions was applied to low-carbon steel substrates. The output responses — bead height, bead width, cross-sectional area, contact length, dilution ratio, peak temperature, microstructure morphology, and Vickers microhardness (HV1) — were systematically characterized through cross-sectional image analysis, infrared thermography, optical microscopy, and microindentation testing. Results showed that travel speed was the dominant parameter: increasing v from 300 to 750 mm/min reduced bead cross-sectional area, steepened thermal gradients, refined columnar grain morphology from coarse equiaxed to finer vertically-aligned structures, and raised microhardness (from 200 to 215 HV1 to 220–245 HV1 at  P  = 2.9 kW). Arc power primarily governed bead width and dilution; increasing P from 2.9 to 3.5 kW enlarged the bead–substrate contact length by 15–20% and enhanced conductive heat extraction into the substrate, paradoxically reducing peak bead temperature despite higher energy input. Stand-off distance significantly affected dilution ratio and penetration depth but showed minimal influence on bead width, height, and microhardness, enabling independent control of interlayer bonding without altering component cross-section. A stable process window was identified for v = 450–750 mm/min at  P  = 2.9–3.5 kW, while v = 300 mm/min produced kissing bonds ( P  = 2.9 kW) or excessive penetration ( P  ≥ 3.3 kW). The ferritic–pearlitic microstructure was preserved across all conditions, confirming that hardness variations arose from grain-size and dislocation-density effects rather than phase transformation. These parametric relationships provide a quantitative foundation for multi-layer WAAM process design of low-carbon steel components.",
+  "journal": "The International Journal of Advanced Manufacturing Technology",
+  "year": "2026",
+  "sections": [
+    {
+      "heading": "Introduction",
+      "paragraphs": [
+        "Automotive, aerospace, construction, and medical industries have adopted additive manufacturing (AM) with increasing frequency over the past decade. Components are fabricated through sequential layer deposition until completion, with each layer comprising multiple overlapping beads determined by hatch distance. Initially confined to prototyping applications, AM now produces functional end-use parts. The technology offers distinct advantages including capability to manufacture complex geometries, product customization, high buy-to-fly ratios [ 1 ], and economic viability for small production batches or unique components. Novel approaches such as wire-based friction stir additive manufacturing have demonstrated the feasibility of producing bimetallic freeform components with amorphous-enhanced interfaces [ 2 ]. Concurrently, lattice genome frameworks have been proposed for regionally tailored, component-level multi-objective design in additive manufacturing, expanding the design space beyond conventional parametric optimization [ 3 ]. Beyond laser-based methods, arc-based processes and hybrid post-processing techniques have emerged as complementary strategies: in-situ rolling friction stir processing has been shown to modify microstructure and improve stress corrosion resistance of welded joints [ 4 ]. These developments underscore the diversity of AM approaches and the growing need for systematic process-property characterization across different technologies.",
+        "Metal additive manufacturing encompasses three principal categories defined by ASTM standards [ 5 ]: direct energy deposition, powder bed fusion, and sheet lamination. Despite substantial progress in AM processes for both polymeric and metallic materials over two decades, significant limitations persist, particularly for metallic components. Powder bed fusion processes face constraints including limited build volumes (0.5 m³ for metals, 1 m³ for polymers) and high equipment and material costs. Low deposition rates further restrict productivity, with electron beam melting (EBM) achieving approximately 0.07 kg/h [ 6 ] and selective laser melting (SLM) reaching 0.1 kg/h [ 7 ]. These constraints have motivated research toward alternative technologies capable of overcoming such limitations.",
+        "Wire and Arc Additive Manufacturing (WAAM) belongs to direct energy deposition (DED) technologies, employing electric arc sources (MIG, TIG, or plasma) with wire feedstock. This approach expands the application spectrum, particularly for large metal component fabrication [ 8 ,  9 – 10 ]. Compared to other DED technologies, WAAM provides lower equipment costs, higher material deposition rates, and unrestricted build areas [ 11 ]. The process utilizes standard metal wire rather than expensive powders, reducing material costs substantially. Robotic systems enable operation without controlled atmospheres, eliminating chamber size restrictions on component dimensions. Deposition rates reach 9 kg/h for GMAW processes (MIG/MAG systems), significantly exceeding the 1 kg/h maximum for EBM and SLS. WAAM reduces fabrication time by 40–60% and post-processing time by 15–20% compared to conventional machining [ 12 ]. The technology accommodates diverse materials including steel, aluminum alloys, titanium alloys, and nickel alloys. Process hybridization through powder addition enables functionally graded material production [ 13 ,  14 ].",
+        "WAAM has demonstrated significant industrial potential across multiple sectors, including aerospace, automotive, marine, construction, and energy [ 15 ]. In aerospace, the technology enables the production of large-scale titanium components with high buy-to-fly ratios; notable examples include a full-scale titanium pressure vessel for space exploration and a titanium landing gear rib for Bombardier, with the Global Aerospace AM Market projected to reach $1.9 billion by 2026. In the automotive sector, WAAM has been adopted for lightweight chassis structures and body reinforcement parts, while the marine industry has leveraged the technology for on-demand propeller manufacturing, reducing lead times from the traditional 30-day process. In construction, landmark implementations such as the MX3D stainless-steel bridge in Amsterdam — a 12.5 m, 4500 kg structure completed in July 2021 — demonstrate WAAM’s capability for large-scale architectural components. In the energy sector, components such as a 350 kg CuAl8Ni2 impeller for a gas-fired power plant cooling system were produced in just nine days, highlighting WAAM’s advantage over traditional casting processes that typically require 6–8 months. Across all sectors, common benefits include reduced lead times, material efficiency, design flexibility, and cost-effectiveness for large-scale components.",
+        "Weld bead geometry directly affects multi-layer arc additive deposition quality, which various welding parameters influence. Optimizing process parameters is essential for achieving consistent quality. Repetitive heating of identical regions during layer-by-layer fabrication generates complex thermal cycling and associated thermal stresses [ 16 ]. Adequate interlayer cooling must be provided to minimize thermal stress effects on bead formation [ 17 ]. However, determining optimal process parameters for multi-layer deposition requires substantially more time than conventional manufacturing approaches.",
+        "Numerous investigations have examined geometric characteristics of WAAM-deposited beads. Zhao et al. [ 18 ] proposed a unit block process planning strategy wherein unit block size, defined as material deposited per time unit, is controlled through wire feed rate and the ratio of wire feed rate to travel speed (RWT). The study established regression models for bead width, height, surface waviness, material utilization, and effective deposition rate. Yildiz et al. [ 19 ] demonstrated that RWT represents the most significant process parameter, enabling heat input control and consequent bead size variation. Manokruang et al. [ 20 ] showed that elevated temperatures produce thicker, lower weld beads, with RWT ratio governing bead geometry. Ding et al. [ 21 ] focused on single weld bead geometry, demonstrating that parabolic and cosine functions can represent bead profiles. Lambiase et al. [ 22 ] developed predictive models relating process conditions to geometrical characteristics of deposited layers. Ding et al. [ 23 ] established relationships between process parameters and bead geometry using artificial neural networks (ANN). Xiong et al. [ 24 ] applied second-order regression analysis for bead geometry prediction through neural networks, subsequently implementing visual inspection systems to control deposition height [ 25 ,  26 ].",
+        "Beyond bead geometry prediction, recent research has significantly expanded understanding of microstructure-property relationships in additively manufactured metallic components. For aluminium alloys processed by wire-arc methods, arc oscillation techniques have been demonstrated to improve interface behaviour and mechanical properties in dissimilar 2319/5356 deposits [ 27 ]. Complementary studies on conventionally processed steels provide relevant baseline understanding: quenching-and-partitioning of medium Mn steel has achieved superior low-temperature wear resistance even at low initial hardness through retained austenite stabilization [ 28 ]. These studies collectively highlight that process parameter optimisation must account for the coupled effects of thermal history, microstructural evolution, and resulting mechanical response — a perspective that the present work applies specifically to GMAW-based WAAM of low-carbon steel.",
+        "Despite the substantial body of literature on WAAM bead geometry prediction, several critical gaps remain that limit the translation of single-bead characterisation into reliable multi-layer process design [ 11 ]. First, most existing studies on bead-on-plate deposits address geometry in isolation, without simultaneously correlating process parameters with in-process thermal signatures, grain morphology, and hardness for low-carbon steel GMAW-based WAAM. Second, the mechanistic interpretation of counterintuitive trends — such as the influence of power on contact area and its consequent effect on heat dissipation — is rarely addressed quantitatively, leaving process designers without physics-based guidance for parameter selection. Third, the role of stand-off distance as an independent lever for controlling dilution without significantly altering bead geometry or hardness has not been systematically demonstrated for this material system. These gaps motivate the present study, which addresses them through a full factorial experimental design of 24 conditions, combining infrared thermal imaging during deposition with post-process cross-sectional geometric, microstructural, and microhardness characterisation. The novelty of the work lies in: (i) the simultaneous correlation of power, travel speed, and stand-off distance with thermal history, geometry, microstructure, and mechanical properties for low-carbon steel WAAM; (ii) the mechanistic, quantitative explanation of the counterintuitive decrease of peak bead temperature with increasing power, attributed to the enlargement of the heat-sink contact area and confirmed by independent dilution measurements; and (iii) the demonstration that stand-off distance can serve as an independent process lever to control interlayer dilution without modifying bead geometry or hardness — a finding of direct practical relevance for multi-layer path planning. The superiority of this research over prior parametric studies resides in its integrated approach: rather than optimising a single output variable, it establishes the coupled causal links among thermal input, heat dissipation pathway, solidification microstructure, and resulting mechanical response within a single coherent experimental framework. The remainder of the paper is organised as follows: Section  Materials and methods  describes the experimental setup, factorial design, and characterisation methods; Section  Results  presents results on bead geometry, thermal profiles, microstructure, and microhardness; Section  Discussion  discusses the physical mechanisms linking process parameters to observed trends; and Section  Conclusion  draws the main conclusions."
+      ]
+    },
+    {
+      "heading": "Materials and methods",
+      "paragraphs": [
+        "Deposition experiments were performed using a prototypal CNC machine equipped with a MIG torch. The CNC machine provided a maximum travel speed of 3000 mm/min. A MIG WELD 303 C torch was employed for all depositions. The power source was a MIG WELD 303 C constant-voltage (CV) unit. Substrate plates measured 150 mm length, 30 mm width, and 3.3 mm thickness for each deposition condition. Substrates were fixed to the CNC machine table using a tailored fixture as depicted in Fig.  1 . A C18 shielding gas mixture (Ar + 18% CO₂) supplied at 15 l/min protected deposited beads from atmospheric contamination and ensured arc stability during GMAW of carbon steel. The CO₂ addition provides the oxidizing potential required for stable arc operation, good wetting of the molten pool, and consistent metal transfer in GMAW of low-carbon steels; pure Ar would yield unstable arcs and poor fusion for this material system. Straight-line beads with 120 mm total length were deposited along the centerline of each substrate plate. Fig. 1 Schematic of the WAAM deposition equipment",
+        "The deposited material was a 1.0 mm nominal diameter copper-coated low-carbon steel wire classified as AWS ER70S-6 (EN ISO 14341-A: G 42 4 M G3Si1). The copper coating serves primarily to facilitate wire drawing and to improve electrical contact at the welding contact tip, thereby ensuring stable wire feeding. Chemical compositions of the substrate plate and deposited wire (wt%, with Fe as balance; C included as primary alloying element) are summarized in Table  1 .",
+        "Table 1 Chemical composition of the materials involved Element Fe Cu Mn Ni Ti Zn Wire (wt%) 92.05 5.469 1.321 0.096 0.039 0.016 Substrate (wt%) 96.98 0.591 0.427 0.294 0.196 0.195"
+      ]
+    },
+    {
+      "heading": "Experimental design",
+      "paragraphs": [
+        "Wire feed rate remained constant at Sw = 171.4 mm/s throughout all experiments. The experimental plan varied three process parameters: nominal power (P), travel speed (v), and stand-off distance (SOD). A full factorial design incorporating all parameter combinations was implemented. Factors and levels are summarized in Table  2 . The resulting experimental plan comprised 24 conditions representing 3 power levels × 4 travel speeds × 2 stand-off distances. Table 2 Full factorial experimental plane, factors, and levels Level Nominal Power, ( P ) [kW] Travel Speed, (v) [mm/min] Stand-off distance (SOD) [mm] I 2.9 300 8 II 3.3 450 12 III 3.5 600 IV 750",
+        "Actual power values were determined through online monitoring of current and voltage during welding. A voltage transducer (LV 25-P) and current transducer (LF 306-S) acquired instantaneous signals through a National Instruments USB6009 I/O board at 1.0 kHz sampling rate. Average power (P) was calculated using Eq.  1  where V(t) and I(t) are the measurementst of thevoltage and the current.",
+        "1 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\:P=\\frac{1}{t}{\\int\\:}_{0}^{t}V\\left(t\\right)\\times\\:I\\left(t\\right)dt$$\\end{document}",
+        "For conditions approaching spray transfer ( P  = 3.3–3.5 kW), the difference between the two calculation methods was less than 3%. At  P  = 2.9 kW (short-circuit/globular transfer dominant), the corrected values differ from the simple mean-product estimate by up to 8–10%; corrected values are used throughout. Mean voltage and current values for each experimental level are reported together with the measured average power in Table  2 .",
+        "Preliminary experiments determined the appropriate process parameter ranges. Upper and lower parameter limits were selected based on deposited bead quality including cross-sectional consistency and substrate adhesion characteristics."
+      ]
+    },
+    {
+      "heading": "Temperature measurement",
+      "paragraphs": [
+        "Thermal image analysis during deposition employed a FLIR A615 infrared thermal camera. This camera provided 50 Hz maximum frame rate, 1024 × 768 pixel resolution, and 2000 °C maximum measurable temperature. Temperature distribution acquisition enabled determination of temperature variations at specified positions [ 29 ]. FLIR ResearchIR software facilitated data analysis. The camera was positioned laterally (perpendicular to the deposition direction) at approximately 600 mm from the deposition path to avoid direct arc radiation impingement. The camera was calibrated using the manufacturer’s Non-Uniformity Correction (NUC) procedure and a blackbody source at 500 °C prior to each measurement session. An emissivity value of ε = 0.28 was applied, consistent with published values for molten low-carbon steel in the long-wave infrared range. It is acknowledged that emissivity changes at the solid–liquid transition (solid steel: ε ≈ 0.35–0.45; molten steel: ε ≈ 0.25–0.30); consequently, peak temperatures reported for the molten bead region may be underestimated by approximately 5–15%. Since all measurements were performed under identical calibration conditions, relative comparisons between parameter levels remain valid. The FLIR A615 operates in the long-wave infrared spectral range (7.5–14 μm), which is largely insensitive to the visible and near-infrared radiation (0.4–2.5 μm) emitted by the GMAW arc, mitigating arc radiation interference. Furthermore, temperature extraction at Cursor 1 was performed after the torch had passed that location, so direct arc impingement was absent during peak temperature acquisition. Thermal analysis provided insight into process parameter influence on deposited bead quality regarding geometry and microstructural characteristics."
+      ]
+    },
+    {
+      "heading": "Geometric characterization",
+      "paragraphs": [
+        "Optical microscopy determined principal characteristics of deposited beads as depicted in Fig.  2 . Dimensional measurements included width, height, and cross-sectional area. Contact length was defined as the width of the bead–substrate interface measured at the substrate plane, in the direction perpendicular to the deposition path. Dilution ratio was calculated using Eq.  2 .",
+        "2 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\:Dilution\\:\\left(\\%\\right)=\\frac{Penetration\\:depth}{Bead\\:Height\\:+\\:Penetration\\:Depth}=\\:\\frac{p}{h+p}$$\\end{document}",
+        "Fig. 2 Schematic and real cross sectiob of the process parameters and main dimensions involved for deposited bead geometrical characterization"
+      ]
+    },
+    {
+      "heading": "Microstructural analysis and microhardness testing",
+      "paragraphs": [
+        "Samples were cross-sectioned at the midpoint of deposited beads using a water-cooled rotary blade. Cross-sections were mounted in CEM1000 Blue epoxy resin and ground progressively to 2500 grit using abrasive papers. Final polishing employed CT Dia Twin Poly 3 μm followed by 0.2 μm alkaline fumed silica suspension. Chemical etching revealed microstructure using Nital etchant (4 g HNO₃ in 100 g alcohol). Samples were etched for 10 s then rinsed in distilled water. Optical microscopy was performed using a Leica Microsystems DM5000 optical metallographic microscope.",
+        "Microhardness testing characterized the influence of process conditions on deposited bead quality. A Mitutoyo HM-112 microhardness testing machine was employed. Indentation followed standard conditions defined by ASTM E18-22. Indentation duration was 15 s with 1 N applied load. Microhardness measurements were performed at multiple locations including the deposited bead, dilution region, and heat-affected zone."
+      ]
+    },
+    {
+      "heading": "Results",
+      "paragraphs": []
+    },
+    {
+      "heading": "Preliminary results",
+      "paragraphs": [
+        "Macrographs of deposited beads from preliminary experiments are presented in Fig.  3 . The preliminary experimental campaign varied power between 2.2 and 3.8 kW, torch speed between 300 and 900 mm/min, SOD of 8 and 12 mm, and wire feed rate between 171 and 255 mm/s. Incorrect deposition conditions are indicated with semitransparent red rectangles, while homogeneous and stable deposited beads are marked with green rectangles. Power of 2.2 kW produced unstable deposited beads regardless of wire feed rate. When wire feed rate was 171 mm/s, regular beads were achieved with minimum power of 2.9 kW. When wire feed rate increased to 255 mm/s, unstable beads persisted due to insufficient power for proper material melting.",
+        "Fig. 3 Macrographs of the deposited beads achieved in the preliminary experiments varying the process parameters",
+        "Specific energy E, representing heat provided per unit volume of wire, was determined for each processing condition using Eq.  3 , where η represents efficiency (0.8) [ 30 ], Aw is wire cross-sectional area (mm²), and Sw represents wire feed rate (mm/s).",
+        "3 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\:E=\\eta\\:\\frac P{A_w\\cdot S_w}$$\\end{document}",
+        "Specific energy depends solely on arc power and material flow, remaining independent of travel speed. This parameter determines whether sufficient heat is provided. For low-carbon steels, appropriate values range from 9.3 to 11 J/mm³ [ 31 ]. Specific energy values corresponding to different power levels in preliminary experiments are summarized in Table  3 . This discrepancy is attributed to differences in wire diameter, wire feed rate, and process efficiency assumptions. The referenced values were derived for different wire diameters and transfer modes; in the present configuration, the smaller wire diameter (1.0 mm) and the selected wire feed rate produce a lower volumetric material flow, requiring proportionally higher specific energy to achieve complete melting and stable deposition. Additionally, the efficiency factor (η = 0.8) applied here may overestimate the effective heat transfer for short-circuit/globular transfer modes at  P  = 2.9 kW, further inflating the calculated specific energy relative to literature benchmarks obtained under spray transfer conditions.",
+        "Table 3  Values of the specific energy involved in the study",
+        "Green shading indicates conditions producing good-quality deposited beads, red indicates unsteady deposition conditions. Wire feed rate Sw = 255 mm/s with highest power supply caused substrate breakdown due to excessive heat and material flow, indicated in violet. Wire feed rate Sw = 171 mm/s produced proper deposition conditions when minimum specific energy of 18.3 J/mm³ (corresponding to 2.9 kW) was supplied."
+      ]
+    },
+    {
+      "heading": "Cross-sectional analysis",
+      "paragraphs": [
+        "Cross-sections performed at the midpoint of deposited beads for all conditions defined by the full factorial plan in Table  2  are shown in Fig.  4 . Macrographs were performed on etched samples to distinguish between deposited material and substrate plate, enabling clear observation of penetration depth. Fig. 4 Cross sections of the samples produced at the middle of the deposited path under the process conditions of the experimental plan",
+        "Low travel speeds produced larger deposited beads due to constant wire feed rate (S w ) [ 32 ]. Lower travel speed (v) resulted in higher material deposition per unit length. Cross-sectional area of deposited material (A b ) can be calculated by imposing volumetric flow constancy using Eq.  4  and Eq.  5 :",
+        "4 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\:A_w\\cdot S_w=v\\cdot A_b$$\\end{document}",
+        "5 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\:A_b=A_w\\cdot\\frac{S_w}v$$\\end{document}",
+        "Travel speed influenced bead shape. Increased travel speed produced more regular and symmetric deposited beads, regardless of power and SOD. Samples produced at 300 mm/min exhibited misalignment between the region above the substrate surface and the diluted region. This defect could affect three-dimensional component accuracy since deposited layers would not align with underlying layers. This defect diminished with increasing travel speed.",
+        "Low travel speed (v = 300 mm/min) coupled with low power ( P  = 2.2 kW) provided insufficient heating combined with excessive material flow. These conditions produced inadequate bead penetration and insufficient substrate heating. Increasing travel speed under low power conditions enabled more symmetric deposition (alignment of deposition and penetration axes) due to lower material flow per unit length. Increased power supply provided higher energy per unit length, improving deposition quality. Increasing power from 2.9 kW to 3.3 kW eliminated defects such as kissing bonds even at lowest travel speed (v = 300 mm/min).",
+        "Image analysis software (ImageJ) measured principal bead dimensions including height, width, cross-sectional area, and dilution/penetration. Figure  5  presents measurements from cross-sectional image analysis, confirming that increased travel speed reduced bead dimensions due to lower material deposition per unit length with unchanged wire feed rate. Higher travel speeds produced deposited beads with lower height, lower width, and lower cross-sectional area. Fig. 5 Influence of the process parameters on the geometry of the deposited beads: ( a ) height; ( b ) width; ( c )cross sectional area; ( d ) contact length and ( e ) dilution ratio",
+        "It should be noted that the measurements presented in Fig.  5  were obtained from single cross-sections at the midpoint of each deposited bead. The midpoint location was selected deliberately to exclude the transient entry and exit regions, where arc ignition and extinction introduce geometric variability that is not representative of steady-state deposition. The repeatability of bead geometry under the present process conditions is supported by evidence from a companion multi-layer study conducted on the same material system and equipment [ 32 ]. In that work, bead height increased linearly across 10 consecutive layers with a coefficient of determination R²=0.9987, and the radius of curvature stabilized consistently after the second layer, with negligible geometric differences observed between the two sides of U-shaped deposits despite peak temperature differences of approximately 60 °C. These results confirm that, under controlled GMAW-WAAM conditions with constant wire feed rate, bead geometry exhibits high reproducibility once steady-state deposition is established. Bead-to-bead repeatability and within-bead variability along the deposition direction are therefore expected to be small relative to the parametric trends reported in Fig.  5 , and represent a limitation to be systematically quantified in future multi-layer investigations.",
+        "Power strongly influenced deposited bead geometry. At  P  = 2.9 kW, deposited beads exhibited narrower geometry, while higher power produced wider and shorter beads. This effect was particularly significant at low travel speeds (v = 300 mm/min) but diminished at higher travel speeds (v = 750 mm/min). Power influenced heat quantity and contact surface between bead and substrate. At low travel speed (v = 300 mm/min), substantial material was deposited per unit length. Insufficient power produced only partial anchoring and adhesion between deposited bead and substrate, as shown in Fig.  4  − 1 and Figs.  4 ,  5 ,  6 ,  7 ,  8 ,  9 ,  10 ,  11 ,  12  and  13 . Under these conditions, deposited material accumulated and formed kissing bonds (visible on the left side), as depicted in Fig.  6 . Higher power/heat achieved elevated substrate temperatures, improving deposited bead wettability. This produced wider contact between bead and substrate and lower bead height due to spreading over wider surface, as shown in Figs.  4 ,  5 ,  6 ,  7 ,  8 ,  9 ,  10 ,  11 ,  12 ,  13 ,  14 . Applied power greatly influenced dilution ratio. Higher power levels provided increased heat per unit time, promoting greater substrate preheating and higher dilution of deposited bead into substrate. Fig. 6 ( a ) and ( c ) Formation of the kissing bonds owing to insufficient power/heat. ( b ) and ( d ) Elimination of the kissing bonds using higher power levels Fig. 7 Infrared Image acquired during the deposition and temperature extraction at “Cursor 1” position Fig. 8 Temperature trends measured at the region of interest under different deposition conditions Fig. 9 Influence of the process parameters on the peak temperature Fig. 10 Microstructure of the deposited bead during WAAM process Fig. 11 Grain structure of the deposited bead under constant power ( P  = 3.5 kW) and SOD=8 mm and varying the travel speed Fig. 12 Influence of the deposition parameters on the microhardness measurements at different locations Fig. 13 Main defects of WAAM depositions owing to improper selection of the process parameters Fig. 14 Schematic of the heat exchange surfaces involved during WAAM deposition",
+        "At low travel speed (v = 300 mm/min), stand-off distance SOD influenced deposited bead geometry. Longer SOD promoted narrower deposited beads, as depicted in Fig.  5 a and b. Longer SOD involved lower current and reduced heating. At low travel speed (v = 300 mm/min), deposited beads produced with longer SOD showed narrower widths and greater heights compared to those produced with shorter SOD. However, this trend was not consistent across all conditions: at intermediate and higher travel speeds, the differences in width and height between SOD = 8 mm and SOD = 12 mm were substantially reduced and, in some cases, reversed. Overall, SOD influence on bead geometry diminished at higher travel speeds (v ≥ 600 mm/min). SOD greatly influenced dilution percentage. Higher dilution ratios were achieved with shorter SOD (8 mm) due to higher currents. Shorter SOD produced greater substrate preheating, leading to higher dilution ratios. Additionally, shorter SOD concentrated heat, enabling deeper penetration. SOD influence on dilution showed interaction with travel speed. At lower travel speed (v = 300 mm/s), dilution ratio with SOD = 8 mm substantially exceeded that with SOD = 12 mm. This difference decreased with increasing travel speed, as depicted in Fig.  5 d."
+      ]
+    },
+    {
+      "heading": "Thermal analysis",
+      "paragraphs": [
+        "Infrared images acquired during deposition are shown in Fig.  7 . The deposited bead is clearly distinguished from underlying substrate due to substantially higher temperature. A region of interest (Cursor 1) was positioned at the deposition path midpoint to measure temperature variation during deposition, as depicted in Fig.  7 . Temperature at Cursor 1 position was measured throughout deposition and cooling phases, enabling determination of temperature history at that location.",
+        "Temperature variation measured at the region of interest for different deposition conditions is presented in Fig.  8 . Curves exhibited similar behavior regardless of deposition conditions. Temperature rose suddenly as the torch approached the region of interest, remained approximately constant, then decreased as the torch moved away. Curve trends indicate that all process parameters (power, travel speed, and stand-off distance) strongly influenced temperature profiles.",
+        "Peak temperature was determined for all conditions. Figure  9  depicts process parameter influence on peak temperature. Travel speed was the primary parameter influencing peak temperature. Higher travel speed produced lower peak temperature. This trend was expected due to reduced linear heat input Ht during deposition, expressed by Eq.  6 .",
+        "6 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\:H_t=\\frac{P\\cdot60}v$$\\end{document}",
+        "Increased travel speed with proportional reduction in interaction time provided lower heat quantity, consequently producing lower temperature rise and peak temperature.",
+        "Peak temperature generally decreased with increasing power, although this trend was more clearly evident at SOD = 12 mm than at SOD = 8 mm. This observation can be explained by two concurrent mechanisms. The primary mechanism is the influence of power on the contact area between the deposited bead and the substrate: although higher power provides increased heating, it also produces wider deposited beads and a larger bead–substrate contact surface. The resulting increase in conductive heat loss toward the substrate dominates over the increased heat supply, lowering the peak temperature of the deposited bead — a counterintuitive result further supported by the deeper dilution observed at higher power (Fig.  5 e). The secondary mechanism relates to the measurement conditions at SOD = 8 mm. Since temperature is extracted from IR images acquired during the entire deposition process, the recorded peak temperature corresponds to the instant when the torch passes over the measurement point. At SOD = 8 mm, the shorter arc column and higher current produce a more intense and concentrated arc, increasing direct arc radiation and specular reflection from the molten pool toward the IR camera. This partially offsets the heat-sink effect in the measured signal, resulting in a less pronounced — and in some conditions negligible — decrease in apparent peak temperature with increasing power at SOD = 8 mm. At SOD = 12 mm, the longer arc column reduces this interference, yielding measurements more representative of the actual bead temperature and making the heat-sink mechanism more clearly discernible.",
+        "It should be noted that the time origin in Fig.  8  corresponds to the start of data acquisition, which was triggered manually and independently from the deposition process start. The apparent delay in the initial temperature rise therefore reflects the variable lag between acquisition trigger and torch ignition, and does not represent a physical phenomenon. Furthermore, the temperature–time curves were intentionally not time-shifted to a common reference in order to preserve curve separation and avoid excessive overlap, which would compromise readability.",
+        "Stand-off distance also influenced peak temperature. Longer SOD produced lower peak temperature due to adverse SOD influence on current. Higher SOD (12 mm) involved lower currents and consequently reduced heat supply, since longer stand-off distance produced less concentrated arc. Shorter SOD (8 mm) provided higher energy, producing higher peak temperatures. Furthermore, since SOD regulates heat concentration, longer SOD contributed to lower peak temperatures through reduced heat concentration.",
+        "At higher travel speeds, SOD influence increased (the difference between peak temperatures at SOD = 8 mm and SOD = 12 mm became larger). This can be attributed to superposition of two effects. At low travel speed with prolonged interaction time, heat provided was sufficient to achieve high temperatures regardless of SOD. At higher travel speed, lower energy and steeper thermal gradients produced stronger differences in peak temperature reached."
+      ]
+    },
+    {
+      "heading": "Microstructural analysis",
+      "paragraphs": [
+        "Wire Arc Additive Manufacturing involves high energy for material melting and substrate heating, followed by solidification as the torch moves away. Solidification rate depends on peak temperature and, more significantly, on bead material quantity and thermal gradients produced. Material undergoes two principal state transitions: rapid melting from absorbed energy and cooling from heat diffusion. Temperature field and variation during processing significantly influence deposited bead microstructure. Rapid heating/cooling rates, temperature gradients, and bulk temperature increase affect direct energy deposition part characteristics including morphology and grain size. Cross-section of an etched WAAM sample revealing principal component regions is presented in Fig.  10 .",
+        "Heat diffusion toward substrate occurs when material is deposited. Transferred temperature reheated substrate and rearranged microstructure in the heat-affected zone [ 33 ]. Within substrate, heat-affected zone (HAZ) divides into two principal regions, HAZ1 and HAZ2. HAZ1 lies directly beneath the bead where transferred heat completely decomposes pre-existing base metal microstructure and forms new grain arrangement. HAZ2 exhibits combined microstructure of substrate and HAZ1 [ 34 ]. Metal solidification provides the most complex contribution. Direct contact between melt pool and cold substrate produces faster cooling rate during solidification in direct energy deposition processes. Figure  11  shows clear microstructure differences between bead and substrate. Equiaxed grains are observed in substrate. Within deposited bead, cooling develops primarily from substrate (through heat diffusion), top, and sides of bead (through radiation and convection). Elongated grains grow upward until reaching another boundary. Needle-shaped grains are found within these elongated grains. Longer SOD promoted lower heat concentration, involving lower temperature gradients and consequently lower cooling rates. Longer SOD produced larger grains compared to shorter SOD. Shorter SOD produced higher heat concentration, creating steeper temperature gradients with higher cooling rates. This involved rapid cooling and solidification rates that hindered grain growth, producing finer grain structures. However, SOD also influenced heat provided. At SOD = 8 mm, measured power was 3–4% higher than at SOD = 12 mm. Travel speed exerted primary influence on grain morphology. Travel speed is the key process parameter regulating thermal gradients since it directly affects interaction time. Figure  11  shows grain morphology of deposited beads from samples produced at maximum power ( P  = 3.5 kW) and minimum stand-off distance (SOD = 8 mm). Larger and wider grains were produced at low travel speeds. Increasing travel speed reduced interaction time, creating steeper thermal gradients that produced smaller and thinner grains. Additionally, grains were more vertically aligned due to steeper thermal gradients."
+      ]
+    },
+    {
+      "heading": "Microhardness distribution",
+      "paragraphs": [
+        "Microhardness tests were performed in different regions from bead to substrate to determine process parameter influence on local mechanical properties. Six positions for microhardness testing were examined for each deposition condition, as shown in Fig.  12 . This enabled calculation of microhardness variation from deposited bead to substrate for each condition. Figure  12  depicts microhardness variation from deposited bead (position 1) to substrate (position 6). Preliminary microhardness tests on substrate plate yielded average microhardness of 150 HV1. Deposited bead microhardness exceeded substrate microhardness regardless of deposition condition. Microhardness commonly showed peak value at position 2, probably due to relatively low distance between position 1 and sample edge, causing higher yield from lack of surrounding material [ 35 ].",
+        "Results in Fig.  12  indicate that deposited bead microhardness was strongly influenced by all process parameters. Higher power levels reduced deposited bead microhardness. For samples produced at lower power ( P  = 2.9 kW), microhardness at point 2 ranged from 220 to 245 HV1 depending on travel speed. These values decreased to 200–215 HV1 for  P  = 3.3 kW and 205–212 HV1 for  P  = 3.5 kW; the latter range refers specifically to SOD = 8 mm conditions, as at SOD = 12 mm values were comparable within measurement uncertainty. This indicates a clear influence of the thermal history on microhardness: lower power produced steeper microhardness gradients when transitioning from deposited bead to substrate, while higher power produced smoother transitions. This smoothing effect is attributed to the larger contact length between deposited bead and substrate at higher power, which promotes greater conductive heat diffusion into the substrate and reduces the spatial variation in cooling rate across the bead cross-section, leading to increased microhardness homogenization. Higher travel speed generally produced lower peak temperatures but, more importantly, steeper thermal gradients due to reduced interaction time and substrate preheating. This promoted higher cooling rates — evidenced by the lower hold time recorded at higher travel speed in Fig.  8 —  which hindered grain growth and increased material hardness through a Hall–Petch-type mechanism, consistent with the grain refinement observed in Fig.  11 . Higher SOD exerted minor influence on microhardness. Although longer SOD produced lower peak temperatures, microhardness was predominantly governed by the thermal gradient magnitude rather than by peak temperature alone, explaining why SOD — which modifies peak heat flux without substantially altering the cooling rate gradient — did not significantly affect hardness. These results are consistent with findings reported in reference [ 36 ].",
+        "The main results from all the conditions are summarized in Table  4 .",
+        "Table 4  Summary of experimental results for all 24 conditions"
+      ]
+    },
+    {
+      "heading": "Discussion",
+      "paragraphs": [
+        "Geometrical characteristics of deposited beads represent the fundamental element for correctly designing deposition paths in additive manufacturing processes. Comprehensive understanding of microstructure produced under varying process parameters is essential for process optimization. Selection of improper deposition conditions produces defects that prevent achievement of three-dimensional components through layer-upon-layer strategy. Critical defects include unstable material flow, localized connection between deposited bead and underlying substrate, formation of kissing bonds, and excessive penetration of deposited bead into substrate. These macroscopic defects necessitate more circumscribed processing windows for parameter selection, as illustrated in Fig.  13 .",
+        "Once a processing window is identified that avoids defects shown in Fig.  13 , determining process parameter influence on geometrical and mechanical characteristics of deposited beads becomes fundamental. Mechanical characteristics of WAAM components are strongly influenced by temperature history of deposited beads. Temperature achieved during deposition depends on positive and negative heat fluxes occurring during processing. During GMAW, supplied heat distributes between deposited bead and substrate. Heat is partially lost through convection and radiation (wire and weld bead), while heat diffusion occurs between weld bead and substrate plate. Temperature distribution and history during processing are consequently determined by material flow, quantity of material deposited per unit length, radiating and convection surface areas, and contact region dimensions (substantially the contact region width) between weld bead and substrate, as shown in Fig.  14 .",
+        "The three process parameters investigated showed significant influence on geometry and temperature history experienced by deposited beads.",
+        "Higher power determined wider contact length between the deposited bead and the substrate plate, as shown in Fig.  5 b. The physical mechanism is the following: higher arc power increases the heat supplied per unit time to the weld pool, raising the pool temperature and reducing its viscosity and surface tension. This promotes lateral spreading of the liquid metal on the substrate, increasing the wetted contact area. The increased contact area creates a larger heat-sink interface between the hot deposited bead and the relatively cold substrate. Since heat diffusion flux is proportional to both thermal conductivity and contact area, the conductive heat loss toward the substrate increases with the contact width. When power increases from 2.9 to 3.5 kW (a 21% increase), the contact length increases by 15–20% (Fig.  5 b), leading to a disproportionately large increase in effective thermal conductance from bead to substrate. Results in Fig.  9  confirm that this increased heat extraction by conduction dominated over the increased heat supply, resulting in lower peak bead temperatures at higher power levels. This counterintuitive result is further supported by the deeper dilution zones observed at higher power (Fig.  5 e): the increased substrate preheating from enhanced heat flux promotes greater base metal remelting, increasing dilution without raising the peak temperature of the deposited bead itself. Consequently, higher power produced wider deposited beads and contact areas, lower weld bead temperatures, deeper dilution, and greater microhardness homogenization across the bead–substrate interface.",
+        "Travel speed governs two key and competing aspects of the deposition process: (1) material quantity per unit length, given by Ab = Aw×Sw/v (Eq.  4 ), which determines bead cross-sectional area and height; and (2) linear heat input per unit length, Ht =  P ×60/v (Eq.  5 ), and the associated interaction time during which the arc heats a given substrate location. At low travel speeds, both material deposition per unit length and linear heat input increase simultaneously. When power is insufficient relative to the material flow rate (low P, low v), the deposited metal cannot fully wet the substrate because the available thermal energy per unit area falls below the threshold required to achieve complete fusion. Under this condition ( P  = 2.9 kW, v = 300 mm/min), the deposited material accumulates without proper anchoring, and the narrow contact width between bead and substrate significantly reduces the conductive heat path toward the substrate. Heat accumulates within the bead, but the lack of substrate fusion prevents adequate dilution — manifested as kissing bond formation (Fig.  6 ). Conversely, at higher power with the same low travel speed, increased thermal energy achieves full wetting, wider contact, and deep penetration, but the combination of high material flow and high heat input risks excessive substrate remelting. Higher travel speeds reduce material flow per unit length, producing smaller beads with better symmetry and more stable conditions across the full power range. The steeper thermal gradients at high travel speed (shorter interaction time, less substrate preheating) are responsible for the grain refinement and hardness increase observed at v = 750 mm/min.",
+        "Stand-off distance (SOD) influenced bead geometry and thermal response through two coupled mechanisms: a reduction in current of 3–4% and a wider arc cone at higher SOD, both reducing peak heat flux and linear heat input. The influence of SOD on bead geometry — particularly width and contact length — did not show a simple monotonic dependence on travel speed: absolute differences in width between SOD = 8 mm and SOD = 12 mm were comparable across speed levels (0.13–0.53 mm), with no clear trend. However, when the geometric differences are weighted by the corresponding peak temperatures, the SOD influence appears more consistent across travel speeds, suggesting that the apparent speed-dependent SOD sensitivity is partially mediated by the thermal state of the substrate at the time of deposition. In contrast, the SOD effect on dilution ratio was most pronounced at v = 300 mm/min, where the mean absolute difference in dilution between SOD = 8 and SOD = 12 mm reached 11.3% points, compared to less than 2% points at higher travel speeds. This is attributed to the longer interaction time at low travel speed, which amplifies the effect of SOD-induced current differences on substrate remelting and penetration depth. Furthermore, the influence of SOD on peak temperature increased substantially at higher travel speeds: at v = 750 mm/min, peak temperature differences between SOD = 8 and SOD = 12 mm reached 180–252 °C, compared to less than 70 °C at v = 300 mm/min. This is consistent with the interpretation that at low travel speed, the high linear heat input provides sufficient energy to achieve elevated bead temperatures regardless of SOD, whereas at higher travel speeds, the reduced energy input makes the thermal response more sensitive to SOD-induced current variations.",
+        "The relationship between process parameters and resulting bead characteristics reveals complex interactions. At lowest travel speed (v = 300 mm/min) with assumed wire feed rate of 171 mm/s, high material flow per unit length (ratio of wire feed rate to travel speed) produced various defects. Low power conditions ( P  = 2.9 kW), corresponding to specific energy of 18.3 J/mm³, generated kissing bonds that caused improper anchoring and irregular deposited beads. In the WAAM literature, dilution ratios above approximately 30–35% are generally considered excessive for multi-layer builds of low-carbon steels, as they increase the risk of through-thickness compositional inhomogeneity and residual stress accumulation [ 19 ]. In the present study, conditions at v = 300 mm/min with  P  ≥ 3.3 kW produced dilution ratios of 35–40% (runs 5, 9, 17, 21), corresponding to linear heat inputs of 660–700 J/mm, and are therefore considered outside the acceptable process window for multi-layer deposition. It should be noted, however, that the occurrence of substrate breakthrough in the present study is also conditioned by the relatively thin substrate plate used (3.3 mm thickness). For thicker substrates — such as the 10-mm plates used by Yildiz et al. [ 15 ] under comparable heat input levels — the same dilution ratios would not necessarily produce substrate perforation, as the greater thermal mass of the substrate limits penetration depth even at high heat inputs. The threshold dilution ratio for acceptable single-layer deposition is therefore a function of both process parameters and substrate geometry, and the values reported here should be interpreted in the context of the specific substrate thickness used.",
+        "Deposited beads produced within v = 450–750 mm/min range at power between  P  = 2.9–3.5 kW showed more stable material flow. Under these conditions, width, height, and dilution can be controlled by selecting appropriate process parameters. Stand-off distance primarily influenced dilution ratio while showing minor influence on other geometrical characteristics. Long stand-off distances produced lower contact length and bead dilution along with reduced peak temperature. However, deposited bead geometry remained almost unaffected by SOD, as did bead hardness. Within the two SOD levels tested (8 and 12 mm), the experimental evidence suggests that SOD may offer a practical lever to modulate interlayer penetration without substantially altering bead geometry or microhardness. However, this observation should be interpreted with caution: only two discrete SOD values were investigated, and the monotonic nature of this relationship — as well as the possible existence of threshold effects or non-linear behaviour at intermediate or extreme SOD values — cannot be confirmed from the present dataset alone. A dedicated parametric study across a wider and more finely resolved SOD range would be required to establish the generality of this finding and its applicability to multi-layer process design.",
+        "Grain morphology and microhardness are primarily governed by travel speed, which controls the interaction time and hence the thermal gradient magnitude during solidification. Higher travel speed reduces the time during which the substrate beneath and adjacent to the bead is preheated, resulting in a steeper temperature gradient between the solidification front and the surrounding material. The steeper gradient promotes faster solidification (higher undercooling), which suppresses epitaxial grain growth and produces finer, more vertically-aligned columnar grains (Fig.  11 ). The associated increase in grain boundary density and dislocation density contributes to the Hall–Petch-type hardness increase at high travel speed. To isolate the effect of individual parameters: at constant power ( P  = 2.9 kW, SOD = 8 mm), increasing travel speed from v = 300 mm/min (run 1) to v = 750 mm/min (run 4) increased bead microhardness from 230 to 242 HV1; at  P  = 3.3 kW under the same SOD, the corresponding increase was from 207 (run 5) to 213 HV1 (run 8). The effect of power is illustrated at constant travel speed: at v = 750 mm/min and SOD = 8 mm, reducing power from  P  = 3.5 kW (run 12, 210 HV1) to  P  = 2.9 kW (run 4, 242 HV1) increased microhardness by approximately 15%, consistent with the finer grain structure and steeper thermal gradients associated with lower power. An important consideration regarding the validity of hardness comparisons across conditions with different dilution ratios is the compositional similarity of wire and substrate. Both are low-carbon steels; the carbon equivalent (CE = C + Mn/6 + (Cr + Mo+V)/5 + (Ni + Cu)/15) evaluates to CE_wire ≈ 0.30 and CE_substrate ≈ 0.12. In the dilution range observed (15–45%), the mixed composition in the fusion zone yields CE_mixed ≈ 0.14–0.21, remaining below the threshold for martensitic transformation under the cooling rates present (estimated t8/5 > 5 s for all conditions). Therefore, the microstructure across all conditions is ferritic–pearlitic, and hardness variations are attributable to grain size and dislocation density effects rather than to phase transformation differences driven by compositional changes. This validates the comparison of microhardness values across conditions with different dilution ratios.",
+        "The observed microstructural evolution can be further understood in the context of broader metallurgical principles governing phase transformations and grain refinement in steels. The thermal stability of metastable austenite during cooling plays a central role in determining the final ferritic-pearlitic microstructure: higher cooling rates (achieved at elevated travel speeds) suppress austenite grain growth prior to transformation, yielding finer ferrite grains and thinner pearlite lamellae — consistent with established models of martensite formation kinetics and austenite decomposition [NEW12]. The sensitivity of mechanical properties to tempering-equivalent thermal cycles is further illustrated by studies on microalloyed steels, where variations in effective tempering temperature (analogous to variations in peak reheating temperature during WAAM) produce measurable changes in hardness through carbide precipitation and dislocation recovery mechanisms [NEW13]. In the present work, the interaction between deposition parameters and thermal cycling creates locally varying effective cooling rates across the bead cross-section, which explains the microhardness gradient from bead centre (positions 1–2) to substrate (position 6). The cladding behaviour observed at the bead–substrate interface shares mechanistic similarities with cold metal transfer (CMT) cladding processes, where interface quality and dilution control are governed by the balance between heat input and material flow [NEW14]. Multi-physical simulation approaches, including coupled thermal-electrical-mechanical models developed for resistance spot welding, provide a framework for understanding the complex heat transfer phenomena observed in the present WAAM experiments, where arc energy, contact resistance, and convective losses interact simultaneously [NEW15]. The layered microstructure resulting from the thermal gradient across the deposited bead — with elongated columnar grains in the bead transitioning to equiaxed grains in the substrate — exhibits deformation behaviour analogous to that reported for layered austenitic steel structures, where mechanical anisotropy arises from the grain morphology gradient [NEW16].",
+        "The correlation between metallurgical and mechanical properties can be quantitatively rationalised as follows. Travel speed, the dominant parameter for both grain morphology and microhardness, controls the thermal gradient magnitude during solidification. At v = 750 mm/min, steeper gradients produce finer columnar grains with higher grain boundary density, which directly increases hardness through the Hall–Petch mechanism: the measured increase from approximately 200–215 HV1 (v = 300 mm/min,  P  = 3.3 kW) to 220–245 HV1 (v = 750 mm/min,  P  = 2.9 kW) is consistent with the observed grain refinement shown in Fig.  12 . Power influences mechanical properties indirectly: higher power widens the bead–substrate contact area, enhancing heat extraction and homogenising the thermal field across the bead cross-section. This produces a smoother microhardness transition from bead to substrate (Fig.  13 ) — not because the grain size is uniform, but because the reduced thermal gradient at higher power diminishes the spatial variation in cooling rate within the bead. SOD, by contrast, alters peak heat flux without substantially changing the cooling rate gradient, which explains why microhardness remains largely unaffected by SOD variation despite measurable differences in peak temperature and dilution. The ferritic–pearlitic microstructure observed across all conditions (confirmed by the carbon equivalent analysis, CE_mixed ≈ 0.14–0.21, remaining below the martensitic threshold) ensures that hardness variations are attributable to grain size and dislocation density effects rather than phase transformation differences, validating inter-condition comparisons.",
+        "The temperature profiles in Fig.  8  exhibit a notable delay in the initial temperature rise, particularly evident at higher power levels ( P  = 3.3 and 3.5 kW). This delay is attributed to the transient thermal regime at the beginning of deposition: at higher power, the larger melt pool requires more time to establish steady-state thermal conditions, and the initial arc-substrate interaction must first overcome the thermal inertia of the cold substrate before the heat front reaches the measurement location (Cursor 1 at the midpoint). Additionally, the temperature profiles show considerable variation in shape — including differences in the duration of the plateau phase and the slope of the cooling curve — across different parameter combinations. These variations reflect the complex interplay between heat input rate, material flow, and heat extraction pathways (conduction to substrate, convection, and radiation). A more quantitative analysis of the infrared data — including extraction of cooling rates (dT/dt), thermal gradient magnitudes, and hold times above critical transformation temperatures — would enable a more precise correlation between thermal history and microstructural outcomes. This represents an important avenue for future work, potentially employing spatially resolved thermal field analysis rather than single-point extraction.",
+        "Peak temperature measured during deposition decreased with travel speed due to lower interaction time and linear energy. Peak temperature also decreased with stand-off distance due to lower current supply. Peak temperature measured on beads decreased with power despite expectations. When higher power levels were applied, larger contact areas formed between deposited beads and substrate. This promoted increased heat diffusion, confirmed by deeper dilution rather than higher temperature values on deposited beads.",
+        "From an industrial perspective, the parametric relationships established in this study have direct applicability to sectors requiring large-scale metallic components with controlled mechanical properties. In shipbuilding and offshore construction, GMAW-based WAAM of low-carbon steel enables near-net-shape fabrication of structural brackets, stiffeners, and repair patches, where the identified stable process window (v = 450–750 mm/min,  P  = 2.9–3.5 kW) ensures consistent bead quality without the kissing bond defects that would compromise structural integrity under cyclic loading. In the construction and infrastructure sector, WAAM offers the possibility of on-site fabrication of steel connectors and reinforcement elements, where the ability to independently control dilution through SOD adjustment — without altering cross-sectional geometry — is particularly valuable for joining dissimilar plate thicknesses. The aerospace maintenance industry can benefit from these findings for repair and feature addition on low-carbon steel tooling and fixtures, where microhardness uniformity across the deposited layer is critical for dimensional stability during subsequent machining operations. Furthermore, the demonstrated influence of travel speed on grain refinement and hardness provides a practical lever for tailoring mechanical properties to application requirements without changing the alloy system, which is advantageous for small-batch custom manufacturing where material qualification costs must be minimised.",
+        "Regarding defect occurrence, no macroscopic cracks were observed in any of the 24 deposited samples under the conditions investigated. This is consistent with the low carbon equivalent of the ER70S-6 wire (CE ≈ 0.30) and the relatively moderate cooling rates achieved in GMAW-based WAAM, which remain well below the critical cooling rates for hydrogen-induced cold cracking or solidification cracking in low-carbon steels. The absence of cracking under all tested conditions supports the robustness of the identified process window for single-bead deposition. However, it should be noted that multi-layer depositions may introduce additional thermal cycling and residual stress accumulation that could promote cracking under conditions not explored in this single-layer study.",
+        "These findings establish that successful WAAM implementation requires careful balancing of multiple process parameters to achieve desired geometric accuracy, mechanical properties, and microstructural characteristics. The interactions between power, travel speed, and stand-off distance create a complex parameter space where modifications to one variable affect multiple output characteristics simultaneously. Understanding these relationships enables informed process design for multi-layer additive manufacturing ions where consistency across layers is critical for component integrity and performance [ 15 ]."
+      ]
+    },
+    {
+      "heading": "Conclusion",
+      "paragraphs": [
+        "This study systematically characterised the influence of arc power ( P  = 2.9–3.5 kW), travel speed (v = 300–750 mm/min), and stand-off distance (SOD = 8–12 mm) on single-bead GMAW-based WAAM deposits of low-carbon steel (AWS ER70S-6) through a 24-condition full factorial design. The main findings are summarised below.",
+        "A stable process window was identified for v = 450–750 mm/min at  P  = 2.9–3.5 kW. At v = 300 mm/min, excessive material flow per unit length produced kissing bonds ( P  = 2.9 kW) or excessive penetration ( P  ≥ 3.3 kW). Travel speed was the dominant parameter governing bead geometry, peak temperature, grain morphology, and microhardness. Higher travel speed produced steeper thermal gradients, finer vertically-aligned columnar grains, and elevated microhardness (220–245 HV1 at  P  = 2.9 kW; 200–215 HV1 at  P  = 3.3 kW; 205–212 HV1 at  P  = 3.5 kW). These hardness values refer to the bead centre (position 2) and may vary near the bead extremities. Power primarily controlled bead width, contact length, and dilution. Increasing power from 2.9 to 3.5 kW enlarged the bead–substrate contact area by 15–20%, amplifying conductive heat extraction and producing the counterintuitive decrease of peak bead temperature despite greater energy input. Stand-off distance independently controlled dilution ratio and penetration depth without significantly affecting bead geometry or microhardness, providing a practical lever for adjusting interlayer bonding in multi-layer builds. The ferritic–pearlitic microstructure was preserved across all conditions (CE_mixed ≈ 0.14–0.21), confirming that hardness variations arose from grain size and dislocation density effects rather than phase transformation differences. Future work will extend the investigation to multi-layer depositions to characterise thermal accumulation effects, inter-pass temperature management, and the evolution of mechanical properties with build height."
+      ]
+    }
+  ],
+  "tables": [
+    {
+      "caption": "Chemical composition of the materials involved",
+      "headers": [
+        "Element",
+        "Fe",
+        "Cu",
+        "Mn",
+        "Ni",
+        "Ti",
+        "Zn"
+      ],
+      "rows": [
+        [
+          "Wire (wt%)",
+          "92.05",
+          "5.469",
+          "1.321",
+          "0.096",
+          "0.039",
+          "0.016"
+        ],
+        [
+          "Substrate (wt%)",
+          "96.98",
+          "0.591",
+          "0.427",
+          "0.294",
+          "0.196",
+          "0.195"
+        ]
+      ],
+      "header_groups": [],
+      "table_alignment_status": "resolved",
+      "row_provenance": [
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 7
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 7
+          }
+        ]
+      ],
+      "tbody_alignment_status": "resolved"
+    },
+    {
+      "caption": "Full factorial experimental plane, factors, and levels",
+      "headers": [
+        "Level",
+        "Nominal Power, ( P ) [kW]",
+        "Travel Speed, (v) [mm/min]",
+        "Stand-off distance (SOD) [mm]"
+      ],
+      "rows": [
+        [
+          "I",
+          "2.9",
+          "300",
+          "8"
+        ],
+        [
+          "II",
+          "3.3",
+          "450",
+          "12"
+        ],
+        [
+          "III",
+          "3.5",
+          "600",
+          ""
+        ],
+        [
+          "IV",
+          "",
+          "750",
+          ""
+        ]
+      ],
+      "header_groups": [],
+      "table_alignment_status": "resolved",
+      "row_provenance": [
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 4
+          }
+        ]
+      ],
+      "tbody_alignment_status": "resolved"
+    }
+  ]
+}

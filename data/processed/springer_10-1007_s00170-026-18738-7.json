@@ -1,0 +1,869 @@
+{
+  "doi": "10.1007/s00170-026-18738-7",
+  "title": "Advantage and drawbacks of auxetic structures obtained by laser cutting",
+  "abstract": "Abstract The industrial deployment of metallic auxetic structures requires a clear understanding of how fabrication technologies and structural parameters influence their mechanical behavior. However, existing studies mainly emphasize geometric design, while the influence of manufacturing-induced effects, and the mechanical response under cyclic loading remain insufficiently addressed. To bridge this gap, this paper proposes and validates an integrated experimental–numerical framework for the design and mechanical characterization of anti-tetrachiral and hexachiral metallic auxetic structures manufactured by laser cutting, a fabrication technology readily available at the industrial scale. First, finite element analysis models are developed to predict the mechanical response of the auxetic structures and are validated through quasi-static experimental testing. Then, a parametric analysis is performed to quantify the influence of key structural parameters, including ligament thickness and node geometry, on stiffness and deformation behavior. Photoelasticity is introduced as a complementary experimental technique to qualitatively assess stress distribution, providing additional insight beyond numerical simulations. Furthermore, cyclic loading tests are conducted to evaluate the durability and stability of the structures under repeated mechanical loading. The results demonstrate that laser cutting significantly affects mechanical behavior, which enhances elastic response while reducing toughness, highlighting the need for post-process heat treatment in practical applications. The study reveals a degradation of mechanical properties under repeated loading up to the yield point, emphasizing the importance of defining safe cyclic-loading limits. The proposed framework establishes practical design and manufacturing guidelines that support the reliable industrial use of metallic auxetic structures in applications requiring lightweight and mechanically robust components.",
+  "journal": "The International Journal of Advanced Manufacturing Technology",
+  "year": "2026",
+  "sections": [
+    {
+      "heading": "Introduction",
+      "paragraphs": []
+    },
+    {
+      "heading": "Background",
+      "paragraphs": [
+        "Auxetic metamaterials (AMMs) are cellular structures with a negative Poisson’s ratio (NPR), which confer distinctive mechanical properties: high stiffness, energy absorption, and deformation control [ 1 ,  2 – 3 ]. These characteristics make them relevant for aerospace, automotive, biomedical, and protective applications [ 3 ,  4 ]. Analyses conducted by Gu [ 5 ] and Gao [ 6 ] highlight the potential of AMMs in multifunctional and lightweight applications, but underscore the challenges of fabrication and scalability.",
+        "Anti-tetrachiral and hexachiral structures are among the most studied AMM configurations, due to their simple geometry, tunable mechanical response, and potential for multifunctional applications [ 7 ,  8 ,  9 ,  10 – 11 ]. Analyses by Ren Xin [ 12 ], Lu [ 13 ], and Bahmanpour [ 14 ] expand research on mechanical behavior and applications, although most remain theoretical without practical validation.",
+        "Despite their potential, the fabrication of AMMs remains a significant challenge. Traditional additive manufacturing (AM) technologies, such as selective laser melting (SLM), fused deposition modeling (FDM), and electron beam melting (EBM), are widely used for producing complex geometries [ 15 ,  16 ]. However, these methods are often costly, time-consuming, and limited by minimum feature sizes, residual stresses, and material compatibility [ 2 ,  15 ]. For example, AM processes can introduce defects such as porosity and heat-affected zones (HAZ), which compromise structural integrity [ 7 ,  15 ]. Furthermore, AM technologies face challenges regarding scalability and reproducibility, particularly for large-scale or industrial applications [ 15 ,  17 ].",
+        "The fabrication of AMMs involves limitations. Traditional additive manufacturing (AM) methods, such as SLM, FDM, and EBM, allow for the creation of complex geometries [ 15 ,  16 ], but are costly, time-consuming, and constrained by feature dimensions, residual stresses, and material compatibility [ 2 ,  15 ]. Thus, AM processes can generate defects such as porosity and HAZ zones, affecting structural integrity [ 7 ,  15 ]. Furthermore, scalability and reproducibility remain limited, hindering industrial-scale applications [ 15 ,  17 ].",
+        "Laser cutting represents an efficient solution for manufacturing AMMs, particularly for metallic structures [ 7 ,  16 ]. It enables the fabrication of complex 2D and 3D auxetic configurations with high precision and minimal material loss [ 7 ]. For metallic auxetic structures, laser cutting offers a more cost-effective and industrially viable option, as suggested by the differences in magnitude between the reported material and operating costs for steel sheets compared to gas-atomized powders and AM systems for metals. However, this technology has not been sufficiently explored. Furthermore, the effects on mechanical properties in the context of microstructural changes induced by the HAZ and stability under cyclic loading are insufficiently investigated [ 7 ,  16 ].",
+        "The mechanical behavior of AMMs under real-world conditions poses critical challenges, particularly under cyclic loading and external influences [ 18 ]. Previous studies show that repeated loading affects stiffness and strength over time [ 7 ]. Defects generated by the manufacturing process, such as the HAZ and residual stresses, reduce structural integrity in applications requiring long service life[ 15 ]. Research by Bertoldi [ 19 ], Kazemi [ 20 ], and Al-Rifaie [ 21 ] has contributed to the understanding of AMM design and applications, but these studies are generally theoretical, lacking consistent experimental validation.",
+        "Current models for predicting the mechanical response of AMM frequently ignore defects generated by the manufacturing process, reducing their practical applicability. Meena [ 7 ] highlighted the potential of auxetic structures but did not evaluate the impact of defects on durability. Mizzi [ 10 ] developed innovative chiral structures without analyzing scalability or concrete applications. Although artificial intelligence (AI) and advanced design methodologies offer promising prospects for optimizing AMM performance, their practical implementation and scalability require further research [ 2 ,  5 ].",
+        "Yu [ 22 ] performs a classification of mechanical metamaterials based on their elastic constants, demonstrating the potential of nonlinear properties such as NPR and tunable stiffness. Chen [ 23 ] confirms the utility of photoelasticity in stress analysis, although its applicability to auxetic structures is limited. The research by Zhang [ 24 ], Seetoh [ 11 ], and Wang [ 25 ] investigates specific auxetic structures, including anti-tetrachiral tubular designs and 3D configurations, but rarely addresses practical applications or long-term behavior under real-world conditions..",
+        "While prior research has advanced AMM design and fabrication, critical gaps remain in understanding laser cutting’s impact on mechanical properties and long-term behavior under cyclic loading. This study addresses these gaps."
+      ]
+    },
+    {
+      "heading": "Scope of the present work",
+      "paragraphs": [
+        "This study focuses on the design, fabrication, and mechanical characterization of antitetrachiral and hexachiral auxetic metal structures produced by laser cutting, addressing critical gaps in the literature regarding the influence of fabrication technology and structural parameters on mechanical behavior. More specifically, the research aims to: Investigate the impact of laser cutting technology on the mechanical properties of auxetic structures, with a focus on how heat-affected zones (HAZ) influence the behavior of the structures. Perform a parametric analysis to determine how critical structural parameters influence mechanical behavior. Validate finite element analysis (FEA) models through experimental testing Use of photoelasticity for the qualitative analysis of stresses, providing a detailed understanding of stress distribution in auxetic structures, complementing the FEA results. Evaluation of behavior under cyclic loading, i.e., assessment of the durability and stability of auxetic structures under repeated loading conditions. Develop industrial design/manufacturing guidelines: topology choice, tuning, HAZ constraints, and safe cyclic-loading limits.",
+        "By addressing these objectives, this work bridges the gap between theoretical analysis and practical implementation, providing a comprehensive framework for the design and optimization of auxetic metal structures suitable for real-world engineering applications. The results will contribute to the development of guidelines for the scalable and reliable use of auxetic structures in industry."
+      ]
+    },
+    {
+      "heading": "Methodology",
+      "paragraphs": []
+    },
+    {
+      "heading": "Structure and sample design",
+      "paragraphs": [
+        "The design of the auxetic structures used in this research was guided by a set of fundamental requirements intended to ensure a balance between cost-effectiveness, mechanical properties, and durability. Thus, the structures were designed to meet the following general conditions: Minimizing manufacturing costs to facilitate industrial adoption. Ensuring a negative Poisson's ratio (between −0.2 and −0.4), characteristic of auxetic properties. Maintaining a balanced ratio between auxeticity and stiffness to ensure superior mechanical performance under various loads. Resistance to repetitive loading to guarantee structural integrity under cyclic loading conditions.",
+        "To meet these requirements, two-dimensional structures were selected due to their structural simplicity and low production cost. The analysis focused on anti-tetrachiral and hexachiral structures (shown in Fig.  1 ) because of their ability to provide parametric control over the mechanical response by varying the number of links per node. Fig. 1 Geometric configurations of the auxetic mechanical metamaterials analyzed in this study",
+        "This approach allows for the investigation of the influence of geometry on structural behavior under mechanical loads, offering insights into how parametric design can model the properties of auxetic materials. The structures will be further denoted as L/S_A/H_ ØD_t, where L/S indicates a large or small structure, A/H indicates the anti-tetrachiral or hexachiral structure, ØD indicates the node diameter in mm, g represents the thickness of the structure and t indicates the ligament thickness in mm (shown in Fig.  1 ). Through a systematic approach, key geometric parameters—the ligament dimensions and node diameters—were varied to evaluate their impact on structural behavior. This methodology ensures the comparability of results and allows for the derivation of general principles applicable to other auxetic configurations."
+      ]
+    },
+    {
+      "heading": "Modeling of structures behaviour",
+      "paragraphs": [
+        "To evaluate the behavior of the designed auxetic structures, a dual approach was used, combining finite element analysis (FEA) and experimental validation (as described in Fig.  2 ). This dual approach allows for both the virtual simulation of the loading conditions and the experimental verification of the simulated results. Fig. 2 Experiment’s flowchart for the auxetic metastructures analyzed in this paper, outlining the research methodology and validation steps. The flowchart details the process of designing, simulating, and validating the auxetic structures using finite element analysis (FEA) and experimental testing",
+        "The CAD models of the structures, as shown in Fig.  1 , and the material properties used in their construction (Table  1 ) were imported into Ansys Workbench 2024 to qualitatively and quantitatively evaluate the structural response. The simulations included initial compression tests to identify the risk of buckling and to evaluate Poisson’s ratio, with the aim of designing structures with increased buckling resistance. Table 1 Mechanical properties of polycarbonate and 51CrV4 steel used for FEA and experimental validation Material Properties Rp0,2* Rm* E** Elongation Hardness Densitate [MPa] [MPa] [MPa] [%] [g/cm 3 ] 51CrV4 455.0 698.0 6.6 × 10 5 22.5 206 HBW Polycarbonate 55 … 77 61 … 69 2.2 × 10 5 6 … 7 90–95 Shore D 1.15–1.2 *  The properties of the 51CrV4 steel used to make the structures are taken from Certificate No.: 1192/2023 provided by Akrostal Sp. Poland **  It was obtained by analytical calculation following tensile testing of a specimen on an Instron 8801-100kN testing machine",
+        "Although FEA offers numerical accuracy, its reliance on mathematical models and the discretization scheme can introduce errors, necessitating validation through experimental methods. Thus, photoelasticity was used as a complementary method to evaluate the stress distribution within the structure. This approach allows for a qualitative and visual understanding of stress concentrations, providing insights into the limitations of simulated models.",
+        "For the materials used (Table  1 ), photoelasticity tests were performed on polycarbonate, and compression tests and metallographic analyses at various scales (micro, meso, macro) were conducted on 51CrV4 steel. These tests included both experimental trials and FEA simulations to ensure convergence between theoretical and practical results. This approach aimed not only to validate the methods used but also to establish robust design criteria for industrial applications.",
+        "To analyze how laser cutting technology affects the properties of 51CrV4 steel structures, the steps presented in Fig.  3  were followed. The research was conducted on a single type of structure, as the results are transferable to other similar configurations. Fig. 3 Research methodology flowchart for evaluating the effect of laser cutting technology on the mechanical properties of 51CrV4 steel structures, including sample preparation, heat treatment, and mechanical testing"
+      ]
+    },
+    {
+      "heading": "Finite element simulation",
+      "paragraphs": [
+        "Finite element analysis (FEA) was used to evaluate the mechanical behavior of the auxetic structures (Fig.  1 ). The FEA mesh generated for the structures and the boundary conditions imposed are shown in Fig.  4 . The analysis was based on the properties of 51CrV4 steel, according to the data presented in Table  1 . Fig. 4 Finite element analysis (FEA) setup for anti-tetrachiral metastructures, illustrating: ( a ) Mesh generation using a 0.8 mm mesh size for the analyzed structures and an automatic mesh for the two support elements, ( b ) Boundary conditions applied to the metastructures, ( c ) Load application mode for determining the buckling behavior",
+        "The initial analysis focused on evaluating the structural stability of large-scale geometric configurations. The results, shown in Fig.  5 a, revealed a behavior characterized by instability at low load values, a phenomenon correlated with a low buckling coefficient. Fig. 5 Finite element analysis (FEA) of instability in auxetic metastructures, comparing: ( a ) large structures (initial configuration), buckling coefficient = 0.52859 (low critical load), ( b ) small structures, buckling coefficient = 6.981 (higher critical load)",
+        "By reducing the number of two-row basic cells, a significant increase in the buckling coefficient was achieved (Fig.  5 b), allowing the structures to withstand higher mechanical loads before instability occurs. This observation led to an extension of the investigation into small structures, shown in Fig.  1 , to analyze load limits and structural stability under optimized conditions."
+      ]
+    },
+    {
+      "heading": "Stress field analysis",
+      "paragraphs": [
+        "Through simulations, the axial displacements of the structures under investigation were determined, and the results are presented in Fig.  6 . Based on these results, a comparative evaluation of the structural response under identical loading conditions will be possible, highlighting the magnitude and distribution of displacements for each geometric configuration analyzed. Fig. 6 Results for the displacement of the metastructure along the z-axis obtained via finite element analysis (FEA). The displacement mode is shown for the following configurations: ( a ) S_A_2.5_1.5, ( b ) S_A_2.5_2.0, ( c ) S_A_3.5_1.5, ( d ) S_A_3.5_2.0, ( e ) S_H_2.5_1.5, ( f ) S_H_2.5_2.0, ( g ) S_H_3.5_1.5, ( h ) S_H_3.5_2.0, determined based on simulations performed in Ansys Workbench 2024. For each structure, the amplitude and distribution of displacement are highlighted, providing a comparative overview of the structural response under the same loading conditions",
+        "To gain a detailed understanding of stress concentrations, an analysis of the von Mises stress distribution was performed, as shown in Fig.  7 . This highlights the critical stress zones associated with structural nodes, where local maximum stresses occur. A detail was selected from the second row of nodes to show the stress variations at a higher resolution. This row of nodes generates the auxetic behaviour of the entire structure when it is under load. Fig. 7 Distribution of von Mises stresses in auxetic metastructures, highlighting critical stress concentrations around the nodes. The stress distribution is shown for: ( a ) S_A_2.5_1.5, and ( b ) S_H_2.5_1.5. A detailed view of the second row of nodes is presented to illustrate the stress variations at a higher resolution, since this row generates the auxetic behavior of the structure under load",
+        "Figure  7  shows areas with stress concentrations corresponding to critical areas around the nodes, highlighted in different colours, where red corresponds to maximum stresses reaching 2192.8 MPa for anti-tetrachiral (S_A_2.5_1.5) and 1696.2 MPa for hexachiral (S_H_2.5_1.5) structures.",
+        "The observed stress distribution is representative of all the configurations investigated, with variations in the maximum values depending on the specific geometry of the structure."
+      ]
+    },
+    {
+      "heading": "Poisson’s ratio evaluation",
+      "paragraphs": [
+        "Poisson's ratio for the structures under investigation was determined through a static analysis that incorporated both measurements of structural displacements and an evaluation of the stress–strain fields. Poisson's ratio, defined as the ratio of transverse strain ( \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${\\varepsilon}_{t}$$\\end{document} ) to longitudinal strain ( \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${\\varepsilon}_{l}$$\\end{document} ), was calculated according to Eq. ( 1 ), based on the displacements recorded in the transverse ( \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${\\Delta}_{t}$$\\end{document} ) and longitudinal ( \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${\\Delta}_{l}$$\\end{document} ).directions. 1 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\upsilon =-\\frac{{\\varepsilon}_{t}}{{\\varepsilon}_{l}}\\approx -\\frac{{\\Delta}_{t}}{{\\Delta}_{l}}$$\\end{document}",
+        "Thus, the structural displacements of each geometric configuration were evaluated and processed to obtain the theoretical value of Poisson's ratio, according to Eq. ( 2 ), which relates the initial and final lengths of the deformed structure, where  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${L}_{I}$$\\end{document}  is the initial length and  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${L}_{F}$$\\end{document}  is the final length of the deformed structure. 2 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\varepsilon =\\frac{{L}_{F}-{L}_{I}}{{L}_{I}}$$\\end{document}",
+        "The analysis of structural displacements, presented in Fig.  8 , allowed for the determination of average values for each type of structure investigated, as shown in Table  2 . By applying Eqs. ( 1 ) and ( 2 ), a quantitative assessment of Poisson’s ratio was obtained, providing insight into the auxetic behavior of the structures studied. Fig. 8 Displacement analysis of the auxetic metastructure S_A_2.5_1.5 under static loading conditions: ( a ) Transverse displacement (Δ_Z), ( b ) Longitudinal displacement (Δ_Y), ( c ) Superimposed undeformed and deformed configurations of the metastructure, highlighting the actual displacement field Table 2 Poisson’s ratio values for the analysed auxetic metastructures, highlighting the influence of geometric parameters on the auxetic behavior",
+        "Furthermore, Fig.  8  provides a representative and parallel comparison between the numerical and experimental deformations for the S_A_2.5_1.5 structure. This comparison highlights that the global shortening, node rotation, and ligament bending observed experimentally follow the same deformation pattern as that predicted numerically.",
+        "The results obtained show that anti-tetrachiral structures have negative values of the Poisson’s ratio, indicating pronounced auxetic behavior. A comparative analysis of the geometric parameters revealed that optimizing the thickness of the ligaments has a dominant influence on the variation of the Poisson’s ratio, compared to changes in the size of the nodes. This observation suggests that macroscopic geometric adjustments can be used to control the auxetic properties of structures, opening the perspective of practical applications based on parametric design principles.",
+        "Although numerical simulations provide a detailed image of the distribution of stresses and displacements in auxetic structures, they may have certain limitations in capturing the complexity of interactions between the material and actual loading conditions. To overcome these constraints and gain a qualitative understanding of the actual stress distribution, the photoelasticity method was used as a complementary validation tool. This allows not only for the confirmation of results obtained through FEA but also for the exploration of the phenomenological aspects of structural behavior, an essential aspect for the development of robust predictive models."
+      ]
+    },
+    {
+      "heading": "Stress state evaluation using photoelasticimetry",
+      "paragraphs": [
+        "Using photoelasticimetry [ 23 ,  26 ,  27 ], the stress state generated in the investigated auxetic structures can be evaluated both qualitatively and quantitatively. The purpose of this method is to identify areas of maximum stress in anti-tetrachiral and hexachiral structures by exploiting the birefringence property of materials subjected to external loads. To visualize the stresses, auxetic models were fabricated from polycarbonate (Fig.  1 ), machined by milling, and subjected to a stress-relief process (70 °C, held for 1 h) to eliminate internal stresses accumulated during machining. In parallel, a calibration disc (D = 40 mm, t = 3.9 mm), made of the same material, was subjected to the same heat treatment; its purpose was to determine the material’s photoelastic constant.",
+        "The isochromatic equation that develops in the disc and structures can be written as: 3 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${\\sigma}_{1}-{\\sigma}_{2}=k\\bullet \\frac{\\lambda }{C\\bullet d}=k\\bullet {\\sigma}_{o}=const.$$\\end{document} where: σ 1  and σ 2  are the principal stresses, σ o  is the photoelastic constant of the model of thickness  d , made of a material with photoelastic constant  C , when studied in monochromatic light of wavelength λ.",
+        "The value of the constant σ o  can be determined by a tensile, compression or bending test on a model, in an ascending sequence of applied loads and by monitoring the distribution of isochromats. In the case of simple tensile or compression, as well as on the contour of a model subjected to pure bending, relation ( 3 ) becomes: 4 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${\\sigma}_{1}=k\\bullet {\\sigma}_{o}$$\\end{document} or 5 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${\\sigma}_{2}=k\\bullet \\left|{\\sigma}_{o}\\right|$$\\end{document}",
+        "At the intersection of the isochromats with the contour of the part, the maximum principal stresses can be determined, which are of greatest practical interest because they allow a quantitative evaluation of the model under study.",
+        "In this study, the photoelastic constant σ o  is evaluated using a disc (made of the same material as the two auxetic models) subjected to compression in the diametrical plane by means of a statically applied nodal force  F . Elasticity theory demonstrates that the difference in principal stresses at the centre of the disc can be calculated using the following equation: 6 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${\\sigma}_{1}-{\\sigma}_{2}=\\frac{8\\bullet F}{\\pi \\bullet D\\bullet t}$$\\end{document}",
+        "Taking into account relation ( 3 ), expression ( 6 ) can be written in the following form: 7 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${\\sigma}_{o}=\\frac{8\\bullet F}{\\pi \\bullet D\\bullet t\\bullet k}$$\\end{document} where  k  represents the order of the isochromat in the centre of the disc, according to Fig.  9 . The value of the constant σ o  thus determined (1,308 N/mm 2 ) was then used for the qualitative analysis of stresses in the auxetic structures themselves. Fig. 9 Determination of the photoelastic constant σ o  using a calibration specimen in the form of a polycarbonate disc, following the standard procedure in photoelasticity: ( a ) experimental setup in the transmission polariscope, ( b ) Distribution of isochromes in the disc under diametral compression, where the known analytical solution (Eq.  6 ) is used to precisely calculate the material constant before testing complex geometries. The disc is a separate element used exclusively for calibration, it is not part of the auxetic structures",
+        "According to Table  3 , three sets of tests were performed, each consisting of three successive compressive loads in the diametrical plane using a nodal force  F , thus determining the order of magnitude of the photoelastic constant σ o  of the model. Table 3 Order of magnitude of the photoelastic constant for the model under consideration Set 1 F [N] isochromatic order, k \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${\\sigma}_{o}$$\\end{document}  [N/mm 2 ] \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${\\sigma}_{omed}$$\\end{document}  [N/mm 2 ] 140.407 2 1.142 1.329 257.548 3 1.397 382.756 4.3 1.449 Set 2 F [N] isochromatic order, k \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${\\sigma}_{o}$$\\end{document}  [N/mm 2 ] \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${\\sigma}_{omed}$$\\end{document}  [N/mm 2 ] 138.242 2 1.125 1.260 267.074 3.2 1.358 319.136 4 1.298 Set 3 F [N] isochromatic order, k \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${\\sigma}_{o}$$\\end{document}  [N/mm 2 ] \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${\\sigma}_{omed}$$\\end{document}  [N/mm 2 ] 134.160 2 1.092 1.337 263.795 3.1 1.385 377.550 4 1.536",
+        "Thus, the average value of the photoelastic constant of the model constructed from polycarbonate is 1.308 N/mm 2 .",
+        "For the auxetic structures studied, the qualitative stress state analysis is performed for axial loading (compression). This stress was achieved by means of a uniformly distributed load  q , expressed in N/mm, for the anti-tetrachiral structure, and by means of nodal loads  F , expressed in Newton, for the hexachiral structure. The two models are simply supported and the boundary conditions are: dx = 0, dy = 0 rotz ≠ 0. Figure  10  shows the two auxetic models made of polycarbonate – identical in size to those made of 51CrV4 – positioned in a circular polarisation polariscope, light field, using a monochromatic light source (sodium lamp), polariscope manufactured by Tiedemann Instruments. Fig. 10 Qualitative stress analysis of auxetic models under axial compression, positioned in a circular polarisation polariscope: ( a ) anti-tetrachiral structure loaded with a uniformly distributed load q, highlighting three zones of interest, including a stress concentration area (zone 2), ( b ) hexachiral structure loaded with nodal loads F, highlighting a single zone of interest for isochrome evaluation",
+        "The structures in Fig.  10  correspond to a zero stress level. The anti-tetrachiral structure is loaded axially (in compression) slowly increasing, with the uniformly distributed load q having the values considered in the following sequence: 1.074, 2.148, 3.222, 4.297 and 5.854 N/mm. In the case of the hexachiral structure, we have the same type of stress but through a nodal load F (Fig.  10 b with the values considered in the following sequence: 8.057, 16.114, 24.171, 32.229 and 43.912 N. The uniformly distributed load q [N/mm] and the nodal load F [N] are generated by means of support elements (Figs.  4  and  10 ).",
+        "In the case of the anti-tetrachiral auxetic model, three construction zones are defined (generically denoted by 1, 2 and 3 – according to Fig.  10 a, considered to be areas of interest, while for the hexachiral structure, a single structural zone of interest is highlighted (generically denoted by 1 – according to Fig.  10 b), at which the order of the isochrome will be evaluated. It should be noted that zone 2 (Fig.  10 a) and zone 1 (Fig.  10 b) represent elements of concentration of circular hole and semicircular edge notch stresses with in-plane stresses.",
+        "Figure  11  shows two images highlighting the distribution of isochromats: (a) anti-tetrachiral structure q = 5.854 N/mm, Ø = 2.5 mm; (b) hexachiral structure F = 43.912 N, Ø = 3.5 mm. Fig. 11 Distribution of isochromes in auxetic models under maximum load: ( a ) Anti-tetrachiral structure (q = 5.854 N/mm, Ø = 2.5 mm), ( b ) Hexachiral structure (F = 43.912 N, Ø = 3.5 mm). The order of magnitude of the isochromes and principal stress is summarized in Tables  4 ,  5 , and  6 Table 4 Order of magnitude of isochromats in the anti-tetrachiral pattern, diameter of the hole in the node 2.5 mm Table 5 Order of magnitude of isochromats in the anti-tetrachiral pattern, diameter of the hole in the node 3.5 mm Table 6 The order of magnitude of isochromats in the hexachiral model",
+        "The order of magnitude of the isochromats and the principal stress σ 1  in accordance with the stress sequence is summarised in Tables  4 ,  5  and  6 .",
+        "Thus, in Table  4 , for the anti-tetrachiral auxetic model with a node hole diameter of 2.5 mm, the results are as follows:",
+        "In Table  5 , for the anti-tetrachiral auxetic model with a node hole diameter of 3.5 mm, the results are as follows:",
+        "The hexachiral structure with a node hole diameter of 2.5 and 3.5 mm in zone 1, as previously considered, records the following isochromatic values, according to Table  6 :",
+        "The results obtained highlight the following general principles regarding stress distribution in the investigated auxetic structures: Geometric configurations characterized by large node diameters exhibit higher levels of principal stresses, as shown in Tables  4 ,  5 , and  6 . Thin ligaments result in more pronounced concentrations of principal stresses, as shown in the same tables. In the case of hexachiral structures, principal stresses reach maximum values at the arms. For anti-tetrachiral structures, principal stresses are maximum at the nodes.",
+        "These observations highlight the importance of geometric optimization in the design of auxetic structures, allowing for the control of stress distribution and the minimization of structural failure risks."
+      ]
+    },
+    {
+      "heading": "Experimental details",
+      "paragraphs": []
+    },
+    {
+      "heading": "Fabrication process",
+      "paragraphs": [
+        "The manufacturing process for the metal structures involved laser cutting technology using LT5 laser cutting systems, performed in a controlled environment (nitrogen) to ensure dimensional accuracy and structural integrity. The following parameters were used: maximum laser power 3080 W, pulse frequency 700 Hz, laser spot size 50 μm, in a nitrogen environment at a pressure of 17 bar.",
+        "The auxetic structures, shown in Fig.  12 , were designed with fillet corners to minimize stress concentrations and meet the practical requirements of industrial applications. The geometric configuration with the dimensional values characterizing each type of structure is presented in Fig.  1 . Fig. 12 The geometrical configuration of auxetic mechanical metamaterials: anti–tetrachirals structures ( a ) large and ( b ) small, hexachirals structures ( c ) large and ( d ) small. The structures were fabricated from 51CrV4 steel using laser cutting"
+      ]
+    },
+    {
+      "heading": "Mechanical testing of auxetic structures",
+      "paragraphs": [
+        "To investigate the structural response of auxetic structures under mechanical loading, an experimental protocol based on uniaxial compression tests was applied.",
+        "These were performed using a universal testing machine, which allowed for the application of an initial preload followed by controlled deformation. The testing setup, shown in Fig.  13 , consisted of placing the structures (2) between support plates (3), thereby ensuring uniform force distribution and avoiding local instabilities. The testing was performed on two distinct size categories: large-scale structures, where elastic instability phenomena were observed (Fig.  13 a), and small-scale structures (Fig.  13 b), for which buckling effects were eliminated through geometric optimization. Fig. 13 Compression testing of auxetic structures using a universal testing machine (Model 8801, Instron) to evaluate deformation behavior under uniaxial compression: ( a ) Large structures, tested at a displacement rate of 4 mm/min after a preload of 150 N, where buckling was observed, ( b ) Small structures, tested under the same conditions to eliminate buckling effects",
+        "The experimental protocol was designed to assess both elastic and plastic response. For each structural type, two identical sample were tested following the scheme in Fig.  14 . The first sample was subjected to cyclic loading within the elastic range, followed by a compression test to failure, reaching the maximum load ( F max ). The load was first applied to characterize the proportional limit ( R p ), and then increased until ligament fracture occurred ( F max ). The second sample was loaded up to the onset of yielding ( R e ), followed by a final test to failure ( F max ), to capture the transition into the plastic regime. This approach enabled evaluation of the influence of geometric parameters: ligament thickness and node-hole diameter, on the mechanical response of the auxetic structures. Fig. 14 Testing protocol for auxetic structures under uniaxial compression, designed to evaluate the influence of ligament thickness and node hole diameter on mechanical behavior. The flowchart outlines: Sample 1: Tested in the elastic range (0.4–0.5 mm deformation, 10 loading cycles), followed by a 11th test until fracture ( F max ) and Sample 2: Tested to reach the yield stress (0.7–0.8 mm deformation, 8 loading cycles), followed by a 9th test until fracture ( F max )"
+      ]
+    },
+    {
+      "heading": "Design specimens for HAZ analysis",
+      "paragraphs": [
+        "The laser cutting process induces significant thermal changes in the material, creating a heat-affected zone (HAZ) that changes the microstructure and, consequently, the mechanical properties. The formation of the HAZ raises questions regarding the impact of this manufacturing technology on the behavior of structures. The starting point was the working hypothesis that thermal effects, combined with repeated mechanical stresses, can promote the initiation and propagation of microcracks, affecting structural performance. To validate this hypothesis, standardized specimens, sized according to international standards (ISO 6892–1:2019), were used to replicate the specific geometric conditions of critical elements in auxetic structures (Fig.  15 ). Fig. 15 Tensile test specimens for anti-tetrachiral structures, replicating the rib geometry (15 × 1.5 × 4 mm), to assess the impact of laser cutting on mechanical properties",
+        "The samples were subjected to different post-manufacturing heat treatment regimens to evaluate their influence on mechanical behavior, as follows:",
+        "One set of samples was tested in its initial state, as it resulted directly from the laser cutting process.",
+        "A second set underwent normalization treatment, which involves heating above the critical temperature, holding at that temperature, and controlled cooling in air to homogenize the material’s structure.",
+        "A third set was quenched and tempered to obtain an optimized martensitic microstructure; tempering at moderate temperatures was used to balance strength and toughness.",
+        "This experimental approach allows for a comparative analysis of the effects of heat treatments on mechanical properties, in the context of cyclic loading and the potential for structural degradation."
+      ]
+    },
+    {
+      "heading": "Impact of laser cutting",
+      "paragraphs": []
+    },
+    {
+      "heading": "Microstructural changes",
+      "paragraphs": [
+        "Laser cutting of 51CrV4 steel results in microstructural and mechanical changes. These changes are associated with rapid heating and cooling phenomena, which induce local transformations in the heat-affected zone (HAZ).",
+        "To evaluate the impact of laser cutting on hardness, Vickers microhardness measurements were performed in the cut area where the HAZ occurs (Fig.  16 ), using the Fischerscope HM2000. The samples were initially prepared by embedding in resin and grinding to a controlled roughness, followed by the application of an indentation force for a specified duration. The indentations were made in accordance with reference standards, with controlled distances between indentations and relative to the sample edges. Fig. 16 Hardness measurement zones in laser-cut 51CrV4 steel samples: ( a ) method for taking samples for microhardness testing ( b ) matrix of identation, ( c ) load–displacement (F–h) curves for laser-cut 51CrV4 steel, ( d ) load–displacement (F–h) curve for laser-cut 51CrV4 steel and normalized",
+        "The results of the microhardness evaluation were compared between the laser-cut samples and those subsequently subjected to a normalizing heat treatment, in order to quantify how the laser processing influenced the mechanical properties. Table  7  shows the results, presenting the average Vickers hardness values and the associated uncertainties. Table 7 The Vickers hardness values obtained State HV s U(X.) As-laser cut 282.42 7.30 6.11 Normalized 269.21 4.89 4.09",
+        "In Table  7 , the Vickers hardness value is given in the HV column, s represents the standard deviation, and U(X.) represents the standard uncertainty of the mean.",
+        "Microstructural changes in the HAZ were identified through metallographic analysis, for which samples were taken from the cut area; the samples were then embedded in resin and polished using an automated system, followed by polishing and chemical engraving to reveal the microstructure. The results confirm that laser cutting induces local microstructural transformations, including grain refinement and the formation of metastable phases, such as martensite.",
+        "To characterize the interface between the HAZ and the base material, comparative analyses at the macro, meso, and microstructural levels were used. The SEM images in Fig.  17  highlight the structural changes induced by processing, comparing the laser-cut samples with the normalized ones. Fig. 17 SEM analysis of the boundary zone between the heat-affected zone (HAZ) and bulk material, comparing: ( a ) Laser-cut structure, ( b ) Laser-cut and normalized structure (to eliminate HAZ effects). The images highlight structural changes at macro, meso, and microstructural levels",
+        "The microstructure in the laser-cut zone is characterized by a heterogeneous phase distribution, including regions with refined grains and martensite content (see Fig.  18 a). These microstructural characteristics are correlated with a limited mechanical response, manifested by a reduction in ductility and energy absorption capacity under load. This behavior is attributed to thermally induced internal stresses and microstructural inhomogeneities generated during the laser cutting process. Fig. 18 Microstructural analysis of auxetic structures under different processing routes: ( a ) Laser-cut (heterogeneous pearlite-ferrite mixture with local martensite in HAZ), ( b ) Laser-cut + normalized (refined pearlitic structure), ( c ) Laser-cut + quenched (predominantly martensitic structure). The images highlight the impact of thermal processing on microstructure and mechanical properties",
+        "Applying a normalizing treatment to structures after laser cutting results in a refined pearlitic structure, characterized by a uniform distribution of hardness and an optimal balance between strength and toughness (Fig.  18 b).",
+        "Applying a quenching treatment to the structures produces a predominantly martensitic structure, which ensures high strength but may reduce ductility (Fig.  18 c).",
+        "These microstructural transformations in the heat-affected zone (HAZ) alter the balance between strength, stiffness, and ductility at the ligament scale. The martensitic and locally refined regions formed near the cutting edge increase the hardness and yield strength of the material, while the associated microstructural gradients and thermally induced residual stresses reduce ductility and energy absorption capacity. In this way, the HAZ behaves as a stiff and comparatively brittle zone embedded in a more ductile ferrito-pearlitic matrix, providing the microstructural basis for the experimentally observed combination of an enhanced elastic response and a reduction in toughness of the laser-cut auxetic structures.",
+        "These findings suggest that thermomechanical processing (laser cutting) significantly influences material properties, allowing them to be tailored to the specific requirements of industrial applications."
+      ]
+    },
+    {
+      "heading": "Mechanical behavior",
+      "paragraphs": [
+        "To evaluate the influence of thermomechanical processing on the mechanical properties of auxetic structures, tensile test specimens were subjected to standardized tensile tests. The aim was to determine the mechanical characteristics and to compare the performance of materials processed by laser cutting with that of materials subjected to subsequent heat treatments. The results of the tensile tests (Fig.  19 ) indicate an increase in tensile strength for the laser-cut specimens compared to the normalized ones. Fig. 19 Tensile stress–displacement responses of laser-cut and normalized auxetic specimens, highlighting the influence of laser cutting on mechanical properties (see Table  8 ) Table 8 The influence of technology on the behavior of auxetic structures Technology Strenght Ductility Laser cutting without treatment High Moderate Laser cutting with normalizing heat treatment Moderate High Laser cutting with spring tempering after quenching High Low",
+        "This difference is attributed to the formation of a heat-affected zone (HAZ) around the cut edge. Although the HAZ contributes to an increase in tensile strength, it is also associated with a reduction in elongation at break and, consequently, in ductility—aspects that are essential for evaluating the reliability of auxetic structures under load.",
+        "A comparative analysis of the tension-displacement curves reveals distinct mechanical behavior between the specimens processed by laser cutting and those subjected to normalization. Furthermore, the laser-cut specimens exhibit similar behavior, albeit with different magnitudes, compared to those subjected to quenching followed by tempering, suggesting that thermomechanical processing significantly influences the material’s structural response.",
+        "It can be concluded that the quality of auxetic structures is directly determined by the processing technology used, as highlighted in Table  8 ."
+      ]
+    },
+    {
+      "heading": "The behaviour of cycle loading",
+      "paragraphs": [
+        "To answer the question of how auxetic structures behave over time under cyclic compressive loads, three types of structures, identical in shape but processed differently after laser cutting, were tested comparatively. Thus, one structure underwent normalizing heat treatment, one underwent spring tempering after quenching, and one was left exactly as it was after laser cutting.",
+        "The compressive behavior of the tested structures for the three types of processing is illustrated in Fig.  20 , which highlights the differences in stiffness and ductility between the normalized, laser-cut, and quenched-and-tempered structures. Thus, the structures subjected to quenching followed by tempering exhibit high stiffness but are characterized by brittle behavior after maximum loading, while the normalized structures exhibit moderate stiffness and increased deformation capacity. Fig. 20 Load–Displacement (N–mm) curves for: normalized structure S_n (blue line), laser-cut structure S_l (orange line), spring tempering after quenching structure S_tq (red line)",
+        "The visual assessment of the auxetic structures, shown in Fig.  21 , indicates that the normalized structures exhibit considerable strength and deformability without compromising the integrity of the ligaments. In contrast, the structures subjected to alternative treatments, laser cutting or heat treatment followed by tempering, exhibit ligament rupture under cyclic loading. Fig. 21 Auxetic structures where, ( a ) initial structure, and tested structures for: ( b ) Laser-cut structure (ligament rupture observed); ( c ) normalized (large deformation, no ligament rupture); ( d ) spring tempering structure after quenching (ligament rupture observed). The mechanical performance variations are attributed to changes induced by laser cutting technology, as highlighted in the microstructural analysis",
+        "Analysis of the load–displacement curves for structures processed by laser cutting and normalization shows that plastic flow begins at a low level of displacement and load (Fig.  22 a). Compared to similar structures that were laser-cut without subsequent heat treatment (Fig.  22 b), laser cutting technology contributes to a significant increase in load-bearing capacity, along with an expansion of the elastic range. However, under cyclic loading, a decrease in load-bearing capacity is observed for structures processed exclusively by laser cutting, as shown by the comparison of the curves in Fig.  22 c and d. Fig. 22 Load–Displacement (N–mm) curves for auxetic structures under cyclic loading, comparing: ( a ) Normalized structure ( R e  reached at 0.5–0.6 mm, ~ 6000 N), ( b ) Laser-cut structure (improved strength by ~ 50%, superior elasticity of 0.1–0.2 mm), (c) Normalized structure ( F max  reached), (d) Laser-cut structure ( F max  reached after 10 load cycles in  R e  range). The results highlight the impact of laser cutting and heat treatment on mechanical behavior"
+      ]
+    },
+    {
+      "heading": "Rezults and discussion",
+      "paragraphs": []
+    },
+    {
+      "heading": "Elastic regime behavior ( R p )",
+      "paragraphs": [
+        "A comparative analysis of the load–displacement curves under elastic conditions highlights how the investigated auxetic structures respond to cyclic compressive loads. Figure  23  illustrates these behaviors for anti-tetrachiral and hexachiral configurations. The results demonstrate differences in effective stiffness and in the stability of the structural response under repeated loading. Fig. 23 Load–Displacement (N–mm) in the elastic range for auxetic structures: ( a ) S_A_2.5_1.5 (anti-tetrachiral), ( b ) S_H_2.5_1.5 (hexachiral). The results highlight differences in effective stiffness (slope F–δ) and repeatability under repeated loading; anti-tetrachiral structures show a more homogeneous overlap of curves up to δ = 0.4 mm",
+        "Anti-tetrachiral structures exhibit more stable behavior and superior repeatability of the load–displacement curves within the considered range, compared to hexachiral structures, which show a more pronounced deviation in the superposition of experimental data. This difference suggests that the internal geometry of anti-tetrachiral structures ensures a more uniform distribution of stresses and a superior ability to return to the initial state after the application and removal of cyclic loading.",
+        "For the other geometric configurations evaluated, no further investigations were conducted in the elastic range, as their behavior is considered to be similar. Significant differences will be observed only in the force required to achieve a certain displacement, as well as in the tendency of certain geometries to develop local instabilities at high applied load values."
+      ]
+    },
+    {
+      "heading": "Plastic deformation near the Yield point ( R e )",
+      "paragraphs": [
+        "After evaluating the elastic behavior, the auxetic structures were subjected to an incremental cyclic load until reaching the yield point ( R e ), associated with the onset of plastic deformation. The experimental protocol (see Fig.  14 ) was applied to all the mentioned geometric configurations to analyze how the structures respond to repetitive loading near the yield limit and to identify general behavioral trends.",
+        "Figure  24  illustrates the evolution of the load–displacement curves for anti-tetrachiral structures, recorded around the  R e  point. The results indicate a progressive decrease in effective stiffness with repeated cycles, manifested by the need to apply increasingly lower force levels to achieve the same displacement level. Fig. 24 Load–Displacement (N–mm) in cyclic compression around the onset of yielding (  R e ) for anti‑tetrachiral auxetic structures: ( a ) S_A_2.5_2.0 (detailed curve), ( b ) interval around  R e  for L_A_2.5_1.5, S_A_2.5_1.5, and L_A_2.5_2.0. The results highlight the reduction in effective stiffness and the accumulation of plastic deformation under repeated loading",
+        "This degradation is attributed to the accumulation of plastic deformations in the ligaments, which, although small individually, lead to a reduction in the overall stiffness of the structure. The phenomenon reflects a transition toward plastic behavior and is characteristic of the region near the yield point.",
+        "Figure  25  complements this assessment, demonstrating that the diameter of the holes in the nodes does not have a significant influence on stiffness compared to the thickness of the ligaments. Thus, to achieve the same level of displacement, it is necessary to apply an approximately constant force, regardless of variations in the diameter of the holes, a finding also highlighted by the observations reported by Li et al. in [ 28 ]. Fig. 25 Load–Displacement (N–mm) in cyclic compression around the onset of yielding ( R e ) for anti‑tetrachiral auxetic structures: ( a ) S_A_2.5_2.0 (detailed curve), ( b ) trend interval for all structures. The results highlight the influence of ligament thickness (t) and node‑hole diameter (ØD) on stiffness and deformation behavior",
+        "Figures  26  and  27  illustrate the behavior of hexachiral structures under cyclic loading near the  R e  point. These structures, characterized by a greater number of ligaments, generally exhibit higher stiffness than anti-tetrachiral structures. However, following loading cycles, a decrease in stiffness is observed, similar to that recorded for anti-tetrachiral structures. Fig. 26 Load–Displacement (N–mm) in cyclic compression around the onset of yielding ( R e ) for hexachiral auxetic structures: ( a ) H_2.5_1.5, ( b ) S_H_2.5_1.5, ( c ) H_2.5_2.0, ( d ) S_H_2.5_2.0. The curves illustrate the evolution of stiffness and deformation under cyclic loading Fig. 27 Load–Displacement (N–mm) in cyclic compression around the onset of yielding ( R e ) for hexachiral auxetic structures: ( a ) S_H_2.5_1.5 (detailed curve), ( b ) trend interval for all structures. The results highlight the influence of ligament thickness (t) and node‑hole diameter (ØD) on stiffness and deformation behavior",
+        "For large geometric configurations, the tendency toward buckling and pronounced deformation led to the termination of tests after a limited number of cycles. For small structures, the tests were successfully completed, and the results confirm the general trend of reduced stiffness under cyclic loading near the yield point.",
+        "This analysis highlights that, regardless of the geometric configuration, the yield point ( R e ) represents a critical threshold for auxetic structures, at which plastic deformation begins to accumulate and stiffness starts to deteriorate. Geometric parameters, particularly the thickness of the ligaments, have a significant impact on the structural response, while the diameter of the holes in the nodes has a secondary impact on overall stiffness."
+      ]
+    },
+    {
+      "heading": "Compressive behavior and peak load ( F max )",
+      "paragraphs": [
+        "In accordance with the experimental protocol shown in Fig.  14 , the structures were subjected to compression testing until ligament fracture initiation, which corresponds to the point at which the maximum force ( F max ) applied to the structure was reached.",
+        "Figure  28  shows a load–displacement (F–δ) response characterized by substantial deformation capacity before failure occurs in the ligaments. The slope of the F–δ curve reflects sensitivity to local geometric parameters, particularly ligament thickness; thus, configurations with thinner ligaments exhibit reduced overall stiffness and a larger amplitude of pre-failure displacements, while thicker ligaments result in more pronounced stiffness and a limited range of deformation before failure occurs. Fig. 28 Load–Displacement (N–mm) in compression up to the maximum load (F_max) for anti-tetrachiral auxetic structures (height: 50.5 mm): ( a ) F–δ curve; ( b ) deformed structure (ligament breakage after δ > 4 mm). The results highlight the influence of ligament thickness on deformation and stiffness",
+        "To evaluate the effects of loading on the load-bearing capacity up to  F max , S_A_2.5_1.5 and S_A_2.5_2.0 structures were analyzed, both during the first loading to failure and after repeated cyclic loading up to the near-yield point ( R e ). The evolution of the Load–Displacement (F–δ) curves under these conditions is shown in Fig.  29 . Fig. 29 Load–Displacement (N–mm) in compression up to the maximum load ( F max ) for anti‑tetrachiral auxetic structures: ( a ) S_A_2.5_1.5; ( b ) S_A_2.5_2.0. The curves illustrate the effect of repeated loading on load‑bearing capacity and the influence of ligament thickness on stiffness and failure mode",
+        "A comparison of the responses indicates that repeated loading alters both the load-bearing capacity and the failure mode, while the influence of ligament thickness remains decisive for stiffness and for local instability and rupture mechanisms. Thus, the geometric parameterization controls the trade-offs between stiffness, flexibility, and compressive toughness.",
+        "The displacement values obtained via FEA, described in subSect.  3.1 , and from the mechanical tests presented in this section are compared in Table  9 . Table 9 Comparison of displacement (δ) values derived from Load–Displacement (F–δ) responses in finite element analysis (FEA) and mechanical testing for auxetic structures; the agreement validates the FEA model’s predictive capability for structural response",
+        "The correlation of experimental data with numerical results confirms the ability of FEA models to reproduce the response trends and displacement levels of auxetic structures, providing a robust basis for extrapolation, parametric calibration, and structural optimization in similar design scenarios."
+      ]
+    },
+    {
+      "heading": "Conclusions",
+      "paragraphs": [
+        "This study proposes and validates an experimental and numerical framework for the design and fabrication of anti-tetrachiral and hexachiral metallic auxetic structures using technology that is accessible on an industrial scale. By integrating finite element analysis (FEA), photoelasticity, and cyclic mechanical testing, the work demonstrates the feasibility and structural advantages of these configurations, with direct applications in industry.",
+        "The main conclusions of these studies are summarized below: The FEA analysis of auxetic structures was validated by the experimental results presented in Table  9 , which means that FEA can be reliably used in the design phase of auxetic structures. The use of FEA provides accurate predictions of displacements and stresses in the analyzed structures. The photoelasticity method was used to validate and supplement the numerical results obtained through FEA simulation, providing a qualitative understanding of stress distribution in auxetic structures, an aspect insufficiently addressed in the existing literature. The results highlight that the thickness of the ligaments (t) significantly influences the stiffness of the structures, while the diameter of the holes in the nodes (ØD) has a limited impact, allowing designers to control structural behavior as early as the design phase. The laser cutting process generates a heat-affected zone (HAZ), which alters the material’s microstructure, improving elasticity but reducing toughness. The study recommends applying a normalizing treatment to restore the initial properties, an essential aspect for practical applications. Cyclic loading tests on the structures demonstrated that hexachiral structures exhibit superior stiffness in the elastic range, while anti-tetrachiral structures offer superior stability under repetitive loads and a greater capacity for deformation before failure, aspects critical for applications in dynamic environments. The results indicate that repetitive loading up to the yield point ( R e ) significantly reduces the strength of auxetic structures, highlighting the need to avoid such stresses in applications requiring the long-term maintenance of mechanical properties.",
+        "The conclusions can also be extended to additive manufacturing processes for the design of structures with controllable auxetic properties, or the integration of these structures into industrial applications. The proposed approaches can be adapted for other geometric configurations or materials, allowing for the customization of mechanical properties according to specific application requirements.",
+        "However, the results also present certain limitations that require attention in future research. The effects of the HAZ on long-term properties, as well as the complexity of integrating them into numerical models, remain aspects that warrant further study. Furthermore, the study focuses on metallic materials and 2D configurations, and extending it to 3D geometries could provide a more comprehensive understanding of auxetic behavior. Future directions include experimental validation of the results on actual products, the development of numerical models that incorporate HAZ effects and cyclic loading, as well as the study of heat treatments to improve structural robustness."
+      ]
+    }
+  ],
+  "tables": [
+    {
+      "caption": "Mechanical properties of polycarbonate and 51CrV4 steel used for FEA and experimental validation",
+      "headers": [
+        "Material",
+        "[MPa]",
+        "[MPa]",
+        "[MPa]",
+        "[%]",
+        "",
+        "[g/cm 3 ]"
+      ],
+      "rows": [
+        [
+          "51CrV4",
+          "455.0",
+          "698.0",
+          "6.6 × 10 5",
+          "22.5",
+          "206 HBW",
+          ""
+        ],
+        [
+          "Polycarbonate",
+          "55 … 77",
+          "61 … 69",
+          "2.2 × 10 5",
+          "6 … 7",
+          "90–95 Shore D",
+          "1.15–1.2"
+        ]
+      ],
+      "header_groups": [
+        {
+          "label": "Properties",
+          "start_col": 2,
+          "end_col": 7
+        },
+        {
+          "label": "Material",
+          "start_col": 1,
+          "end_col": 1
+        },
+        {
+          "label": "Rp0,2*",
+          "start_col": 2,
+          "end_col": 2
+        },
+        {
+          "label": "Rm*",
+          "start_col": 3,
+          "end_col": 3
+        },
+        {
+          "label": "E**",
+          "start_col": 4,
+          "end_col": 4
+        },
+        {
+          "label": "Elongation",
+          "start_col": 5,
+          "end_col": 5
+        },
+        {
+          "label": "Hardness",
+          "start_col": 6,
+          "end_col": 6
+        },
+        {
+          "label": "Densitate",
+          "start_col": 7,
+          "end_col": 7
+        }
+      ],
+      "table_alignment_status": "resolved",
+      "row_provenance": [
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 7
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 7
+          }
+        ]
+      ],
+      "tbody_alignment_status": "resolved"
+    },
+    {
+      "caption": "Order of magnitude of the photoelastic constant for the model under consideration",
+      "headers": [],
+      "rows": [
+        [
+          "Set 1"
+        ],
+        [
+          "F [N]",
+          "isochromatic order, k",
+          "\\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${\\sigma}_{o}$$\\end{document}  [N/mm 2 ]",
+          "\\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${\\sigma}_{omed}$$\\end{document}  [N/mm 2 ]"
+        ],
+        [
+          "140.407",
+          "2",
+          "1.142",
+          "1.329"
+        ],
+        [
+          "257.548",
+          "3",
+          "1.397"
+        ],
+        [
+          "382.756",
+          "4.3",
+          "1.449"
+        ],
+        [
+          "Set 2"
+        ],
+        [
+          "F [N]",
+          "isochromatic order, k",
+          "\\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${\\sigma}_{o}$$\\end{document}  [N/mm 2 ]",
+          "\\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${\\sigma}_{omed}$$\\end{document}  [N/mm 2 ]"
+        ],
+        [
+          "138.242",
+          "2",
+          "1.125",
+          "1.260"
+        ],
+        [
+          "267.074",
+          "3.2",
+          "1.358"
+        ],
+        [
+          "319.136",
+          "4",
+          "1.298"
+        ],
+        [
+          "Set 3"
+        ],
+        [
+          "F [N]",
+          "isochromatic order, k",
+          "\\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${\\sigma}_{o}$$\\end{document}  [N/mm 2 ]",
+          "\\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${\\sigma}_{omed}$$\\end{document}  [N/mm 2 ]"
+        ],
+        [
+          "134.160",
+          "2",
+          "1.092",
+          "1.337"
+        ],
+        [
+          "263.795",
+          "3.1",
+          "1.385"
+        ],
+        [
+          "377.550",
+          "4",
+          "1.536"
+        ]
+      ],
+      "header_groups": [],
+      "table_alignment_status": "no_header",
+      "row_provenance": [
+        [
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          },
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          },
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          },
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          },
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          },
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          },
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          },
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          },
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          },
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          },
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          },
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          },
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          },
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          },
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          },
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          },
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          },
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          },
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          },
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          },
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          },
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          },
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          },
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          },
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          },
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          },
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          },
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          },
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          },
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          },
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          }
+        ]
+      ],
+      "tbody_alignment_status": "no_headers_to_target"
+    },
+    {
+      "caption": "The Vickers hardness values obtained",
+      "headers": [
+        "State",
+        "HV",
+        "s",
+        "U(X.)"
+      ],
+      "rows": [
+        [
+          "As-laser cut",
+          "282.42",
+          "7.30",
+          "6.11"
+        ],
+        [
+          "Normalized",
+          "269.21",
+          "4.89",
+          "4.09"
+        ]
+      ],
+      "header_groups": [],
+      "table_alignment_status": "resolved",
+      "row_provenance": [
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 4
+          }
+        ]
+      ],
+      "tbody_alignment_status": "resolved"
+    },
+    {
+      "caption": "The influence of technology on the behavior of auxetic structures",
+      "headers": [],
+      "rows": [
+        [
+          "Laser cutting without treatment",
+          "High",
+          "Moderate"
+        ],
+        [
+          "Laser cutting with normalizing heat treatment",
+          "Moderate",
+          "High"
+        ],
+        [
+          "Laser cutting with spring tempering after quenching",
+          "High",
+          "Low"
+        ]
+      ],
+      "header_groups": [
+        {
+          "label": "Strenght",
+          "start_col": 2,
+          "end_col": 3
+        }
+      ],
+      "table_alignment_status": "unresolved",
+      "row_provenance": [
+        [
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          },
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          },
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          },
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          },
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          },
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          },
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          }
+        ]
+      ],
+      "tbody_alignment_status": "no_headers_to_target"
+    }
+  ]
+}

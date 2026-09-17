@@ -1,0 +1,2474 @@
+{
+  "doi": "10.1007/s42452-026-08244-6",
+  "title": "Systematic optimization of process variables in copper hardness measurement through Taguchi-based experimental design and ANOVA",
+  "abstract": "Abstract Hardness testing plays a crucial role in assessing the mechanical strength and surface resistance of metallic materials. Copper, widely used in electrical and structural applications, requires careful hardness evaluation to ensure performance reliability. This study optimizes the hardness testing process for copper using the Taguchi design of experiments combined with analysis of variance (ANOVA). Four process parameters—indentation location, dwell time, testing temperature, and loading duration—are examined to determine their individual and interactive effects on Rockwell hardness. The optimal configuration is identified as indentation location at Level 2, dwell time at Level 1, temperature at Level 3, and loading duration at Level 3, producing a hardness value of 34.53 HRB, which aligns with the target value. ANOVA results show that temperature and loading duration are the most influential parameters, while the interaction between indentation position and temperature represents the strongest combined effect. The findings demonstrate that the Taguchi–ANOVA approach provides a reliable and efficient framework for optimizing mechanical testing.",
+  "journal": "Discover Applied Sciences",
+  "year": "2026",
+  "sections": [
+    {
+      "heading": "Introduction",
+      "paragraphs": [
+        "Hardness testing—at macro, micro and nano scales—measures resistance to localized plastic deformation and remains a core characterization method because it is fast, accessible, and correlates with other mechanical properties (e.g., yield strength) when properly interpreted. Modern practice emphasizes explicit reporting of testing parameters (indenter geometry, peak load, loading/unloading rates, dwell/hold time, indent spacing and distance from edges) because each affect measured hardness and repeatability; dwell time and loading rate particularly influence measured values through time-dependent plasticity (indentation creep) and elastic recovery. Instrumented nanoindentation has expanded capability to measure modulus, creep, and strain-rate sensitivity via controlled loading protocols (constant strain rate, hold/relaxation tests), making it possible to extract richer time-dependent material behavior beyond a single hardness number [ 1 ,  2 – 3 ].",
+        "Mechanical alloying and powder metallurgy of Brass–AlN composites, involving high-energy ball milling followed by sintering, showed that higher AlN content improves hardness, density, and overall mechanical performance, while SEM and EDAX confirmed uniform dispersion and reduced porosity [ 4 ,  5 – 6 ]. In a similar vein, copper parts fabricated via metal fused filament fabrication—a process where metal-polymer filaments are printed and sintered—demonstrated that infill patterns strongly affect hardness, strength, wear, and internal microstructure as observed through SEM [ 7 ]. These findings collectively emphasize that both material composition and processing methods play a crucial role in determining mechanical behavior and microstructural features of metals and composites.",
+        "Metrology and methodological reviews also stress indentation size effect (ISE), pile-up/sink-in phenomena and substrate or geometry interference as critical confounding factors in small-scale hardness. For coatings and thin films, the ratio of indentation depth to film thickness (RID) must be controlled or a composite-hardness model used to extract the film-only hardness. Mapping protocols (gridded indents, high-throughput nanoindentation mapping) are recommended for heterogeneous materials to reveal spatial variability rather than relying on single indents. Standards (ASTM/ISO instrumented indentation and microhardness standards) and reviews summarizing high-speed nanoindentation approaches reinforce these recommendations. [ 8 ,  9 ,  10 – 11 ]",
+        "In metals, hardness links closely to microstructure (grain size, dislocation density, precipitates) and processing history; it is widely used as a fast proxy for strength and wear resistance. Numerous studies show that indentation responses in metals are strongly dependent on testing protocol: loading ramp profile, peak load, and dwell time affect measured hardness and apparent modulus, while thermal conditions (test temperature or pre-treatment such as annealing/aging) shift dislocation mobility and therefore hardness. Instrumented nanoindentation is used to quantify rate sensitivity and indentation creep in metals and alloys, while high-temperature nanoindentation techniques have been developed to study temperature-dependent hardness. Position-dependent effects (proximity to edges, grain boundaries, or weld zones) are routinely reported in metallic systems, driving the adoption of mapping and statistical sampling strategies. [ 12 ,  13 ,  14 – 15 ]",
+        "Methodological advances include high-speed nanoindentation mapping (HSNM), improved standards for thermal stabilization during high-temperature indentation, and new protocols to decouple ISE from material behavior by combining loading-mode variations and continuous measurement of activation volumes during loading. Reviews and studies also highlight the need to report loading ramp durations, dwell times, and environmental conditions explicitly; advanced simulation tools (molecular dynamics and large-scale simulations) complement experiments by revealing atomistic mechanisms under varied loading rates, positions and temperatures. These developments enable richer interrogation of time-dependent and size-dependent deformation mechanisms in both model and engineering materials. [ 16 ,  17 ,  18 – 19 ]",
+        "Copper (FCC, high thermal and electrical conductivity) displays indentation behavior that is highly sensitive to microstructure and testing protocol. Electrodeposited and electroplated Cu coatings show clear dwell-time dependence—longer holds promoting creep and often producing lower apparent hardness at a fixed peak load; composite-hardness models are used to separate coating and substrate contributions. Nanoindentation mapping and MD simulations indicate pronounced indentation-position or edge effects in monocrystalline copper: indents near free edges or grain boundaries produce lower apparent hardness and different pile-up patterns because of altered stress fields and slip system activation. Thermal history (cold work vs. anneal, aging) strongly modifies hardness; elevated test temperatures generally lower hardness due to enhanced dislocation mobility and thermally activated mechanisms. [ 3 ,  20 ,  21 ,  22 ,  23 – 24 ]",
+        "Research has focused on optimizing the hardness of copper and its alloys using a variety of computational and experimental tools. Machine learning method have been applied to predict and enhance the hardness of copper-based alloys, demonstrating the ability to accurately model the relationship between alloy composition and mechanical properties [ 25 ]. An optimization algorithm has also been employed to improve both hardness and conductivity of copper alloys, particularly CuNi₂Si₁, highlighting the efficiency of these methods in material design [ 19 ]. Additionally, high-entropy copper alloys have been designed using strategies that combine deep neural networks with data reconstruction, aiming to achieve superior hardness while balancing other material properties [ 26 ]. Predictive modeling approaches, including machine learning models, have been widely used to forecast the mechanical performance of copper-based composites, enabling data-driven optimization of hardness [ 21 ]. Experimental optimization methods, such as grey models applied to friction stir processed copper composites, have further demonstrated the potential to enhance hardness and other mechanical characteristics through systematic parameter optimization [ 25 ].",
+        "Studies have applied the Taguchi method and ANOVA to optimize the hardness of copper and its alloys. Yu [ 27 ] employed the method to minimize non-uniformity in copper electroplating and analyzed the effect of process parameters on hardness using ANOVA. Kiran and Prasanna [ 28 ] optimized turning operation parameters for copper-based alloys, demonstrating how Taguchi design and ANOVA can enhance surface hardness and machinability. Permanasari [ 29 ] utilized multistage artificial aging on Al-Cu alloys, applying Taguchi and ANOVA to identify optimal aging conditions for improved hardness and toughness. Poulose and Selvakumar [ 30 ] investigated copper diamond composites, using the Taguchi method to optimize wear resistance and hardness, with ANOVA confirming the significance of key factors. Haiba et al. [ 31 ] studied intercritical annealing parameters on dual-phase steel and highlighted how Taguchi and ANOVA can effectively determine the temperature and soaking time that maximize hardness. Collectively, these studies underscore the effectiveness of Taguchi design and ANOVA in systematically optimizing copper and copper-based materials for enhanced hardness.",
+        "Taguchi methods and ANOVA have been widely applied across various manufacturing processes to optimize parameters and evaluate their significance. The study assessed how cutting speed, feed, and depth of cut influence key machining responses—material removal, machining duration, and surface finish—during the turning of GFRP composites. Using a Taguchi L9 design, the experiments were structured to determine how these parameters affect surface quality and overall process behavior through mean and variance analyses. The findings showed that feed rate primarily controls roughness, spindle speed governs machining time, and depth of cut has the strongest effect on removal rate [ 32 ]. Also, A study on GFRP end-milling showed that Taguchi L27 experiments and ANOVA effectively identified how cutting conditions influence removal rate, machining time, and surface finish [ 33 ].",
+        "Although numerous studies have utilized Taguchi-oriented Design of Experiments (DOE) to refine processing variables in copper and its alloys, the combined influence of loading duration, thermal conditions, indentation positioning, and dwell period on hardness characterization has not been comprehensively examined. The present work aims to close this specific research gap.",
+        "Table  1  summarizes studies on copper and copper-alloy hardness testing, focusing on four key parameters: loading ramp (L), thermal conditions (T), indentation position (P), and dwell period (D), as well as whether interactions among these parameters were evaluated. It shows that while individual studies investigated one or two parameters—for example, Du et al. [ 2 ] simulated loading rates and mapped edge positions, but did not vary thermal conditions or experimentally test dwell interactions—none of the selected works systematically considered all four parameters together. Similarly, Mladenović et al. [ 3 ] accounted for dwell and substrate effects but ignored loading ramp and interactions, and Poulose and Selvakumar [ 30 ] optimized wear resistance and hardness in copper diamond composites using Taguchi and ANOVA, but did not vary loading ramp, indentation position, or dwell parameters [ 8 ]. Sun et al. [ 15 ] explored new loading modes but did not integrate thermal, position, or dwell variations [ 16 ], whereas the high-temperature nanoindentation review by Merle [ 14 ] provided guidance on all parameters but only partially addressed interactions [ 18 ]. Overall, the table highlights a consistent gap in the literature: the lack of comprehensive studies evaluating all test-protocol and thermal factors together, including their interactions, which represents the novelty of the present research.",
+        "Table 1 Comparative table for the parameter selectin and their interactions # Paper L (loading) T (thermal) P  (position) D (dwell) Interactions Key gap 1 Du et al. Yes No Yes Partial No Position studied; experimental dwell/thermal interactions missing [ 2 ] 2 Mladenović et al. No Yes No Yes No Dwell and substrate considered; no loading-duration or interaction analysis [ 3 ] 3 Poulose and Selvakumar No Yes No No No Process thermal optimization; test-protocol variables not varied [ 30 ] 4 Sun et al. Yes No No No No Loading-mode methodology strong; not applied to Cu with combined parameters [ 15 ] 5 Merle Partial Yes No Partial Partial Review: highlights need for systematic combined studies [ 14 ]",
+        "Although several investigations have explored individual variables affecting the hardness response of copper, the integrated impact of loading duration, test temperature, indentation site, and dwell period has not been systematically analyzed. In this work, these factors are evaluated concurrently through the Design of Experiments (DOE) framework to achieve optimized testing conditions that enhance accuracy and repeatability. The study seeks to identify the most influential parameters along with their optimal levels, thereby supporting more consistent and standardized hardness evaluation practices. To the authors’ knowledge, this represents the first comprehensive attempt to simultaneously examine all four parameters within copper hardness testing, offering a distinctive contribution to material characterization research."
+      ]
+    },
+    {
+      "heading": "Methodology",
+      "paragraphs": [
+        "The methodology adopted in this work applies a structured strategy to refine copper hardness testing through the Design of Experiments (DOE), as presented in Fig.  1 . Initially, the research objective was defined, focusing on enhancing the reliability and accuracy of hardness evaluation. Key influencing factors—such as indentation location, Dwell time, temperature, and loading time—were then identified, and their levels were systematically established. An experimental matrix was subsequently constructed using the DOE framework to minimize trial numbers while capturing factor interactions effectively. Hardness measurements were performed on the prepared specimens following this matrix. The collected data were analyzed using ANOVA to quantify the selected parameters on the response. A validation stage was finally conducted to confirm the findings and recommend the most suitable testing configuration, thereby contributing to improved reproducibility and precision in copper hardness assessment.",
+        "Fig. 1 Methodology flowchart: copper hardness testing optimization (DOE)"
+      ]
+    },
+    {
+      "heading": "Problem description",
+      "paragraphs": [
+        "Copper hardness evaluation is affected by several factors, including load duration, test temperature, indentation position, and dwell period; however, a structured framework to study their combined influence is still limited. Conventional methods typically assess these parameters in isolation, which can result in variability and less reliable outcomes. To overcome this, the present work employs the Design of Experiments (DOE) with Taguchi’s approach to streamline and optimize the testing process. The proposed flowchart demonstrates a step-by-step methodology, beginning with factor selection and progressing to verification, with the goal of enhancing the accuracy, reproducibility, and overall consistency of copper hardness assessments."
+      ]
+    },
+    {
+      "heading": "Taguchi orthogonal array",
+      "paragraphs": [
+        "Taguchi’s methodology provides a practical framework for experiment planning, utilizing orthogonal arrays to minimize the required number of trials while maintaining robustness across engineering applications. This streamlined design helps conserve both time and resources [ 34 ]. In this study, the Taguchi technique is applied to determine the best settings for the chosen parameters and to evaluate their relative contributions to the response. The four selected factors, along with their respective levels, are presented in Table  2 .",
+        "Table 2 The indentation location  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${ (P}_{1})$$\\end{document} , the dwell time \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${ (P}_{2})$$\\end{document} , Temperature \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${(P}_{3})$$\\end{document} , and loading time  (P4) \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${\\varvec{P}}_{1}$$\\end{document}  (mm) \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${\\varvec{P}}_{2}$$\\end{document}  (sec) \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${\\varvec{P}}_{3}$$\\end{document}  (°C) \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${\\varvec{P}}_{4}$$\\end{document}  (sec) Level 1 2 2 15 5 Level 2 6 4 26 10 Level 3 – 6 36 15",
+        "In contrast to conventional approaches that primarily rely on previous studies, the present investigation determines the parameter set—comprising loading duration, indentation site, and thermal condition—through expert-driven assessment and its direct applicability to hardness testing practice. The L18 orthogonal array was selected to structure the experiments efficiently, given the number of factors and their levels in this study. This array is particularly suitable when handling one factor at two levels and several factors at three levels, which matches the setup of the current work. By using L18, we can examine the main effects and certain interactions without conducting a full factorial design, reducing the number of required experiments while retaining statistical rigor.",
+        "The parameter ranges for indentation location, dwell time, testing temperature, and loading duration were established based on prior studies, initial trial runs, and practical considerations for industrial hardness testing. These ranges ensure that the experiments explore meaningful variations in hardness while remaining realistic and manageable. Overall, employing the L18 OA along with carefully chosen parameter levels enables a systematic, statistically sound, and resource-efficient approach to optimizing the hardness testing process, as summarized in Table  3 .",
+        "Table 3 L 18  orthogonal array of Taguchi Trial number \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${P}_{1}$$\\end{document} \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${P}_{2}$$\\end{document} \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${P}_{3}$$\\end{document} \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${P}_{4}$$\\end{document} 1 1 1 1 1 2 1 1 2 2 3 1 1 3 3 4 1 2 1 1 5 1 2 2 2 6 1 2 3 3 7 1 3 1 2 8 1 3 2 3 9 1 3 3 1 10 2 1 1 3 11 2 1 2 1 12 2 1 3 2 13 2 2 1 2 14 2 2 2 3 15 2 2 3 1 16 2 3 1 3 17 2 3 2 1 18 2 3 3 2"
+      ]
+    },
+    {
+      "heading": "Experimental setup",
+      "paragraphs": [
+        "Rockwell hardness characterization was performed on fully hardened copper specimens to quantify their resistance to localized plastic deformation. Measurements were conducted using the INNOVATEST VERSUS 700 universal hardness platform, which supports Rockwell, Vickers, Brinell, and Knoop scales (Fig.  2 ). This instrument incorporates automated force application, a motorized indenter turret, and a digital touchscreen interface with integrated software, enabling fine control, efficient data logging, and minimized operator bias. To ensure metrological traceability and mitigate systematic error, specimens were standardized to identical dimensions, and their testing surfaces were polished sequentially with graded abrasive media until a mirror-like finish was achieved, thereby reducing surface topography effects on indentation response.",
+        "During testing, each sample was precisely centered and stabilized on the anvil to prevent misalignment artifacts. For every condition specified in the L18 Taguchi array, three replicates were executed, and mean values were utilized in the analysis to suppress random variability. The low variance observed across replicates confirmed procedural repeatability, while the controlled preparation protocol and rigorous test environment reduced both instrumental and environmental uncertainties. These measures collectively guarantee that the reported data possess high reliability, reproducibility, and robustness for subsequent statistical evaluation.",
+        "Fig. 2 Hardness test machine (INNOVATEST VERSUS 700)",
+        "The Rockwell hardness procedure evaluates material resistance by quantifying the residual depth of indentation produced under a controlled loading sequence. The test begins with the application of a minor preload, which serves to seat the specimen securely and establish a zero-reference datum. Subsequently, a major load is applied and maintained for a prescribed dwell period before being released. The difference in penetration depth between the preload and the fully applied load is recorded by the system, and this residual displacement forms the basis of the hardness value, calculated in accordance with Eq.  1 . 1 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$HR=N-\\frac{h}{S}$$\\end{document}",
+        "In this expression, HR represents the Rockwell hardness value, while h represents the measured indentation depth (mm). For the Rockwell B scale, the constants are defined as  N = 130 N  and  S = 0.002 mm , which translate the penetration depth into a standardized hardness index consistent with ASTM E18 requirements. The exact values of these constants differ according to the selected indenter geometry and testing scale. Owing to its rapid testing cycle, straightforward digital readout, and limited need for surface conditioning, the Rockwell method is extensively adopted in engineering practice. It is particularly effective for assessing the hardness of brass and related metallic alloys [ 35 ,  36 ]."
+      ]
+    },
+    {
+      "heading": "Result and discussion",
+      "paragraphs": [
+        "The Taguchi methodology leverages the Signal-to-Noise (S/N) ratio as a quantitative metric to evaluate process stability, incorporating both the central tendency and variability of the response. Under the Nominal-the-Best (NTB) criterion, the objective is to constrain the response as closely as possible to a predetermined target, with deviations in either direction deemed suboptimal [ 37 ,  38 ]. For the hardness data presented in Table  3 , the S/N ratio is determined according to Eq.  2 .",
+        "2 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${\\text{S/N}} = 10\\log _{{10}} \\left( {\\frac{{{{\\bar{\\text{y}}}}^{2} }}{{{\\text{s}}^{2} }}} \\right)$$\\end{document}",
+        "Where  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\bar{\\text{y}}$$\\end{document} the mean of the experimental data and  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${s}^{2}$$\\end{document} is the variance.",
+        "This representation guarantees that an elevated S/N ratio corresponds to enhanced process consistency and precision, with outcomes closely aligned to the target value. Such an approach is particularly valuable in quality management contexts, where minimizing variability is of paramount importance.",
+        "Eighteen experimental runs were executed utilizing a Taguchi orthogonal array, selected in accordance with different parameters and their respective levels. This experimental framework facilitates a systematic and resource-efficient evaluation of the individual and interactive effects of multiple parameters on the hardness response, while significantly reducing the total number of trials required. The data obtained from the trials were subsequently analyzed to derive the S/N ratios, providing a quantitative assessment of process reliability and robustness. The computed S/N ratio values corresponding to each experimental condition are compiled in Table  3 .",
+        "Among the experimental trials, Trial 18 exhibited the minimum hardness, registering a Ni value of 29.29 alongside an S/N ratio of 28.586. Conversely, the maximum hardness was observed in Trial 10, with a Ni measurement of 42.14 and an S/N ratio of 25.542. The accompanying micrographs provide a visual context for the samples associated with these extreme values. The specimen with the highest hardness demonstrates superior resistance to plastic deformation, whereas the lowest-hardness sample may reflect heterogeneities in processing conditions or intrinsic variations in the material’s microstructural characteristics.",
+        "Based on the S/N ratio values compiled in Table  4 , the subsequent phase of analysis is directed toward identifying the optimal levels of the selected process parameters—namely, indentation location, Dwell time, temperature, and loading duration—to attain maximal process consistency and the most desirable hardness response. This determination is facilitated through the Taguchi response table, which aggregates the mean S/N ratio for the level of every factor. Systematic comparison of these mean values across the various levels enables the identification of the specific settings that most effectively augment process robustness and performance.",
+        "Table  5  provides a consolidated overview of the signal-to-noise (S/N) analysis used to determine which parameter levels contribute most effectively to enhancing hardness. Within the Taguchi framework, the level exhibiting the highest mean S/N ratio is regarded as the most reliable setting, as it typically reflects lower variability and superior response quality. By examining the S/N trends for all factors, Table  5  highlights the comparative influence of each parameter on hardness and supports the refinement of the experimental setup. Based on this assessment, the optimal process conditions are identified by selecting the levels corresponding to the maximum average S/N ratio for each factor. Consequently, the proposed optimal configuration consists of: indentation location at Level 2, dwell time at Level 1, temperature at Level 3, and loading time at Level 3, which are expected to deliver the most consistent and favorable hardness results.",
+        "Table 4 S/N  ratio for all test cases Trial number Test 1 Test 2 Test 3 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${\\varvec{N}}_{\\varvec{I}}$$\\end{document} S/ N  Ratio 1 34.6 35.15 35.26 35.00 39.91 2 35.2 36.99 36.5 36.23 31.86 3 37.1 38.11 38.23 37.81 35.70 4 32.2 33.51 33.42 33.04 33.09 5 34.12 35.66 35.26 35.01 32.83 6 30.15 30.75 30.56 30.49 39.95 7 31.52 32.8 32.75 32.36 32.99 8 33.15 34.07 34.13 33.78 35.78 9 30.12 30.9 30.75 30.59 37.37 10 41.46 42.51 42.45 42.14 37.08 11 34.25 35.2 35.13 34.86 36.37 12 30.07 30.55 30.45 30.36 41.57 13 40.12 41.89 41.75 41.25 32.45 14 33.26 34.69 34.75 34.23 32.17 15 31.1 32.13 32.26 31.83 33.99 16 40.13 41.08 41.14 40.78 37.14 17 33.09 34.07 34.16 33.77 35.10 18 29.06 29.37 29.45 29.29 43.06",
+        "Table 5 Response table of Taguchi \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${\\varvec{P}}_{1}$$\\end{document} : Indentation Location \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${\\varvec{P}}_{2}$$\\end{document}  : Dwell Time \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${\\varvec{P}}_{3}$$\\end{document}  : Temperature P4: Loading time Level 1 35.50 37.08 35.45 35.97 Level 2 36.55 34.08 34.02 35.79 Level 3 – 36.91 38.61 36.30 Difference |ΔT| 1.05 3.00 4.59 0.51 Rank 3 2 1 4",
+        "Figure  3  presents a line plot illustrating the mean S/N ratios across different levels of the principal process variables: indentation position, dwell duration, temperature, and loading period. This visualization highlights how hardness outcomes are influenced by variations in these factors. The highest S/N ratio for each parameter corresponds to its optimal condition. Accordingly, the optimal settings are identified as indentation position at level 2, dwell duration at level 1, temperature at level 3, and loading period at level 3. These findings indicate that the chosen levels enhance measurement reliability by reducing variability. Furthermore, temperature and dwell duration emerge as the most influential parameters, followed by indentation position and loading period. Overall, the graph demonstrates the effectiveness of the Taguchi approach in determining parameter levels that yield consistent and repeatable hardness values, further supported by the confirmation analysis in Fig.  4",
+        "Fig. 3 S/N ratio vs. optimum levels of each parameters",
+        "To verify the optimization obtained through the Taguchi approach, an experimental run was performed using the determined optimal factor levels. The measured Rockwell hardness value of 34.53 supports the reliability of these conditions in producing stable and enhanced hardness results, as illustrated in Fig.  4 .",
+        "Fig. 4 Rockwell hardness result at optimum parameter levels based on Taguchi method",
+        "Figure  5  presents the interaction plot of S/N ratios for indentation location, dwell time, temperature, and loading time. The patterns reveal that hardness behavior is shaped by both the individual effects of each factor and their mutual interactions. Among these, temperature and dwell time show the strongest influence, while indentation location has a moderate effect and loading time the least. The crossing of lines indicates notable interactions between parameters, emphasizing their combined impact. These results highlight the effectiveness of the Taguchi method in determining factor settings that reduce variation and improve the consistency of hardness results.",
+        "Fig. 5 Interaction plot for the selected parameters",
+        "After determining the optimal factor levels using the Taguchi approach, an Analysis of Variance (ANOVA) was carried out to evaluate both the statistical relevance and the percentage contribution of each parameter to the variation in hardness. The ANOVA framework includes calculating the degrees of freedom (DOF), sum of squares (SS), mean squares, and the contribution percentage for every factor. The sum of squares corresponding to a given parameter,  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${SS}_{{P}_{i}}$$\\end{document}  is derived using Eq.  3 , while the overall sum of squares  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${SS}_{T}$$\\end{document}  is obtained based on Eq.  4 . The residual error, expressed as the error sum of squares  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${SS}_{E}$$\\end{document} ​, accounts for the unexplained variation and is obtained using Eq.  5  [ 39 ]:",
+        "3 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${SS}_{{P}_{i}}= \\sum _{i=1}^{{K}_{A}}(\\frac{{A}_{i}^{2}}{{n}_{{A}_{i}}})-\\frac{{(\\sum _{i=1}^{N}{x}_{i})}^{2}}{N},$$\\end{document} 4 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${SS}_{T}= \\sum _{i=1}^{{K}_{A}}{x}_{i}^{2}-\\frac{{(\\sum _{i=1}^{N}{x}_{i})}^{2}}{N},$$\\end{document} 5 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${SS}_{E}=\\left({SS}_{T}-\\sum _{i=1}^{{K}_{A}}{SS}_{{P}_{i}}\\right),$$\\end{document}",
+        "In these equations,  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${A}_{i}$$\\end{document}  represents the sum of the experimental responses at level  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$i$$\\end{document} , while  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${n}_{{A}_{i}}$$\\end{document}  indicates the number of observations corresponding to the level. The term  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${x}_{i}$$\\end{document} refers to the response obtained from each trial,  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$N$$\\end{document}  denotes the overall number of measurements, and  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${k}_{A}$$\\end{document}  signifies the total count of factors considered.",
+        "The degrees of freedom associated with each factor ( F i ) as well as the overall degree of freedom ( F t ) are determined using Eqs.  6  and  7  respectively [ 39 ]: 6 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${F}_{i}= {x}_{i}-1,$$\\end{document} 7 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${ F}_{t}=N-1.$$\\end{document}",
+        "The error term’s residual degrees of freedom are determined using Eq.  8 . 8 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${ F}_{e}={F}_{t}-\\sum _{i=1}^{{K}_{A}}{F}_{i}$$\\end{document}",
+        "The proportionate contribution of each parameter to the overall variability is obtained using Eq.  9 . The error sum of squares  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${SS}_{e}$$\\end{document}  accounts for the part of the total variation in hardness results that is not explained by the chosen control factors. In cases where a fixed number of factors are included in the analysis, the error term is derived by subtracting the sum of squares of all individual parameters from the total sum of squares. For example, when four factors are evaluated, the error sum of squares is determined according to Eq.  10  [ 39 ]. 9 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${ P}_{{P}_{i}}=\\frac{{SS}_{{P}_{i}}}{{SS}_{T}}\\times 100\\%$$\\end{document} 10 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${SS}_{e}= {SS}_{T}- {SS}_{{P}_{1}}-{S}_{S{P}_{2}}-{SS}_{{P}_{3}}-{SS}_{{P}_{4}}$$\\end{document}",
+        "The ANOVA results presented in Table  6  demonstrate that temperature (P3) is the most dominant factor, contributing 38.52% to the total variation in hardness. This is followed by the interaction between indentation location and temperature (P1 P3) ,  which accounts for 22.72% ,  and loading time (P4) with 14.30%. Dwell time (P2) also shows a moderate effect ,  contributing 8.54% to the variation. In contrast ,  the remaining factors and interactions ,  including P1 and P1 P2, have relatively small influences, each contributing less than 5%. The error term is only 1.88%, indicating that the model successfully captures the majority of variability, thereby confirming the reliability of the selected parameters and their interactions in explaining hardness outcomes.",
+        "The criteria for selecting parameter interactions were based on their practical relevance and potential influence on hardness outcomes. Interactions were considered when a mechanistic link between factors could affect material response during indentation, as suggested by preliminary tests and literature. Notably, the interaction between indentation location and temperature (P1P3) was highlighted due to its significant effect, contributing 22.72% to the total hardness variation according to ANOVA. Other interactions with contributions below 5% were examined but found to have limited impact, supporting the focus on the most influential combinations.",
+        "Table 6 ANOVA and proportion of contribution Source DF SS MS (Variance) F-ratio Contribution P1 (indentation location in mm) 1 33.62 33.62 84.9 4.43% P2(Dwell time) 2 64.90 32.45 82.0 8.54% P3 (Temperature) 2 292.64 146.32 369.6 38.52% P4 (Loading Time) 2 108.66 54.33 137.2 14.30% P1 (indentation location in mm) *P2(Dwell time) 2 31.64 15.82 40.0 4.16% P1 (indentation location in mm) *P3(Temperature) 2 172.62 86.31 218.0 22.72% P1 (indentation location in mm) *P4 (Loading Time) 2 8.03 4.02 10.1 1.06% P2(Dwell time) *P3 (Temperature) 4 33.42 8.36 21.1 4.40% Error 36 14.25 0.396 – 1.88% Total 53 759.79 – – 100.00%",
+        "Including the mean square (MS) and F-ratio in Table  6  provides a clearer assessment of factor influence. The MS values reflect the variability each parameter introduces, while the F-ratio compares this variability to the experimental error. Larger F-ratios indicate stronger statistical impact. From these results, temperature and its interaction with indentation location stand out as the most influential factors on hardness.",
+        "The optimized hardness testing parameters—indentation location at Level 2, dwell time at Level 1, temperature at Level 3, and loading duration at Level 3—offer practical guidance for industrial applications, ensuring consistent and reproducible Rockwell hardness measurements of copper. Controlling these key factors reduces variability caused by thermal and mechanical influences, standardizes testing across different components, and enhances reliability in quality control and performance evaluation, supporting more accurate assessment of material properties in manufacturing settings.",
+        "Temperature and loading duration have the strongest effect on hardness because they regulate the thermal environment and mechanical loading conditions that dictate how the material deforms under the indenter. Higher temperatures diminish the resistance of copper by inducing localized softening, while extending the loading period increases the duration of applied stress, enabling deeper indentation and greater accumulated plastic strain. As reflected in the ANOVA results, these factors dominate the overall variation in hardness, whereas the remaining parameters contribute far less due to their limited influence on the deformation process."
+      ]
+    },
+    {
+      "heading": "Conclusion",
+      "paragraphs": [
+        "The present investigation effectively optimized the hardness testing process for copper through the integration of the Taguchi experimental design and ANOVA. The study comprehensively assessed the influence of four main parameters—indentation location, dwell time, testing temperature, and loading duration—as well as their interdependent influences on Rockwell hardness outcomes. Based on statistical evaluation, the most favorable parameter configuration was identified as indentation location at Level 2, dwell time at Level 1, temperature at Level 3, and loading duration at Level 3. Under these optimized conditions, the experiment achieved a hardness value of 34.53 HRB, which closely matched the target value, verifying the effectiveness of the applied optimization framework.",
+        "The ANOVA results indicated that both temperature and loading duration had the most dominant effects on hardness performance, indicating their crucial role in controlling deformation and recovery mechanisms during indentation. Furthermore, the interaction between indentation position and temperature was identified as the most influential among the studied combinations, revealing that localized thermal variation significantly alters the mechanical response of copper surfaces.",
+        "In summary, the findings validate the Taguchi–ANOVA approach as a powerful and efficient methodology for optimizing mechanical testing procedures. This work not only advances understanding of the process–property relationships governing copper hardness but also establishes a scientific basis for future experimental and simulation-based studies exploring thermal–mechanical behavior in metallic materials."
+      ]
+    }
+  ],
+  "tables": [
+    {
+      "caption": "Comparative table for the parameter selectin and their interactions",
+      "headers": [
+        "#",
+        "Paper",
+        "L (loading)",
+        "T (thermal)",
+        "P  (position)",
+        "D (dwell)",
+        "Interactions",
+        "Key gap"
+      ],
+      "rows": [
+        [
+          "1",
+          "Du et al.",
+          "Yes",
+          "No",
+          "Yes",
+          "Partial",
+          "No",
+          "Position studied; experimental dwell/thermal interactions missing [ 2 ]"
+        ],
+        [
+          "2",
+          "Mladenović et al.",
+          "No",
+          "Yes",
+          "No",
+          "Yes",
+          "No",
+          "Dwell and substrate considered; no loading-duration or interaction analysis [ 3 ]"
+        ],
+        [
+          "3",
+          "Poulose and Selvakumar",
+          "No",
+          "Yes",
+          "No",
+          "No",
+          "No",
+          "Process thermal optimization; test-protocol variables not varied [ 30 ]"
+        ],
+        [
+          "4",
+          "Sun et al.",
+          "Yes",
+          "No",
+          "No",
+          "No",
+          "No",
+          "Loading-mode methodology strong; not applied to Cu with combined parameters [ 15 ]"
+        ],
+        [
+          "5",
+          "Merle",
+          "Partial",
+          "Yes",
+          "No",
+          "Partial",
+          "Partial",
+          "Review: highlights need for systematic combined studies [ 14 ]"
+        ]
+      ],
+      "header_groups": [],
+      "table_alignment_status": "resolved",
+      "row_provenance": [
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 7
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 8
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 7
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 8
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 7
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 8
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 7
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 8
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 7
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 8
+          }
+        ]
+      ],
+      "tbody_alignment_status": "resolved"
+    },
+    {
+      "caption": "The indentation location  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${ (P}_{1})$$\\end{document} , the dwell time \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${ (P}_{2})$$\\end{document} , Temperature \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${(P}_{3})$$\\end{document} , and loading time  (P4)",
+      "headers": [
+        "",
+        "\\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${\\varvec{P}}_{1}$$\\end{document}  (mm)",
+        "\\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${\\varvec{P}}_{2}$$\\end{document}  (sec)",
+        "\\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${\\varvec{P}}_{3}$$\\end{document}  (°C)",
+        "\\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${\\varvec{P}}_{4}$$\\end{document}  (sec)"
+      ],
+      "rows": [
+        [
+          "Level 1",
+          "2",
+          "2",
+          "15",
+          "5"
+        ],
+        [
+          "Level 2",
+          "6",
+          "4",
+          "26",
+          "10"
+        ],
+        [
+          "Level 3",
+          "–",
+          "6",
+          "36",
+          "15"
+        ]
+      ],
+      "header_groups": [],
+      "table_alignment_status": "resolved",
+      "row_provenance": [
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 5
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 5
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 5
+          }
+        ]
+      ],
+      "tbody_alignment_status": "resolved"
+    },
+    {
+      "caption": "L 18  orthogonal array of Taguchi",
+      "headers": [
+        "Trial number",
+        "\\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${P}_{1}$$\\end{document}",
+        "\\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${P}_{2}$$\\end{document}",
+        "\\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${P}_{3}$$\\end{document}",
+        "\\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${P}_{4}$$\\end{document}"
+      ],
+      "rows": [
+        [
+          "1",
+          "1",
+          "1",
+          "1",
+          "1"
+        ],
+        [
+          "2",
+          "1",
+          "1",
+          "2",
+          "2"
+        ],
+        [
+          "3",
+          "1",
+          "1",
+          "3",
+          "3"
+        ],
+        [
+          "4",
+          "1",
+          "2",
+          "1",
+          "1"
+        ],
+        [
+          "5",
+          "1",
+          "2",
+          "2",
+          "2"
+        ],
+        [
+          "6",
+          "1",
+          "2",
+          "3",
+          "3"
+        ],
+        [
+          "7",
+          "1",
+          "3",
+          "1",
+          "2"
+        ],
+        [
+          "8",
+          "1",
+          "3",
+          "2",
+          "3"
+        ],
+        [
+          "9",
+          "1",
+          "3",
+          "3",
+          "1"
+        ],
+        [
+          "10",
+          "2",
+          "1",
+          "1",
+          "3"
+        ],
+        [
+          "11",
+          "2",
+          "1",
+          "2",
+          "1"
+        ],
+        [
+          "12",
+          "2",
+          "1",
+          "3",
+          "2"
+        ],
+        [
+          "13",
+          "2",
+          "2",
+          "1",
+          "2"
+        ],
+        [
+          "14",
+          "2",
+          "2",
+          "2",
+          "3"
+        ],
+        [
+          "15",
+          "2",
+          "2",
+          "3",
+          "1"
+        ],
+        [
+          "16",
+          "2",
+          "3",
+          "1",
+          "3"
+        ],
+        [
+          "17",
+          "2",
+          "3",
+          "2",
+          "1"
+        ],
+        [
+          "18",
+          "2",
+          "3",
+          "3",
+          "2"
+        ]
+      ],
+      "header_groups": [],
+      "table_alignment_status": "resolved",
+      "row_provenance": [
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 5
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 5
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 5
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 5
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 5
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 5
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 5
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 5
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 8,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 8,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 8,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 8,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 8,
+            "source_col": 5
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 9,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 9,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 9,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 9,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 9,
+            "source_col": 5
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 10,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 10,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 10,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 10,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 10,
+            "source_col": 5
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 11,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 11,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 11,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 11,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 11,
+            "source_col": 5
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 12,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 12,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 12,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 12,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 12,
+            "source_col": 5
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 13,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 13,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 13,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 13,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 13,
+            "source_col": 5
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 14,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 14,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 14,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 14,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 14,
+            "source_col": 5
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 15,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 15,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 15,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 15,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 15,
+            "source_col": 5
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 16,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 16,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 16,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 16,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 16,
+            "source_col": 5
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 17,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 17,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 17,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 17,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 17,
+            "source_col": 5
+          }
+        ]
+      ],
+      "tbody_alignment_status": "resolved"
+    },
+    {
+      "caption": "S/N  ratio for all test cases",
+      "headers": [
+        "Trial number",
+        "Test 1",
+        "Test 2",
+        "Test 3",
+        "\\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${\\varvec{N}}_{\\varvec{I}}$$\\end{document}",
+        "S/ N  Ratio"
+      ],
+      "rows": [
+        [
+          "1",
+          "34.6",
+          "35.15",
+          "35.26",
+          "35.00",
+          "39.91"
+        ],
+        [
+          "2",
+          "35.2",
+          "36.99",
+          "36.5",
+          "36.23",
+          "31.86"
+        ],
+        [
+          "3",
+          "37.1",
+          "38.11",
+          "38.23",
+          "37.81",
+          "35.70"
+        ],
+        [
+          "4",
+          "32.2",
+          "33.51",
+          "33.42",
+          "33.04",
+          "33.09"
+        ],
+        [
+          "5",
+          "34.12",
+          "35.66",
+          "35.26",
+          "35.01",
+          "32.83"
+        ],
+        [
+          "6",
+          "30.15",
+          "30.75",
+          "30.56",
+          "30.49",
+          "39.95"
+        ],
+        [
+          "7",
+          "31.52",
+          "32.8",
+          "32.75",
+          "32.36",
+          "32.99"
+        ],
+        [
+          "8",
+          "33.15",
+          "34.07",
+          "34.13",
+          "33.78",
+          "35.78"
+        ],
+        [
+          "9",
+          "30.12",
+          "30.9",
+          "30.75",
+          "30.59",
+          "37.37"
+        ],
+        [
+          "10",
+          "41.46",
+          "42.51",
+          "42.45",
+          "42.14",
+          "37.08"
+        ],
+        [
+          "11",
+          "34.25",
+          "35.2",
+          "35.13",
+          "34.86",
+          "36.37"
+        ],
+        [
+          "12",
+          "30.07",
+          "30.55",
+          "30.45",
+          "30.36",
+          "41.57"
+        ],
+        [
+          "13",
+          "40.12",
+          "41.89",
+          "41.75",
+          "41.25",
+          "32.45"
+        ],
+        [
+          "14",
+          "33.26",
+          "34.69",
+          "34.75",
+          "34.23",
+          "32.17"
+        ],
+        [
+          "15",
+          "31.1",
+          "32.13",
+          "32.26",
+          "31.83",
+          "33.99"
+        ],
+        [
+          "16",
+          "40.13",
+          "41.08",
+          "41.14",
+          "40.78",
+          "37.14"
+        ],
+        [
+          "17",
+          "33.09",
+          "34.07",
+          "34.16",
+          "33.77",
+          "35.10"
+        ],
+        [
+          "18",
+          "29.06",
+          "29.37",
+          "29.45",
+          "29.29",
+          "43.06"
+        ]
+      ],
+      "header_groups": [],
+      "table_alignment_status": "resolved",
+      "row_provenance": [
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 6
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 6
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 6
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 6
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 6
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 6
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 6
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 6
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 8,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 8,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 8,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 8,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 8,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 8,
+            "source_col": 6
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 9,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 9,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 9,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 9,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 9,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 9,
+            "source_col": 6
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 10,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 10,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 10,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 10,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 10,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 10,
+            "source_col": 6
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 11,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 11,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 11,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 11,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 11,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 11,
+            "source_col": 6
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 12,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 12,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 12,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 12,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 12,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 12,
+            "source_col": 6
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 13,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 13,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 13,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 13,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 13,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 13,
+            "source_col": 6
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 14,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 14,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 14,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 14,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 14,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 14,
+            "source_col": 6
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 15,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 15,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 15,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 15,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 15,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 15,
+            "source_col": 6
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 16,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 16,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 16,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 16,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 16,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 16,
+            "source_col": 6
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 17,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 17,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 17,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 17,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 17,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 17,
+            "source_col": 6
+          }
+        ]
+      ],
+      "tbody_alignment_status": "resolved"
+    },
+    {
+      "caption": "Response table of Taguchi",
+      "headers": [
+        "",
+        "\\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${\\varvec{P}}_{1}$$\\end{document} : Indentation Location",
+        "\\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${\\varvec{P}}_{2}$$\\end{document}  : Dwell Time",
+        "\\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${\\varvec{P}}_{3}$$\\end{document}  : Temperature",
+        "P4: Loading time"
+      ],
+      "rows": [
+        [
+          "Level 1",
+          "35.50",
+          "37.08",
+          "35.45",
+          "35.97"
+        ],
+        [
+          "Level 2",
+          "36.55",
+          "34.08",
+          "34.02",
+          "35.79"
+        ],
+        [
+          "Level 3",
+          "–",
+          "36.91",
+          "38.61",
+          "36.30"
+        ],
+        [
+          "Difference |ΔT|",
+          "1.05",
+          "3.00",
+          "4.59",
+          "0.51"
+        ],
+        [
+          "Rank",
+          "3",
+          "2",
+          "1",
+          "4"
+        ]
+      ],
+      "header_groups": [],
+      "table_alignment_status": "resolved",
+      "row_provenance": [
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 5
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 5
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 5
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 5
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 5
+          }
+        ]
+      ],
+      "tbody_alignment_status": "resolved"
+    },
+    {
+      "caption": "ANOVA and proportion of contribution",
+      "headers": [
+        "Source",
+        "DF",
+        "SS",
+        "MS (Variance)",
+        "F-ratio",
+        "Contribution"
+      ],
+      "rows": [
+        [
+          "P1 (indentation location in mm)",
+          "1",
+          "33.62",
+          "33.62",
+          "84.9",
+          "4.43%"
+        ],
+        [
+          "P2(Dwell time)",
+          "2",
+          "64.90",
+          "32.45",
+          "82.0",
+          "8.54%"
+        ],
+        [
+          "P3 (Temperature)",
+          "2",
+          "292.64",
+          "146.32",
+          "369.6",
+          "38.52%"
+        ],
+        [
+          "P4 (Loading Time)",
+          "2",
+          "108.66",
+          "54.33",
+          "137.2",
+          "14.30%"
+        ],
+        [
+          "P1 (indentation location in mm) *P2(Dwell time)",
+          "2",
+          "31.64",
+          "15.82",
+          "40.0",
+          "4.16%"
+        ],
+        [
+          "P1 (indentation location in mm) *P3(Temperature)",
+          "2",
+          "172.62",
+          "86.31",
+          "218.0",
+          "22.72%"
+        ],
+        [
+          "P1 (indentation location in mm) *P4 (Loading Time)",
+          "2",
+          "8.03",
+          "4.02",
+          "10.1",
+          "1.06%"
+        ],
+        [
+          "P2(Dwell time) *P3 (Temperature)",
+          "4",
+          "33.42",
+          "8.36",
+          "21.1",
+          "4.40%"
+        ],
+        [
+          "Error",
+          "36",
+          "14.25",
+          "0.396",
+          "–",
+          "1.88%"
+        ],
+        [
+          "Total",
+          "53",
+          "759.79",
+          "–",
+          "–",
+          "100.00%"
+        ]
+      ],
+      "header_groups": [],
+      "table_alignment_status": "resolved",
+      "row_provenance": [
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 6
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 6
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 6
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 6
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 6
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 6
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 6
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 6
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 8,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 8,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 8,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 8,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 8,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 8,
+            "source_col": 6
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 9,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 9,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 9,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 9,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 9,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 9,
+            "source_col": 6
+          }
+        ]
+      ],
+      "tbody_alignment_status": "resolved"
+    }
+  ]
+}

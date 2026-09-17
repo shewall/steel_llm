@@ -1,0 +1,938 @@
+{
+  "doi": "10.1007/s00170-026-18557-w",
+  "title": "Formability of thin stainless steel bipolar plates for hydrogen fuel cells considering grained anisotropy",
+  "abstract": "Abstract This study presents a combined numerical and experimental investigation into the formability of thin super ferritic and austenitic stainless steel bipolar plates for hydrogen fuel cell. A finite element framework incorporating grained anisotropy is developed using a Voronoi tessellation-based approach in Abaqus/Explicit, where individual grains are randomly assigned true stress-strain curves derived from tensile tests to replicate the heterogeneous deformation behaviour of polycrystalline materials. Micro stamping simulations capture the evolution of equivalent stress, plastic strain, and thickness distribution across the formed micro-channel geometries. Corresponding stamping experiments are conducted on approximately 0.1 mm thick stainless steel sheets. The measured local thinning, channel depth, and overall geometry are used to validate the numerical predictions. Comparative analysis reveals that the super ferritic stainless steel exhibits lower ductility and greater sensitivity to geometric constraints. In contrast, the austenitic grade shows higher formability and more uniform material flow, resulting in reduced localised thinning and improved shape accuracy. The Voronoi-based model accurately predicts critical deformation characteristics for both alloys, supporting process design and optimisation to enhance the quality and reliability of bipolar plates. This work advances the understanding of microforming behaviour and provides practical insights for manufacturing hydrogen fuel cell components.",
+  "journal": "The International Journal of Advanced Manufacturing Technology",
+  "year": "2026",
+  "sections": [
+    {
+      "heading": "Introduction",
+      "paragraphs": [
+        "Hydrogen fuel cells, particularly proton exchange membrane fuel cells (PEMFCs), have gained significant attention in recent years due to their high energy efficiency, environmental friendliness, and scalability across diverse industries, from automotive to power generation systems. With the acceleration of decarbonisation and sustainable energy solutions, hydrogen fuel cells are being increasingly considered as viable alternatives to conventional internal combustion engines and grid-based power supplies. Among the various components of a fuel cell stack, bipolar plates play a vital role by serving as gas flow distributors, electrical conductors, and structural supports.",
+        "Among various candidate materials such as graphite (G) and G-polymer composite, austenitic stainless steel has emerged as a leading option for bipolar plate manufacturing. Compared to traditional graphite plates, which suffer from brittleness, machinability issues, and high cost, stainless steels offer a compelling combination of mechanical strength, corrosion resistance, workability, electrical conductivity, cost-efficiency, and higher durability. Stainless steels also enable thinner plate designs, facilitating more compact and lightweight fuel cell stacks, which are especially beneficial in transportation applications [ 1 ,  2 ]. However, austenitic stainless steels typically require protective coatings to satisfy fuel cell operating requirements, whereas ferritic stainless steels provide a promising low-cost alternative, as they can potentially be used without coatings while maintaining acceptable performance for bipolar plate applications.",
+        "In recent years, the industry has gravitated toward the use of ultra-thin stainless steel sheets, typically around 0.1 mm thick, for bipolar plate fabrication. This trend aligns with the broader drive toward miniaturisation, higher power density, and lower material usage. However, forming complex micro-channel geometries into such thin sheets introduces considerable challenges, such as the increased susceptibility to localised thinning, wrinkling, springback, and premature fracture, particularly during micro stamping or multi-stage forming operations [ 3 ,  4 – 5 ]. The increasing demand for compact, lightweight, and high-power density PEMFC stacks has therefore created a strong need for reliable forming strategies and predictive models for ultra-thin metallic bipolar plates. Furthermore, at such small scales, the conventional assumptions underlying plastic deformation, especially the notion of material isotropy, are no longer applicable. Due to the limited number of grains through the sheet thickness, local variations in grain morphology, crystallographic orientation, and mechanical response can significantly affect the material’s deformation behaviour. This causes heterogeneous deformation at the microscale, with grain-level characteristics influencing local strain distributions, stress concentrations, thinning behaviour, springback, dimensional accuracy, and ultimately the failure mechanisms [ 6 ]. Therefore, a modelling framework that can capture grain-level material heterogeneity is required to support reliable process design for ultra-thin bipolar plate manufacturing."
+      ]
+    },
+    {
+      "heading": "Related work and research gap",
+      "paragraphs": [
+        "To better understand and predict these microforming phenomena, various numerical simulations have been employed, and most notably those based on finite element (FE) analysis using continuum plasticity models. While widely used due to their efficiency and ease of implementation, conventional FE approaches often assume material homogeneity and isotropy, which limits their accuracy in ultra-thin sheet metal forming scenarios. Several studies have applied von Mises or simple anisotropic yield criteria to analyse channel forming, thinning, and springback behaviour during bipolar plate forming. These models can reasonably approximate macroscopic formability metrics such as thinning and channel depth, but they fail to predict the grain-level heterogeneity in plastic strain or stress localisation that can drive early failure in micro-formed components [ 7 ,  8 ,  9 – 10 ].",
+        "Recent studies have further advanced the forming simulation and process optimisation of metallic bipolar plates. Lan et al. [ 11 ] investigated stamping parameters and forming strategies for ultra-thin super ferritic stainless steel bipolar plates with a thickness of 0.1 mm, demonstrating the importance of die design and forming strategy for controlling thinning and improving shape accuracy. Gassler et al. [ 12 ] developed an efficient one-step process simulation strategy for metallic bipolar plate stamping and showed that strain and thickness predictions remain central challenges in high-resolution forming analysis of complex bipolar plate geometries. Wang et al. [ 13 ] examined deformation behaviour and scale effects in micro-channel hydroforming of ultra-thin titanium composite fuel cell bipolar plates, highlighting the influence of laminate thickness, grain size, friction condition, channel and ridge widths, and bending angle on micro-channel forming quality. These studies confirm that micro-channel forming of ultra-thin bipolar plates is strongly affected by geometry, contact conditions, and size-dependent deformation behaviour. However, most process-scale simulations still treat the material as homogeneous or rely mainly on continuum-level constitutive descriptions.",
+        "Recognising these limitations, researchers have increasingly turned to microstructure-sensitive models to connect mesoscale grain structure with macroscopic deformation behaviour. Crystal plasticity finite element models can explicitly account for crystallographic orientation, slip-system activity, and texture-dependent deformation, and have been applied to analyse size effects and formability in ultra-thin ferritic stainless steel sheets for bipolar plate applications [ 14 ,  15 ]. Nevertheless, CPFEM usually requires detailed crystallographic information, slip-system parameters, and texture data, and its computational cost can be high for process-scale simulations of complex bipolar plate geometries. Therefore, computationally efficient alternatives are still needed for practical forming analysis while maintaining sensitivity to material heterogeneity.",
+        "A particularly promising strategy uses Voronoi tessellation-based finite element models, discretising the microstructure into individual polycrystalline grains or representative heterogeneity regions of varied morphology and properties. In this study, the grain morphology is generated via Voronoi diagrams, with each polygon representing a grain or representative material region, and true stress-strain curves obtained from tensile tests are randomly assigned to these regions, introducing statistical heterogeneity to reflect the stochastic nature of deformation in polycrystalline metals. This approach has been effectively applied in micro compression and cross wedge rolling studies, where a centroidal Voronoi-based model incorporating grain size, shape, and deformability accurately captured strain variation in specimen core region and flow stress behaviour of deformed parts, revealing a strong dependence on grain size [ 16 ]. Another study optimised Voronoi mesh quality using a density function and Laplacian smoothing, which improved stability and accuracy in explicit dynamic simulation of microforming processes such as the micro deep drawing [ 17 ]. Furthermore, a micro flexible rolling model applied 3D Voronoi tessellation with statistically assigned grain properties to demonstrate the influence of grain size and heterogeneity on thickness directional springback behaviour of thin metallic strips [ 18 ].",
+        "The advantage of this grain-level modelling approach lies in its ability to reveal size effects on stress and strain distributions, thickness variations, surface quality, and dimensional accuracy of micro-formed parts. Within this framework, the influence of grain diversity on plastic flow, formability, and the development of defects or failure can also be accurately identified, which offers predictive capabilities significantly beyond those of conventional continuum models, particularly for thin foil forming where grain size, shape and properties exert a dominant influence on overall mechanical behaviour. More recent studies employing Voronoi-based FE models have further demonstrated their effectiveness in capturing surface roughness, springback, and uniaxial loading responses by accounting for grain-level heterogeneity [ 19 ,  20 – 21 ].",
+        "Despite the promise of these advanced grain-level methods, their application to bipolar plate manufacturing remains relatively underexplored. Simulation studies that incorporate the effects of microstructural features in the forming of complex bipolar plate geometries are still limited, and even fewer are supported by comprehensive experimental validation. Although both ferritic and austenitic stainless steels are widely used in industry, direct comparative investigations of their formability under consistent process conditions using microstructure-sensitive models have yet to be reported. Most existing research focuses on either continuum-level forming simulations, CPFEM-based forming limit analysis, or single-material investigations, typically involving ferritic stainless steel, and rarely extends to full-scale bipolar plate forming simulations or validation through detailed experimental methods [ 11 ,  12 ,  13 ,  14 – 15 ]. Therefore, further investigation is needed to establish a practical and experimentally validated modelling framework for material comparison, formability evaluation, and process optimisation in ultra-thin stainless steel bipolar plate manufacturing."
+      ]
+    },
+    {
+      "heading": "Research objectives and novelty",
+      "paragraphs": [
+        "Aiming to address these gaps, this study combines numerical and experimental approaches to investigate the formability of approximately 0.1 mm thick ferritic and austenitic stainless steel sheets for use in hydrogen fuel cell bipolar plates. A Voronoi tessellation-based grain-sensitive FE model is developed in Abaqus/Explicit, where each grain is assigned stress-strain data obtained from uniaxial tensile tests to capture the anisotropic and heterogeneous deformation behaviour typical of polycrystalline metals. This numerical framework enables detailed tracking of equivalent plastic strain, equivalent stress, and thickness variation across the micro-channel geometries formed during simulated stamping operations. To validate the model, experimental micro stamping tests are conducted using stainless steel sheets of both alloy types. Critical metrics such as the channel depth, local thinning, and geometry conformity are measured and compared with simulation predictions. The study further evaluates the relative formability of ferritic and austenitic stainless steels under identical process conditions, providing new insights into failure mechanisms, dimensional accuracy, and deformation localisation.",
+        "The novelty of this work lies in three aspects. First, a Voronoi tessellation-based grain-sensitive FE framework is developed for the micro stamping simulation of ultra-thin stainless steel bipolar plates, enabling material heterogeneity-affected stress, strain, and thinning behaviour to be captured beyond conventional isotropic modelling. Second, super ferritic stainless steel 470 and austenitic stainless steel 316 L are experimentally and numerically compared under identical tooling and forming conditions, providing direct evidence for material selection in ultra-thin metallic bipolar plate manufacturing. Third, the predictive capability of the isotropic and grain-sensitive models is assessed through quantitative comparison with experimentally measured channel depth, draft angle, and local thinning. This research advances the understanding of microforming in ultra-thin stainless steel sheets, and delivers a valuable tool for predicting and optimising bipolar plate fabrication. The outcomes are expected to aid manufacturers in selecting appropriate materials, tuning process parameters, and improving component reliability in next-generation hydrogen fuel cell systems."
+      ]
+    },
+    {
+      "heading": "Experimental materials and mechanical property evaluation",
+      "paragraphs": [
+        "Two commercial-grade stainless steel sheets, super ferritic stainless steel 470 and austenitic stainless steel 316 L, were selected as the experimental materials for this investigation. Both alloys are widely used in fuel cell bipolar plate manufacturing because of their corrosion resistance and mechanical stability, although they differ significantly in crystallographic structure, deformation behaviour, and formability [ 14 ,  15 ,  22 ,  23 ]. The materials were supplied in the annealed condition, with 470 having an initial thickness of 0.105 mm and 316 L of 0.1 mm. To provide mechanical parameters for grain-mimicked FE simulations, these sheets were subjected to mechanical property evaluation."
+      ]
+    },
+    {
+      "heading": "Ferritic stainless steel 470",
+      "paragraphs": [
+        "Uniaxial tensile tests were performed in three directions to evaluate the mechanical properties of the material in accordance with ISO 12086-2:2017 and GB/T 2039 − 2012 standards. To improve measurement accuracy and minimise inhomogeneous deformation, specimens were prepared with an initial gauge length and width of 8 mm and 1 mm, respectively, where the width-to-thickness ratio reached approximately 10:1. During testing, gauge length measurements were recorded using a non-contact, camera-based optical extensometer, while tensile loading was applied at a constant speed of 1 mm/min until specimen failure. The measured length and force data were then converted into true stress-strain data to generate the corresponding true stress-strain curves. The specimen geometry and dimensions are presented in Fig.  1 , while five groups of tensile properties and corresponding true stress-strain curves for ferritic stainless steel 470 are summarised in Table  1  and illustrated in Fig.  2 , respectively.",
+        "Fig. 1 Geometry and dimensions of the miniature tensile specimen used for uniaxial tensile testing of the ultra-thin stainless steel sheets. The specimen geometry was designed to improve measurement accuracy and minimise inhomogeneous deformation during testing",
+        "Table 1 Five groups of tensile properties of super ferritic stainless steel 470 Sample no. Yield stress (MPa) Tensile stress (MPa) Elongation (%)  F 1 573.49 773.46 18.26  F 2 545.00 766.37 18.66  F 3 541.47 756.23 18.34  F 4 569.72 760.63 18.72  F 5 554.96 755.91 18.14",
+        "Fig. 2 True stress-strain curves of super ferritic stainless steel 470 obtained from five tensile specimens. The curves correspond to the five samples listed in Table  1  and were used to define material properties for the finite element simulations"
+      ]
+    },
+    {
+      "heading": "Austenitic stainless steel 316 L",
+      "paragraphs": [
+        "Tensile testing of austenitic stainless steel 316 L was carried out using the same procedures as those applied to super ferritic stainless steel 470, ensuring direct comparability between the two materials. The results show that the austenitic alloy exhibits a lower yield strength but higher uniform elongation than that of the ferritic alloy, which is consistent with its face-centred cubic (FCC) crystal structure and associated slip system activity. Five groups of tensile properties and corresponding true stress-strain curves for austenitic stainless steel 316 L are summarised in Table  2  and illustrated in Fig.  3 , respectively.",
+        "Table 2 Five groups of tensile properties of austenitic stainless steel 316 L Sample no. Yield stress (MPa) Tensile stress (MPa) Elongation (%)  A 1 322.61 931.96 38.94  A 2 333.50 980.90 43.53  A 3 335.92 1012.97 45.73  A 4 339.01 997.30 43.74  A 5 346.92 1038.24 43.83",
+        "Fig. 3 True stress-strain curves of austenitic stainless steel 316 L obtained from five tensile specimens. The curves correspond to the five samples listed in Table  2  and were used to define material properties for the finite element simulations",
+        "Comparing the tensile characteristics of both materials, the yield plateau is pronounced in ferritic 470, leading to localised deformation and reduced strain uniformity during forming, whereas the absence of a yield plateau in austenitic 316 L promotes more uniform plastic deformation, resulting in better formability and surface quality. In summary, super ferritic stainless steel 470 exhibits higher strength but lower ductility, while austenitic stainless steel 316 L demonstrates greater elongation and strain-hardening capacity. These differences are primarily attributable to their distinct crystal structures, with FCC alloys offering more active slip systems and thus superior formability under comparable conditions [ 23 ,  24 ]."
+      ]
+    },
+    {
+      "heading": "Physical experiment and numerical simulation of micro stamping of bipolar plate",
+      "paragraphs": []
+    },
+    {
+      "heading": "Micro stamping experiment",
+      "paragraphs": [
+        "A desk-top micro stamping system was deployed to conduct the physical experiments. The setup comprises a precision press machine, micro stamping tooling sets, a programmable logic controller (PLC) for process control, a data logging unit, and a mechanical force sensor. The sensor continuously records the forming load during stamping and transmits the data to a computer through a serial communication interface. An overview of the experimental apparatus is shown in Fig.  4 . The press system can apply a maximum load of 30 kN, with a position accuracy of ± 0.002 mm and an adjustable press speed ranging from 0.1 mm/s to 5.0 mm/s.",
+        "Fig. 4 External view of the desk-top micro stamping system used for bipolar plate forming experiments. The system consists of a precision press machine, micro stamping tooling set, programmable logic controller (PLC), data logging unit, and mechanical force sensor",
+        "To satisfy both electrochemical performance and economic feasibility at the cell and stack levels, the design of the micro channels on bipolar plates plays a critical role in determining the overall efficiency of the fuel cell system, as proper channel geometry directly affects reactant distribution, water management, pressure drop, and current density uniformity across the active area [ 25 ,  26 – 27 ]. Several channel patterns were designed and evaluated based on manufacturability and functional requirements, as illustrated in Fig.  5 . Among these, pattern A was selected for detailed investigation because of its relatively simple geometry, high formability under micro stamping conditions, and suitability for compact fuel cell stacks.",
+        "The corresponding tooling design is shown in Fig.  6 , where Fig.  6  (a) presents the CAD model of the micro stamping tool set, consisting of a punch and a die, while Fig.  6  (b) displays the fabricated tool set made from high-strength tool steel to withstand repeated loading and minimise wear during stamping. Key geometric parameters of the micro channel design include a channel depth of 0.35 mm, a centre-to-centre spacing of 1.6 mm between adjacent channels, and a draft angle (α) of 21.8°, which facilitates demolding and reduces the risk of tool sticking or part damage during forming.",
+        "Fig. 5 Candidate micro-channel pattern designs for metallic bipolar plates considered in this study. Pattern A was selected for detailed investigation because of its relatively simple geometry, favourable formability, and suitability for compact fuel cell stack applications",
+        "Fig. 6 Micro stamping tooling set used for bipolar plate forming: ( a ) CAD model showing the punch and die configuration, and ( b ) fabricated tool set made from high-strength tool steel for repeated forming experiments",
+        "The micro stamping experiments were conducted under dry contact conditions without additional lubricant. Before forming, the working surfaces of the punch and die were cleaned using ethanol to reduce contamination at the sheet-tool interfaces. Although the surface roughness of the tooling was not quantitatively measured in this study, the punch and die surfaces were finished and inspected before testing to ensure stable contact conditions and minimise surface damage to the ultra-thin sheets. In the FE model, the dry contact condition was represented using a penalty friction formulation with a Coulomb friction coefficient of 0.1, while the tools were modelled as rigid surfaces without explicitly introduced surface roughness.",
+        "No blank holder was used in the present micro stamping setup. This was because the forming area and stamping depth were relatively small, and the ultra-thin sheet was sufficiently constrained by the punch-die contact and die support during forming. No obvious wrinkling was observed in the stamped samples, indicating that the selected tooling configuration provided adequate constraint for the present channel geometry. In addition, avoiding a blank holder reduced additional frictional resistance and allowed material to flow into the channel region more freely, which was beneficial for limiting excessive thinning in the ultra-thin sheets."
+      ]
+    },
+    {
+      "heading": "Experimental results",
+      "paragraphs": [
+        "Figure  7  shows the micro stamped bipolar plates fabricated from ferritic stainless steel 470 and austenitic stainless steel 316 L, along with magnified cross-sectional views of the micro channels obtained using a Nikon optical microscope. As can be seen, the overall quality of both formed parts is satisfactory, with no evidence of fractures or wrinkling. The maximum measured channel depths are 0.352 mm and 0.365 mm for 470 and 316 L, respectively, which are in close agreement with the design specification. However, the average draft angles reach up to 39.66° and 35.72° for 470 and 316 L, respectively. This is most likely due to the combined effects of elastic springback and restricted material flow, which lead to incomplete filling of the tool geometry and larger measured draft angles than the designed value.",
+        "Notable material thinning is observed at the channel ridge and groove corners, where the local thinning rate reaches approximately 39.83% and 27.33% for 470 and 316 L, respectively. In comparison, 316 L exhibits significantly lower thinning in these critical regions. This can be attributed to its superior ductility, which enables more continuous deformation and improved material flow in the corner regions during forming. Overall, the maximum thinning remains below 40%, with average thinning rates at the corner regions of 35.20% and 23.91% for 470 and 316 L, respectively, which are considered acceptable for practical industrial applications.",
+        "Fig. 7 Surface morphology and cross-sectional micro-channel profiles of the stamped bipolar plates observed using a Nikon optical microscope: ( a ) super ferritic stainless steel 470, and ( b ) austenitic stainless steel 316 L. The images show the formed channel geometry, local thinning regions, and overall forming quality after micro stamping"
+      ]
+    },
+    {
+      "heading": "Numerical simulation of micro stamping of bipolar plate",
+      "paragraphs": [
+        "To support performance prediction and process parameter optimisation, two FE modelling approaches were developed for bipolar plate micro stamping. The first model assumes the plate material to be isotropic, while the second incorporates grain-level material heterogeneity using Voronoi tessellation combined with spatially distributed true stress-strain curves."
+      ]
+    },
+    {
+      "heading": "FE model and simulation conditions",
+      "paragraphs": [
+        "Figure  8  illustrates the 3D FE model used in this study, consisting of five channels to balance geometric representativeness and computational efficiency. The punch and die were modelled as rigid surfaces using a combination of 4-node quadrilateral (R3D4) and 3-node triangular (R3D3) 3D rigid elements. The isotropic plate was assigned stress-strain data averaged from the aforementioned five groups of tensile curves for each type of stainless steel and was discretised using 4-node quadrilateral shell elements (S4R). The S4R shell elements were selected for the ultra-thin plate because the sheet thickness was much smaller than the in-plane dimensions of the formed micro channels. This element type is suitable for sheet metal forming simulations, as it can efficiently capture coupled membrane stretching and bending deformation, while allowing thickness variation to be evaluated from the shell section response. The reduced integration formulation also improves computational efficiency in explicit dynamic analysis.",
+        "To enhance computational accuracy, a finer mesh was applied in the contact and channel-forming regions between the plate and the tooling, where severe bending, stretching, and thinning were expected. Specifically, the mesh size in the plate’s contact area was set to 0.1 mm, while a coarser mesh of approximately 1.0 mm was used for the tool components to prevent numerical penetration into the deformable plate.",
+        "Surface-to-surface contact was defined for two interfaces, namely between the punch and the top surface of the plate, and between the die and the bottom surface of the plate. Tangential contact behaviour was modelled using a penalty friction formulation, with a friction coefficient of 0.1 applied to both contact pairs. Since the main interactions occurred at the defined tool-sheet interfaces during forming, surface-to-surface contact was adopted instead of general contact in this study. This formulation allows direct control of the contact pairs, friction coefficient, and master-slave surface assignment, which is beneficial for accurately modelling local tool-sheet interaction in the micro-channel forming region. Since no self-contact or uncontrolled contact interactions were expected, surface-to-surface contact was considered appropriate and computationally efficient for the present micro stamping simulations.",
+        "The forming process was simulated using a single loading step, during which the punch was displaced downward by 0.35 mm to replicate the experimental stamping conditions and achieve the final channel depth.",
+        "Fig. 8 3D FE model of the micro stamping process, including the rigid punch and die and the deformable ultra-thin stainless steel blank with five-channel geometry. A refined mesh was applied in the contact regions to improve the prediction accuracy of deformation and to prevent numerical penetration of the tool components into the deformable plate",
+        "To further enhance computational efficiency in the explicit dynamic simulations, a mass scaling factor of 1000 was used. To evaluate the influence of mass scaling on numerical accuracy, additional sensitivity simulations were conducted using the ferritic stainless steel 470 isotropic model, which was selected as a representative critical case as it exhibited stronger localised thinning and greater sensitivity to forming constraints. Mass scaling factors of 100, 500, and 1000 were compared, as summarised in Table  3 . The maximum ratio of kinetic energy to internal energy remained similar among the three cases and below 10% throughout the forming process. This indicates that inertial effects were limited and that the simulations were maintained under quasi-static deformation conditions. The predicted channel depth remained unchanged at 0.353 mm, while the maximum thinning varied only from 34.08% to 33.47% and the draft angle varied from 32.91° to 32.47°. These minor differences indicate that the adopted mass scaling factor of 1000 had negligible influence on the numerical predictions.",
+        "Table 3 Influence of mass scaling factor on the simulation results for ferritic stainless steel 470 isotropic model Mass scaling factor Max KE/IE (%) Channel depth (mm) Maximum thinning (%) Draft angle (°)  100 7.70 0.353 34.08 32.91  500 7.75 0.353 33.79 32.66  1000 7.77 0.353 33.47 32.47",
+        "In the present study, springback was evaluated based on the final unloaded geometry after punch removal. The explicit solver was used for both forming and unloading with the same contact definitions to maintain numerical consistency. After forming, the punch was withdrawn and the sheet was allowed to elastically recover. The final micro-channel profile and draft angle were then extracted from the unloaded geometry and compared with the experimentally measured cross-sectional profile. In the physical experiments, the stamped samples were removed from the tooling without external clamping before optical microscopy measurement; therefore, both the experimental and numerical geometries represent the free springback state."
+      ]
+    },
+    {
+      "heading": "Grained anisotropy",
+      "paragraphs": [
+        "To investigate the effects of grain-level anisotropy on bipolar plate micro stamping, a deformable plate model incorporating a 2D Voronoi tessellation was developed to statistically represent the heterogeneous material structure. This approach captures the geometric and topological characteristics of the material’s microstructure by partitioning the plate domain into randomly generated polygonal regions, each representing an individual grain.",
+        "The synthetic microstructure was generated by randomly distributing  M  seed points { P 1 ,  P 2 , …,  P M } within the simulation domain, with each point serving as the nucleus of a Voronoi cell. Each cell  V i  was then defined as the set of all points in the domain that are closer to nucleus  P i  than to any other nucleus  P j , according to the Euclidean distance 1 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\:{V}_{i}=\\left\\{x\\in\\:{\\mathbb{R}}^{2}\\left|\\parallel x-{P}_{i}\\parallel<\\parallel x-{P}_{j}\\parallel,\\forall\\:j\\ne\\:i\\right.\\right\\}$$\\end{document}",
+        "where  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\:{\\mathbb{R}}^{2}$$\\end{document}  represents the 2D simulation domain, and  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\:\\parallel x-P\\parallel$$\\end{document}  denotes the Euclidean distance between point  x  and nucleus  P  [ 28 ,  29 ].",
+        "These cells were then assigned distinct mechanical properties to emulate grained anisotropy in polycrystalline materials. Specifically, for each type of stainless steel, the five true stress-strain curves previously obtained from uniaxial tensile tests were used to represent mechanical heterogeneity among cells. Each cell was randomly assigned one of these fitted curves to reflect the material’s anisotropy.",
+        "The microstructure generation and property assignment were implemented in MATLAB, which exported a Python script containing the Voronoi geometry and assigned material attributes. This script was then imported into ABAQUS/CAE to construct the grain-sensitive finite element model. It should be noted that the characteristic Voronoi cell size used in this model was set to 1.5 mm as a computational scaling parameter, rather than the actual physical grain size of the stainless steel sheets. This value is not intended to be consistent with the approximately 0.1 mm sheet thickness, as the purpose of the scaled Voronoi representation was to introduce spatially distributed mechanical heterogeneity into the process-scale FE model while maintaining acceptable computational efficiency. Therefore, the Voronoi cells in the present model were constructed as representative heterogeneity regions rather than individual physical grains. This simplification enables the influence of local property variation on stress and strain distributions, as well as thinning behaviour, to be assessed; however, it does not resolve the full crystallographic grain structure through the sheet thickness.",
+        "The characteristic Voronoi cell size can influence the predicted deformation heterogeneity. A smaller cell size would introduce more frequent spatial variation in material properties, which may result in more dispersed local stress and strain fluctuations. Conversely, a larger cell size may increase deformation contrast between neighbouring regions and intensify localised stress, strain, and thinning in selected zones. In the present study, the characteristic cell size was selected as a compromise between the computational cost and the need to capture material heterogeneity at the process scale.",
+        "The use of 2D Voronoi tessellation is also a modelling simplification. Since the sheet thickness was much smaller than the in-plane dimensions of the formed micro channels, the plate was discretised using shell elements, and the Voronoi pattern was generated in the in-plane domain and assigned to these elements. This approach enables efficient simulation of complex micro-channel geometries in Abaqus/Explicit without the substantially higher computational cost associated with 3D Voronoi tessellation. Nevertheless, the simplified 2D approach does not explicitly describe through-thickness grain morphology, crystallographic orientation, or slip system activity. Therefore, it should be regarded as a grain-sensitive heterogeneous material model with acknowledged physical approximations.",
+        "A representative synthetic microstructure of the ferritic stainless steel 470 plate is shown in Fig.  9  (a), which consists of 605 Voronoi cells. As shown in Fig.  9  (b), a mixed shell-element mesh was used in the Voronoi-based grain-sensitive model to accommodate the irregular Voronoi cell pattern. The rectangular S4R shell elements were adopted as the dominant mesh type in the plate, while S3 triangular shell elements were used locally to smoothly connect the orthogonal rectangular mesh with the irregular Voronoi cell boundaries. This mixed use of S4R and S3 shell elements allowed the material properties of different Voronoi regions to be mapped onto the finite element mesh while maintaining compatibility with the irregular grain-sensitive pattern. In addition, the rolling direction was considered in the tensile characterisation of the ultra-thin sheets by preparing specimens along different directions. Although crystallographic orientations or direction-dependent slip systems were not explicitly assigned to individual Voronoi regions in the present model, the experimentally obtained true stress-strain curves were assigned to different Voronoi cells to incorporate direction-dependent mechanical response and spatial material heterogeneity.",
+        "Fig. 9 Representative Voronoi-based grain structure and corresponding mesh configuration for the ferritic stainless steel 470 plate, containing 605 Voronoi regions with each assigned one of the experimentally obtained true stress-strain curves to represent material heterogeneity: ( a ) Voronoi cell pattern with assigned material regions, and ( b ) enlarged mixed shell-element mesh from the selected region, showing the dominant S4R quadrilateral shell elements and locally used S3 triangular shell elements for maintaining mesh compatibility with the irregular Voronoi-based grain pattern"
+      ]
+    },
+    {
+      "heading": "Results and discussion",
+      "paragraphs": []
+    },
+    {
+      "heading": "",
+      "paragraphs": [
+        "This section analyses the numerical results for ferritic stainless steel 470 and austenitic stainless steel 316 L, focusing on the stress and strain distribution, thickness variation in both isotropic and grain-sensitive models. The forming shape, accuracy, and thinning conditions at critical regions, which help identify and locate potential defects or failures, are also compared and discussed regarding both types of stainless steel with reference to experimental results."
+      ]
+    },
+    {
+      "heading": "Super ferritic stainless steel 470",
+      "paragraphs": [
+        "Figure  10  presents the FE simulation results, including the distributions of equivalent stress, equivalent plastic strain, and thickness across the deformed bipolar plate using super ferritic stainless steel 470. To further evaluate dimensional accuracy and local formability, Fig.  11  shows both the overall formed geometry, highlighting critical regions such as large curves and changing geometries, as well as the cross section of the micro channels, including thickness distribution at the corner regions and draft angles corresponding to the simulated stamping depth and channel spacing.",
+        "As shown in Fig.  11 , no fracture is observed in the ferritic stainless steel plate at the maximum stamping depth of 0.353 mm and the channel spacing of 1.612 mm. This is consistent with experimental observations, and it indicates that the selected process parameters provide sufficient formability for ferritic stainless steel 470 under micro stamping conditions. The simulation identifies the most severe thinning of approximately 33.47% at the transition areas between the channel ridge and groove, particularly near the curved flanks. These regions experience the highest strain accumulation because of the combined effects of bending, stretching, and restricted material flow as the plate conforms to the tooling geometry. The location and magnitude of thinning closely match experimental measurements, verifying the predictive accuracy of the simulation framework.",
+        "Significant stress and strain concentrations are also observed at the turning areas of the micro channels, as well as at the corner regions of both the ridges and grooves. These features act as deformation intensifiers due to abrupt changes in curvature and localised constraint, increasing the risk of thinning and potential failure under more severe forming conditions, such as reduced spacing between adjacent channels and increased complexity of channel patterns [ 11 ,  30 ]. However, in the present case, the material remains within safe forming limits, as indicated by the absence of fracture, wrinkling, or excessive thinning beyond the commonly accepted threshold of 40%.",
+        "Figure  12  presents the simulation results that consider grained anisotropy, including the distributions of equivalent stress, plastic strain, and thickness across the formed plate. Compared with the isotropic simulation, the anisotropic model produces a more heterogeneous stress field, reflecting the influence of individual grain properties on load transfer. Although the overall localisation pattern is still governed by geometric features such as turning regions and corner zones, the anisotropic case shows sharper stress peaks and reduced stress uniformity. The equivalent plastic strain distribution also reveals stronger localisation, with regions containing certain grain properties accumulating higher strain and exhibiting larger gradients than those predicted in the isotropic case. This behaviour leads to locally intensified thinning, as depicted in Fig.  12  (c). As shown in Fig.  13 , the maximum thinning remains approximately 37.70% at the ridge-to-groove transition. However, the inclusion of grained anisotropy produces closer agreement with experimental draft angles and thinning patterns, particularly with respect to the spatial distribution of peak thinning zones. This demonstrates that the incorporation of grain-level anisotropy improves the predictive capability of the model while confirming that the material remains within safe forming limits at the maximum stamping depth of 0.353 mm.",
+        "The overall formed geometry exhibits high shape accuracy, with well-defined channels and restricted springback, indicating stable process performance and good die filling. Such dimensional accuracy is critical for bipolar plates used in fuel cells, where channel uniformity directly affects reactant flow and sealing capability [ 31 ]. The strong agreement between simulation and experiment supports the validity of the modelling approach, particularly the incorporation of grain-level anisotropy, for capturing local deformation behaviour of ferritic stainless steel in this micro sheet metal forming.",
+        "Fig. 10 Simulated distributions of ( a ) equivalent stress, ( b ) equivalent plastic strain, and ( c ) thickness across the formed super ferritic stainless steel 470 bipolar plate using the isotropic material model",
+        "Fig. 11 Simulated geometry of the formed super ferritic stainless steel 470 bipolar plate using the isotropic material model: ( a ) overall formed geometry showing the five-channel profile and critical curved regions, and ( b ) magnified cross section of the micro channels showing local thickness variation, channel depth, and draft angle",
+        "Fig. 12 Simulated distributions of ( a ) equivalent stress, ( b ) equivalent plastic strain, and ( c ) thickness across the formed super ferritic stainless steel 470 bipolar plate using the Voronoi-based grain-sensitive model. The model captures local variations in stress, strain, and thinning caused by material heterogeneity",
+        "Fig. 13 Magnified cross section of the micro channels on the formed super ferritic stainless steel 470 bipolar plate predicted using the Voronoi-based grain-sensitive model. The image shows the simulated channel profile, local thinning distribution, and draft angle after forming"
+      ]
+    },
+    {
+      "heading": "Austenitic stainless steel 316 L",
+      "paragraphs": [
+        "Figures  14  (a 1 -c 1 ) show the FE simulation results for the isotropic material model of austenitic stainless steel 316 L, illustrating the distributions of equivalent stress, equivalent plastic strain, and the resulting thickness variation across the formed bipolar plate. Unlike the ferritic grade, the austenitic material exhibits stronger work-hardening capability, which promotes a more homogeneous strain distribution throughout the micro-channel features [ 22 ,  32 ].",
+        "Fig. 14 Simulated distributions of ( a ) equivalent stress, ( b ) equivalent plastic strain, and ( c ) thickness across the formed austenitic stainless steel 316 L bipolar plate. Panels (a 1 -c 1 ) show the isotropic material model, while panels (a 2 -c 2 ) show the Voronoi-based grain-sensitive model. The grain-sensitive model captures additional local variations in stress, strain, and thinning caused by inhomogeneous material properties",
+        "The simulated geometry indicates that stainless steel 316 L undergoes stable deformation at the stamping depth of 0.363 mm with a channel spacing of 1.610 mm. No signs of cracking or fracture are predicted, which is consistent with the experimental observations and reflects the intrinsic ductility and strain hardening behaviour of this alloy. The most pronounced thinning occurs at the transition from the ridge to the groove, particularly at the curved flanks where bending and membrane stretching dominate. As shown in Fig.  15  (a), the predicted thinning magnitudes at the corner regions closely match the experimental measurements, lending confidence to the numerical predictions. However, the thinning gradient is more gradual compared with ferritic stainless steel, a consequence of the more uniform plastic flow characteristic of austenitic alloys [ 33 ].",
+        "Fig. 15 Magnified cross sections of the micro channels on the formed austenitic stainless steel 316 L bipolar plate: ( a ) isotropic material model, and ( b ) Voronoi-based grain-sensitive model. The images show the predicted channel profile, local thinning distribution, and draft angle after forming",
+        "The spatial distributions of both stress and plastic strain reveal notable differences from the ferritic case. Although geometric features such as the channel corners and turning regions still promote local deformation, the concentration intensity is less severe. Austenitic stainless steel 316 L develops broader regions of elevated stress and strain rather than sharply localised peaks. This behaviour helps mitigate the risk of sudden thinning escalation and delays the onset of strain localisation that might otherwise lead to failure.",
+        "To evaluate the influence of crystalline property, Figs.  14  (a 2 -c 2 ) present the corresponding simulation results incorporating grained anisotropy. The inclusion of anisotropy introduces additional variation in the stress and strain fields, although the effect is more moderate compared with ferritic stainless steel 470. Local stress and strain fluctuations arising from grain-dependent hardening remain relatively contained owing to the stable strain propagation in austenitic stainless steels [ 34 ]. Slightly intensified thinning is observed in isolated regions, but the overall thinning pattern and magnitude remain more consistent with experimental observations, with the maximum thinning reaching 26.52%, as shown in Fig.  15  (b). The anisotropic simulation provides a more accurate representation of the experimental results, including thinning distribution, channel spacing, and draft angles, without indicating any risk of fracture or instability at the maximum stamping depth of 0.364 mm, which is also closer to the experimental value.",
+        "The final formed shape demonstrates a high level of geometrical and dimensional accuracy in terms of channel profile and thickness distribution. Although springback is predicted in the form of an increased draft angle compared to the design, the results indicate overall stable forming behaviour and efficient die filling. Since bipolar plate performance is highly sensitive to channel consistency, the geometric stability exhibited by stainless steel 316 L is advantageous for such applications. The close agreement between the simulated and experimental results confirms that the modelling approach, particularly the anisotropic material description, can capture the essential deformation features of austenitic stainless steel in micro-scale forming processes.",
+        "To quantitatively evaluate the predictive accuracy of the isotropic and Voronoi-based grain-sensitive models, the experimental measurements were compared with the simulation results in terms of channel depth, draft angle, and maximum thinning, as summarised in Table  4 . The percentage error was calculated using Eq. ( 2 ) 2 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\:Error\\left(\\%\\right)=\\frac{|{X}_{sim}-{X}_{exp}|}{{X}_{exp}}\\times\\:100$$\\end{document}",
+        "where  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\:{X}_{sim}$$\\end{document}  and  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\:{X}_{exp}$$\\end{document}  are the simulated and experimentally measured values, respectively. For super ferritic stainless steel 470, both the isotropic and Voronoi-based models predicted the channel depth accurately, with an error of 0.28%. However, clear differences were observed in the prediction of the maximum thinning and draft angle. The isotropic model predicted the maximum thinning of 33.47%, giving an error of 15.97% compared with that of the experimental value of 39.83%. In contrast, the Voronoi-based model predicted the maximum thinning of 37.70%, reducing the error to 5.35%. Similarly, the draft angle error decreased from 18.13% in the isotropic model to 2.92% in the Voronoi-based model.",
+        "For austenitic stainless steel 316 L, the Voronoi-based model also showed improved agreement with the experimental results. The channel depth error decreased from 0.55% in the isotropic model to 0.27% in the Voronoi-based model. The maximum thinning error was reduced from 8.27% to 2.96%, while the draft angle error decreased from 7.81% to 2.58%. These results demonstrate that incorporating grain-level anisotropy improves the prediction of local thinning and final channel geometry for both types of stainless steels. The improvement is particularly pronounced for ferritic stainless steel 470, where deformation localisation and springback are stronger and the isotropic assumption underestimates local thinning and draft angle variation. Therefore, the quantitative comparison confirms that the Voronoi-based grain-sensitive model provides a more reliable prediction of micro stamping deformation behaviour than that of the isotropic model.",
+        "Table 4 Quantitative comparison between experimental measurements and FE simulation results for micro stamped bipolar plates Material Model Channel depth (mm) Channel depth error (%) Maximum thinning (%) Maximum thinning error (%) Draft angle (°) Draft angle error (%) 470 Experiment 0.352 - 39.83 - 39.66 - 470 Isotropic FE 0.353 0.28 33.47 15.97 32.47 18.13 470 Voronoi-based FE 0.353 0.28 37.70 5.35 38.50 2.92 316 L Experiment 0.365 - 27.33 - 35.72 - 316 L Isotropic FE 0.363 0.55 25.07 8.27 32.93 7.81 316 L Voronoi-based FE 0.364 0.27 26.52 2.96 34.80 2.58",
+        "The numerical comparison between super ferritic stainless steel 470 and austenitic stainless steel 316 L highlights notable differences in forming behaviour. While both materials remain within safe forming limits at respective stamping depths of 0.353 mm and 0.364 mm, ferritic 470 exhibits more localised thinning at ridge-to-groove transitions, higher stress and strain concentrations at channel corners, and greater sensitivity to geometric constraints. In contrast, austenitic 316 L shows smoother thinning gradients, broader stress and strain distributions, and more uniform plastic deformation due to its higher ductility and strain-hardening capacity. Incorporating grained anisotropy increases local stress and strain variations in both materials, but the effect is more pronounced in ferritic steel. In summary, both alloys achieve dimensionally accurate channels with limited springback, yet austenitic 316 L demonstrates improved geometric consistency and a larger margin against localised thinning, emphasising the role of material properties in micro-scale bipolar plate forming.",
+        "The stronger localisation observed in ferritic stainless steel 470 can be attributed to its higher yield strength, lower ductility, and weaker capacity for strain redistribution after yielding. The pronounced yield plateau and lower elongation, as shown in Fig.  2 , indicate that plastic deformation is more likely to concentrate in geometrically constrained regions, such as ridge-to-groove transitions and curved channel flanks. In contrast, austenitic stainless steel 316 L exhibits higher elongation and stronger strain-hardening capability, which promotes more stable plastic flow and distributes deformation more evenly over a broader region. From the viewpoint of strain-hardening behaviour, a higher strain-hardening exponent generally delays necking and suppresses abrupt strain localisation, whereas a lower strain-hardening capacity accelerates local thinning once plastic deformation initiates [ 32 ,  34 ]. Therefore, the influence of spatially distributed material properties is more pronounced in ferritic stainless steel 470 than that in austenitic stainless steel 316 L.",
+        "From an industrial perspective, the Voronoi-based model requires higher computational cost than that of the conventional isotropic model, because multiple material regions and property assignments must be defined, which increases computational demand. However, the improved prediction of local thinning and deformation heterogeneity is valuable when evaluating high-risk regions in ultra-thin bipolar plates. Therefore, the added computational cost is justified during process development, tooling optimisation, and material selection, while simpler isotropic models may still be sufficient for preliminary design."
+      ]
+    },
+    {
+      "heading": "Limitations and future work",
+      "paragraphs": [
+        "Although the developed Voronoi-based grain-sensitive FE framework improves the prediction of heterogeneous deformation in the ultra-thin bipolar plate forming, several limitations should be acknowledged. First, the current model uses a 2D Voronoi representation with statistically assigned stress-strain curves, and therefore does not explicitly capture real crystallographic orientation, through-thickness grain morphology, or slip system activity during deformation. Second, the characteristic Voronoi cell size is a computational scaling parameter rather than the actual physical grain size. Third, the present validation focuses on channel geometry and local thinning under one main forming condition. Future work will incorporate EBSD-measured microstructures, 3D grain representations, and crystal plasticity constitutive models considering grain orientation and slip system activation to provide a more physically based description of grain-level deformation. Different forming conditions, lubrication states, surface roughness effects, and channel geometries will also be examined to further evaluate the robustness of the developed modelling framework."
+      ]
+    },
+    {
+      "heading": "Conclusions",
+      "paragraphs": [
+        "This study evaluates the formability of ultra-thin metallic bipolar plates through combined numerical simulations and micro stamping experiments, addressing mechanical behaviour, thinning, and geometric accuracy. The main conclusions are as follows:",
+        "Uniaxial tensile testing reveals clear material differences. Super ferritic stainless steel 470 exhibits a high yield strength of 573.49 MPa but reduced ductility, whereas austenitic stainless steel 316 L shows superior elongation of 45.73% and enhanced strain-hardening capability, reaching a tensile strength of 1038.24 MPa. Micro stamping experiments indicate that the super ferritic stainless steel 470 is more prone to localised thinning, with a maximum thinning rate of approximately 39.83% at a channel depth of 0.352 mm. In contrast, the austenitic stainless steel 316 L demonstrates superior formability, with more uniform deformation and reduced thinning to approximately 27.33% at a channel depth of 0.365 mm. Geometric assessment confirms that both materials achieve consistent micro-channel profiles that satisfy industrial requirements, demonstrating the feasibility of the developed micro stamping process for bipolar plate fabrication. Finite element simulations effectively predict forming behaviour using both isotropic and grain-level anisotropic models. The Voronoi-based grain-sensitive model more accurately captures strain localisation and final geometry, highlighting the significance of grain-scale effects in ultra-thin sheet metal forming. The integrated experimental and numerical analysis provides a robust framework for formability evaluation, material selection, and process parameter optimisation, supporting efficient and sustainable production of hydrogen fuel cell bipolar plates."
+      ]
+    }
+  ],
+  "tables": [
+    {
+      "caption": "Five groups of tensile properties of super ferritic stainless steel 470",
+      "headers": [
+        "Sample no.",
+        "Yield stress (MPa)",
+        "Tensile stress (MPa)",
+        "Elongation (%)"
+      ],
+      "rows": [
+        [
+          "F 1",
+          "573.49",
+          "773.46",
+          "18.26"
+        ],
+        [
+          "F 2",
+          "545.00",
+          "766.37",
+          "18.66"
+        ],
+        [
+          "F 3",
+          "541.47",
+          "756.23",
+          "18.34"
+        ],
+        [
+          "F 4",
+          "569.72",
+          "760.63",
+          "18.72"
+        ],
+        [
+          "F 5",
+          "554.96",
+          "755.91",
+          "18.14"
+        ]
+      ],
+      "header_groups": [],
+      "table_alignment_status": "resolved",
+      "row_provenance": [
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 4
+          }
+        ]
+      ],
+      "tbody_alignment_status": "resolved"
+    },
+    {
+      "caption": "Five groups of tensile properties of austenitic stainless steel 316 L",
+      "headers": [
+        "Sample no.",
+        "Yield stress (MPa)",
+        "Tensile stress (MPa)",
+        "Elongation (%)"
+      ],
+      "rows": [
+        [
+          "A 1",
+          "322.61",
+          "931.96",
+          "38.94"
+        ],
+        [
+          "A 2",
+          "333.50",
+          "980.90",
+          "43.53"
+        ],
+        [
+          "A 3",
+          "335.92",
+          "1012.97",
+          "45.73"
+        ],
+        [
+          "A 4",
+          "339.01",
+          "997.30",
+          "43.74"
+        ],
+        [
+          "A 5",
+          "346.92",
+          "1038.24",
+          "43.83"
+        ]
+      ],
+      "header_groups": [],
+      "table_alignment_status": "resolved",
+      "row_provenance": [
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 4
+          }
+        ]
+      ],
+      "tbody_alignment_status": "resolved"
+    },
+    {
+      "caption": "Influence of mass scaling factor on the simulation results for ferritic stainless steel 470 isotropic model",
+      "headers": [
+        "Mass scaling factor",
+        "Max KE/IE (%)",
+        "Channel depth (mm)",
+        "Maximum thinning (%)",
+        "Draft angle (°)"
+      ],
+      "rows": [
+        [
+          "100",
+          "7.70",
+          "0.353",
+          "34.08",
+          "32.91"
+        ],
+        [
+          "500",
+          "7.75",
+          "0.353",
+          "33.79",
+          "32.66"
+        ],
+        [
+          "1000",
+          "7.77",
+          "0.353",
+          "33.47",
+          "32.47"
+        ]
+      ],
+      "header_groups": [],
+      "table_alignment_status": "resolved",
+      "row_provenance": [
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 5
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 5
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 5
+          }
+        ]
+      ],
+      "tbody_alignment_status": "resolved"
+    },
+    {
+      "caption": "Quantitative comparison between experimental measurements and FE simulation results for micro stamped bipolar plates",
+      "headers": [
+        "Material",
+        "Model",
+        "Channel depth (mm)",
+        "Channel depth error (%)",
+        "Maximum thinning (%)",
+        "Maximum thinning error (%)",
+        "Draft angle (°)",
+        "Draft angle error (%)"
+      ],
+      "rows": [
+        [
+          "470",
+          "Experiment",
+          "0.352",
+          "-",
+          "39.83",
+          "-",
+          "39.66",
+          "-"
+        ],
+        [
+          "470",
+          "Isotropic FE",
+          "0.353",
+          "0.28",
+          "33.47",
+          "15.97",
+          "32.47",
+          "18.13"
+        ],
+        [
+          "470",
+          "Voronoi-based FE",
+          "0.353",
+          "0.28",
+          "37.70",
+          "5.35",
+          "38.50",
+          "2.92"
+        ],
+        [
+          "316 L",
+          "Experiment",
+          "0.365",
+          "-",
+          "27.33",
+          "-",
+          "35.72",
+          "-"
+        ],
+        [
+          "316 L",
+          "Isotropic FE",
+          "0.363",
+          "0.55",
+          "25.07",
+          "8.27",
+          "32.93",
+          "7.81"
+        ],
+        [
+          "316 L",
+          "Voronoi-based FE",
+          "0.364",
+          "0.27",
+          "26.52",
+          "2.96",
+          "34.80",
+          "2.58"
+        ]
+      ],
+      "header_groups": [],
+      "table_alignment_status": "resolved",
+      "row_provenance": [
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 7
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 8
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 7
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 8
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 7
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 8
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 7
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 8
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 7
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 8
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 7
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 8
+          }
+        ]
+      ],
+      "tbody_alignment_status": "resolved"
+    }
+  ]
+}

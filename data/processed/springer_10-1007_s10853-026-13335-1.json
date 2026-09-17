@@ -1,0 +1,681 @@
+{
+  "doi": "10.1007/s10853-026-13335-1",
+  "title": "High-entropy alloys for next-generation electrolytic cells in green hydrogen production",
+  "abstract": "Abstract The global transition toward net-zero emissions has positioned green hydrogen as a key element of sustainable energy strategies. Produced through water electrolysis powered by renewable energy sources, it offers a carbon-free energy carrier capable of decarbonizing hard-to-abate industrial sectors such as heavy industry and long-distance transportation. However, its widespread deployment remains constrained by the limited durability of conventional structural materials under the harsh electrochemical conditions of electrolytic cells, including corrosive environments, elevated temperatures, and sustained mechanical stress. High-entropy alloys (HEAs) have emerged as promising candidates owing to their multi-principal-element compositions, which confer exceptional mechanical strength, thermal stability, and corrosion resistance. This review examines the thermodynamic and electrochemical fundamentals of water electrolysis, discusses the material challenges faced by conventional alloys, and analyzes HEAs in the context of electrolytic cell components, with emphasis on corrosion resistance, hydrogen embrittlement, grain boundary engineering, and the minimization of reliance on critical raw materials and noble metals. The electrocatalytic potential of HEAs for hydrogen and oxygen evolution reactions is further explored through d-band theory, the Sabatier principle, and inter-elemental electronic interactions. Computational approaches, including CALPHAD modeling and machine learning-assisted screening, are highlighted as key enablers for rational HEA design. Collectively, this work establishes a framework for advancing HEA-based electrolytic systems that simultaneously address durability, efficiency, and cost constraints in green hydrogen production.",
+  "journal": "Journal of Materials Science",
+  "year": "2026",
+  "sections": [
+    {
+      "heading": "Introduction to advanced electrolytic cell materials for green hydrogen production",
+      "paragraphs": [
+        "The transition toward a low-carbon energy system has intensified the search for sustainable, scalable, and efficient energy carriers capable of supporting deep decarbonization in industries worldwide [ 1 ,  2 ]. Among the emerging solutions, green hydrogen (GH 2 ) has gained significant prominence due to its potential to store renewable energy, decarbonize hard-to-abate industries, and enable long-duration energy storage without direct greenhouse gas emissions. However, despite its promise, the widespread deployment of green hydrogen technologies remains constrained by challenges related to production efficiency, system durability, and overall economic viability [ 3 ].",
+        "Water electrolysis, as the core technology underpinning green hydrogen production, is inherently limited by thermodynamic requirements, kinetic barriers, and materials-related inefficiencies. In particular, losses associated with electrode reactions, electrical resistance, and component degradation continue to hinder performance and increase operational costs [ 4 ]. These limitations are closely tied to the design and material selection of electrolytic cell components, especially under the demanding electrochemical and corrosive environments characteristic of industrial operation.",
+        "Recent advances in materials science have opened new pathways for overcoming these challenges, with high-entropy alloys (HEAs) emerging as a promising class of materials for next-generation electrochemical systems. Characterized by their multi-principal-element compositions and often unique microstructural stability, HEAs offer the potential to simultaneously achieve high corrosion resistance, mechanical robustness, and favorable electrical properties. Such attributes make them particularly attractive for critical electrolytic cell components, including bipolar plates and current collectors, where conventional materials often exhibit performance trade-offs [ 5 ].",
+        "This review explores the role of high-entropy alloy-based design in enhancing the performance and durability of electrolytic cells for green hydrogen production, being organized to guide the reader progressively from foundational concepts to material-specific design principles. It opens with the electrochemical fundamentals of water electrolysis and an overview of electrolyzer technologies, providing the context necessary to understand the material demands imposed on each system component. The central part is dedicated to HEAs and follows a deliberate sequence. Firstly, defining HEAs and their core effects, structural and durability considerations, are addressed for components such as bipolar plates and current collectors, before transitioning to the electrocatalytic dimension, where d-band theory, the Sabatier principle, and inter-elemental interactions are discussed in the context of HER and OER optimization. This progression from structural to functional properties reflects the dual role HEAs can play within an electrolytic cell. The manuscript concludes with perspectives on open challenges regarding computational design, long-term durability, and industrial scalability."
+      ]
+    },
+    {
+      "heading": "Fundamentals on green hydrogen",
+      "paragraphs": [
+        "As nations worldwide accelerate their net-zero commitments, GH 2  is increasingly recognized as an indispensable pillar at the forefront of sustainable energy strategies. Unlike conventional hydrogen production methods such as steam methane reforming and coal gasification, which rely heavily on fossil fuels and are responsible for significant carbon dioxide emissions, GH 2  can also be produced through water electrolysis powered by renewable energy sources such as wind and solar power. This pathway offers a truly emissions-free energy carrier capable of supplying industries for which direct decarbonization pathways remain technologically or economically constrained, such as heavy industry, long-haul transportation, and large-scale energy storage. Moreover, underpinning the practical deployment of GH 2  across these sectors is the electrochemical process of water electrolysis, whose thermodynamic and kinetic characteristics fundamentally govern the efficiency and associated costs of its production [ 5 ,  6 – 7 ].",
+        "Water electrolysis involves the dissociation of H 2 O molecules into gaseous hydrogen (H 2 ) and oxygen (O 2 ) through the application of external electrical potential, whose global reaction is expressed as follows: H 2 O l → H 2 g + 1 / 2 O 2 g \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${\\text{H}}_{{2}} {\\text{O}}\\left( {\\text{l}} \\right) \\to {\\text{H}}_{{2}} \\left( {\\text{g}} \\right) + 1/2\\;{\\text{O}}_{{2}} \\left( {\\text{g}} \\right)$$\\end{document}",
+        "This water-splitting reaction is sustained by two distinct electrochemical half-reactions occurring simultaneously at opposing electrodes. At the cathode, the hydrogen evolution reaction (HER) produces H 2  through a relatively straightforward two-electron transfer process that depends on the pH of the electrolyte, as ehxibited in Fig.  1 . Figure 1 Schematic illustration of the hydrogen evolution reaction (HER) mechanisms in acidic (left) and alkaline (right) media, showing the Volmer, Heyrovsky, and Tafel pathways for hydrogen adsorption and molecular hydrogen formation on the catalyst surface.",
+        "In acidic solutions, the first step in hydrogen evolution is the Volmer reaction, in which hydronium ions (H 3 O + ) are reduced at the cathode surface by accepting electrons at active sites to form adsorbed hydrogen intermediates (H*). These active sites include bridge sites and surface defects where protons adsorb. Then, the hydrogen formation process then proceeds via the Heyrovsky reaction, dominant at low H* surface coverage, or the Tafel reaction, in cases where there is a high H* coverage. In the first case, where H* reacts with H 3 O +  to produce H 2 , whereas in the second case, two H* intermediates recombine and desorb as H 2 .",
+        "On the other hand, in neutral or alkaline solutions, first, the H 2 O dissociates into H −  and OH −  ions, which forms H* in the cathode, through the Volmer reaction. Then, similarly, the formation of H 2  may occur through the Heyrovsky or the Tafel reactions. However, this H 2  generation pathway requires additional energy to overcome the water molecule dissociation barrier and is further hindered by the presence of OH −  ions, which slows down the overall water hydrolysis kinetics [ 8 ,  9 ]. Moreover, monitoring the pH within electrolyzers is critical for accurately interpreting reaction mechanisms and for the rational design of efficient catalysts.",
+        "Comparing HER in neutral media to strongly acidic or alkaline environments, where a single dominant reactant species governs the reaction, neutral conditions involve both ionic and molecular species within the electrolytic cell, resulting in sluggish kinetics. For instance, at low overpotentials, which is the extra potential applied beyond the thermodynamic equilibrium potential of the hydrogen evolution reaction, the electrode potential is only slightly more negative than the equilibrium value, so the driving force for the H 2  formation is weak. Under these conditions, the reduction of available ionic species (for example, H⁺ or H 3 O + ) dominates, and the reaction rate is limited by how quickly these ions can diffuse from the bulk electrolyte to the cathode surface. Nevertheless, as the overpotential increases, the consumption of ions outpaces their diffusion, inducing local pH gradients at the electrode surface and triggering a transition in the reaction pathway toward H 2 O reduction. This, in turn, has a higher activation energy, since severing the O–H bond in the H 2 O molecules is more difficult compared to the reduction of solvated protons. As such consideration between the interplay thermodynamic advantages at low overpotential and mass transport limitations at higher overpotential must be considered [ 5 ,  10 ].",
+        "Additionally, at the anode, the O 2  formation reaction (OER) occurs through a significantly more complex sequence of steps, requiring the sequential transfer of four electrons and the formation and breaking of multiple chemical bonds. As a consequence, the OER is widely recognized as a kinetic bottleneck governing the overall efficiency of water electrolysis systems, giving rise to substantial energy losses that directly increase the operational voltage required to sustain electrolysis [ 11 ,  12 ].",
+        "Nevertheless, it is acknowledged that the voltage losses arising from these kinetic limitations, combined with ohmic and mass transport losses within the cell, collectively determine the energy efficiency of the electrolytic cell system and must be considered in the rational design of its structural components. This is especially relevant since the design of efficient H 2  generation cells depends on balancing hydrophilicity to facilitate reactant access and gas repellency to enable rapid hydrogen release, while also managing competing requirements, such as sufficient hydroxide adsorption for water dissociation without causing the loss of catalytic activity when species bind too strongly to its surface [ 13 ,  14 – 15 ]."
+      ]
+    },
+    {
+      "heading": "Electrolyzer design and components",
+      "paragraphs": [
+        "To this moment, several electrolyzer configurations, that differ in electrolyte medium, operating conditions and material requirements, have been developed. In modern electrolysis systems, the cell is designed with specialized components, including membranes or separators, electrodes, and bipolar plates to improve efficiency and ensure proper separation of reaction products. The two main electrodes are the anode and cathode, where oxidation and reduction reactions occur, respectively, and are connected to an external power source that supplies the required electrical energy. Alongside these is the bipolar plate, which is placed between individual cells in an electrolysis stack. Bipolar plates conduct electricity from one cell to the next, distribute current evenly across the electrodes provide channels for the flow of reactants and products, and help maintain mechanical support and allow for separation between adjacent cells [ 16 ]. Among these, electrolytic cell components may vary according to design choices for increased efficiency, such as the case highlighted by Hodges et al. [ 3 ], where direct gas production can be achieved by means of water capillarity along a porous inter-electrode separator to the maximize efficiency.",
+        "In this regard, as shown in Fig.  2  common electrolyzer systems include alkaline water electrolysis (AWE) or alkaline electrolyzer (AEL), proton exchange membrane electrolysis (PEM), and solid oxide electrolysis (SOE), whose terminology may vary according to whether the focus is on the system or the electrolytic cell or the broader process [ 17 ,  18 ]. Nevertheless, these technologies are distinguished primarily by the nature of the electrolyte, the ionic charge carrier, and their operating temperature and pressure regimes. Figure 2 Types of water electrolyzers: proton exchange membrane water electrolyzer (PEM),  B  alkaline water electrolyzer (AWE), and  C  solid oxide water electrolyzer (SOE) (From [ 17 ]).",
+        "AWE is the most technologically mature and widely deployed configuration. It employs a concentrated aqueous potassium hydroxide (KOH) solution as the electrolyte, with hydroxide ions (OH⁻) acting as the charge carriers. These ions migrate through a porous diaphragm that separates the anodic and cathodic compartments. AWE systems typically operate at temperatures between 50 and 80 °C and pressures up to approximately 30 bar. While this technology is commercially established and relatively cost-effective, it is limited by comparatively low current densities, slower dynamic response, and the possibility of electrolyte crossover. These limitations reduce its suitability for direct coupling with intermittent renewable energy sources [ 11 ].",
+        "PEM utilizes a solid polymer electrolyte membrane conducts protons (H⁺). This configuration enables significantly higher current densities, compact cell designs, and rapid load-following capability. However, the strongly acidic operating environment requires the use of platinum-group metal catalysts and imposes stringent corrosion constraints on cell components. Consequently, PEM systems typically exhibit higher capital costs and more restrictive material selection requirements [ 19 ,  20 ]. Hybrid approaches intending to combine the advantages of PEM with the material compatibility of alkaline systems have also been developed, namely, anion exchange membrane water electrolysis. In this configuration, hydroxide-conducting polymer membranes replace the liquid electrolyte, allowing operation in alkaline conditions while maintaining a solid membrane architecture. Although this concept offers the potential for reduced reliance on precious metals, its commercial development remains limited by challenges related to membrane durability and ionic conductivity [ 21 ,  22 ].",
+        "SOE operates at significantly higher temperatures, typically between 700 and 900 °C and employs ceramic electrolytes such as yttria-stabilized zirconia that conduct oxygen ions (O2⁻). The elevated operating temperature provides a thermodynamic advantage, as a portion of the required energy can be supplied as heat rather than electricity, thereby improving overall efficiency. However, high-temperature operation introduces substantial engineering challenges, including materials degradation, demanding thermal management, and limited dynamic flexibility. As a result, SOE can be suitable for stationary industrial applications where high-temperature heat sources are available [ 23 ,  24 ]. Moreover, the performance of electrolyzer systems is typically evaluated using several key electrochemical and system-level metrics.",
+        "In an electrolyzer, current density, expressed in A/cm 2 , represents how much electric current is applied per unit area of the electrode, and it directly determines the rate at which hydrogen is produced. According to Faraday’s laws of electrolysis [ 25 ], the amount of hydrogen generated is proportional to the applied current. This has important design implications, since operating at higher current densities allows more hydrogen to be produced from a smaller electrode surface, which reduces the required stack size and can lower capital costs. However, this comes with trade-offs, as higher current densities typically lead to increased cell voltage due to kinetic and resistive losses, reducing efficiency and accelerating degradation [ 26 ].",
+        "In this sense, energy efficiency is an important performance metric for electrolyzers and is commonly expressed as the ratio between the chemical energy stored in the produced hydrogen and the electrical energy supplied to the electrolyzer. It is commonly expressed based on the lower heating value (LHV) and higher heating value (HHV), where LHV is about 120 MJ/kg of H 2  at a water-splitting voltage of 1.23 V, and the HHV reaches 142 MJ/kg at 1.48 V, as it accounts for the latent heat of water vaporization in a thermoneutral reaction. Although this energy can, in theory, be recovered when green hydrogen is utilized as fuel, real-world systems inevitably incur losses during both production and use. These inefficiencies lie at the core of ongoing questions about the economic viability of a hydrogen-based energy system [ 27 ,  28 ].",
+        "The energy efficiency of an electrolyzer is generally defined as the ratio between the chemical energy stored in the produced hydrogen and the electrical energy supplied to the system. Based on the HHV, the electrolyzer efficiency can be calculated as in Eq.  1 . 1 η HHV = m ˙ H 2 ∙ HHV H 2 P el \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${\\eta}_{HHV}=\\frac{{\\dot{m}}_{{H}_{2}}\\bullet {HHV}_{{H}_{2}}}{{P}_{el}}$$\\end{document} where  m ˙ H 2 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${\\dot{m}}_{{H}_{2}}$$\\end{document}  is the hydrogen produced by electrolysis (kg/h), and P el  (W) is the electrical power input required for electrolysis. An analogous expression can be written using the LHV [ 29 ]. Assuming 100% Faradaic efficiency, the hydrogen production rate is directly proportional to the applied current according to Faraday’s law. Under these conditions, the efficiency can be conveniently expressed as a function of the operating cell voltage. Thus, the resulting voltage efficiency (η HHV ), a dimensionless measure for a given operating voltage (V), takes a straightforward form as η HHV  = 1.48/V, with the equivalent for LHV being η LHV  = 1.23/V [ 30 ,  31 ].",
+        "As such, electrolyzers operating at voltages higher than the minimum required for water electrolysis dissipate excess electrical energy as heat, resulting in lower energy efficiency. Consequently, increases in cell voltage due to kinetic, ohmic, or mass-transport losses directly reduce the efficiency of hydrogen production.",
+        "Another critical parameter is the degradation rate, typically defined as the rate of increase in cell voltage over time (μV/h). This metric reflects the gradual deterioration of cell components during prolonged operation. In practical terms, it quantifies durability by indicating how quickly the cell voltage rises, or equivalently, how efficiency declines under a constant current. This degradation rate can vary significantly depending on the materials used and the operating conditions [ 32 ].",
+        "Within this context, enhancing the durability and electrical performance of metallic components, particularly bipolar plates and electrodes, represents a critical pathway toward improving long-term system efficiency and reducing the overall cost GH 2 .",
+        "Accordingly, the choice of GH₂ production technology involves inherent trade-offs among cost, electrical conductivity, corrosion resistance, and manufacturability. In this context, metallic alloys constitute a key class of materials for structural components in electrolytic cells, as they combine high electrical conductivity with mechanical strength and electrochemical stability under highly alkaline and strongly polarized conditions. These properties also enable scalable fabrication and long-term operational durability, making such alloys essential for sustained system performance.",
+        "For instance, in AEL electrolyzers, traditional metallic alloys mostly include stainless steels. These are economically attractive and readily processable, but they are susceptible to passive oxide layer growth under anodic polarization, which increases interfacial contact resistance over time. These limitations are reflected at the system level, where AWE technology, despite its lower capital cost and greater technological maturity, delivers reduced efficiency and larger spatial requirements compared to PEM, which can hinder its deployment in industrial settings such as steel manufacturing facilities [ 33 ].",
+        "These limitations highlight the need for advanced alloy systems capable of simultaneously meeting the complex performance requirements imposed on electrolytic cells.",
+        "Another challenge that exists is related to hydrogen contact is hydrogen embrittlement, a phenomenon in which atomic hydrogen diffuses into the metallic lattice, reducing ductility and fracture toughness and ultimately increasing the risk of crack initiation and propagation. This degradation mechanism is particularly relevant in high-pressure hydrogen environments, such as those encountered in electrolytic cells and transport pipelines. In steels, susceptibility to hydrogen embrittlement is influenced by microstructural factors including grain size, phase composition, and the presence of residual stresses [ 34 ,  35 – 36 ].",
+        "Nevertheless, to address the electrochemical limitations of metallic electrode substrates, catalyst coatings are widely employed to enhance electrode efficiency. These coatings function by reducing the overpotential associated with the HER and OER reactions, thereby lowering the total cell voltage required for water electrolysis and improving overall energy conversion efficiency. In PEM electrolyzers, platinum-group metals (PGMs) such as platinum and iridium oxide are the benchmark catalyst materials, offering exceptional activity and stability under the acidic conditions imposed by the polymer membrane [ 37 ,  38 ]. However, their high cost and limited availability represent a significant barrier to large-scale deployment. In AEL systems, nickel-based coatings and nickel–iron or nickel-molybdenum alloys are more commonly adopted due to their reasonable catalytic activity in alkaline media and lower material cost [ 39 ].",
+        "In this context, thermodynamical and kinetics-informed metal selection provides a rigorous framework for optimizing material performance under electrochemical operating environments [ 40 ,  41 ]. Such analyses enable the identification of alloy compositions that minimize dissolution, suppress detrimental oxide growth, and promote the formation of thin, conductive, and stable surface films. Furthermore, tailoring alloy chemistry through controlled additions of elements such as Ni, Cr, Mo, or Al can shift equilibrium conditions to favor passivation regimes that balance corrosion protection with low interfacial resistance [ 42 ,  43 ]. This approach also supports the design of metastable or multicomponent alloy systems, such as HEAs, whose configurational complexity can enhance both corrosion resistance and mechanical integrity. Ultimately, the application of thermodynamic principles to material selection and design constitutes a powerful strategy for improving durability and the efficiency of advanced electrolytic cell technologies."
+      ]
+    },
+    {
+      "heading": "HEAs for electrolysis cells development",
+      "paragraphs": []
+    },
+    {
+      "heading": "High-entropy alloys definition",
+      "paragraphs": [
+        "The earliest recorded exploration of new metallic alloys through elemental mixing is attributed to Franz Carl Achard in 1788 [ 44 ]. However, without knowledge of modern metallurgical concepts, the topic stayed relatively dormant for over two centuries, only being revisited in 2004 [ 45 ,  46 ]. Throughout this period, conventional alloy design, which relies on introducing minor amounts of secondary elements into a primary base material, remained the dominant alloy research approach [ 47 ]. However, with the arrival of the twenty-first century, new perspectives on alloy research began to transform how new metals are conceived and engineered, giving rise to materials that can be tailored to meet highly specific application demands. These are known as HEAs, multicomponent alloys, compositionally complex alloys, or multi-principal-element alloys which fundamentally refers to the same materials, albeit differing in their underlying rationale and definition [ 48 ].",
+        "HEAs are metallic materials composed of multiple principal elements, where high configurational entropy promotes the formation of simple solid-solution phases with unique combined properties. This framework enables exploration of compositional spaces that extend beyond the conventional paradigm of a single principal element, thereby facilitating the discovery of novel HEAs. Nevertheless, as additional elements are incorporated into a system, the range of possible phases, including binary and ternary intermetallic compounds, expands, often resulting in the coexistence of multiple phases rather than a single one. Although increased configurational entropy can help counterbalance this complexity, practical challenges beyond theoretical considerations still emerge. These include compositional inhomogeneity and lattice defects, both of which can compromise phase stability in newly designed alloys.",
+        "When the fundamental criteria for HEA formation are satisfied, four principal effects are typically observed. The first is the high-entropy effect, where configurational entropy promotes the stabilization of simple solid-solution phases. The second is the lattice distortion effect, arising from the absence of a dominant element, where atoms of varying sizes occupy random lattice sites, inducing distortion and impeding dislocation motion. Depending on the atomic distribution, this can favor the formation of specific phases over others, although achieving such control can be challenging, particularly in systems like CoCrFeMnNi, where constituent atomic sizes are quite similar. The third effect, sluggish diffusion, limits atomic mobility and suppresses diffusion-dependent phase transformations, often leading to elevated recrystallization temperatures and the delayed formation of nanoprecipitates or secondary phases. Finally, the cocktail effect describes the synergistic properties of HEAs, which cannot be attributed to any single constituent element but instead arise from behavior of all constituents [ 46 ,  49 ].",
+        "It should be noted that HEAs are not limited to these effects alone, as new and improved systems can be developed through alternative approaches. In fact, an emerging paradigm in HEA design is metastability engineering. Such is the case of the Fe 49 Mn 29.6 Co 9.8 Cr 9.8 Nb 0.2 V 0.8 C 0.2 N 0.8  (at.%) [ 50 ] and Fe 50 Mn 30 Co 10 Cr 10  (at.%) [ 51 ]. In such cases rather than targeting complete thermodynamic stability, this concept leverages controlled instability to enable adaptive responses under service conditions. Accordingly, research has progressively shifted away from strict theoretical definitions toward the exploration of novel HEA compositions. In this context, E. P. George et al. [ 48 ] outlined three main routes for developing new HEA systems, with these being the experimental, thermodynamic, and mechanistic approaches.",
+        "The experimental pathway involves producing and testing alloys, either as single compositions or compositionally graded samples, to identify promising candidates and eliminate unsuitable ones through reliable characterization. Moreover, on a theoretical basis, the thermodynamic pathway [ 52 ] relies on phase stability simulations as a function of temperature using models of Gibbs free energy derived from experimental and theoretical data. While powerful, its accuracy depends on the completeness of databases, and it may fail to capture transient or metastable phases, as it is based purely on thermodynamic considerations.",
+        "On the other hand, the mechanistic pathway focuses on designing alloys based on their intended performance rather than phase stability alone, by leveraging strengthening mechanisms such as deformation twinning [ 53 ], precipitation strengthening [ 54 ], and martensitic transformation [ 55 ]. This is achieved through compositional tuning to control key parameters like stacking-fault energy, enabling optimization of deformation behavior under specific conditions. However, this approach departs from the traditional HEA definition, as it may involve fewer elements or lower concentrations, highlighting that factors beyond configurational entropy can govern alloy performance. Such is the case of the works by Li et al. [ 55 ] and by Liu et al. [ 56 ], thus asserting that the entropy is not the governing factor in the discovery of these novel alloys, since key thermodynamic parameters may play a more decisive role in optimizing HEA performance over their service life in a given application.",
+        "The design of efficient electrolyzers thus requires a component-specific approach, since each part operates under distinct mechanical and electrochemical constraints. In this context, HEAs offer a promising framework, as they enable the tailored design of multifunctional alloys by leveraging compositional complexity to optimize specific properties depending on the intended role of each component within the electrolyzers system. Nevertheless, as shown in Table  1 , recent literature has shown different HEA systems can be advantageous for water electrolysis. Table 1 Overview of high-entropy alloy (HEA) electrocatalysts reported in the literature for water electrolysis applications. The Scopus database was surveyed covering the latest available studies from 2025 onwards, and only those deemed relevant to the scope of this work are presented HEA Comments References FeRuPtNiCoPd A pH-universal catalyst synthesized via pulsed laser irradiation in liquids exhibits exceptional performance for both OER and HER. It overcomes the pH dependency of conventional catalysts, performing effectively in both acidic and alkaline environments [ 57 ] CoNiCuMnFe/C A flower-sphere CoNiCuMnFe HEA anchored on carbon was developed via hydrothermal and carbonization methods to enhance OER kinetics. The hierarchical structure maximizes exposed active sites [ 58 ] NiFeCoCrW OER performance was enhanced by exploiting synergistic electronic interactions among multiple metal elements. The optimized HEA promotes lattice oxygen activation and accelerates reaction kinetics, delivering high activity and exceptional long-term stability [ 59 ] NiCrCoZnFe Synergistic metal and oxygen vacancies can activate an oxygen vacancy site mechanism optimizing oxygen-intermediate adsorption and accelerating oxygen evolution kinetics while maintaining excellent catalytic stability [ 60 ] RuPdIrPtAu A trimetallic Co/Ni/Cu hydroxyphosphate nanosheet array grown on nickel foam was engineered through hydrothermal synthesis followed by phosphorization. The 3D porous structure and optimized electronic structure significantly lower the energy barrier for OER [ 61 ] PtFeCoNiMo Ruthenium-doped Co-Fe layered double hydroxide nanosheets were developed to optimize the electronic structure and boost OER performance in alkaline water electrolysis. The Ru doping effectively tunes the active sites for improved catalytic activity [ 62 ] FeMnCuNiTi FeMnCuNiMo Novel Cr- and Co-free HEAs were developed with HER performance in alkaline media comparable to Pt-based catalysts. These compositions offer a cost-effective and sustainable alternative for green hydrogen production [ 63 ] FeCoNiPtRu Pt/Ru atomic site occupation was used to stabilize grain boundaries in HEAs. The strategy effectively enhances catalytic stability across both acidic and alkaline conditions [ 64 ] FeCoNiNbPt A dynamic dissolution-deposition equilibrium mechanism enables unprecedented HER stability in acidic conditions. The catalyst achieves improved activity with lower Pt loading compared to conventional Pt/C [ 65 ] MnFeCoNiVCu Cu incorporation into the high-entropy intermetallic structure promotes hydrogen adsorption/desorption kinetics via hydrogen spillover, reducing HER kinetic limitations in alkaline media. The sigma-phase structure provides a robust and active framework for efficient hydrogen evolution [ 66 ] FeCoNiMoRu A metal–organic frameworks derived carbonized HEA catalyst on nickel foam exhibits enhanced oxygen electrocatalytic activity and long-term durability. The synergistic multi-element interactions and conductive self-supporting architecture boost performance in alkaline systems [ 67 ] Ni 50 (FeCoCrCu) Ni-based high-entropy alloys with unique structural features demonstrate enhanced catalytic activity and stability for H 2  production. The multi-element synergy enables efficient operation under both alkaline and seawater electrolysis conditions [ 68 ] FeCoNiMo Porous FeCoNiMo HEA were synthesized via arc melting and chemical dealloying, forming hierarchical porous structures that enhance active surface area and charge transfer. The bifunctional catalyst shows high performance for both HER and OER in alkaline water splitting [ 69 ] Ir x RuCoCuNi Ir-based HEA nanoframeworks were synthesized by spray drying combined with thermal decomposition reduction, yielding a porous architecture with large electrochemically active surface area. The optimized Ir 2 RuCoCuNi composition outperforms commercial IrO 2  for OER [ 70 ] CrZrTiCoNiCuFe AlMnTiCoNiCuFe High-entropy alloy catalysts on reduced graphene oxide were prepared via pulse microwave synthesis and exhibit strong activity for both OER and ORR, outperforming pure Pt catalysts. The materials also display anti-CO poisoning behavior and long-term durability [ 71 ] PdRuPtIrRh Nanosecond-pulsed UV laser treatment of HEA nanoparticles modified their surface composition and electronic structure, generating more active catalytic sites. This enhanced both HER/OER activity for water splitting and ORR performance for fuel cell applications [ 72 ] NiCoFePtRuIr NiCoFePt NiCoFeRu NiCoFeIr Medium- and high-entropy alloys were prepared via a scalable impregnation synthesis method, with ultralow noble metal loading enabling industrial-level HER activity. The study demonstrates that senary alloy compositions can achieve high catalytic performance with minimal use of precious metals [ 73 ] CoCrFeNiMoAl Plasma spraying was used to fabricate porous high-entropy alloy coatings with enhanced active surface area, conductivity, and gas diffusion. The coatings exhibit improved HER and OER catalytic activity along with long-term durability for alkaline water splitting [ 74 ] NiFeCoCuCrMn An HEA surface combined with a multicomponent intermetallic core enables optimized adsorption energies and intermediate spillover, significantly improving hydrazine oxidation kinetics. This heterostructure design offers an energy-efficient alternative to conventional alkaline OER systems [ 75 ] FeCrNiZrMn FeCrNiZrMn HEA on carbon nanofibers was synthesized via electrospinning and high-temperature carbonization. DFT calculations confirm that the HEA surface provides diverse hydrogen adsorption sites and a tunable electronic structure, enhancing HER activity [ 76 ] R NiCoCuMo Ru single-atom catalysts supported on a NiCoCuMo high-entropy alloy were synthesized to optimize H 2  adsorption energy and accelerate charge transfer. The synergistic interaction between isolated Ru atoms and the HEA support leads to improve HER activity and durability [ 77 ] FeCoNiMoCu Chemical vapor deposition sulfidation of FeCoNiMoCu HEAs was used to modify surface composition and increase active sulfide sites, significantly improving HER activity. The sulfidation temperature was identified as a key parameter controlling catalytic performance [ 78 ] NiCoFeMnCrV NiCoFeMnCrV HEA catalysts exhibit enhanced HER and OER activity due to synergistic multi-element interactions, improved charge transfer, and abundant active sites. The material demonstrates bifunctional capability for overall alkaline water splitting [ 79 ] ZnCoNiFeV Vanadium incorporation into a HEA electrocatalyst modifies the electronic structure and promotes the formation of highly active surface oxyhydroxide species. This enhances charge transfer and catalytic kinetics for the oxygen evolution reaction [ 80 ]",
+        "Accordingly, research on noble-metal-free HEA electrocatalysts is highlighting promising low-cost alternatives for water electrolysis, with recent studies focusing on multicomponent transition-metal systems for overall water splitting. Especially since performance improvements have been achieved through compositional tuning, porous and nanostructured architectures, and surface modifications that exploit the effects associated with high-entropy stabilization to optimize catalytic activity and durability.",
+        "However, significant challenges remain, namely, lower activity and stability than noble metal-based catalysts and poor resistance to corrosion in acidic media. Adding to this, the limited understanding of active-site mechanisms and the difficulties in rationally optimizing the vast compositional space, alongside insufficient long-term durability data, remains a challenge to overcome.",
+        "Consequently, future research should focus on coupling mechanistic understanding through operando characterization with data-driven catalyst design for the establishment of scalable manufacturing strategies to accelerate the industrial application of noble-metal-free HEA electrocatalysts."
+      ]
+    },
+    {
+      "heading": "Structural factors for HEAs development in electrolytic cells",
+      "paragraphs": [
+        "For components with a structural purpose, such as bipolar plates and membranes/diaphragms, mechanical integrity is a primary concern among other properties such as conductivity and porosity, which can be further optimized through control of geometrical and manufacturing parameters to improve mass transfer.",
+        "As discussed in the context of electrolyzer operation, these components are subjected to sustain anodic or cathodic polarization, highly corrosive electrolytes, and dynamic load profiles arising from intermittent renewable energy sources. Such conditions place stringent simultaneous demands on corrosion resistance, mechanical integrity, and electrical conductivity. As such, with this in mind, corrosion resistance must be considered during design stages, as these components are continuously exposed to aggressive levels of pH of the electrolytes [ 81 ,  82 ]. Adding to this, electrochemical cycling introduces an additional layer of complexity. In practical systems, electrolyzers are frequently operated under dynamic load conditions due to the intermittent nature of renewable energy sources [ 83 ]. In this regard, a key focus in current research is the corrosion resistance of single-phase solid solutions, often regarded as a defining feature of HEAs [ 84 ].",
+        "Nevertheless, although many HEAs are engineered to form stable crystal structures, local compositional fluctuations can accelerate diffusion-driven phenomena that aggravate localized pitting and promote selective dissolution of corrosion-susceptible phases at the surface level. However, this remains an active area of research, with studies demonstrating that the strategic combination of alloy design and advanced manufacturing techniques can effectively suppress or take advantage of corrosion-driven degradation in HEAs-based electrolyzers.",
+        "Such has been shown by Li et al. [ 85 ], who demonstrated that by strategically manipulating microscale phase separation and nanoscale spinodal decomposition in a FeCoNiCu HEA, hierarchical porous architectures could be obtained through controlled dealloying, effectively redirecting selective dissolution, a process inherently rooted in corrosion-driven mechanisms, into a functional design strategy. This exploitation of these corrosion-associated phenomena, rather than their suppression, yielded a hierarchical porous HEA with superior electrocatalytic performance for water splitting, highlighting how advanced microstructural engineering can transform corrosion-liable behavior into a pathway for enhanced material functionality. Furthermore, this principle has been reinforced by Wu et al. [ 86 ], who developed a series of nanoporous HEAs comprising Al, Ni, Fe, Co, Ti, and Cr, demonstrating that the deliberate integration of corrosion-resistant elements within a multi-principal-element HEA framework can simultaneously confer corrosion resistance and catalytic activity in highly aggressive chloride-rich environments, as is the case of seawater electrolysis. By integrating corrosion-resistant and catalytically active elements, the resulting HEAs achieved a balance between corrosion resistance and electrocatalytic performance during seawater electrolysis. In this way, highlighting how targeted alloy design can transform corrosion susceptibility from an inherent limitation into a controllable component characteristic.",
+        "In this regard, the surface and near-surface regions of HEAs, which are highly dynamic in nature, act as the first barrier against corrosion. Passivation in conventional alloys is generally effective in providing corrosion resistance through the formation of protective oxide layers. Unlike conventional alloys, HEAs form chemically complex passive oxide films enriched in elements such as chromium, aluminum, or titanium, which can provide stable corrosion protection and may exhibit partial self-healing behavior, as highlighted by Inman et al. [ 43 ] and Wang et al. [ 42 ]. Such is highlighted in Fig.  3 , where oxide species such as Mo(IV) can migrate to and reinforce locally deficient regions in protective surface films, compensating for weak points in the passivation layer and improving overall corrosion resistance by inhibiting aggressive ion penetration. Figure 3 Bilayer model with Mo(IV)-sealed weak sites in the inner layer for the Mo-bearing Cr–Fe–Co–Ni–Mo multi-principal-element alloy surfaces (From [ 42 ]).",
+        "However, the stability of these films strongly depends on environmental conditions such as pH, electrolyte composition, and applied potential. Nevertheless, under fluctuating electrochemical conditions, repeated oxide breakdown and consequent passivation can promote surface roughening, pit nucleation, and crack initiation, making the evolution and stability of the passive film critical to the long-term durability of HEAs in corrosive and hydrogen-containing environments. The stability of these passive films is intimately governed by the thermodynamic and electrochemical principles, including electrolyte pH, applied potential, and the Pourbaix equilibria that define the passivation window of each constituent element.",
+        "As such, grain boundary phenomena in the surface emerge as critical to the performance of HEAs in corrosive environments, linking interfacial chemistry and boundary engineering to the stability of passive films and the onset of localized degradation. The chemical complexity inherent to these materials often results in nonuniform grain boundary compositions, which can either enhance or compromise resistance to localized chemical attack, as grain boundaries frequently act as preferential sites for elemental segregation and corrosion initiation. Simultaneously, they function as important trapping sites for hydrogen, influencing both diffusion kinetics and susceptibility to embrittlement. Thus, the interplay between grain boundary chemistry and electrochemical conditions is a challenging factor in overall component durability, especially when dealing with H 2 .",
+        "In this sense, through controlled modification of grain boundary morphology, Hong et al. [ 87 ] verified that grain boundary engineering can improve both the mechanical performance and corrosion resistance of the Al 0.3 CoCrFeNi 1.5  HEA. By applying a low-strain thermomechanical treatment, corresponding to 8% deformation followed by annealing at 1050°C, the authors increased the fraction of Σ3 twin boundaries to 80%, while disrupting the connectivity of random grain boundaries. These changes significantly suppressed intergranular corrosion by interrupting continuous corrosion pathways and preventing crack propagation along grain boundaries. This engineered morphology also promoted homogeneous deformation and reduced dislocation pile-up, resulting in simultaneous gains in strength and ductility.",
+        "Wang et al. [ 88 ] demonstrated that grain boundary engineering in FeCrCoNi-based HEA systems can be leveraged not only to mitigate corrosion but also to suppress hydrogen-induced degradation mechanisms. Such was achieved by increasing the Fe content of the alloy, which triggered nanoscale Cr segregation at grain boundaries. Using a combination of tensile testing under hydrogen charging, atom probe tomography, and first-principles calculations, they showed that the Fe-induced redistribution of Cr strengthened grain boundary cohesion while simultaneously reducing H 2  accumulation at interfacial regions. As a result, the dominant fracture mode shifted from brittle intergranular cracking to ductile deformation, even in hydrogen-rich environments. These findings suggest that grain boundaries in HEAs should not be viewed solely as vulnerable defect sites but rather as chemically tunable interfaces whose local composition can be tailored to regulate H 2  trapping and transport, and electrochemical stability.",
+        "Additionally, provided that H 2  embrittlement is a critical degradation mechanism that can significantly compromise electrolyzer durability, particularly under long-term exposure to H 2 -rich environments [ 89 ,  90 ], HEAs exhibit distinctive behavior arising from severe lattice distortion and high-entropy effects. The presence of multiple elements with varying hydrogen affinities creates a broad distribution of trapping sites, including lattice interstices, dislocations, and secondary phase interfaces. Although lattice distortion may reduce H 2  diffusivity and thus partly mitigate embrittlement, increased trapping can simultaneously promote localized hydrogen accumulation and delayed fracture. This degradation pathway is of particular concern in electrolytic cells, where the HER mechanism, which involves adsorbed hydrogen intermediates H* at the cathode surface, creates a continuous supply of atomic hydrogen capable of diffusing into the metallic lattice of structural components. This potential application of HEAs for hydrogen adsorption, diffusion, and storage capacity is illustrated in Fig.  4 . Figure 4 Potential for HEAs in H2-related components (from [ 90 ]).",
+        "A recent study by Kim et al. [ 91 ] demonstrates this challenge on the CoCrFeMnNi Cantor alloy and proposes a novel microstructural strategy to overcome it. For such, the inherently low hydrogen diffusivity of the HEA’s lattice-distorted FCC matrix was exploited, and the H 2  trapping challenge was addressed through a \"reverse-gradient\" microstructural design. This involved a fully recrystallized, low-defect surface layer which shielded a high-strength cold-rolled core from H 2  uptake, since H 2  enters from the surface and diffuses slowly inwards. As such, the coarse-grained recrystallized surface, with few grain boundaries and dislocations acting as trapping sites, limits both H 2  uptake and penetration depth, protecting the vulnerable high-strength core, as shown in Fig.  5 . The result is a microstructurally customized component that breaks the conventional linear trade-off between strength and hydrogen embrittlement resistance, suggesting microstructural engineering of the surface, rather than bulk compositional modification. Figure 5 EBSD IPF, GND density, and LAGB maps of the heterogeneous CoCrFeMnNi Cantor alloy showing the  a – c  gradient and  d – f  reverse-gradient microstructures. The reverse-gradient design employs a recrystallized low-defect surface layer to suppress hydrogen uptake and protect the high-strength core (From [ 91 ]).",
+        "Nevertheless, for such to be possible, advanced manufacturing techniques, especially those based in additive manufacturing, must be pursued to enable microstructural designs such as compositional gradients and tailored surface architectures [ 92 ].",
+        "On a different perspective, Guo et al. [ 93 ] investigated how alloy composition influences H 2  embrittlement and corrosion resistance in four equimolar NiCoCr-based face-centered cubic medium and high-entropy alloys: NiCoCr, FeNiCoCr, NiCoCrMn, and FeNiCoCrMn. Through mechanical testing under hydrogen charging, thermal desorption analysis, microscopy, electrochemical corrosion experiments, and density functional theory calculations, it was shown that FeNiCoCr exhibited the best resistance to H 2  embrittlement, while Mn-containing alloys are highly susceptible to both H 2  embrittlement and corrosion. The superior behavior of FeNiCoCr is attributed to its low hydrogen uptake, reduced hydrogen diffusivity, and beneficial chromium segregation at grain boundaries, which strengthens intergranular cohesion and suppresses H 2 -induced cracking. In contrast, Mn addition dramatically increases hydrogen absorption, weakens passivation films, and promotes intergranular fracture and pitting corrosion.",
+        "Nevertheless, exploring HEAs through purely experimental approaches is inherently time-consuming and inefficient given the vast compositional space involved. For this reason, computational approaches offer a more practical and scalable pathway to guide materials discovery and optimization. Thermodynamic modeling frameworks, such as Calculation of Phase Diagrams (CALPHAD) [ 94 ], together with phase-field [ 95 ] and kinetic simulations [ 96 ], enable the prediction of phase stability and microstructural evolution across wide compositional spaces and are directly related to the material microstructure, as shown in Fig.  6  for the NiMoVW and NiCrVW HEA systems. Additionally, these computational techniques can be further enhanced through machine learning approaches, which accelerate materials discovery and improve the prediction of phase stability, diffusion behavior, and microstructural evolution [ 97 ,  98 ]. Figure 6 a  Phase prediction using optimized thermodynamic models. XRD patterns of the  b  NiMoVW and NiCrVW alloys. Temperature-dependent mole fractions of equilibrium  c1 ,  d1  and non-equilibrium  c2 ,  d2  phases.  c3 ,  d3  BSE micrographs and corresponding EDS elemental mappings of the NiMoVW and NiCrVW alloy (From [ 94 ]).",
+        "While these tools provide valuable guidance, it is important to recognize that their predictions are inherently indicative as real alloy systems often exhibit complex, non-equilibrium behaviors that are difficult to fully capture. For example, environmental factors can hinder material performance. In particular, the pH of the operating medium plays a key role in determining corrosion behavior, oxide stability, and H 2  evolution, thereby directly influencing degradation pathways [ 99 ,  100 ]. Thermal effects also become significant, especially under high current density operation where Joule heating can elevate local temperatures. Increased temperature accelerates diffusion processes, which may lead to beneficial effects such as oxide film regeneration, but also to detrimental phenomena including phase segregation and grain coarsening. This has been highlighted by Mantz et al. [ 101 ], where Ni coarsening in solid oxide cells demonstrated that elevated operating temperatures and humid electrolysis environments promoted Ni surface mobility, resulting in particle agglomeration and coarsening, reducing the active triple-phase boundary area and thereby degrading electrochemical performance over time. Alongside this, thermal expansion mismatches between different phases or components can introduce mechanical stresses that interact synergistically with corrosion and hydrogen-related degradation mechanisms. When combined with experimental validation, however, these approaches offer critical insights into degradation mechanisms and support the rational design of more sustainable high-entropy alloys [ 102 ,  103 ].",
+        "In parallel to the theoretical basis, advanced characterization techniques also play a crucial role in elucidating degradation processes. In situ and operando methods, including electrochemical microscopy [ 104 ,  105 ] and synchrotron-based spectroscopy [ 106 ,  107 ], enable real-time observation of compositional, structural, and chemical changes, which are particularly valuable for capturing transient phenomena, such as oxide film breakdown and hydrogen ingress, which are often inaccessible through conventional ex situ techniques.",
+        "Ultimately, the performance of HEAs in electrolytic cells cannot be assessed solely based on their initial properties. Mechanical strength, ductility, electrical conductivity, and corrosion resistance are all intrinsically linked to evolving microstructure and surface chemistry. Nevertheless, beyond structural longevity, electrode materials for green hydrogen production must also maintain high catalytic activity and interfacial stability under prolonged operating conditions, since degradation in any of these aspects can ultimately compromise H 2  production performance and system reliability."
+      ]
+    },
+    {
+      "heading": "HEAs design for electrocatalytic activity",
+      "paragraphs": [
+        "Beyond structurally sound components, another factor that must be considered established are the actual reactions responsible for the dissociation of H 2 O itself. Building on the electrochemical framework, where the HER and OER were shown to involve sequential electron-transfer steps governed by intermediate adsorption energies, the present section examines how the compositional complexity of HEAs can be leveraged to optimize these energetics at the electrode surface.",
+        "Thus, in the case of the electrodes, often in the form of coatings, the focus shifts to electrochemical activity and HER and OER reactions efficiency. Beyond corrosion resistance, a key design parameter is the hydrogen adsorption strength at the electrode surface, which is governed by the nature and distribution of active sites. Material selection, therefore, plays a central role, where metals with high intrinsic catalytic activity are typically prioritized as core components, while additional elements are introduced to fine-tune the electronic structure and enhance performance. Thus, understanding inter-elemental interactions is crucial for rational electrode design [ 59 ].",
+        "For this, most of the literature available nowadays [ 108 ,  109 – 110 ] refers to the concept of d-band center (ε d ), which is one of the central theoretical frameworks used to explain and predict catalytic activity. It establishes a relationship between the electronic structure of a metal surface and the adsorption strength of reaction intermediates, thereby linking atomic-scale electronic properties to catalytic performance.",
+        "The concept originates from the electronic structure of transition metals, whose catalytic behavior is largely governed by partially filled d orbitals. When a reactant species such as H +  or OH −  approaches a metal surface, its electronic states interact with the electrons at the surface atoms, where the d-orbital electrons play a dominant role in bond formation between the adsorbate and the catalyst surface [ 111 ].",
+        "Accordingly, ε d  represents the weighted average energy of the d-electron distribution and can be calculated using density functional theory (DFT) simulations. Therefore, the strength of adsorption depends on the position of the ε d  relative to the Fermi level of the metal, which represents the highest occupied electronic energy level at 0 K in a solid. In simplified terms, the d-band center closer to the Fermi level generally results in stronger adsorption of intermediates, while a d-band center farther below the Fermi level generally leads to weaker adsorption. This occurs because a higher ε d  increases the overlap between metal d-states and adsorbate orbitals, strengthening the metal–adsorbate bond. Conversely, when the ε d  is lower in energy, orbital overlap decreases and adsorption weakens. This relationship is extremely important in HER and OER catalysis because catalytic activity depends critically on achieving an optimal adsorption strength, which according to the Sabatier principle, catalytic performance is maximized when intermediates bind neither too strongly nor too weakly to the electrode surface [ 112 ,  113 ]. This energetic interaction between the catalyst surface and reactive species determines whether adsorption is sufficiently strong to activate the reaction while remaining weak enough to permit product desorption. Excessively strong binding poisons active sites by retaining intermediates, whereas insufficiently strong binding fails to activate reactants effectively.",
+        "This relationship between adsorption strength and catalytic activity is classically illustrated through the volcano plot, which is a graphical representation that maps the exchange current density (a measure of intrinsic catalytic activity) against the hydrogen Gibbs free energy of hydrogen adsorption (ΔG H* ) for various metals. The resulting bell-shaped curve reveals that catalytic activity peaks at an intermediate adsorption strength, providing a visual and quantitative embodiment of the Sabatier principle. Such is shown in Fig.  7 , where it is directly reflected the kinetic limitations of HER and OER, where overpotential losses were identified as a primary driver of efficiency losses in electrolytic cells. Figure 7 Volcano plot highlighting exchange current densities, expressed as log( j 0 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${j}_{0}$$\\end{document} ), for monometallic surfaces plotted as a function of the calculated hydrogen binding energy. The data were retrieved from [ 114 ], and the dashed lines were plotted to for visualization purposes of the volcano shape, accordingly with the reference.",
+        "Metals that bind hydrogen too strongly, such as W or Mo, are found on the ascending left flank of the volcano, where product desorption becomes rate-limiting. Conversely, metals such as Au or Ag, which bind hydrogen too weakly, fall on the descending right flank, where adsorption and activation are insufficient. Of special emphasis, there is the case of Platinum, that sits near the apex of the volcano plot, with a ΔG H*  close to thermoneutral (≈ 0 eV), which explains its exceptionally high HER activity and has made it the benchmark catalyst against which all other materials are evaluated [ 111 ,  114 ].",
+        "From a d-band perspective, Pt possesses an ε d  positioned at a moderate energy below the Fermi level, yielding an adsorption strength that is neither prohibitively strong nor weak. This intrinsic electronic balance underpins its near-optimal catalytic behavior. However, Pt is a scarce and costly platinum-group metal (PGM), making its widespread deployment in industrial water electrolyzers economically challenging [ 115 ]. This limitation has been a principal driver for the exploration of HEAs, where the vast compositional space offers the possibility of replicating or even surpassing Pt-like adsorption energetics at significantly reduced noble metal content, or even without PGMs entirely, by leveraging synergistic inter-elemental electronic effects to position the ε d  near the volcano apex.",
+        "In this regard, HEAs offer a distinct advantage, as their multi-elemental nature enables extensive opportunities for tuning adsorption behavior through compositional and electronic modifications while simultaneously improving charge-transfer characteristics. This is particularly relevant since catalytically active elements can be combined with others that primarily function as electronic modulators or structural stabilizers. For example, noble or transition metals with intrinsically favorable adsorption properties may be alloyed with elements capable of tuning surface electron density, improving conductivity, or enhancing corrosion resistance [ 116 ]. Such combinations of metallic elements with complementary electronic properties can promote rapid bulk electron transport, lower interfacial charge-transfer resistance, and minimize resistive losses that would otherwise translate into efficiency penalties under operational conditions. Furthermore, the inter-elemental interactions intrinsic to HEAs create a continuously tunable electronic landscape, modulating the local density of states and the position of ε d , thereby directly influencing adsorption energetics and charge-transfer kinetics at the electrode–electrolyte interface. This electronic tunability, coupled with the structural and compositional degrees of freedom inherent to HEAs, positions them as highly promising platforms for simultaneously optimizing binding energetics, conductivity, and electrochemical reaction kinetics.",
+        "Such is the case highlighted by Wang et al. [ 117 ], which demonstrated that HEAs can be tunable for green hydrogen production via elemental composition and porous structure. Using DFT, they identified Fe 11 Co 10 Ni 24 Cu 16 Mn 3  as the optimal composition, where the multi-element cocktail effect positions Cu as the primary active site while surrounding elements collectively tune its ε d  to minimize H adsorption energy. Structural tunability was achieved through controlled dealloying of FeCoNiCuAl 2 Mn via etching, which governed the degree of hierarchical porosity and active surface area exposure. The optimized catalyst outperformed commercial Pt/C with an overpotential of just 9.7 mV at 10 mA cm −2  and retained stability over 100 h, establishing HEAs as a viable, non-precious platform for alkaline water electrolysis.",
+        "Comparably, Jin et al. [ 118 ] introduced a novel tunability strategy for HEAs based on electrochemically induced self-reconstruction, demonstrating that the catalytic interface, not just the bulk composition, can be engineered for green hydrogen production. By subjecting PtRu 2.9 Fe 0.15 Co 1.5 Ni 1.3  HEAs to cyclic voltammetry activation in an acidic electrolyte, Co and Ru atoms selectively segregated from the alloy lattice to form a Co 2 RuO 4  spinel phase at the surface, generating a functional HEAs-Co 2 RuO 4  interface. For such, DFT calculations revealed that this reconstructed interface simultaneously boosted H₂O adsorption and weakened H adsorption, thus shifting the Gibbs free energy of H binding from − 0.58 eV (bare HEAs) to near-optimal values of 0.19 and − 0.30 eV at Co and Ru sites, respectively. The resulting catalyst achieved an overpotential of just 11.8 mV at 10 mA cm⁻2 in 1 M KOH, surpassing both the parent HEAs (34.4 mV) and commercial Pt/C (92.1 mV), with stable operation confirmed over 100 h for an efficient alkaline HER.",
+        "Moreover, Zhang et al. [ 119 ] reported the usage of ultrasmall sub-3 nm multimetallic high-entropy nanoparticles synthesized via an ultraquick thermal shock method, achieving outstanding alkaline hydrogen evolution performance with ultralow overpotentials and industrial-level current densities. This exceptional activity arises from spatially differentiated surface regions that, respectively, promote water dissociation, H 2  intermediate migration, and H 2 molecule formation, enabling a synergistic reaction pathway across the catalyst surface.",
+        "Moreover, the fact that HEAs contain multiple principal elements distributed within a shared lattice, giving rise to highly heterogeneous atomic environments. As a result, surface atoms experience distinct local coordination configurations depending on the neighboring elements, leading to substantial variations in electronic structure and, therefore, in catalytic response across the electrode surface. Such interactions are commonly associated with ligand and strain effects [ 120 ].",
+        "For instance, ligand effects arise from electronic interactions between neighboring atoms with different electronegativities and valence electron configurations, causing redistribution of electronic density and modification of surface electronic states. Such changes directly influence the adsorption behavior of reaction intermediates by altering the binding strength between the catalyst surface and adsorbed species. On the other hand, strain effects originate from differences in atomic radii among constituent elements, generating local lattice distortions that modify interatomic distances and orbital overlap.",
+        "Such behavior has been pointed out by Wang et al. [ 121 ], who demonstrated that controllable lattice strain (refer to Fig.  8 ) in NiFeMo alloy electrocatalysts induced shifts in the d-band center and modified the electronic interactions of surface active sites, thereby optimizing the adsorption strength of HER/OER intermediates and enhancing overall water-splitting activity. Their combined experimental and DFT results showed that strain-induced tuning of the local electronic structure promotes catalytic kinetics by balancing intermediate adsorption and desorption energies. Moreover, Wang et al. [ 122 ] also reported a FeCoNiMnRuLa/CNT catalyst for water splitting that achieves efficient bifunctional electrocatalysis by rare-earth-induced lattice distortion and electronic reconfiguration of a multimetal active site using La. The catalyst enables both HER and OER activity with low overpotentials, reflecting fast reaction kinetics across both half-reactions. Incorporation of La disrupts lattice ordering and redistributes d-orbital occupancy, accelerating the conversion of oxygenated intermediates while balancing adsorption–desorption energetics across Fe, Ni, Co, Mn, and Ru sites. Figure 8 Characterization and strain distribution of PtIrCuNiCr HEA NPs:  a  Transmission electron microscopy images of PtIrCuNiCr HEA showing disordered crystal structures with evident stacking faults. The highlighted interplanar spacings are lower relative to pure Pt, confirming lattice compression induced by the incorporation of 3d transition metals.  b  XRD patterns of HEA and pure Pt of the (111), (220), and (200) peaks, exhibiting broadening and a shift to higher Bragg angles, indicative of Type I and II lattice strains; and  c  geometric phase analysis strain maps and corresponding histograms showing the spatial distributions of normal strains ε xx  and ε yy  and shear strain ε xy  across the HE, revealing broad strain distributions consistent with the presence of dislocations and stacking faults.",
+        "Both phenomena are particularly relevant in the framework of d-band theory, since altering orbital overlap and shifting the local ε d  of surface atoms, ligand and strain effects continuously modify the local electronic structure across the HEA catalyst surface. That is, since each surface site may possess a different atomic neighborhood, HEAs tend to exhibit a distribution of local ε d  rather than a single uniform value, which creates a broad spectrum of adsorption behaviors. Such heterogeneity is particularly advantageous for HER and OER, which involve multiple elementary steps and intermediates with different energetic requirements. Thus, instead of relying on a single type of active site, HEAs provide a spectrum of catalytic environments capable of simultaneously stabilizing different intermediates and lowering reaction barriers along distinct reaction pathways.",
+        "Another important consequence of inter-elemental interactions in HEAs is the possibility of breaking conventional linear scaling relationships between adsorption energies of reaction intermediates, which is a fundamental limitation that constrains the performance of traditional electrocatalysts. Such relationships describe the proportional dependence between the adsorption energies of different reaction intermediates on a catalyst surface, thereby constraining the maximum achievable catalytic activity.",
+        "As such, in single-element or simple alloy systems, the adsorption energies of chemically related intermediates are intrinsically correlated through shared bonding descriptors, such as the d-band center. For OER, this manifests as a near-constant energy offset of approximately 3.2 eV between the adsorption energies of OOH* and OH*, regardless of the catalyst identity, which imposes a theoretical minimum overpotential of approximately 0.37 V that cannot be circumvented by simple compositional tuning within a conventional design framework [ 123 ]. Similarly, in HER, the simultaneous optimization of H* adsorption and H* desorption steps is constrained by the same descriptor, since both steps depend on the same surface–hydrogen bond strength. As a result, catalytic performance in conventional systems is ultimately bounded by these thermodynamic scaling constraints, preventing the independent optimization of individual elementary reaction steps.",
+        "HEAs offer a distinct strategy to partially circumvent these limitations, provided that each surface atom in a multi-principal-element alloy occupies a unique local chemical environment defined by its specific elemental neighborhood, HEA surfaces inherently expose a heterogeneous distribution of active sites with distinct local electronic structures and adsorption energetics. Rather than all intermediates interacting with a single type of site governed by one dominant descriptor, different intermediates can preferentially bind to distinct surface configurations, effectively decoupling their adsorption energies. This site heterogeneity relaxes the rigid correlations imposed by linear scaling relations and opens a pathway toward independently tuning each elementary step in the HER and OER mechanisms. This has been demonstrated by Mei et al. [ 124 ], where the compositional complexity of the MoZnFeCoNi HEA resulted in an ultralow overpotential of 221 mV and stability exceeding 1500 h, achieving a level of performance that is generally inaccessible to catalysts limited by conventional scaling-relation constraints. Chen et al. [ 113 ] further suggested that the heterogeneous adsorption energy landscape of HEAs can circumvent conventional Sabatier volcano limitations by spatially separating adsorption and desorption functions across different active sites, thereby relaxing the descriptor constraints that underlie traditional scaling relations.",
+        "Additionally, Hao et al. [ 125 ] showed that in HEA electrocatalysts, namely, using the FeCoNi-based HEAs containing Ru and other dopants, adsorption of key reaction intermediates is governed primarily by local electronegativity variations rather than simple elemental identity, leading to strong charge redistribution across the alloy surface. This causes a wide spectrum of chemically distinct active sites that can independently stabilize different intermediates (for example, OH* and H*), rather than enforcing a single correlated adsorption behavior as in conventional catalysts, thus improving catalytic efficiency by breaking conventional adsorption energy constraints.",
+        "Nevertheless, d-band theory remains a simplified model. Although highly useful for understanding trends in catalytic behavior, it does not fully capture all phenomena governing electrocatalysis, especially in highly complex systems such as HEAs where surface segregation, local disorder, oxide formation, solvent interactions, and dynamic surface reconstruction may also play significant roles.",
+        "Beyond binding energetics, electronic conductivity and charge-transfer kinetics must also be considered, as they govern the rate at which electrons are exchanged between the electrode and reacting species. Fast electron-transfer processes are essential to minimize activation overpotentials, sustain high current densities, and ensure that catalytic efficiency is not limited by sluggish interfacial charge exchange. These kinetics are collectively influenced by the intrinsic electrical conductivity of the material and the surface electronic structure at the electrode–electrolyte interface. In this context, several electrochemical parameters are used to quantify these kinetic characteristics experimentally. For instances, the Tafel slope, derived from the linear region of the overpotential vs. log(j) plot through η = b·log(j/j₀), provides mechanistic insight into the rate-determining step and the sensitivity of the reaction rate to applied potential, with lower values indicating more favorable kinetics. Complementarily, the exchange current density (j₀) quantifies intrinsic catalytic activity at equilibrium, serving as a kinetic measure of how readily the electrode sustains charge transfer in the absence of net current [ 5 ,  126 ]. Together, these parameters provide a holistic and comprehensive picture of the charge-transfer kinetics governing electrocatalytic performance.",
+        "Moreover, the complexity associated with inter-elemental interactions likewise presents significant challenges for catalyst design and characterization. Because HEA surfaces contain a vast number of possible atomic configurations, predicting catalytic behavior requires advanced theoretical and experimental approaches, such as in-operando spectroscopy [ 127 ] and other advanced characterization techniques [ 106 ].",
+        "Thermodynamic approaches such as CALPHAD are also increasingly important due to their capability to predict stable phases in multicomponent systems. Since phase constitution directly influences the local electronic environment of surface atoms, combining CALPHAD-based phase predictions with electronic structure calculations and DFT can offer a promising strategy to simplify simulations, reduce the enormous compositional space of HEAs, and accelerate the rational optimization of HER and OER electrocatalysts for green hydrogen production [ 128 ,  129 ]. Of special interest for this is machine learning-assisted screening [ 125 ,  130 ,  131 ], which, as shown in Fig.  9 , can combine data from multiple sources to optimize high-throughput compositions for GH 2  production. Consequently, a detailed understanding of elemental synergy and local atomic interactions is fundamental for the rational development of HEA electrocatalysts with enhanced HER and OER performance. Figure 9 Machine learning-assisted design and optimization of HEA electrocatalysts:  a  Gated Graph Neural Network (GNN) architecture for adsorption energy prediction;  b  compositional optimization workflow for AgIrPdPtRu HEAs integrating DFT data, energy regression, and activity estimation;  c  extrapolative GNN framework for CO₂RR activity prediction across a 10-element chemical space (AgAuCuIrOsPdPtReRhRu), with parity plots illustrating out-of-domain generalization; and  d  Pareto front projections from tri-objective Bayesian Optimization enabling simultaneous multi-property compositional screening (Adapted from [ 125 ,  130 ,  131 ])."
+      ]
+    },
+    {
+      "heading": "Conclusions and perspectives on HEAs for electrolytic cell enhancement",
+      "paragraphs": [
+        "HEAs have emerged as a class of materials with the potential to advance electrolytic cell performance, primarily driven by their tunable electronic structures and vast compositional space. A fundamental paradigm in their development lies in the exploitation of complementary electronic properties, where the synergistic interplay between constituent elements modulates adsorption energies and catalytic kinetics. In this context, establishing a robust correlation between the ε d  and macroscopic electrochemical behavior remains a critical frontier for the rational design of high-efficiency electrocatalysts.",
+        "While the application of HEA to electrolyzer components remains predominantly at the laboratory and proof-of-concept stage, with no large-scale industrial deployment reported to date, the existing studies provide encouraging evidence of their potential. Such findings position HEAs as a compelling material candidate for future electrolyzer designs, though the translation from laboratory coupons to full-scale stacks, particularly long-term durability and cost competitiveness, remains an open engineering challenge that warrants further investigation.",
+        "From a stability and durability standpoint, the nexus between phase stability and corrosion resistance is paramount. Ensuring that HEAs maintain their structural and chemical integrity under the aggressive oxidative or reductive environments of an electrolyte is a prerequisite for practical deployment. In this regard, grain boundary engineering has proven to be a particularly effective strategy, enabling simultaneous improvements in corrosion resistance, mechanical performance, and resistance to hydrogen-induced intergranular degradation through controlled manipulation of boundary morphology and local chemistry. The evolution of phase constituents within the electrolytic environment directly dictates both catalytic overpotential and electrode lifespan. While hydrogen embrittlement remains a pertinent degradation pathway, current evidence suggests that its influence is often secondary to surface leaching and phase transformation, though it warrants rigorous investigation under realistic, non-steady-state operating conditions characteristic of intermittent renewable energy sources.",
+        "It should also be recognized that much of the current understanding of corrosion resistance, hydrogen embrittlement, and grain boundary engineering in high-entropy alloys originates from studies on bulk materials, whereas their application in water electrolysis systems spans both catalytic coatings and functional structural components such as bipolar plates and current collectors. The direct transferability of structure–property relationships established for bulk alloys to these technologically relevant geometries, therefore remains an open research question, as coatings and engineered surfaces typically exhibit distinct microstructural features and substrate-induced effects arising from their specific processing routes.",
+        "Moreover, electrochemical environments in operating electrolysis cells may activate degradation pathways that are geometry-dependent, with high surface-to-volume catalytic layers and larger structural components experiencing different combinations of localized corrosion, passivation, and mechanical–chemical coupling. Accordingly, future work should systematically evaluate how principles derived from bulk HEAs translate across different material forms used in electrolyzer architectures, including both catalytic and structural applications, under realistic operating conditions. Establishing robust correlations between bulk alloys, surface-engineered coatings, and device-relevant components through multiscale characterization and operando degradation studies will be essential for the rational design of durable HEA-based electrochemical systems.",
+        "Nevertheless, despite these promising intrinsic attributes, some other significant bottlenecks persist. A primary challenge lies in identifying compositions that deliver superior catalytic activity at industrially relevant current densities (> 1–2 A cm −2 ) while minimizing or eliminating reliance on critical raw materials and expensive noble metals. Future research should, therefore, focus on the development of low-cost HEAs based on earth-abundant elements, together with scalable synthesis and manufacturing routes compatible with large area electrodes and stack-level integration.",
+        "From an industrial perspective, long-term durability under practical operating conditions remains a key requirement. Particular attention should be given to understanding degradation mechanisms during prolonged operation (> 50,000 h target lifetimes), including surface segregation, elemental leaching, phase transformation, and corrosion under highly dynamic load profiles associated with renewable energy integration. The establishment of standardized accelerated stress tests and operando characterization methodologies will be essential to evaluate HEA performance under commercially relevant conditions.",
+        "Furthermore, future efforts should focus on developing predictive design frameworks by combining electronic descriptors to capture the complexity of multi-element active sites with the development for predictive models that seamlessly integrate thermodynamics and kinetics and establish standardized testing protocols for durability under realistic operating conditions. In this sense, bridging ab initio calculations, machine learning-assisted materials discovery and in situ/operando experimental validation will accelerate the identification of compositions that simultaneously satisfy durability and cost requirements. Ultimately, translating HEAs from laboratory-scale demonstrations to industrial electrolyzer stacks will require a holistic approach that integrates catalyst performance, material sustainability, and manufacturability thereby establishing HEAs as a viable materials platform for large-scale green hydrogen production."
+      ]
+    }
+  ],
+  "tables": [
+    {
+      "caption": "Overview of high-entropy alloy (HEA) electrocatalysts reported in the literature for water electrolysis applications. The Scopus database was surveyed covering the latest available studies from 2025 onwards, and only those deemed relevant to the scope of this work are presented",
+      "headers": [
+        "HEA",
+        "Comments",
+        "References"
+      ],
+      "rows": [
+        [
+          "FeRuPtNiCoPd",
+          "A pH-universal catalyst synthesized via pulsed laser irradiation in liquids exhibits exceptional performance for both OER and HER. It overcomes the pH dependency of conventional catalysts, performing effectively in both acidic and alkaline environments",
+          "[ 57 ]"
+        ],
+        [
+          "CoNiCuMnFe/C",
+          "A flower-sphere CoNiCuMnFe HEA anchored on carbon was developed via hydrothermal and carbonization methods to enhance OER kinetics. The hierarchical structure maximizes exposed active sites",
+          "[ 58 ]"
+        ],
+        [
+          "NiFeCoCrW",
+          "OER performance was enhanced by exploiting synergistic electronic interactions among multiple metal elements. The optimized HEA promotes lattice oxygen activation and accelerates reaction kinetics, delivering high activity and exceptional long-term stability",
+          "[ 59 ]"
+        ],
+        [
+          "NiCrCoZnFe",
+          "Synergistic metal and oxygen vacancies can activate an oxygen vacancy site mechanism optimizing oxygen-intermediate adsorption and accelerating oxygen evolution kinetics while maintaining excellent catalytic stability",
+          "[ 60 ]"
+        ],
+        [
+          "RuPdIrPtAu",
+          "A trimetallic Co/Ni/Cu hydroxyphosphate nanosheet array grown on nickel foam was engineered through hydrothermal synthesis followed by phosphorization. The 3D porous structure and optimized electronic structure significantly lower the energy barrier for OER",
+          "[ 61 ]"
+        ],
+        [
+          "PtFeCoNiMo",
+          "Ruthenium-doped Co-Fe layered double hydroxide nanosheets were developed to optimize the electronic structure and boost OER performance in alkaline water electrolysis. The Ru doping effectively tunes the active sites for improved catalytic activity",
+          "[ 62 ]"
+        ],
+        [
+          "FeMnCuNiTi FeMnCuNiMo",
+          "Novel Cr- and Co-free HEAs were developed with HER performance in alkaline media comparable to Pt-based catalysts. These compositions offer a cost-effective and sustainable alternative for green hydrogen production",
+          "[ 63 ]"
+        ],
+        [
+          "FeCoNiPtRu",
+          "Pt/Ru atomic site occupation was used to stabilize grain boundaries in HEAs. The strategy effectively enhances catalytic stability across both acidic and alkaline conditions",
+          "[ 64 ]"
+        ],
+        [
+          "FeCoNiNbPt",
+          "A dynamic dissolution-deposition equilibrium mechanism enables unprecedented HER stability in acidic conditions. The catalyst achieves improved activity with lower Pt loading compared to conventional Pt/C",
+          "[ 65 ]"
+        ],
+        [
+          "MnFeCoNiVCu",
+          "Cu incorporation into the high-entropy intermetallic structure promotes hydrogen adsorption/desorption kinetics via hydrogen spillover, reducing HER kinetic limitations in alkaline media. The sigma-phase structure provides a robust and active framework for efficient hydrogen evolution",
+          "[ 66 ]"
+        ],
+        [
+          "FeCoNiMoRu",
+          "A metal–organic frameworks derived carbonized HEA catalyst on nickel foam exhibits enhanced oxygen electrocatalytic activity and long-term durability. The synergistic multi-element interactions and conductive self-supporting architecture boost performance in alkaline systems",
+          "[ 67 ]"
+        ],
+        [
+          "Ni 50 (FeCoCrCu)",
+          "Ni-based high-entropy alloys with unique structural features demonstrate enhanced catalytic activity and stability for H 2  production. The multi-element synergy enables efficient operation under both alkaline and seawater electrolysis conditions",
+          "[ 68 ]"
+        ],
+        [
+          "FeCoNiMo",
+          "Porous FeCoNiMo HEA were synthesized via arc melting and chemical dealloying, forming hierarchical porous structures that enhance active surface area and charge transfer. The bifunctional catalyst shows high performance for both HER and OER in alkaline water splitting",
+          "[ 69 ]"
+        ],
+        [
+          "Ir x RuCoCuNi",
+          "Ir-based HEA nanoframeworks were synthesized by spray drying combined with thermal decomposition reduction, yielding a porous architecture with large electrochemically active surface area. The optimized Ir 2 RuCoCuNi composition outperforms commercial IrO 2  for OER",
+          "[ 70 ]"
+        ],
+        [
+          "CrZrTiCoNiCuFe AlMnTiCoNiCuFe",
+          "High-entropy alloy catalysts on reduced graphene oxide were prepared via pulse microwave synthesis and exhibit strong activity for both OER and ORR, outperforming pure Pt catalysts. The materials also display anti-CO poisoning behavior and long-term durability",
+          "[ 71 ]"
+        ],
+        [
+          "PdRuPtIrRh",
+          "Nanosecond-pulsed UV laser treatment of HEA nanoparticles modified their surface composition and electronic structure, generating more active catalytic sites. This enhanced both HER/OER activity for water splitting and ORR performance for fuel cell applications",
+          "[ 72 ]"
+        ],
+        [
+          "NiCoFePtRuIr NiCoFePt NiCoFeRu NiCoFeIr",
+          "Medium- and high-entropy alloys were prepared via a scalable impregnation synthesis method, with ultralow noble metal loading enabling industrial-level HER activity. The study demonstrates that senary alloy compositions can achieve high catalytic performance with minimal use of precious metals",
+          "[ 73 ]"
+        ],
+        [
+          "CoCrFeNiMoAl",
+          "Plasma spraying was used to fabricate porous high-entropy alloy coatings with enhanced active surface area, conductivity, and gas diffusion. The coatings exhibit improved HER and OER catalytic activity along with long-term durability for alkaline water splitting",
+          "[ 74 ]"
+        ],
+        [
+          "NiFeCoCuCrMn",
+          "An HEA surface combined with a multicomponent intermetallic core enables optimized adsorption energies and intermediate spillover, significantly improving hydrazine oxidation kinetics. This heterostructure design offers an energy-efficient alternative to conventional alkaline OER systems",
+          "[ 75 ]"
+        ],
+        [
+          "FeCrNiZrMn",
+          "FeCrNiZrMn HEA on carbon nanofibers was synthesized via electrospinning and high-temperature carbonization. DFT calculations confirm that the HEA surface provides diverse hydrogen adsorption sites and a tunable electronic structure, enhancing HER activity",
+          "[ 76 ]"
+        ],
+        [
+          "R NiCoCuMo",
+          "Ru single-atom catalysts supported on a NiCoCuMo high-entropy alloy were synthesized to optimize H 2  adsorption energy and accelerate charge transfer. The synergistic interaction between isolated Ru atoms and the HEA support leads to improve HER activity and durability",
+          "[ 77 ]"
+        ],
+        [
+          "FeCoNiMoCu",
+          "Chemical vapor deposition sulfidation of FeCoNiMoCu HEAs was used to modify surface composition and increase active sulfide sites, significantly improving HER activity. The sulfidation temperature was identified as a key parameter controlling catalytic performance",
+          "[ 78 ]"
+        ],
+        [
+          "NiCoFeMnCrV",
+          "NiCoFeMnCrV HEA catalysts exhibit enhanced HER and OER activity due to synergistic multi-element interactions, improved charge transfer, and abundant active sites. The material demonstrates bifunctional capability for overall alkaline water splitting",
+          "[ 79 ]"
+        ],
+        [
+          "ZnCoNiFeV",
+          "Vanadium incorporation into a HEA electrocatalyst modifies the electronic structure and promotes the formation of highly active surface oxyhydroxide species. This enhances charge transfer and catalytic kinetics for the oxygen evolution reaction",
+          "[ 80 ]"
+        ]
+      ],
+      "header_groups": [],
+      "table_alignment_status": "resolved",
+      "row_provenance": [
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 3
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 3
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 3
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 3
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 3
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 3
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 3
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 3
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 8,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 8,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 8,
+            "source_col": 3
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 9,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 9,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 9,
+            "source_col": 3
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 10,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 10,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 10,
+            "source_col": 3
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 11,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 11,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 11,
+            "source_col": 3
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 12,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 12,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 12,
+            "source_col": 3
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 13,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 13,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 13,
+            "source_col": 3
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 14,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 14,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 14,
+            "source_col": 3
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 15,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 15,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 15,
+            "source_col": 3
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 16,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 16,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 16,
+            "source_col": 3
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 17,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 17,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 17,
+            "source_col": 3
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 18,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 18,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 18,
+            "source_col": 3
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 19,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 19,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 19,
+            "source_col": 3
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 20,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 20,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 20,
+            "source_col": 3
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 21,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 21,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 21,
+            "source_col": 3
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 22,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 22,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 22,
+            "source_col": 3
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 23,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 23,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 23,
+            "source_col": 3
+          }
+        ]
+      ],
+      "tbody_alignment_status": "resolved"
+    }
+  ]
+}

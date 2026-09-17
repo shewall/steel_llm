@@ -1,0 +1,644 @@
+{
+  "doi": "10.1038/s41598-026-50482-6",
+  "title": "Research on longitudinal bowing defect of aluminum alloy plate in roll-forming asymmetric corrugated channels",
+  "abstract": "Abstract Longitudinal bowing defect (LBD) is commonly produced during the continuous roll forming of materials, which directly affects the quality of the formed products. The asymmetric corrugated channels (ACCs) have a large number of channels and are subjected to the pressure of asymmetric rollers. Therefore, the control of LBD is more complex compared to single channel during the roll forming. To address the LBD of aluminum alloy plate in roll-forming ACCs, a finite element model with 10 forming passes is firstly established for numerical simulation. Then the mechanism of longitudinal bowing is analyzed, and the influence of various forming parameters on the defects is investigated. The results indicate that the roll diameter and the number of forming passes significantly affect LBD, while other parameters exhibit a relatively minor impact. Finally, an optimal forming scheme is derived. Both the simulation and experiments have shown that the optimized scheme can significantly reduce the forming defects. Thus, it can be used to control the LBD in the roll-forming ACCs.",
+  "journal": "Scientific Reports",
+  "year": "2026",
+  "sections": [
+    {
+      "heading": "Introduction",
+      "paragraphs": [
+        "Roll forming is a highly efficient and precise continuous metal forming process. Coiled sheet products are widely used in the construction industry for applications such as roofing, wall panels, concrete formwork, and fencing and so on. The ACCs studied in this work, as one of such products, are primarily employed in manufacturing aluminum sleeves, as shown in Fig.  1 . Compared to conventional paper sleeves, the aluminum alloy sleeves used for supporting the industrial coiled products can offer some advantages including lightweight, high load-bearing capacity, pollution-free production, low cost, and recyclability and so on, demonstrating broad industrial application prospects. Furthermore, compared to other sleeve materials, the aluminum alloys exhibit superior material properties and facilitate the forming process of corrugated bellows 1 , 2 .",
+        "Fig. 1 Asymmetric corrugated channels and bellows.",
+        "During the production of corrugated channels, the significant longitudinal deformation often occurs in the sheet metal, inevitably leading to LBD. Extensive research has been conducted on defects in roll-formed channels across various profiles. Poursafar et al. 3  utilized neural network models and multivariate regression methods to predict the longitudinal bowing in U-section products. Their results demonstrated that a neural network with 10 neurons achieved optimal prediction accuracy for longitudinal bending. Woo et al. 4  performed finite element analysis using ABAQUS to investigate the longitudinal strain and bowing defects in flexible roll forming of steel/aluminum bilayer sheets. Their findings revealed that the longitudinal strain significantly influenced the sheet shape defects. Safdarian et al. 5  studied the LBD and edge longitudinal strain in single-channel products through numerical simulations and experiments. They concluded that the edge longitudinal strain is independent of the friction coefficient and the forming speed but is correlated with the bending angle, and increases proportionally with the larger angles.",
+        "Regrading the factors influencing the LBD, Bidabadi et al. 6  investigated the longitudinal bowing in symmetric U-channels via linear regression-based curve fitting. The results showed that the spacing of the roller frame and the bending radius had the least impact on the longitudinal bending. Poursina et al. 7  employed Backpropagation Artificial Neural Networks (BPANN) and regression analysis to predict the maximum downward deflection at the exit profile during the symmetric U-channel roll forming. Their study of parameters including the sheet thickness, flange width, bending angle, and the friction coefficient showed that the increased forming angles exacerbated the longitudinal bowing, while the friction effects were negligible. Cha et al. 8  explored the twisting and LBD of the roll formed U-channel products. They found that high-strength steel exhibited greater twisting and bowing than low-carbon steel, primarily due to the difference in longitudinal strains between the edge and web regions. A web compression method in the thickness direction was proposed and validated to effectively reduce these defects.",
+        "In terms of LBD control, Murugesan et al. 9  developed two models in LS-DYNA for AA5052 aluminum alloy U-profiles: a standard roll-forming model and a model incorporating support stands at the final forming stage. Their results demonstrated that the implementing support stands could effectively reduce the LBD during the sheet forming. Kim et al. 10  found that the bending angle sequencing in flexible roll forming critically affected the bowing severity, with the final-stage maximum deformation increasing by 30%. Zhou Yujia et al. 11  developed a BP neural network model achieving ± 0.5° accuracy in V-bend springback prediction. Wiebenga et al. 12  conducted the robust optimization of roll-forming processes to compensate for product defects, with both experimental and numerical results validating the method’s effectiveness. Their study also revealed that the roll gap spacing critically influenced the longitudinal bowing and the spring back in V-section Advanced High-Strength Steel (AHSS) products. Su Chunjian et al. 13  proposed a novel six-boundary forming angle allocation method, which significantly reduced the longitudinal bowing during the bending process.",
+        "Kilz et al. 14  established an analytical model for the relationship between the simple cap-shaped structural defects and the potential longitudinal strain distribution. This model could quantitatively predict the longitudinal bowing and twisting based on the given strain distributions. Abeyrathna et al. 15  combined an experimental and numerical methods to investigate the effects of yield strength and material hardening on longitudinal bowing. Their findings indicated that the influence of hardening was minimal, while the increased yield strength was correlated with the reduction in bowing. Badr et al. 16  compared the roll-forming methods of V-channels and demonstrated that the constant-radius forming effectively minimized the longitudinal bowing. Rolfe et al. 17  experimentally studied the longitudinal edge strain and bowing in the V-section steel roll forming. They identified a positive correlation between the peak longitudinal edge strain, bowing defects, and the material yield strength. Kilz et al. 14  established a quantitative model to correlate the inhomogeneous longitudinal strain distribution with profile defects in roll forming, revealing that the non-uniformity of longitudinal strain was significantly amplified in asymmetric sections, making conventional defect prediction models designed for symmetric profiles directly inapplicable. Tajik et al. 18  conducted a comparative study of symmetric and asymmetric channel sections, discovering that the geometric imbalance of asymmetric sections induced unique longitudinal bowing behaviors, of which formation mechanisms and control methods differ significantly from those of symmetric profiles. Poursafar et al. 19  performed experimental research on the bowing defects of pre-notched channel sections, concluding that forming passes and angle increment had the most significant impact on longitudinal bending. Yang et al. 20  investigated the roll forming of lightweight aluminum alloy profiles, pointing out that the yield strength and elastic modulus of materials played a crucial role in defect evolution.",
+        "Based on the above researches, most of the existing studies on longitudinal bowing have predominantly focused on single-groove or symmetric cross-sectional profiles, with limited research addressing asymmetric configurations. Due to the large number of corrugated channels and the influence of asymmetric roll pressure, the roll-forming process of ACCs is more complex than that of simple symmetric profiles, and their sheet material exhibits higher susceptibility to defects during the forming. Furthermore, although the transverse bending defects of ACCs is explored in literature 1 , the research on LBD has never been related. Longitudinal bending is the core issue affecting the forming accuracy of ACCs. Due to uneven stress and asymmetric deformation, its generation mechanism in ACCs is essentially different from conventional structures, and thus, in order to obtain high-quality formed quality, the sutdy of LBD is necessary during the roll-forming ACCs."
+      ]
+    },
+    {
+      "heading": "Factors influencing LBD",
+      "paragraphs": []
+    },
+    {
+      "heading": "Forming mechanism of longitudinal bowing",
+      "paragraphs": [
+        "In wide sheet metal products, redundant strain can induce LBD, degrading the forming quality of ACCs. As illustrated in Fig.  2 , the sheet undergoes deformation in both the transversal and longitudinal directions during the rolling process, while its edges are simultaneously stretched. This results in significant longitudinal strain. However, the distribution of longitudinal strain is non-uniform, and the additional strain accumulates incrementally at each rolling pass. Upon the completion of asymmetric corrugated channel forming, the accumulated longitudinal strain is released, ultimately manifesting as LBD in the final product.",
+        "Fig. 2 Sheet deformation during roll forming."
+      ]
+    },
+    {
+      "heading": "Measurement method for longitudinal bowing",
+      "paragraphs": [
+        "The bowing height is defined as the vertical distance from the front end of the formed sheet to the horizontal plane, as shown in Fig.  3 a. A greater distance indicates more severe LBD, whereas a smaller distance reflects the better forming quality of the ACCs. Due to the asymmetric geometry of the channels (unequal corrugation dimensions on both sides), the average bowing height of five-channel ACCs is adopted as the evaluation criterion to ensure measurement accuracy.",
+        "Fig. 3 Measurement method for longitudinal bowing."
+      ]
+    },
+    {
+      "heading": "Numerical simulation",
+      "paragraphs": []
+    },
+    {
+      "heading": "Model establishment",
+      "paragraphs": [
+        "In this study, five-channel ACCs are selected as the investigation object. The distinguishing characteristic of this structure lies in the dimensional asymmetry of the channels on either side of the central channel: the two channels on the left are relatively wide, whereas the two channels on the right are comparatively narrow. The detailed product dimensions are presented in Fig.  4 .",
+        "Fig. 4 Dimensions of ACCs.",
+        "The dimensions of the model are as follows: the overall size of the sheet model is 450 mm × 78 mm × 0.25 mm, the diameter of the upper and lower rolls of each pass is defined as 92 mm, the speed of the rolls is 108.695 rad/s, and the spacing of the roll stations is 300 mm. The roll forming model is established using ABAQUS finite element software. Here the rolls are defined as analytical rigid bodies, while the sheet is modeled as a deformable shell. A finer mesh generally can improve the accuracy of the simulation but it also increases the computation time; therefore, an appropriate mesh size must be selected to balance the accuracy and efficiency. For this reason, based on multiple comparative simulations, the sheet is discretized using four-node simplified integrated shell elements (S4R) with a mesh size of 0.5 mm × 4 mm and five integration points along the thickness direction, resulting in a total of 35,568 elements. In order to better explain the forming process of the ACCs, Fig.  5  shows the 10-pass rolling forming sequence of the five-channel ACCs. Based on the deformation stages and the channel formation order, it can be divided into three groups: Group #1 (passes 1–4) is the preforming stage for the central channel 3. This group completes the forming of the channel 3 at the center of the sheet, progressing from a V-shaped prebend to a U-shaped form, establishing the deformation center of the sheet and preventing overall displacement during subsequent forming. Group #2 (passes 5–7) is the forming stage for the two symmetrical side channels 2 and 4. In this group, the channels  2 and 4 are formed simultaneously on both sides of the central channel 3, introducing symmetrical deformation to balance the unilateral stress caused by forming the central channel 3 and ensuring the stability of the sheet forming process. Group #3 (passes 8–10) is the forming and final shaping stage for the outer asymmetric channels  1 and 5. In this group, the channels 1 and 5 at the outermost positions are formed, and all channels undergo final shaping, ultimately forming a complete five-channel asymmetric cross-section. This forming sequence adopts a stepwise forming strategy from the center to both sides, and from symmetric to asymmetric, effectively controlling the deformation increment of each pass, reducing stress imbalance caused by asymmetric deformation, and providing a clear division of process stages for the subsequent analysis of LBD mechanism. Figure  6  is the rolling pattern of ACCs.",
+        "Fig. 5 Forming sequence of ACCs.",
+        "Fig. 6 Roll pattern of ACCs.",
+        "According to the commonly used lubrication conditions in industrial roll forming, a friction coefficient of 0.1 is selected, and the roll forming process is modeled with ten sequential passes. Considering the presence of geometric, material, and boundary condition nonlinearities, the dynamic explicit algorithm is adopted for the analysis. The simulation is divided into two analysis steps: the first represents the biting-in stage, while the second corresponds to the roll forming stage. The duration of each analysis step is determined based on the sheet forming speed and the distance between adjacent roll stands. Combined with the characteristics of the ACCs, the sequential forming method is adopted. Then the finite element model of the roll forming is shown in Fig.  7 .",
+        "Fig. 7 Finite element model of roll forming.",
+        "In order to improve the simulation accuracy of ACCs, a tensile simulation test is first conducted on the 6061-T6 aluminum alloy. The test sample size is shown in Fig.  8 , and the corresponding stress–strain curve is indicated in Fig.  9 . Then the simulated mechanical properties can be obtained. Table  1  presents the mechanical properties of 6061-T6 aluminum alloy measured by simulations and experiments, respectively. To ensure the accuracy of finite element simulation results, this study implemented strict control over the material models and mesh division. During the modeling process, the plate regions were subjected to mesh refinement to improve the model’s ability to capture local plastic deformation, making the calculation of stress and strain distribution closer to actual deformation behavior. In addition, reasonable friction coefficients were set according to the actual contact conditions, further optimizing the simulation boundary conditions. Through the above refinement, it can be seen that the relative errors between the simulation results and experimental data are as follows: the yield strength error is 3.4%, and the tensile strength error is 4.05%. These errors are all within the commonly accepted 5% error range in engineering simulations, indicating that the mechanical response of the model is highly consistent with the experimental results, fully validating the rationality and reliability of the material parameters, mesh division, and constitutive model settings, and providing a solid foundation for the subsequent precise analysis of the roll forming process and LBD.",
+        "Fig. 8 Test sample.",
+        "Fig. 9 Stress–strain curve of tensile sample.",
+        "Table 1 Mechanical properties of 6061-T6 aluminum alloy (MPa). Elastic modulus Yield strength Tensile strength Simulation 62,700 284.3 370.2 Experiment 69,000 275 355.8"
+      ]
+    },
+    {
+      "heading": "Longitudinal strain analysis in roll forming",
+      "paragraphs": [
+        "During the initial forming stages, the sheet exhibits unstable deformation, and the stress distribution near the sheet front end deviates significantly from the practical conditions. Therefore, a single element located 120 mm from the sheet front edge (Fig.  10 ) is selected to measure the edge longitudinal strain, ensuring stabilized measurement conditions.",
+        "Fig. 10 Measurement location for longitudinal strain (εxx).",
+        "The longitudinal strain history curve at the measurement location is shown in Fig.  11 . Prior to rolling, the sheet is subjected to longitudinal tensile stress, which transitions to compressive stress upon contact with the rollers. The cyclic variation of longitudinal strain is evident in the curve. Notably, a strain peak occurs at the sheet edge during the 8th forming pass. This phenomenon arises because the outer flange undergoes initial forming at the 8th pass. The reduced cross-sectional area of the outer edge region decreases the load-bearing area in the longitudinal direction. However, the roller-applied load remains constant, inducing stress concentration at the outer edge and consequently generating the observed longitudinal strain peak. Since the maximum peak strain is also the location where the defects are most likely to occur, the subsequent research mainly focuses on this position. Meanwhile, to ensure the simulation accuracy and reliability, multiple simulation tests are performed in this area and the average values are used to analyze.",
+        "Fig. 11 Longitudinal strain history curve.",
+        "Considering that the stress concentration at the sheet edge is significant during the 8th forming pass, an analysis of longitudinal strain distribution across the sheet width is conducted, and a measurement path is established 120 mm from the sheet front edge, as shown in Fig.  12 . The longitudinal strain distribution along this path at the 8th pass, extracted via finite element software, is presented in Fig.  13 .",
+        "Fig. 12 Measurement path definition",
+        "Fig. 13 Longitudinal strain (εxx) distribution along measurement path.",
+        "It is seen from Fig.  12  that the longitudinal strain on both sides of the sheet is not identical. Specifically, the longitudinal strain at the edge of the narrow channel  (left side) is − 0.011, whereas that at the edge of the wide channel  (right side) is − 0.007. And the strain at the narrow channel edge is approximately 57% greater than that at the wide channel edge. This difference originates from the geometric characteristics of the ACCs: the left side corresponds to the narrow channel, which has a smaller load-bearing area compared with the wide channel on the right side, and is therefore more susceptible to stress concentration under the same roll force. As a result, the left side of the sheet (narrow channel side) is primarily subjected to longitudinal tensile strain, whereas the right side (wide channel side) is dominated by longitudinal compressive strain. Such an asymmetric strain distribution leads to distinct stress states on both sides, with the tensile stress increasing on the left and the compressive stress prevailing on the right, thereby inducing non-uniform deformation and warping during the forming process. This result clearly demonstrates the inherent structural asymmetry of the ACCs during the roll forming."
+      ]
+    },
+    {
+      "heading": "Results analysis and discussion",
+      "paragraphs": [
+        "To improve the forming quality of the ACCs, here six forming parameters of roll gap, roll diameter, friction coefficient, molding speed, number of molding passes, and bending radius are investigated. Their initial values and experimental levels are determined comprehensively based on the mechanism of cold roll forming, the geometric dimension of ACCs, and the relevant literature 21 , 22 , as shown in Table  2 . For the determination of optimization parameters, the control variable experimental method is used. The determination of the optimization parameters is achieved through the analysis of simulation results and experimental verification. Furthermore, by optimizing the forming parameters that have the greatest impact on defects, the LBD in the rolling process of ACCs are reduced. The values of forming parameters are shown in Table  2 .",
+        "Table 2 Summary of forming variables and measured values. Parameters Symbols Units Test values Roll gap R.G mm 0.25,0.5,0.75 Roller diameter R.D mm 92,132,172 Friction coefficient F.C – 0.1,0.15,0.2 Forming speed F.S mm/s 3000,4000,5000 Forming pass N.F.S – 10,11,12 Bend radius R mm 0.4,0.5,0.6"
+      ]
+    },
+    {
+      "heading": "Roll gap effects",
+      "paragraphs": [
+        "The roll gap is a critical parameter influencing deformation behavior and material flow during the roll forming. As shown in Fig.  14 a, the longitudinal strain history curves under three roll gap conditions (0.25 mm, 0.5 mm, and 0.75 mm) exhibit similar trends, with negligible differences in peak longitudinal strain values. In the region of  x  ≥ 1500 mm, the sheet gradually enters the later stage of forming and is subjected to significant transverse contraction. Due to the volume conservation condition and the coupling effect between the transverse and longitudinal stresses, part of the longitudinal tensile strain is transformed into compressive strain, resulting in negative values of longitudinal strain. Furthermore, Fig.  14 b reveals a nonlinear relationship between the roll gap and LBD. As the roll gap increases from 0.25 mm to 0.75 mm, the longitudinal bowing initially intensifies and subsequently diminishes. The maximum bowing height occurs at gap 0.5 mm, showing an 18.6% increase compared to the gap 0.25 mm baseline, while the gap 0.75 mm reduces bowing by 9.4% relative to the 0.25 mm condition. This nonlinear behavior stems from two competing mechanisms: excessive gaps (> 0.5 mm) reduce lateral constraints, leading to sheet misalignment and asymmetric strain accumulation, whereas insufficient gaps (< 0.5 mm) increase forming resistance, inducing local buckling and nonuniform deformation. Periodic calibration of the roll gap is therefore essential to balance forming quality and process efficiency.",
+        "Fig. 14 Longitudinal strain under different roll gaps ( a ) and LBD ( b ) at different roll gaps."
+      ]
+    },
+    {
+      "heading": "Roll diameter effects",
+      "paragraphs": [
+        "The variations in the roll diameter result in distinct pressure distributions during the forming process. The roll diameter is determined using the following equation: \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$DIA = 1.46 \\times \\left[ {0.173 \\times \\sqrt[3]{L} + 0.47 + 0.7\\sqrt t \\times \\sqrt[6]{Y/50}} \\right]^{4}$$\\end{document} where  DIA  denotes the roll diameter,  L  is the roll shaft length,  t  is the material thickness, and  Y  represents the yield strength of the material. The calculated diameter  DIA  is approximately 3.7 in. To minimize the velocity difference between the upper and lower surfaces of the sheet during the roll forming process and to ensure forming stability, the roll diameter of both the upper and lower rolls at each pass is uniformly set to 92 mm.",
+        "Figure  15 a shows the longitudinal strain history curves under different roll diameters, where larger diameters significantly reduce the peak longitudinal strain values. Figure  15 b illustrates the longitudinal bowing behavior of the sheet under three roll diameters. Increasing the roll diameter improves the pressure uniformity across the sheet, thereby reducing LBD. At a roll diameter of 132 mm, the longitudinal bowing reaches its minimum value, showing a 54.7% reduction compared to the diameter 92 mm. Although the diameter 172 mm produces slightly greater bowing than the 132 mm case, it still achieves a 37.8% reduction relative to the 92 mm baseline.",
+        "Fig. 15 Longitudinal strain ( a ) and LBD ( b ) under different roll diameters.",
+        "In the region  x  ≥ 2200 mm, a roll diameter 92 mm results in insufficient sheet constraint, which causes the longitudinal strain to shift significantly toward the compressive direction and leads to a relatively large warpage of about 3 mm. By contrast, the roll diameters 132 mm and 172 mm promote more uniform pressure distribution across the sheet, thereby reducing the compressive strain shift. As a result, the corresponding warpage is much smaller, indicating that larger roll diameters contribute to the improved dimensional stability and reduced longitudinal bowing."
+      ]
+    },
+    {
+      "heading": "Friction coefficient effects",
+      "paragraphs": [
+        "The friction coefficient governs the material slippage between the rollers, thereby influencing the strain distribution during the roll forming. As shown in Fig.  16 a, the longitudinal strain history curves under three friction coefficients (0.1, 0.15, and 0.2) reveal a marginal increase in peak strain with higher friction values. Figure  16 b demonstrates the longitudinal bowing behavior under these conditions. Notably, the friction coefficient exhibits limited impact on LBD. Under a friction coefficient 0.15, the LBD increases by approximately 5% compared with the case of a friction coefficient 0.1, whereas under a friction coefficient 0.2, the LBD decreases by about 4% relative to the 0.1 case. Although the friction variations show negligible effects on the bowing magnitude, a lower friction coefficient (e.g., 0.1) improves the forming consistency by reducing the localized shear stresses. In industrial practice, oil lubrication is widely adopted to minimize the roller-sheet friction, ensuring the stable forming outcomes.",
+        "Fig. 16 Longitudinal strain ( a ) and LBD ( b ) under different friction coefficients."
+      ]
+    },
+    {
+      "heading": "Forming speed effects",
+      "paragraphs": [
+        "The forming speed influences the deformation behavior and production efficiency of the roll-forming ACCs. As shown in Fig.  17 a, the longitudinal strain history curves under three forming speeds (3000 mm/s, 4000 mm/s, and 5000 mm/s) demonstrate the minimal sensitivity to the speed variations, with the peak longitudinal strain exhibiting a slight initial increase, followed by a minor decrease as the speed rises. Figure  17 b illustrates the LBD under different forming speeds. The bowing magnitude shows negligible fluctuations with the increasing speed. The minimum bowing defect occurs at 5000 mm/s, while the speeds 3000 mm/s and 4000 mm/s increase bowing by approximately 3.7% and 8.5%, respectively, compared to the 5000 mm/s condition. In industrial practice, the forming speeds can be appropriately increased to enhance productivity without compromising product quality, provided that the critical thresholds for defect generation are avoided.",
+        "Fig. 17 Longitudinal strain ( a ) and LBD ( b ) under different forming speeds."
+      ]
+    },
+    {
+      "heading": "Forming pass effects",
+      "paragraphs": [
+        "In multi-pass roll forming, the number of forming passes critically influences the product quality and cost efficiency. Insufficient passes induce excessive deformation per stage, elevating defect risks, while excessive passes escalate production costs. Figure  18 a demonstrates that the peak strain is gradually reduces at the measurement location as the forming passes increase, indicating stabilized deformation behavior. The longitudinal bowing defect evolution across different pass numbers is shown in Fig.  18 b. Increasing the number of forming passes significantly mitigates the longitudinal bowing, with 11 and 12 passes reducing the defects by approximately 28.1% and 40%, respectively, compared to the 10-pass baseline.",
+        "Fig. 18 Longitudinal strain ( a ) and LBD ( b ) under different forming passes.",
+        "While the additional passes effectively suppress the bowing defects, their economic viability has diminished due to the heightened energy consumption and tooling wear. Industrial implementation thus requires a balanced optimization between the defect control (≥ 11 passes) and cost-effectiveness, guided by target tolerance specifications."
+      ]
+    },
+    {
+      "heading": "Bend radius effects",
+      "paragraphs": [
+        "A smaller bend radius induces the localized acute deformation, increasing the sensitivity to stress concentration. Figure  19 a compares the longitudinal strain history curves under three bend radii (0.4 mm, 0.5 mm, and 0.6 mm), revealing no significant variation in the peak strain magnitudes. The longitudinal bowing behavior across these radii is illustrated in Fig.  19 b. While the minor fluctuations in strain distribution occur during the progressive forming stages, the strain evolution trends under three radius conditions are consistent. This demonstrates that the bend radius has negligible influence on LBD, with the maximum bowing differences below 5% across the tested radii. This insensitivity suggests that the geometric asymmetry dominates the bowing mechanisms over the localized corner deformation effects in this profile.",
+        "Fig. 19 Longitudinal strain ( a ) and LBD ( b ) under different bend radii."
+      ]
+    },
+    {
+      "heading": "Product forming optimization",
+      "paragraphs": [
+        "Based on the above analysis of parameter effects on LBD, the variation in defects is directly correlated to the peak longitudinal strain. By comparing the longitudinal strain history curves under different process parameters, it can be seen that roll diameter and forming passes are the core mechanical parameters that significantly change the longitudinal stress–strain distribution of the sheet and ultimately control LBD: increasing the roll diameter can significantly reduce the peak longitudinal strain and suppress the severe tension–compression strain conversion in the later stages of forming. From the curve shape, the strain fluctuates dramatically with deep valleys under the 92 mm condition, whereas the curves for diameters of 132 mm and above are overall smoother and more uniform. This indicates that large-diameter rolls effectively disperse local stress concentrations, reduce the asymmetry of residual stresses within the sheet, and thus greatly alleviate LBD defects. Increasing the number of forming passes disperses the deformation in a single pass, continuously lowers the peak longitudinal strain, and makes the stress evolution curve tend to flatten, significantly reducing stress accumulation and energy concentration during the forming process, making sheet deformation more stable and effectively suppressing LBD. In contrast, variations in roll gap, friction coefficient, forming speed, and bending radius have minimal impact on the overall trend, peak values, and distribution characteristics of the longitudinal strain curves; the curves almost overlap along the entire forming direction, indicating that these parameters do not significantly change the overall stress–strain path and internal stress balance of the sheet; and their regulatory effect on LBD defects is limited. Consequently, the following optimized scheme is proposed, as shown in Table  3 . Figure  20  shows the comparison chart of LBD before and after optimization. Obviously, the optimized parameters have reduced the longitudinal bowing by 68.9%, enhanced the forming stability and improved the product quality.",
+        "Table 3 Forming parameters before and after optimization. Parameters Roll diameter (mm) Pass number Bending radius (mm) Forming speed (mm/s) Before 92 10 0.4 3000 After 132 12 0.4 3000",
+        "Fig. 20 Comparison of LBD in ACCs before and after optimization."
+      ]
+    },
+    {
+      "heading": "Discussion",
+      "paragraphs": [
+        "While the finite element model developed in this study provides valuable insights into the roll forming behavior of the ACCs, several assumptions and limitations should be noted. First, the model assumes rigid rolls, uniform material properties, and quasi-static deformation conditions, which hence can not fully capture the dynamic effects, local vibrations, or material property variations occurring in the industrial roll forming processes.",
+        "Second, some potential sources of the simulation error include mesh discretization, friction coefficient estimation, and simplifications in contact interactions. These factors may lead to small deviations between the simulated and actual deformation patterns. From a practical standpoint, scaling the model to industrial process may encounter additional challenges, such as high-speed rolling, variable lubrication conditions, tool wear, and thermal effects, which are not explicitly considered in the current simulation. Finally, compared with the alternative roll forming or defect control techniques, the proposed approach focuses on the parameter optimization and numerical prediction of bowing and warping, providing guidance for reducing the defects but not replacing experimental trial-and-error in all industrial settings.",
+        "Despite these limitations, the model serves as a reliable tool for understanding the sheet deformation behavior and supporting the process optimization, and the discussion provides guidance for applying the findings to practical manufacturing scenarios."
+      ]
+    },
+    {
+      "heading": "Experimental validation",
+      "paragraphs": [
+        "The ACCs forming system comprises an uncoiler, servo motors, forming roller stands, and a control cabinet. The aluminum coil is fed from the uncoiler into the forming rollers, with the motor speed regulated via the control cabinet to achieve the precise forming. In accordance with the optimized parameters, the forming equipment is retrofitted by replacing the original roller diameter with 132 mm and increasing the number of roller stands. The upgraded system configuration is shown in Fig.  21 .",
+        "Fig. 21 Roll-forming experimental setup.",
+        "Figure  22  compares the LBD of the roll formed ACCs before and after parameter optimization. Three independent repeated forming experiments were conducted before and after optimization, and the results of the LBD before and after optimization were statistically analyzed, as shown in Table  4 . Before optimization, the LBD values measured in three experiments were 2.83 mm, 2.85 mm, and 2.87 mm, respectively, with an average of 2.85 mm and a standard deviation of 0.016 mm. After optimization, the LBD values measured in the three experiments were 0.87 mm, 0.86 mm, and 0.87 mm, respectively, with an average of 0.87 mm and a standard deviation of 0.006 mm. The very low standard deviation indicates that, under the same process conditions, the variation in experimental results is minimal, and the forming process exhibits good stability and repeatability. At the same time, the experimental averages closely match the simulation predictions, with an error of less than 5%, further validating the accuracy of the model and the effectiveness of the optimization scheme. The corresponding data between the experimental and the simulated is shown in Table  5 . It is seen that the optimized LBD is significantly lower than the value before optimization, and the LBD measured by experiment is slightly smaller than the simulated one. This is mainly because the simulated elastic modulus is lower than the measured value. However, post-optimization products exhibit the negligible residual bowing, confirming the effective defect suppression. Furthermore, the dimensional measurements demonstrate compliance with design specifications (tolerance: ± 0.2 mm), validating the robustness of the optimized forming strategy.",
+        "Fig. 22 Before-and-after optimization comparison of ACCs.",
+        "Table 4 Comparison of three experiments before and after LBD optimization (mm). Experimental LBD 1st test 2nd test 3rd test Mean Before optimization 2.83 2.85 2.87 2.85 After optimization 0.87 0.86 0.87 0.87",
+        "Table 5 LBD comparison before and after optimization (mm). LBD Before optimization After optimization Simulated 2.92 0.91 Experimental 2.85 0.87"
+      ]
+    },
+    {
+      "heading": "Conclusions",
+      "paragraphs": [
+        "The novelty of this work lies in two aspects: The evolution of longitudinal bowing is systematically investigated in roll-forming ACCs, highlighting the distinct influences of narrow- and wide-channel geometries on asymmetric deformation; By combining finite element simulation with experimental validation, the roles of process parameters (such as friction coefficient and forming speed) and geometric asymmetry are comparatively analyzed in the formation mechanism of bowing. Therefore, the study not only complements the understanding of longitudinal bowing under asymmetric conditions but also provides practical insights for precision control in the forming of complex profiles. The main conclusions mainly include: During the roll forming ACCs, the LBD of rolled aluminum plate is mainly caused by the transverse uneven distribution of longitudinal strain. To study the LBD of aluminum plates, a finite element model of 5-ACCs is established for the analysis and control of its influencing factors based on the roll forming sequence. And the simulation results are verified through experiments. Among the process parameters, the roll diameter and the number of forming passes have the greatest impact on the severity of LBD. Increasing the roll diameter can reduce the longitudinal bowing, with similar mitigation effects observed for the increased forming passes. But the roll gap, friction coefficient, molding speed and the bending radius effects on the LBD is not obvious, and thus, the control of LBD may not take into account the impact of these molding parameters. Through the design optimization scheme, the LBD of rolled product is significantly reduced compared with the initial scheme, effectively improving the forming accuracy of the roll forming ACCs."
+      ]
+    }
+  ],
+  "tables": [
+    {
+      "caption": "Mechanical properties of 6061-T6 aluminum alloy (MPa).",
+      "headers": [
+        "",
+        "Elastic modulus",
+        "Yield strength",
+        "Tensile strength"
+      ],
+      "rows": [
+        [
+          "Simulation",
+          "62,700",
+          "284.3",
+          "370.2"
+        ],
+        [
+          "Experiment",
+          "69,000",
+          "275",
+          "355.8"
+        ]
+      ],
+      "header_groups": [],
+      "table_alignment_status": "resolved",
+      "row_provenance": [
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 4
+          }
+        ]
+      ],
+      "tbody_alignment_status": "resolved"
+    },
+    {
+      "caption": "Summary of forming variables and measured values.",
+      "headers": [
+        "Parameters",
+        "Symbols",
+        "Units",
+        "Test values"
+      ],
+      "rows": [
+        [
+          "Roll gap",
+          "R.G",
+          "mm",
+          "0.25,0.5,0.75"
+        ],
+        [
+          "Roller diameter",
+          "R.D",
+          "mm",
+          "92,132,172"
+        ],
+        [
+          "Friction coefficient",
+          "F.C",
+          "–",
+          "0.1,0.15,0.2"
+        ],
+        [
+          "Forming speed",
+          "F.S",
+          "mm/s",
+          "3000,4000,5000"
+        ],
+        [
+          "Forming pass",
+          "N.F.S",
+          "–",
+          "10,11,12"
+        ],
+        [
+          "Bend radius",
+          "R",
+          "mm",
+          "0.4,0.5,0.6"
+        ]
+      ],
+      "header_groups": [],
+      "table_alignment_status": "resolved",
+      "row_provenance": [
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 4
+          }
+        ]
+      ],
+      "tbody_alignment_status": "resolved"
+    },
+    {
+      "caption": "Forming parameters before and after optimization.",
+      "headers": [
+        "Parameters",
+        "Roll diameter (mm)",
+        "Pass number",
+        "Bending radius (mm)",
+        "Forming speed (mm/s)"
+      ],
+      "rows": [
+        [
+          "Before",
+          "92",
+          "10",
+          "0.4",
+          "3000"
+        ],
+        [
+          "After",
+          "132",
+          "12",
+          "0.4",
+          "3000"
+        ]
+      ],
+      "header_groups": [],
+      "table_alignment_status": "resolved",
+      "row_provenance": [
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 5
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 5
+          }
+        ]
+      ],
+      "tbody_alignment_status": "resolved"
+    },
+    {
+      "caption": "Comparison of three experiments before and after LBD optimization (mm).",
+      "headers": [
+        "Experimental LBD",
+        "1st test",
+        "2nd test",
+        "3rd test",
+        "Mean"
+      ],
+      "rows": [
+        [
+          "Before optimization",
+          "2.83",
+          "2.85",
+          "2.87",
+          "2.85"
+        ],
+        [
+          "After optimization",
+          "0.87",
+          "0.86",
+          "0.87",
+          "0.87"
+        ]
+      ],
+      "header_groups": [],
+      "table_alignment_status": "resolved",
+      "row_provenance": [
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 5
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 5
+          }
+        ]
+      ],
+      "tbody_alignment_status": "resolved"
+    },
+    {
+      "caption": "LBD comparison before and after optimization (mm).",
+      "headers": [
+        "LBD",
+        "Before optimization",
+        "After optimization"
+      ],
+      "rows": [
+        [
+          "Simulated",
+          "2.92",
+          "0.91"
+        ],
+        [
+          "Experimental",
+          "2.85",
+          "0.87"
+        ]
+      ],
+      "header_groups": [],
+      "table_alignment_status": "resolved",
+      "row_provenance": [
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 3
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 3
+          }
+        ]
+      ],
+      "tbody_alignment_status": "resolved"
+    }
+  ]
+}

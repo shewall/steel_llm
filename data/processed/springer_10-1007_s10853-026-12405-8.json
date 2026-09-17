@@ -1,0 +1,2286 @@
+{
+  "doi": "10.1007/s10853-026-12405-8",
+  "title": "Steel microstructure analysis using transfer learning: a study on data leakage",
+  "abstract": "Abstract Accurate prediction of material properties is essential in steel manufacturing, as it enables optimized production processes. The scarcity of microscopy images in steel microstructure analysis has led to the adoption of pre-trained deep learning models for property prediction on smaller datasets. This study investigates prediction capabilities of a fine-tuned VisionTransformer for five mechanical properties on the microstructures of 47 steel specimen over six magnifications. While the model achieves competitive predictions for upper yield strength, yield strength, ultimate tensile strength and elongation at fracture, while the Charpy V-notch impact energy is predicted less accurate. Lower magnifications tend to improve the prediction of all properties. Our analysis of different popular data splitting strategies indicates that improper splitting of micrographs can lead to data leakage, resulting in an overestimation of model performance by up to threefold. Our findings underscore the need for reliable evaluation procedures and highlight the critical challenges of applying deep learning to steel microstructure analysis.",
+  "journal": "Journal of Materials Science",
+  "year": "2026",
+  "sections": [
+    {
+      "heading": "Introduction",
+      "paragraphs": [
+        "The mechanical properties of steels are usually quantified under well-defined experimental setups. For a better understanding of the measured results, experts evaluate the microstructure to establish linkages between microstructural features and the mechanical properties [ 1 ]. For example, the Hall–Petch equation and the inverse Hall–Petch equation describe how a material’s grain size influences it’s yield strength [ 2 ,  3 – 4 ], the amount of martensite influences the hardness [ 5 ] and the lamellar spacing within the pearlite influences the material’s strength and hardness [ 6 ]. Thus, for a precise estimation of the mechanical properties, microstructural features at different scales need to be quantified. While these features are mostly well comprehensible for domain experts, Holm et al. [ 1 ] note that it may not be obvious which features to measure by which metric and how to measure them without subjective human judgment. Measuring multiple microstructural features can be costly and challenging in complex steel microstructures and finally, there is potential that the selected microstructural metrics still represent only a subset of the relevant feature space [ 1 ,  7 ].",
+        "The ability of computer vision methods to directly process images offers great potential in the area of microstructural analysis as it reduces efforts in selecting a rich set of microstructural metrics and how to measure them, leading to less subjective results [ 1 ,  8 ]. With a focus on steel research, computer vision has been applied on phase segmentation [ 9 ,  10 ,  11 ,  12 ,  13 ,  14 ,  15 – 16 ], classification [ 7 ,  17 ,  18 ,  19 ,  20 – 21 ], crack detection [ 22 ] and regression (microstructure–property estimation) [ 23 ,  24 ,  25 ,  26 ,  27 ,  28 ,  29 ,  30 ,  31 ,  32 ,  33 ,  34 ,  35 ,  36 ,  37 ,  38 ,  39 ,  40 ,  41 ,  42 – 43 ]. See [ 1 ,  8 ,  44 ,  45 ] for a detailed review on applications and future perspectives on computer vision in microstructural image analysis.",
+        "In order to apply computer vision to a regression task, e.g., the microstructure–property estimation in this work : three main components are required: (i) a database of steel specimen with known mechanical properties, (ii) micrographs for each specimens and (iii) a computer vision model and training approach. With regards to the database (i) the recent literature used between five [ 34 ] and 52 [ 31 ] steel specimens (average: 18, median: 15). This sparsity of available data is well-known in the (computational) materials science [ 1 ]. These studies predicted a variety of (mechanical) properties, including ultimate tensile strength ( UTS ), yield strength ( YS ), elongation at fracture ( A ), (Charpy) impact energy ( CVN ), hardness (Vicker’s or Brinell), chemical element content and stress–strain curves. Some studies investigate multiple properties at once [ 24 ,  28 ]. We use multi-target property estimation to predict the upper yield strength ( UYS ),  YS ,  UTS ,  A  and  CVN  based on 47 specimens.",
+        "As computer vision models require images as input, at least one micrograph of each specimen (ii) is required. The majority of studies focusing on computer vision-based microstructure–property estimation use scanning electron microscopy (SEM) [ 23 ,  24 ,  25 – 26 ,  28 ,  30 ,  31 ,  33 ,  41 ], while fewer studies have used light optical microscopy (LOM) [ 27 ,  29 ,  32 ,  37 ]. Other studies incorporate simulated data to address data scarcity [ 26 ,  38 ,  39 – 40 ]. However, for this kind of micrographs only simulated mechanical property values are available, and they potentially lack certain microstructural details representing important microstructural features. In this study, we use LOM micrographs.",
+        "Finally, the choice of an appropriate computer vision model and training approach is important (iii). Holm et al. [ 1 ] argue that previously achieved high accuracy in deep learning-based microstructure analyses, is due to the (presumably) high data richness of a micrograph (meaning all pixels carry information and no background with unimportant information is present). This data richness shall help the data scarcity issue, as usually thousand to million datapoints are required to achieve high accuracy in a deep learning setting. Other studies tackled data scarcity by using models, which were pre-trained on natural images and fine-tuned them for microstructure classification [ 18 ,  19 ]. During pre-training on large datasets, the models learn to automatically extract reliable visual features, which transfer well to new domains using only a comparably small amount of data [ 15 ,  46 ,  47 – 48 ]. Also pre-trained models, but without fine-tuning, have been used to predict the Vicker’s hardness of Ni-base and Co-base superalloys, resulting in a mean absolute percentage error (MAPE) of 24%-25% [ 30 ].",
+        "Consequently, the first research question (RQ1) of this study investigates to which extent fine-tuning a pre-trained computer vision model is able to predict mechanical properties solely based on the material’s LOM microstructure.",
+        "In computer vision-based microstructural analysis, recent work notes overfitting as a concern in the model evaluation [ 7 ,  14 ,  17 ,  27 ,  32 ]. Overfitting describes the effect when a machine learning model does not generalize well to unseen data, but instead considers noise in the training data important [ 49 , p. 66-67]. Typically, data is split into disjoint sets: a set for training the model and a held out, previously unseen validation set to estimate the model’s performance in real-world applications. Diverging performance on the training and validation set (i.e., while performance on the training set improves, performance on the validation set degrades) is a strong indicator of overfitting. However, data leakage impedes such comparisons. Data leakage means that information leaks into the validation set, e.g., through illegitimate features (monthly salary is an illegitimate feature when predicting yearly salary) or from the training data. In the following, we detail non-independence of training and validation data [ 50 ] as the most prevalent data leakage risk in computer vision-based microstructural analysis.",
+        "Formally, let  D = { ( o 1 , y 1 ) , ⋯ , ( o n , y n ) } ⊆ O × Y \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$D = \\{(o_1,\\mathbf {y_1}),\\dots ,(o_n,\\mathbf {y_n})\\}\\subseteq O \\times Y$$\\end{document}  be a set of samples  o ∈ O \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$o \\in O$$\\end{document}  (specimen in our study) along with their measured properties  y ∈ Y \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\textbf{y} \\in Y$$\\end{document} . This set is split into a part  D tr \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$D_{tr}$$\\end{document}  for training the model and a part  D val \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$D_{val}$$\\end{document}  to estimate the model’s performance on previously unseen specimen. For a proper performance estimate, training and validation data need to be independent and identically distributed, i.e.,  D tr , D val ⊆ D \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$D_{tr},D_{val} \\subseteq D$$\\end{document}  and  D tr ∩ D val = ∅ \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$D_{tr} \\cap D_{val} = \\emptyset$$\\end{document}  [ 51 ]. However, the model inputs are not the real-world specimen  o ∈ D \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$o\\in D$$\\end{document}  themselves, but feature abstractions  x ∈ X \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\textbf{x} \\in X$$\\end{document} , with  x = α ( o ) \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\textbf{x} = \\alpha (o)$$\\end{document} , i.e.,  x \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\textbf{x}$$\\end{document}  are the pixel values of LOM images that abstract ( α \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\alpha$$\\end{document} ) the specimen. Specifically, multiple images represent the same specimen (six magnifications at three different locations in our study). This abstraction can violate the independence requirement in a subtle manner: splitting the data by images does not guarantee that specimen sets in training and validation data are disjoint (image-based leakage). Formally, the set of samples is incorrectly represented as  D = { ( x 1 1 , y 1 ) , ⋯ , ( x 1 j , y 1 ) , ⋯ , ( x n j , y n } ⊆ X × Y \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$D = \\{(\\textbf{x}_1^1, \\textbf{y}_1),\\dots ,(\\textbf{x}_1^j,\\textbf{y}_1),\\dots ,(\\textbf{x}_n^j,\\textbf{y}_n\\} \\subseteq X \\times Y$$\\end{document}  instead of  D = { ( x 1 1 , ⋯ x 1 j , y 1 ) , ⋯ , ( x n 1 , ⋯ x n j , y n ) } ⊆ X j × Y \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$D = \\{(\\textbf{x}_1^1,\\dots \\textbf{x}_1^j,\\textbf{y}_1),\\dots ,(\\textbf{x}_n^1,\\dots \\textbf{x}_n^j,\\textbf{y}_n)\\} \\subseteq X^j \\times Y$$\\end{document} , where inside the set subscript indicates the specimen and superscript the index in the corresponding set of  j  images. Moreover, microscopy imaging systems picture microstructures at resolutions beyond the capabilities of common deep learning models (2700x1800 px in our study). Reasonable approaches to enable processing, are downscaling [ 13 ,  15 ,  27 ] or cropping the images into smaller patches [ 18 ,  19 ,  23 ,  24 ,  28 ,  29 ,  31 ,  32 – 33 ]. While downscaling increases the context for the models’ receptive field, it risks losing fine-scale, physically relevant features in materials micrographs [ 13 ]. Cropping the images into smaller patches and then splitting the data by patches increases the risk to violate the independence requirement even further (patch-based leakage): In steel micrographs, adjacent patches are often spatially correlated due to repetitive microstructural patterns (e.g., having similar phase fractions [ 24 ,  29 ,  32 ]).",
+        "Despite the prevalence of patching, only few studies implement a rigorous validation approach on unseen data, which ensures patches of a steel are not mixed between training and validation (i.e., specimen sets in training and validation are disjoint) [ 29 ,  31 ]. As a result the reported model performances may be overly optimistic, leading to unintended failure in production environments or giving a wrong assumption of state of the art. We explicitly investigate the effect of using images or patches of the same specimen in training and validation splits in detail as part of the second research question (RQ2).",
+        "Lastly, the impact of varying magnifications on microstructure–property relationships is investigated only for SEM microstructures using a range of 1,000x-10,000x [ 31 ]. As part of the third research question (RQ3), we investigate the effect of magnification between 25x and 1,000x on the general prediction performance as well as it’s effect on data leakage.",
+        "In summary, in this study we answer the research questions (RQ)",
+        "RQ1 to which extend a pre-trained computer vision model adapts to steel property prediction based on LOM microstructures using a fine-tuning approach,",
+        "RQ2 how much data leakage affects performance estimates of a model’s predictive capabilities by comparing three dataset splitting strategies and",
+        "RQ3 how different magnifications influence the answers to RQ1 and RQ2."
+      ]
+    },
+    {
+      "heading": "Materials and methods",
+      "paragraphs": [
+        "In this work the microstructural images of 47 steel specimens, pictured at six different magnifications, form the dataset. Based on that dataset a VisionTransformer is trained to predict the mechanical properties. The overall experimental setup is shown in Fig.  1 . This setup is repeated for each of the six magnifications to investigate how magnification effects prediction accuracy. The selected validation approach (leave-on-group-out cross-validation) requires to compute one model for each steel, but ensures validation integrity, as a comparison with two other strategies will show. Figure 1 The experimental process starts with the micrograph acquisition: for each steel specimen in total 18 LOM images are taken (six magnifications at three locations). Then flatfield correction is applied to all images. For each magnification, the dataset is split using Leave-One-Group-Out cross-validation (LOGO-CV) in Stage 2. Stage 3 is a preprocessing step, but executed during training. Each image is randomly cropped to 384x384 px patches and each patch is augmented, scaled to [0,1] and normalized using training data. A VisionTransformer model predicts five mechanical properties based on the cropped patches."
+      ]
+    },
+    {
+      "heading": "Materials and data acquisition",
+      "paragraphs": [
+        "The 47 steel samples including the values for the chemical composition and mechanical properties were provided by AG der Dillinger Hüttenwerke. The alloys vary in chemical composition of thirteen chemical elements (Table  1 ). The Carbon content varies between 0.09 wt% and 0.17 wt%, Silicon between 0.14 wt% and 0.51 wt% and Manganese between 0.91 wt% and 1.61 wt%. Besides Niobium every listed chemical element is contained in every steel tested.",
+        "All samples are subjected to hot-rolling procedures and exhibited ferritic-pearlitic microstructures after cooling, as exemplarily displayed in Fig.  2 . The samples exhibit microstructural variations in ferrite–pearlite fraction, with pearlite contents reaching up to 28%, average grain sizes between 5 and 16  μ \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\upmu$$\\end{document} m and differences in pearlite lamellar spacing, which could not be quantified accurately by light optical microscopy. In addition, the banding shows differences in both width and intensity.\n Table 1 The minimum (min), median and maximum (max) values of each chemical composition of the 47 steels Chemical Element Min (wt%) Median (wt%) Max (wt%) C 0.9 0.14 0.17 Si 0.14 0.45 0.51 Mn 0.91 1.55 1.61 P 0.009 0.013 0.017 S 0.0004 0.0007 0.001 Cu 0.014 0.025 0.035 Al 0.027 0.041 0.055 N 0.002 0.004 0.007 Ni 0.022 0.03 0.042 Mo 0.004 0.007 0.024 Ca 0.0006 0.0015 0.002 Ti 0.002 0.003 0.006 Nb 0.0 0.018 0.029 Table 2 The minimum (min), median and maximum (max) values for the provided mechanical properties. For  CVN  the average of three experimentally measured values is reported Mechanical Property Abbreviation Unit Min Median Max Elongation at fracture A % 26.6 30.3 39.4 Charpy impact energy CVN J 63 207 346 Ultimate tensile strength UTS MPa 398 500 548 Upper yield strength UYS MPa 242 352 394 Yield strength YS MPa 228 337 374",
+        "Figure 2 Two representative micrographs at different magnifications showing ferrite–pearlite microstructures. Pearlite appears dark and forms bands, while ferrite appears light. The scale is only added here and not visible on the actual training data.",
+        "For each steel, five mechanical properties were provided (Table  2 ): elongation at fracture ( A , 26.6−39.4%), Charpy impact energy ( CVN , 63-346 J), ultimate tensile strength ( UTS , 398-548 MPa), upper yield strength ( UYS , 242-394 MPa) and yield strength ( YS , 228-374 MPa). Tensile and Charpy specimens were prepared in the transverse direction. Charpy impact energy was measured between  - 50 ∘ \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${-50}^\\circ$$\\end{document} C and  20 ∘ \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${20}^\\circ$$\\end{document} C depending on the steel, with 43 samples being measured at  - 20 ∘ \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${-20}^\\circ$$\\end{document} C. For each steel three Charpy impact energies were measured and their average is used as target value in our experiments. All other properties were measured at room temperature ( 20 ∘ \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${20}^\\circ$$\\end{document} C).",
+        "Specimens where prepared for microstructural imaging by grinding, polishing and etching in 5% nitric acid aqueous solution. For each sample three different locations on the same specimen side were pictured at six different magnifications: 25x (25.6x), 50x (50.4x), 100x, 200x, 400x and 1000x. A total of 540 microstructural images with 2700x1800 px were taken. We used a Gryphax Progres camera (Jenoptik) attached to a LOM Neophot 32 (Zeiss) and IMAGIC IMS Software (Imagic Bildverarbeitung AG).",
+        "Variations in image appearance arising from etching conditions and camera settings may introduce bias in microstructure-based analysis and are therefore an important consideration. Image acquisition was conducted with camera gain and image resolution kept constant for all samples. Exposure time and white balance were automatically adjusted by the imaging software. The etching time was not fixed and varied due to differences in chemical composition and associated reaction kinetics. This step is inherently influenced by the experience of the metallographer, leading to unavoidable variations in etching contrast that reflect metallographic practice."
+      ]
+    },
+    {
+      "heading": "Preprocessing",
+      "paragraphs": [
+        "The preprocessing follows three stages to efficiently process the high resolution images by putting time-intensive image correction upfront and saving the corrected images on the hard-drive, while the augmentation techniques (cropping and rotating) and data splitting are performed online during training to get a maximum image variety.",
+        "During the first stage, the vignetting effect is addressed by a flat field correction, combined with a Gaussian blur filter of size 1501x1501 px, which was applied to each image individually. As can be seen in Fig.  1 , the gradually decreasing brightness from the center toward the edge of the image is mitigated. Figure 3 Schematic of the leave-one-group-out cross-validation (LOGO-CV) [ 51 ]. In each fold one steel, meaning the three micrographs (M1-M3), is left out from training and used for validation. This is repeated until every steel was used for validation exactly once, totally resulting in 47 prediction models.",
+        "In the second stage the dataset is split into a training and a validation split. In machine learning, it is crucial to ensure that the model generalizes well on unseen data. Here, leave-one-group-out cross-validation (LOGO-CV, see Fig.  3 ) [ 51 ], also used in recent microstructure analysis [ 31 ,  32 ], is adopted to ensure the maximum amount of data is available for validation. In this work, one group is defined by all three micrographs of the same specimen (i.e., all information available for that specimen), forming cross-validation folds grouped by specimen. Each fold (specimen) is used once for validation and the model is fine-tuned against all other micrographs. Although LOGO-CV requires as many models to be trained as there are specimens, it ensures no data leakage and a high level of statistical support by using all data points as validation data once. As no hyperparameters are tuned on the validation split, no separate test split is required. In order to investigate data leakage phenomena (RQ2), we additionally adopt two other popular splitting strategies from the screened literature: (i) random 10-fold CV and (ii) stratified 3-fold CV. In (i) the complete dataset of 141 images is randomly split in ten even splits. Then a ViT is fine-tuned with one of the splits being the validation split and the other nine forming the training split. The procedure is repeated 10 times until every split represents the validation set once. In (ii) only three different folds are used. Each of the three microstructural images of a specimen is randomly assigned to one of the three folds. Each fold then contains exactly one microstructural image per specimen. The model is fine-tuned on two of these three splits and validated against the last split. Consequently, during training the model sees two images of a specimen and is evaluated against the third micrograph of the same specimen. This setting contains data leakage by design, as information from the same specimen is present in both, training and validation data, violating the independence requirement. Accordingly, we expect this setting to have the best scores, overestimating the model’s true performance. In contrast, random 10-fold CV is not guaranteed to contain data leakage, but still at a high risk (leakage occurs as soon as images of one specimen are not exclusively contained in either the training or validation folds). Because of this high risk, we expect scores of random 10-fold CV to be slightly worse, but still close to stratified 3-fold CV."
+      ]
+    },
+    {
+      "heading": "Deep learning models",
+      "paragraphs": [
+        "In the third stage all steps are executed online at every training epoch, thus only on training data. As every pixel represents relevant information, ideally all information in the image is used during training [ 1 ]. However, due to hardware limitations, at each training epoch each 2700x1800 px microstructural image is randomly cropped into a patch of 384x384 px, which is the size required for the chosen pre-trained model as described in chapter  2.3  and similar to other studies, which are at most 350x350 px [ 23 ,  24 ,  28 ,  33 ]. To further increase image variety, patches were augmented by flipping horizontal and vertical each with a 1/3 chance of activating (applying the idea of TrivialAugment [ 52 ]). Then the RGB pixel values are min-max scaled to [0,1].",
+        "In cropped patches the values of several microstructural metrics (like the phase distribution or average grain size) likely differ compared to the original micrograph. Usually only the difference of one metric considered important (e.g., the ferrite/pearlite fraction) is calculated and found to have similar values between original image and cropped patches [ 24 ,  29 ,  32 ]. While not fully accounting for this issue, as it is unknown what the model actually considers visually important, the random cropping approach potentially mitigates the effect by providing much variety, showing each pixel at different locations of a patch and thus in relation to other related microstructural aspects. However, more global microstructural metrics like the phase distribution ratio may still differ larger, especially when grains are relatively large compared to the pictured area.",
+        "Finally, the [0,1] scaled pixel values in each RGB channel of each patch are normalized by subtracting the mean and dividing by the standard deviation using the mean=[0.485, 0.456, 0.406] and std=[0.229, 0.224, 0.225] of the ImageNet1K dataset, which was used during initial training of the computer vision model. Similarly, the target mechanical properties  y true \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$y_{true}$$\\end{document}  are normalized independent from each other by calculating y ~ = y true - μ σ \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\begin{aligned} \\tilde{y}= \\frac{y_{true}-\\mu }{\\sigma } \\end{aligned}$$\\end{document} where  μ \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\mu$$\\end{document}  and  σ \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\sigma$$\\end{document}  are the mean and standard deviation over all training specimens.",
+        "Compared to most recent literature, this approach avoids saving patches to the hard-drive and prefers random cropping over non-overlapping cropping in order to maximize data variety."
+      ]
+    },
+    {
+      "heading": "Deep learning models",
+      "paragraphs": [
+        "This study uses a transfer learning approach based on pre-trained deep learning models, which are available in the official PyTorch repository. 1  These models were initially trained on the ImagetNet-1K dataset and are fine-tuned on the present microstructural dataset.",
+        "Most of the official models require input images having the same 224x224 px resolution as the images in the ImageNet-1K dataset. Yet, processing larger crops may mitigate the mentioned effect on how well a crop represents the features of the original micrograph. EfficientNetV2 [ 53 ] (S architecture, a convolutional neural network) and VisionTransformer (B_16 architecture with IMAGENET1K_SWAG_E2E_V1 weights, short: ViT) [ 54 ] support 384x384 px resolution.",
+        "In particular, ViTs were shown to automatically extract reliable visual features when trained on millions of natural images [ 47 ]. The extracted features transfer well to new domains using only a comparably small amount of data [ 15 ,  46 ,  47 – 48 ]. Additionally, ViTs appear suitable for microstructure analysis, because of their ability to capture visual features at different scales and across large distances within the image. This reflects in the global (e.g., banding structures), regional (e.g., morphology of ferrite and pearlite colonies), and local (e.g., interlamellar spacing within pearlite) scale of steel microstructures [ 54 ].",
+        "A preliminary study compared both models. The results showed a similar normalized mean absolute error of 0.48 and 0.50 (cf. Appendix  A.1 ). However, the EfficientNetv2 showed unexpected validation loss peaks several magnitudes higher than expected on all LOGO-CV folds with unknown impact on the metrics. As such an effect was not observed for the ViT training, we used the ViT for the remainder of the study.",
+        "Before training, the original classification head of the ViT model is replaced with a new regression head for the five mechanical properties. Following a gradual unfreezing approach to improve training time and reduce hardware resource usage, initially other layers are not updated (weights are “frozen”) during the backward pass. Every 150 epochs another layer before the regression head is unfrozen. This approach has previously shown to be beneficial [ 14 ] and similar results were achieved in a preliminary study, cf. Appendix  A.2 .",
+        "During model training the AdamW [ 55 ] optimizer with default beta values and without weight decay was used. A fast converging learning rate was initially determined and set to 0.001, based on all LOGO-CV validation folds using pytorch lightning’s  lr_finder . 2  As a complementary addition to gradual unfreezing, cosine annealing [ 56 ] reduced the learning rate during training for less sudden changes in newly unfrozen layers. Due to the small size of the dataset, full-batch gradient descent was used. Training concluded after 1000 epochs. We experimentally tested, that on average 390 random crops are required to cover 95% of all pixels at least once (n=100 iterations, median=383, min=237, max=663). All LOGO-CV folds are trained on the same hyperparameters. The same random seed is used for all random number generators and workers, also deterministic CUDA algorithms are used to improve reproducibility.",
+        "We report the mean absolute error (MAE), the mean absolute percentage error (MAPE), for both a lower value is better ( ↓ \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\downarrow$$\\end{document} ), and the coefficient of determination ( R 2 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$R^2$$\\end{document} ) for which a value close to 1 is better ( ↑ \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\uparrow$$\\end{document} ). Additionally, the standard deviation-based normalized MAE (NMAE  ↓ \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\downarrow$$\\end{document} ), NMAE = MAE ( y , y ^ ) σ ( y ) \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\begin{aligned} \\text {NMAE} = \\frac{\\text {MAE}(y, \\hat{y})}{\\sigma (y)} \\end{aligned}$$\\end{document} with  y ^ \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\hat{y}$$\\end{document}  being the predicted value and  σ \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\sigma$$\\end{document}  being the standard deviation, provides a combined investigation over all properties at the same scale.",
+        "All models were trained on one NVIDIA A100 GPU using PyTorch."
+      ]
+    },
+    {
+      "heading": "Results and discussion",
+      "paragraphs": [
+        "In this section, we evaluate the general model performance for each mechanical property. A sliding-window approach creates a visual heatmap of the original micrograph, visualizing which areas the model associates with higher/lower values for a mechanical property. Most importantly, we investigate the effect of different dataset splitting strategies, uncovering unwanted and inadvertent data leakage in related literature. Only by changing the dataset splitting strategy, the model performance inflates up to threefold. The results show that even non-overlapping micrographs of the same steel are similar enough, that they should be either part of the training or validation, but not both. Otherwise, the deep learning model is able to shortcut the training process by learning specific patterns of the steel’s micrograph instead of more general applicable patterns of the steel’s microstructure.",
+        "Validation results always refer to the set of validation values collected from all 47 different splits."
+      ]
+    },
+    {
+      "heading": "Model evaluation",
+      "paragraphs": [
+        "Using LOGO-CV, 47 different ViTs are trained for each of the six magnifications, each model with a different specimen as validation split. Each validation split consists of the three micrographs taken of one specimen. For the evaluation, in contrast to the training procedure that uses random cropping, a sliding-window approach with a stride of 96 px is used to crop the images into 384x384 px overlapping patches. For these 336 patches of a single image the trained model predicted the mechanical properties. The finally reported values for a specimen are the average over all  3 × 336 = 1008 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$3\\times 336=1008$$\\end{document}  patches.",
+        "To illustrate the typical variance of the sliding-window patches, Fig.  4  shows the predicted values of each cropped patch for  UTS  and  CVN  compared to the experimentally measured value for a randomly selected LOGO-CV fold. Despite the quite large variance for each specimen, the average for each training specimen accurately reflects the measured value. One possible explanation for the large variance may be that the selected patch size is too small to accurately represent all physically required information. If a patch at 1000x magnification only contains pearlite, the model should predict a higher value for  UTS  and a lower value when only ferrite is visible in the patch. However, this behavior is very similar across all magnifications, even when each single patch contains multiple grains. Figure 4 Example parity plots for  UTS  and  CVN  for 25x magnification visualize the model’s prediction variance for each steel specimen. Each small dot reflects the prediction of a 384x384 px patch from the original microstructure image. The  X  marks the average prediction for each micrograph and the large dot ( ∙ \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\bullet$$\\end{document} ) indicates the average prediction for a single specimen over all three micrographs.",
+        "The MAE values in Table  3  for  UTS  (23.4 MPa to 15.2 MPa),  UYS  (25.7 MPa to 18.1 MPa) and  YS  (24.0 MPa to 17.0 MPa) are relatively low, indicating good predictive accuracy. Similarly, the MAPE values indicate that the predictions are relatively accurate in terms of percentage error, particularly for  UTS  and  A . However, the  R 2 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$R^2$$\\end{document}  values for most properties suggest that the models only partly capture the variance in the data. The  CVN  property consistently shows high MAE and MAPE, indicating less reliable predictions. Among all evaluated properties, prediction accuracy is lowest for the CVN values. The experimentally measured CVN is reported as the average of three tests, which in some cases exhibit relatively large scatter. The average difference between highest and lowest value is 35 J and for five specimens the difference is even over 100 J. Consequently, a single micrograph may contain features associated with either substantially lower or higher CVN values than the reported average. This scatter is a well-known characteristic of Charpy impact testing and arises from the stochastic, localized nature of cleavage fracture. In contrast to tensile properties – which are averaged over a large material volume and therefore correlate well with parameters such as grain size and phase fraction – CVN behavior is not governed solely by the average microstructure but rather follows a weakest-link mechanism [ 57 ]. Cleavage fracture initiation is controlled by local defects, including (i) non-metallic inclusions, (ii) heterogeneous grain size distributions, (iii) chemical segregation leading to uneven phase distributions, (iv) banding structures that promote delamination at weak phase boundaries, and (v) residual stresses at the notch root [ 57 ,  58 ,  59 ,  60 – 61 ]. Accurately capturing all such features within a single micrograph is unlikely. Even when multiple images are analyzed, as in the present study, critical defects may be located outside the observed region and remain unobserved. Furthermore, within the ductile-to-brittle transition temperature regime, small variations in test temperature can result in pronounced changes in CVN. As a result, experimental variability inherently leads to substantial scatter in CVN data that cannot be fully represented by micrographs alone. Additionally, the values indicate that for all metrics and properties higher magnification generally results in higher errors. This becomes especially clear, when normalizing the MAE to get all errors on the same scale, as shown in Table  4 . Then, even training data shows a higher error with higher magnification (going from 0.08 to 0.37 NMAE).",
+        "A fair comparison of metrics to previous work is difficult, as often the final validation metrics are calculated using only small amount of specimens or are likely containing data leakage (RQ2 and cf. Section  3.3 , in which we show how simply changing the data splitting strategy can drastically influence the prediction results). The most related study, which uses a similar data splitting approach as we do, reaches a similar level of MAE (32.2 HB) when predicting the Brinell Hardness in the range from 300 to 700 HB based on the scanning electron microscopy (SEM) microstructures of 52 specimens [ 31 ]. According to Matyunin et al. [ 62 ] the Brinell Hardness can be compared well to the  UTS  as a proportional relation between both can be established for many materials, including some types of steel. We estimate the MAPE of their result to be between  32.2 HB / 700 HB × 100 = 4.6 % \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$32.2~\\text {HB}/700~\\text {HB}\\times 100=4.6\\%$$\\end{document}  and  32.2 HB / 300 HB × 100 = 10.7 % \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$32.2~\\text {HB}/300~\\text {HB}\\times 100=10.7\\%$$\\end{document}  and thus in a similar range to our results. Similarly, they also found that  R 2 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$R^2$$\\end{document}  decreases with higher magnification, considering a magnification range from 1,000x-10,000x. Also, in their work the highest errors appear toward both ends of the scale, again similar to our findings (cf. Fig.  5 ).\n Table 3 The mean absolute error (MAE, lower is better  ↓ \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\downarrow$$\\end{document} ), coefficient of determination ( R 2 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$R^2$$\\end{document} , closer to 1 is better  ↑ \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\uparrow$$\\end{document} ) and mean absolute percentage error (MAPE, lower is better  ↓ \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\downarrow$$\\end{document} ) metrics are calculated on all 47 validation folds for upper yield strength ( UYS ), yield strength ( YS ), ultimate tensile strength ( UTS ), elongation at fracture ( A ), Charpy impact energy ( CVN ) MAE ↓ \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\downarrow$$\\end{document} R 2 ↑ \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$R^2 \\uparrow$$\\end{document} MAPE  ↓ \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\downarrow$$\\end{document} 25x 200x 1000x 25x 200x 1000x 25x 200x 1000x A 1.6% 1.6% 1.6% 0.53 0.49 0.29 5.2% 5.3% 5.9% CVN 32.3 J 38.6 J 46.1 J 0.57 0.42 0.17 17.9% 20.5% 24.9% UTS 15.2 MPa 19.0 MPa 23.4 MPa 0.61 0.47 0.31 3.3% 4.1% 5.1% UYS 18.1 MPa 21.7 MPa 25.7 MPa 0.55 0.44 0.34 5.9% 7.1% 8.5% YS 17.0 MPa 20.7 MPa 24.0 MPa 0.52 0.38 0.29 5.8% 7.0% 8.2% Table 4 For each mechanical property the mean absolute error is normalized (NMAE) independently and then the NMAE of all five properties is averaged into a single value. For training and validation data the error increases with higher magnificationmagnification NMAE ↓ \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\downarrow$$\\end{document} 25x 50x 100x 200x 400x 1000x Training data 0.08 0.08 0.12 0.18 0.25 0.37 Validation data 0.43 0.48 0.50 0.52 0.55 0.62",
+        "The parity plots in Fig.  5  present a visualization of the predictions for the 1000x magnifications. As indicated by the  R 2 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$R^2$$\\end{document}  values and especially well visible for  A , the prediction of unseen data has a strong tendency toward the global average value. This is also true for the three steels in the low value range for  YS ,  UYS  and  UTS . Even though in LOGO-CV, always two of the three distinct samples are part of the training split. Figure 5 Each mark represents the average prediction over all three micrographs of the one specimen in the LOGO-CV validation split (1000x). The same combination of color and symbol represent the same specimen across the different plots. For example, the error of the yellow circle at the lower end of the scale in  UTS  and  YS  is large, even though close specimens were part of the training data (e.g., the bright green X and dark green X). For  YS ,  UYS  and  UTS  the error becomes larger toward the lower end of the scale. For  A  and  CVN  the prediction tends toward the respective average, resulting in larger errors toward both ends of the scale.",
+        "In addition, a larger dataset from different viewpoints is expected to result in improved model prediction accuracy [ 1 ]. Our preliminary study in Appendix  A.3  supports the claim, that dataset size and balance help to improve the prediction models. Yet, we cannot deduct a minimum dataset size. A ViT trained on a dataset containing all magnifications predicted less accurate compared to single magnification configurations, as shown in Appendix  A.4 . Additionally, the gradual unfreezing approach allows to update model weights, that are shared between and used for all five property predictions, thus potentially resulting in conflicting weight updates. However, single-property prediction compared to multi-property prediction results in a similar prediction quality for most properties as shown in Appendix  A.5 . Thus in our study, multi-property prediction results in more energy efficient model training."
+      ]
+    },
+    {
+      "heading": "Spatial performance variance across patches",
+      "paragraphs": [
+        "As the parity plots in Fig.  4  indicate, the model predictions for  UTS  and  CVN  of a single micrograph cover a range of around 60 MPa and around 150 J, respectively. In this section, we investigate these ranges visually linking them back to areas of the originally sized micrographs. Ackermann et al. [ 7 ] visualize areas of distinct low, middle or high impact energy classes in steels with non-overlapping windows. In contrast, sliding a 384x384 px window with a stride smaller than the window dimensions (here the stride is 24 px) over the complete micrograph and predicting the mechanical properties for each such window, similarly to the Occlusion algorithm [ 63 ], results in a detailed per micrograph visualization. Due to the overlapping windows more than one prediction is available for most pixels. Thus, for each pixel the average prediction value is used to color code under-/overestimating pixels, as shown in Fig.  6 . In the shown heatmaps, a white color indicates predictions close to the experimentally measured values and red/blue indicates areas where the model under-/overestimates the value. Overall, the ViT seems to consider the extracted microstructural features gradually, as no sudden color changes are visible (except for a few border effects). Figure 6 The heatmaps visualize the areas responsible for the prediction variance showcased in Fig.  4  (red/blue indicates areas below/above the measured property value). Each heatmap is generated over the original 2700x1800 px micrograph (1000x, bottom right: 25x) by calculating the average contribution of each pixel from 509,000 overlapping patches using a sliding-window approach with a stride of 24 px. For the three properties on the left  the similar color distribution indicates, that the\n-\nmodel considers similar regions responsible  for the property values.",
+        "The heatmaps for the three properties shown on the left,  UYS ,  YS  and  UTS , showcase a similar color distribution. Thus, similar areas are colored red at the top mid and right as well as the middle left. For  A  often the opposite color for scheme is used, which is generally expected. For  CVN  no such relation is observed. The region exhibiting comparatively dark red at the top of the micrograph is free of grain boundaries and corresponds to a larger grain. This area shows the lowest  UTS ,  YS  and  UYS . According to the Hall–Petch relation [ 2 ,  3 ], such behavior is expected in polycrystalline materials. However, the opposite behavior can also be found in the middle of the image, resulting in no clear tendency in this aspect. Similarly, due to the large amount of pearlite toward the bottom of the micrograph, the blue coloring is expected in  UYS ,  YS  and  UTS . Overall, the model exhibits the expected behavior to some extend, but fails to apply it consistently across all image region. Interestingly, the general color distribution appears similar in large parts of the image across various cross-validation folds, see Appendix  A.6 .",
+        "Physically it is expected that different microscopic areas result in different mechanical property values. For example, higher pearlite fractions should result in higher mechanical strength. However, during training the prediction model only knows about one measured property value for the whole micrograph. Consequently, the model should learn to associate all areas to that given value, but the heatmaps indicate a different behavior. An explanation may be the usage of the 384x384 px patches. On our data with 1000x magnification, this patch size is small enough to contain only a single ferrit/pearlite grain. The model then extracts the structural feature vector from that grain and associates it with the given mechanical properties. If another steel provides a similar microstructure, but is associated with other mechanical property values, the ViT needs to balance these contradicting information to minimize the training loss. Thus, it may use the average value for each property. After training, the global average for a single grain may be learned and associated to each steel. Consequently, whenever the ViT extracts a similar structural feature vector from different patches, the averaging behavior may be observed, resulting in the differently colored regions on the complete micrograph.",
+        "It seems likely that patch size and number introduce errors, as the patches lack structural information compared to the complete micrograph. This also reflects in the improved prediction accuracy when more physical area is contained in each patch (see the metrics of lower magnifications in Table  3 ). The initially mentioned variance of the parity plot is measured on 25x magnification. At this low magnification, the available specimen always contain multiple grains and other more global structural features within a 384x384 px patch (see bottom right in Fig.  6 ). However, for better human interpretability of the heatmaps, higher magnification is more helpful, as heatmap features can more clearly be associated to specific structural features.",
+        "Overall, the sliding-window-based heat map helps to visually inspect, which regions of a micrograph the ViT associates with which mechanical values. This allows to inspect whether a prediction model aligns with existing knowledge. This approach also allows to create large heatmaps for (stitched) micrographs of complete specimen."
+      ]
+    },
+    {
+      "heading": "Split strategy evaluation",
+      "paragraphs": [
+        "Figure 7 For each mechanical property separately, the mean absolute percentage error (MAPE) of the validation folds are shown with increasing error on the 25x (left) and 1000x dataset (right). The MAPE can vary up to 20 and 90 percentage points between the folds depending on the mechanical property. When only a small amount of specimens is used as validation data, the reported error may be as low as 0.5% but the error on other unseen data may be multiple times higher, giving different information about the model’s expected quality.",
+        "In comparison with our  R 2 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$R^2$$\\end{document}  values, recent literature often reports values above 0.8 [ 23 ,  24 ,  29 ,  32 ,  33 ,  41 ]. The main methodological differences are found in the amount of data used for validation and the applied split strategy. In this section, we evaluate the effect of data leakage by comparing LOGO-CV with random 10-fold cross-validation and stratified 3-fold cross-validation (as introduced in Section  2.2 ). First, we investigate to which extend the amount of data used for validation may influence the reported validation error.",
+        "Figure  7  shows the distribution of the MAPE of 25x and 1000x magnification for each fold with increasing error. Using  YS  as example property with moderate performance the MAPE is at 5.8% (25x) and 8.2% (1000x), respectively. In the literature, typically 10%-30% of data points are used for final evaluation, which in this case equals up to 14 specimens. If 14 specimens would be chosen only once and randomly as validation data, the MAPE now ranges between 0.5%−26.5% for 25x and 0.7%−33.5% for 1000x magnification (the dashed lines in the figure indicate the 14 folds with lowest/highest error). A significant difference, that may even increase when fewer samples are selected, resulting in a biased model evaluation. Consequently, when only limited data is available, all samples should be used for testing in a cross-validation approach.\n Table 5 Mean and standard deviation (±) on n=3 separate training runs, each with a different random initialization. With random 10-fold cross-validation (Rnd. 10-fold) and stratified 3-fold cross-validation (Str. 3-fold) the normalized mean absolute error (NMAE) decreases on the validation split compared to Leave-One-Group-Out cross-validation (LOGO), while the NMAE on the training remains almost identical. Similarly, the MAPE gets lower and  R 2 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$R^2$$\\end{document}  clearly increases for every mechanical property with Rnd. 10-fold or Str. 3-fold. On all strategies, higher magnification results in higher errors, but the large differences between the strategies still remain NMAE  ↓ \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\downarrow$$\\end{document} 50x 1000x LOGO Rnd. 10-fold Str. 3-fold LOGO Rnd. 10-fold Str. 3-fold Training 0.08 ± 0.01 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\pm 0.01$$\\end{document} 0.1 ± 0.01 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\pm 0.01$$\\end{document} 0.09 ± 0.01 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\pm 0.01$$\\end{document} 0.36 ± 0.01 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\pm 0.01$$\\end{document} 0.35 ± 0.01 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\pm 0.01$$\\end{document} 0.34 ± 0.02 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\pm 0.02$$\\end{document} Validation 0.48 ± 0.01 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\pm 0.01$$\\end{document} 0.16 ± 0.01 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\pm 0.01$$\\end{document} 0.19 ± 0.01 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\pm 0.01$$\\end{document} 0.62 ± 0.01 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\pm 0.01$$\\end{document} 0.49 ± 0.01 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\pm 0.01$$\\end{document} 0.47 ± 0.01 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\pm 0.01$$\\end{document} MAPE (%)  ↓ \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\downarrow$$\\end{document}  (on validation data) A 5.8 ± 0.16 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\pm 0.16$$\\end{document} 2.5 ± 0.11 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\pm 0.11$$\\end{document} 2.1 ± 0.03 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\pm 0.03$$\\end{document} 5.9 ± 0.02 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\pm 0.02$$\\end{document} 4.8 ± 0.06 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\pm 0.06$$\\end{document} 4.5 ± 0.18 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\pm 0.18$$\\end{document} CVN 20.7 ± 0.51 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\pm 0.51$$\\end{document} 10.4 ± 0.65 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\pm 0.65$$\\end{document} 9.3 ± 0.30 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\pm 0.30$$\\end{document} 25.2 ± 0.24 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\pm 0.24$$\\end{document} 22.4 ± 1.71 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\pm 1.71$$\\end{document} 21.6 ± 1.81 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\pm 1.81$$\\end{document} UTS 3.9 ± 0.03 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\pm 0.03$$\\end{document} 1.2 ± 0.13 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\pm 0.13$$\\end{document} 1.1 ± 0.08 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\pm 0.08$$\\end{document} 5.0 ± 0.09 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\pm 0.09$$\\end{document} 3.8 ± 0.08 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\pm 0.08$$\\end{document} 3.7 ± 0.06 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\pm 0.06$$\\end{document} UYS 6.9 ± 0.06 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\pm 0.06$$\\end{document} 2.0 ± 0.19 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\pm 0.19$$\\end{document} 1.8 ± 0.08 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\pm 0.08$$\\end{document} 8.5 ± 0.09 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\pm 0.09$$\\end{document} 6.1 ± 0.06 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\pm 0.06$$\\end{document} 6.0 ± 0.05 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\pm 0.05$$\\end{document} YS 6.6 ± 0.07 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\pm 0.07$$\\end{document} 1.9 ± 0.20 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\pm 0.20$$\\end{document} 1.7 ± 0.08 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\pm 0.08$$\\end{document} 8.3 ± 0.12 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\pm 0.12$$\\end{document} 6.0 ± 0.09 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\pm 0.09$$\\end{document} 5.9 ± 0.05 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\pm 0.05$$\\end{document} R 2 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$R^2$$\\end{document} ↑ \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\uparrow$$\\end{document}  (on validation data) A 0.41 ± 0.02 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\pm 0.02$$\\end{document} 0.89 ± 0.01 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\pm 0.01$$\\end{document} 0.92 ± 0.01 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\pm 0.01$$\\end{document} 0.30 ± 0.01 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\pm 0.01$$\\end{document} 0.57 ± 0.01 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\pm 0.01$$\\end{document} 0.64 ± 0.02 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\pm 0.02$$\\end{document} CVN 0.46 ± 0.02 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\pm 0.02$$\\end{document} 0.83 ± 0.02 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\pm 0.02$$\\end{document} 0.90 ± 0.04 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\pm 0.04$$\\end{document} 0.16 ± 0.01 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\pm 0.01$$\\end{document} 0.52 ± 0.01 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\pm 0.01$$\\end{document} 0.57 ± 0.03 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\pm 0.03$$\\end{document} UTS 0.48 ± 0.01 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\pm 0.01$$\\end{document} 0.96 ± 0.01 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\pm 0.01$$\\end{document} 0.96 ± 0.01 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\pm 0.01$$\\end{document} 0.31 ± 0.01 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\pm 0.01$$\\end{document} 0.60 ± 0.01 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\pm 0.01$$\\end{document} 0.63 ± 0.02 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\pm 0.02$$\\end{document} UYS 0.46 ± 0.01 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\pm 0.01$$\\end{document} 0.96 ± 0.01 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\pm 0.01$$\\end{document} 0.97 ± 0.01 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\pm 0.01$$\\end{document} 0.34 ± 0.01 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\pm 0.01$$\\end{document} 0.66 ± 0.01 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\pm 0.01$$\\end{document} 0.68 ± 0.01 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\pm 0.01$$\\end{document} YS 0.43 ± 0.01 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\pm 0.01$$\\end{document} 0.96 ± 0.01 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\pm 0.01$$\\end{document} 0.97 ± 0.01 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\pm 0.01$$\\end{document} 0.27 ± 0.02 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\pm 0.02$$\\end{document} 0.62 ± 0.01 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\pm 0.01$$\\end{document} 0.65 ± 0.01 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\pm 0.01$$\\end{document}",
+        "In Table  5 , the three splitting strategies are compared to each other using the lowest and highest magnification. NMAE, MAPE and  R 2 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$R^2$$\\end{document}  for both, Random 10-fold CV and Stratified 3-fold CV, drastically “improve” on all properties. For 50x magnification, the NMAE decreases almost three fold compared to LOGO-CV, going from 0.48 to 0.16 and 0.19, respectively. Similarly, the MAPE for four mechanical properties is under 2.5% and even for  CVN  around 10%. Also,  R 2 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$R^2$$\\end{document}  for each property increases up to the range of 0.83−0.97, reaching levels previously reported in the literature. The largest differences are observed for the stratified 3-fold CV. These largest differences match expectations, as the stratified 3-fold CV used here contains data leakage by design.",
+        "This means, only changing how the training split is created, results in an almost three times lower NMAE and MAPE and the  R 2 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$R^2$$\\end{document}  of Random 10-fold CV and Stratified 3-fold CV (wrongly) suggests that ViT almost fully captures the variance. Using stratified cross-validation we ensured micrographs of the same steel are shared between training and validation splits, meaning we established data leakage. Thus, the “improved” metrics only result from data leakage. Therefore, a deep learning model is able to recognize certain microstructural information of one micrograph in a different micrograph of the same specimen. Such information seems more common in lower magnification as the data leakage effect in the 1000x magnification is less significant. Consequently, the ViT appears to learn less physical meaningful information, but strongly relies on re-identification of visual patterns."
+      ]
+    },
+    {
+      "heading": "Conclusion",
+      "paragraphs": [
+        "This study demonstrates the critical importance of robust dataset splitting strategies in machine learning workflows involving microstructural image data. Specifically, the artificially inflated performance by invalid splitting as observed in the comparison of different split strategies (RQ2) highlights the importance of independent training and validation data. Micrographs of the same specimen must always be contained within the same data split. For instance on our data, the mean absolute percentage error (MAPE) and normalized MAE decrease by up to a factor of three, and  R 2 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$R^2$$\\end{document}  increases by up to 0.54 (e.g., from 0.43 to 0.97 for yield strength on 50x magnification). These effects reflect a significant overestimation of the model’s true generalization capability in real-world scenarios. This overestimation may lead to misleading scientific conclusions and unreliable industrial decisions, highlighting the need for rigorous, leakage-aware validation protocols, such as leave-one-group-out cross-validation (LOGO-CV).",
+        "RQ1 examined the performance of a pre-trained VisionTransformer (ViT), fine-tuned on microstructural images from 47 different steels to predict five mechanical properties. Error ranges of MAPE and MAE of elongation at fracture ( A ), upper yield strength ( UYS ), yield strength ( YS ) and ultimate tensile strength ( UTS ) across multiple magnifications indicate comparable predictive performance to related work on scanning electron microscopy images [ 31 ,  41 ]. The coefficient of determination ( R 2 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$R^2$$\\end{document} ) across all magnifications indicates that the variance of data is only partially captured, especially toward the both ends of the respective scales. Especially for the Charpy impact energy (CVN), the ViT is unable to link relevant microstructural information to the mechanical property (20%-25% MAPE). We attribute this to epistemic uncertainty in the experimentally measured values and the intrinsic scatter of Charpy impact energy measurement, which cannot be represented by a single micrograph.",
+        "In RQ3, we investigated the influence of different magnifications. Our results show a clear, yet small trend: higher magnification results in larger errors on all metrics and mechanical properties. The trend occurs in all splitting strategies. We conclude that while microstructural features at various scales provide discriminative information for the property prediction task, those at lower magnifications seem more informative for a ViT.",
+        "The sliding-window-based heatmaps visualize the prediction variance and areas of over-/under-estimation. The manual visual inspection found both, examples and counter-examples for known structure–property relations, indicating why the variance is only partially captured. However, the heatmaps do not reveal why the ViT associates a particular area with a particular value. In future work, we plan to adapt intrinsically interpretable models (e.g., part-prototype models [ 64 ]) to regression tasks in order to increase human interpretability.",
+        "Overall, fine-tuning a pre-trained model is a promising approach to extract relevant information of microstructure–property linkages. As long as data remains scarce in this domain, we suggest using LOGO-CV as part of a reliable validation protocol to avoid data leakage. Our findings highlight the need for more training data, as similarly suggested by Larmuseau et al. [ 31 ]. Likely, the inclusion of different viewpoints (e.g., 3D information) and incorporation of existing physical knowledge helps to better capture the complex microstructure–property linkages."
+      ]
+    }
+  ],
+  "tables": [
+    {
+      "caption": "The minimum (min), median and maximum (max) values of each chemical composition of the 47 steels",
+      "headers": [
+        "Chemical Element",
+        "Min (wt%)",
+        "Median (wt%)",
+        "Max (wt%)"
+      ],
+      "rows": [
+        [
+          "C",
+          "0.9",
+          "0.14",
+          "0.17"
+        ],
+        [
+          "Si",
+          "0.14",
+          "0.45",
+          "0.51"
+        ],
+        [
+          "Mn",
+          "0.91",
+          "1.55",
+          "1.61"
+        ],
+        [
+          "P",
+          "0.009",
+          "0.013",
+          "0.017"
+        ],
+        [
+          "S",
+          "0.0004",
+          "0.0007",
+          "0.001"
+        ],
+        [
+          "Cu",
+          "0.014",
+          "0.025",
+          "0.035"
+        ],
+        [
+          "Al",
+          "0.027",
+          "0.041",
+          "0.055"
+        ],
+        [
+          "N",
+          "0.002",
+          "0.004",
+          "0.007"
+        ],
+        [
+          "Ni",
+          "0.022",
+          "0.03",
+          "0.042"
+        ],
+        [
+          "Mo",
+          "0.004",
+          "0.007",
+          "0.024"
+        ],
+        [
+          "Ca",
+          "0.0006",
+          "0.0015",
+          "0.002"
+        ],
+        [
+          "Ti",
+          "0.002",
+          "0.003",
+          "0.006"
+        ],
+        [
+          "Nb",
+          "0.0",
+          "0.018",
+          "0.029"
+        ]
+      ],
+      "header_groups": [],
+      "table_alignment_status": "resolved",
+      "row_provenance": [
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 8,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 8,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 8,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 8,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 9,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 9,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 9,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 9,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 10,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 10,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 10,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 10,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 11,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 11,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 11,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 11,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 12,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 12,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 12,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 12,
+            "source_col": 4
+          }
+        ]
+      ],
+      "tbody_alignment_status": "resolved"
+    },
+    {
+      "caption": "The minimum (min), median and maximum (max) values for the provided mechanical properties. For  CVN  the average of three experimentally measured values is reported",
+      "headers": [
+        "Mechanical Property",
+        "Abbreviation",
+        "Unit",
+        "Min",
+        "Median",
+        "Max"
+      ],
+      "rows": [
+        [
+          "Elongation at fracture",
+          "A",
+          "%",
+          "26.6",
+          "30.3",
+          "39.4"
+        ],
+        [
+          "Charpy impact energy",
+          "CVN",
+          "J",
+          "63",
+          "207",
+          "346"
+        ],
+        [
+          "Ultimate tensile strength",
+          "UTS",
+          "MPa",
+          "398",
+          "500",
+          "548"
+        ],
+        [
+          "Upper yield strength",
+          "UYS",
+          "MPa",
+          "242",
+          "352",
+          "394"
+        ],
+        [
+          "Yield strength",
+          "YS",
+          "MPa",
+          "228",
+          "337",
+          "374"
+        ]
+      ],
+      "header_groups": [],
+      "table_alignment_status": "resolved",
+      "row_provenance": [
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 6
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 6
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 6
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 6
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 6
+          }
+        ]
+      ],
+      "tbody_alignment_status": "resolved"
+    },
+    {
+      "caption": "The mean absolute error (MAE, lower is better  ↓ \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\downarrow$$\\end{document} ), coefficient of determination ( R 2 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$R^2$$\\end{document} , closer to 1 is better  ↑ \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\uparrow$$\\end{document} ) and mean absolute percentage error (MAPE, lower is better  ↓ \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\downarrow$$\\end{document} ) metrics are calculated on all 47 validation folds for upper yield strength ( UYS ), yield strength ( YS ), ultimate tensile strength ( UTS ), elongation at fracture ( A ), Charpy impact energy ( CVN )",
+      "headers": [
+        "",
+        "25x",
+        "200x",
+        "1000x",
+        "25x",
+        "200x",
+        "1000x",
+        "25x",
+        "200x",
+        "1000x"
+      ],
+      "rows": [
+        [
+          "A",
+          "1.6%",
+          "1.6%",
+          "1.6%",
+          "0.53",
+          "0.49",
+          "0.29",
+          "5.2%",
+          "5.3%",
+          "5.9%"
+        ],
+        [
+          "CVN",
+          "32.3 J",
+          "38.6 J",
+          "46.1 J",
+          "0.57",
+          "0.42",
+          "0.17",
+          "17.9%",
+          "20.5%",
+          "24.9%"
+        ],
+        [
+          "UTS",
+          "15.2 MPa",
+          "19.0 MPa",
+          "23.4 MPa",
+          "0.61",
+          "0.47",
+          "0.31",
+          "3.3%",
+          "4.1%",
+          "5.1%"
+        ],
+        [
+          "UYS",
+          "18.1 MPa",
+          "21.7 MPa",
+          "25.7 MPa",
+          "0.55",
+          "0.44",
+          "0.34",
+          "5.9%",
+          "7.1%",
+          "8.5%"
+        ],
+        [
+          "YS",
+          "17.0 MPa",
+          "20.7 MPa",
+          "24.0 MPa",
+          "0.52",
+          "0.38",
+          "0.29",
+          "5.8%",
+          "7.0%",
+          "8.2%"
+        ]
+      ],
+      "header_groups": [
+        {
+          "label": "MAE ↓ \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\downarrow$$\\end{document}",
+          "start_col": 2,
+          "end_col": 4
+        },
+        {
+          "label": "R 2 ↑ \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$R^2 \\uparrow$$\\end{document}",
+          "start_col": 5,
+          "end_col": 7
+        },
+        {
+          "label": "MAPE  ↓ \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\downarrow$$\\end{document}",
+          "start_col": 8,
+          "end_col": 10
+        }
+      ],
+      "table_alignment_status": "resolved",
+      "row_provenance": [
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 7
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 8
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 9
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 10
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 7
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 8
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 9
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 10
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 7
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 8
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 9
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 10
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 7
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 8
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 9
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 10
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 7
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 8
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 9
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 10
+          }
+        ]
+      ],
+      "tbody_alignment_status": "resolved"
+    },
+    {
+      "caption": "For each mechanical property the mean absolute error is normalized (NMAE) independently and then the NMAE of all five properties is averaged into a single value. For training and validation data the error increases with higher magnificationmagnification",
+      "headers": [
+        "NMAE ↓ \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\downarrow$$\\end{document}",
+        "25x",
+        "50x",
+        "100x",
+        "200x",
+        "400x",
+        "1000x"
+      ],
+      "rows": [
+        [
+          "Training data",
+          "0.08",
+          "0.08",
+          "0.12",
+          "0.18",
+          "0.25",
+          "0.37"
+        ],
+        [
+          "Validation data",
+          "0.43",
+          "0.48",
+          "0.50",
+          "0.52",
+          "0.55",
+          "0.62"
+        ]
+      ],
+      "header_groups": [],
+      "table_alignment_status": "resolved",
+      "row_provenance": [
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 7
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 7
+          }
+        ]
+      ],
+      "tbody_alignment_status": "resolved"
+    },
+    {
+      "caption": "Mean and standard deviation (±) on n=3 separate training runs, each with a different random initialization. With random 10-fold cross-validation (Rnd. 10-fold) and stratified 3-fold cross-validation (Str. 3-fold) the normalized mean absolute error (NMAE) decreases on the validation split compared to Leave-One-Group-Out cross-validation (LOGO), while the NMAE on the training remains almost identical. Similarly, the MAPE gets lower and  R 2 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$R^2$$\\end{document}  clearly increases for every mechanical property with Rnd. 10-fold or Str. 3-fold. On all strategies, higher magnification results in higher errors, but the large differences between the strategies still remain",
+      "headers": [
+        "NMAE  ↓ \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\downarrow$$\\end{document}",
+        "LOGO",
+        "Rnd. 10-fold",
+        "Str. 3-fold",
+        "LOGO",
+        "Rnd. 10-fold",
+        "Str. 3-fold"
+      ],
+      "rows": [
+        [
+          "Training",
+          "0.08 ± 0.01 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\pm 0.01$$\\end{document}",
+          "0.1 ± 0.01 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\pm 0.01$$\\end{document}",
+          "0.09 ± 0.01 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\pm 0.01$$\\end{document}",
+          "0.36 ± 0.01 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\pm 0.01$$\\end{document}",
+          "0.35 ± 0.01 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\pm 0.01$$\\end{document}",
+          "0.34 ± 0.02 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\pm 0.02$$\\end{document}"
+        ],
+        [
+          "Validation",
+          "0.48 ± 0.01 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\pm 0.01$$\\end{document}",
+          "0.16 ± 0.01 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\pm 0.01$$\\end{document}",
+          "0.19 ± 0.01 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\pm 0.01$$\\end{document}",
+          "0.62 ± 0.01 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\pm 0.01$$\\end{document}",
+          "0.49 ± 0.01 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\pm 0.01$$\\end{document}",
+          "0.47 ± 0.01 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\pm 0.01$$\\end{document}"
+        ]
+      ],
+      "header_groups": [
+        {
+          "label": "50x",
+          "start_col": 2,
+          "end_col": 4
+        },
+        {
+          "label": "1000x",
+          "start_col": 5,
+          "end_col": 7
+        }
+      ],
+      "table_alignment_status": "resolved",
+      "row_provenance": [
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 7
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 7
+          }
+        ]
+      ],
+      "tbody_alignment_status": "resolved"
+    },
+    {
+      "caption": "Metrics over the first 13 folds for the actually investigated ViT of this study (left) and a ViT model with all parameters being trained (right)",
+      "headers": [
+        "",
+        "MAE  ↓ \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\downarrow$$\\end{document}",
+        "R 2 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$R^2$$\\end{document} ↑ \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\uparrow$$\\end{document}",
+        "MAPE  ↓ \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\downarrow$$\\end{document}",
+        "MAE  ↓ \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\downarrow$$\\end{document}",
+        "R 2 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$R^2$$\\end{document} ↑ \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\uparrow$$\\end{document}",
+        "MAPE  ↓ \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\downarrow$$\\end{document}"
+      ],
+      "rows": [
+        [
+          "A",
+          "2.0%",
+          "−0.45",
+          "6.63%",
+          "2.2%",
+          "−0.47",
+          "7.15%"
+        ],
+        [
+          "CVN",
+          "40.5 J",
+          "−0.09",
+          "29.43%",
+          "32.0 J",
+          "−0.40",
+          "16.22%"
+        ],
+        [
+          "UTS",
+          "37.6 MPa",
+          "−0.12",
+          "8.41%",
+          "42.7 MPa",
+          "−0.08",
+          "9.38%"
+        ],
+        [
+          "UYS",
+          "37.2 MPa",
+          "0.02",
+          "13.24%",
+          "41.6 MPa",
+          "0.09",
+          "14.41%"
+        ],
+        [
+          "YS",
+          "37.5 MPa",
+          "−0.01",
+          "13.71%",
+          "41.6 MPa",
+          "0.07",
+          "14.80%"
+        ]
+      ],
+      "header_groups": [
+        {
+          "label": "Unfreezing (1000x)",
+          "start_col": 2,
+          "end_col": 4
+        },
+        {
+          "label": "No unfreezing (1000x)",
+          "start_col": 5,
+          "end_col": 7
+        }
+      ],
+      "table_alignment_status": "resolved",
+      "row_provenance": [
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 7
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 7
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 7
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 7
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 7
+          }
+        ]
+      ],
+      "tbody_alignment_status": "resolved"
+    },
+    {
+      "caption": "Metrics over the first nine folds when training all magnifications at onceonce",
+      "headers": [
+        "25x-1000x",
+        "MAE  ↓ \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\downarrow$$\\end{document}",
+        "R 2 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$R^2$$\\end{document} ↑ \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\uparrow$$\\end{document}",
+        "MAPE  ↓ \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\downarrow$$\\end{document}"
+      ],
+      "rows": [
+        [
+          "A",
+          "2.1%",
+          "−0.49",
+          "6.56%"
+        ],
+        [
+          "CVN",
+          "44.3 J",
+          "−0.87",
+          "22.41%"
+        ],
+        [
+          "UTS",
+          "43.4 MPa",
+          "−0.23",
+          "10.23%"
+        ],
+        [
+          "UYS",
+          "47.5 MPa",
+          "0.28",
+          "17.94%"
+        ],
+        [
+          "YS",
+          "45.6 MPa",
+          "−0.28",
+          "17.95%"
+        ]
+      ],
+      "header_groups": [],
+      "table_alignment_status": "resolved",
+      "row_provenance": [
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 4
+          }
+        ]
+      ],
+      "tbody_alignment_status": "resolved"
+    },
+    {
+      "caption": "For the first nine folds, the average prediction per specimen results in higher MAE when the ViT is trained on all magnification at once compared to the highest or lowest magnification alone. All values are reported in MPa",
+      "headers": [
+        "Measured  UTS",
+        "All magnifications",
+        "25x",
+        "1000x"
+      ],
+      "rows": [
+        [
+          "409",
+          "502",
+          "493",
+          "495"
+        ],
+        [
+          "527",
+          "509",
+          "513",
+          "514"
+        ],
+        [
+          "521",
+          "518",
+          "525",
+          "513"
+        ],
+        [
+          "521",
+          "516",
+          "502",
+          "515"
+        ],
+        [
+          "398",
+          "505",
+          "487",
+          "509"
+        ],
+        [
+          "410",
+          "526",
+          "520",
+          "519"
+        ],
+        [
+          "531",
+          "513",
+          "523",
+          "512"
+        ],
+        [
+          "535",
+          "511",
+          "519",
+          "510"
+        ],
+        [
+          "510",
+          "503",
+          "502",
+          "510"
+        ],
+        [
+          "MAE  ↓ \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\downarrow$$\\end{document}",
+          "43.4",
+          "39.1",
+          "41.9"
+        ]
+      ],
+      "header_groups": [],
+      "table_alignment_status": "resolved",
+      "row_provenance": [
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 8,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 8,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 8,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 8,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 9,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 9,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 9,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 9,
+            "source_col": 4
+          }
+        ]
+      ],
+      "tbody_alignment_status": "resolved"
+    },
+    {
+      "caption": "From all five tested mechanical properties, only for  UTS  a notable improvement in MAE and MAPE is achieved when a ViT is trained on single-property prediction compared to multi-property prediction using a gradual unfreezing approachapproach",
+      "headers": [
+        "1000x",
+        "MAE  ↓ \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\downarrow$$\\end{document}",
+        "R 2 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$R^2$$\\end{document} ↑ \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\uparrow$$\\end{document}",
+        "MAPE  ↓ \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\downarrow$$\\end{document}",
+        "MAE  ↓ \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\downarrow$$\\end{document}",
+        "R 2 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$R^2$$\\end{document} ↑ \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\uparrow$$\\end{document}",
+        "MAPE  ↓ \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\downarrow$$\\end{document}"
+      ],
+      "rows": [
+        [
+          "A",
+          "1.6%",
+          "−0.34",
+          "5.3%",
+          "1.7%",
+          "−0.45",
+          "5.5%"
+        ],
+        [
+          "CVN",
+          "40.5 J",
+          "−0.09",
+          "29.4%",
+          "42.8 J",
+          "−0.09",
+          "28.0%"
+        ],
+        [
+          "UTS",
+          "37.6 MPa",
+          "−0.12",
+          "8.4%",
+          "23.3 MPa",
+          "−0.14",
+          "5.1%"
+        ],
+        [
+          "UYS",
+          "24.8 MPa",
+          "0.08",
+          "8.2%",
+          "26.0 MPa",
+          "0.06",
+          "8.5%"
+        ],
+        [
+          "YS",
+          "24.2 MPa",
+          "0.02",
+          "8.3%",
+          "24.9 MPa",
+          "−0.01",
+          "8.5%"
+        ]
+      ],
+      "header_groups": [
+        {
+          "label": "Multi-Property",
+          "start_col": 2,
+          "end_col": 4
+        },
+        {
+          "label": "Single-Property",
+          "start_col": 5,
+          "end_col": 7
+        }
+      ],
+      "table_alignment_status": "resolved",
+      "row_provenance": [
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 7
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 7
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 7
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 7
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 7
+          }
+        ]
+      ],
+      "tbody_alignment_status": "resolved"
+    }
+  ]
+}

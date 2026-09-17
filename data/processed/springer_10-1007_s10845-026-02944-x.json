@@ -1,0 +1,2724 @@
+{
+  "doi": "10.1007/s10845-026-02944-x",
+  "title": "Deep learning method for wear assessment and regeneration support in gear hobbing tools",
+  "abstract": "Abstract Efficient monitoring and regeneration of cutting tools are essential for maintaining product quality and process continuity in modern manufacturing environments. Consistent and robust assessment of tool wear remains a practical challenge, particularly when evaluations rely heavily on expert interpretation of visual data. This study presents a vision-based inspection framework for the evaluation of gear hob cutters that integrates defect detection, wear segmentation, and dimensional wear quantification within a unified deep learning pipeline. The system combines a lightweight Ghost Slim U-Net architecture with a compound loss function and is designed for operation within a controlled industrial inspection setup. When evaluated on an expert-annotated dataset acquired from an industrial inspection station, the framework achieved an average  F 1 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$F_{1}$$\\end{document} -score of  0.886 ± 0.004 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$0.886\\pm 0.004$$\\end{document}  for wear segmentation. Concurrently, dimensional wear estimation yielded a mean absolute error of  4.05 ± 0.23 μ m \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$4.05\\pm 0.23\\mu m$$\\end{document} . Additional experiments conducted under controlled perturbations of illumination, focus blur, and surface contamination provided a comparative assessment of robustness under non-ideal imaging conditions. The obtained results suggest that the proposed framework may serve as an operator-assistance tool for semi-automated inspection, supporting more consistent wear assessment while retaining expert oversight in regeneration decisions.",
+  "journal": "Journal of Intelligent Manufacturing",
+  "year": "2026",
+  "sections": [
+    {
+      "heading": "Introduction",
+      "paragraphs": [
+        "Cutting tools are indispensable components in machining and manufacturing, as they directly determine surface quality, dimensional accuracy, and overall process efficiency. Among them,  gear hob cutters  play a key role in the gear manufacturing industry, where gears are formed through a continuous generating process known as gear hobbing. Due to their complex helical geometry, tight tolerances, and the use of advanced tool materials, gear hobs are among the most sophisticated and costly cutting tools in production engineering (Choudhury & El-Baradie,  6 ; Hodgyai et al.,  10 ; Watson,  38 ). Consequently, extending their operational lifespan is both an economic and technological necessity (Munaro et al.,  22 ).",
+        "During machining, cutting tools are subjected to continuous mechanical and thermal loads that gradually degrade their cutting edges and functional surfaces. This phenomenon, referred to as  tool wear , arises primarily from abrasive, diffusion, oxidation, and fatigue mechanisms acting at the tool–workpiece interface. These wear processes progressively alter the cutting geometry and material integrity, leading to deteriorated surface finish, reduced dimensional accuracy, and loss of process efficiency (Cheng et al.,  4 ; Zhou et al.,  40 ).",
+        "For this reason, cutting tools undergo regeneration processes-such as re-sharpening, re-coating, and re-grinding-which enable multiple reuses of the same tool body. These procedures effectively lower production costs, reduce material waste, and promote sustainable manufacturing practices (Koshy et al.,  17 ; Shaw,  31 ). From an industrial perspective, efficient tool regeneration is a critical factor in cost optimisation and production reliability, directly linking tool condition monitoring with process sustainability and overall manufacturing competitiveness (Mohamed et al.,  21 ). In this context, an accurate and reliable evaluation of tool wear prior to regeneration is essential to ensure restoration quality and to maximise the service life of cutting tools. This evaluation can be performed using either direct or indirect methods.",
+        "Indirect methods enable the estimation of cutting tool wear through the analysis of process related signals such as cutting forces, vibrations, acoustic emissions, temperature, or spindle power. A wide range of studies have explored these approaches, including research on acoustic emission and vibration analysis (Bhuiyan et al.,  2 ; Snr,  32 ; Teti et al.,  35 ), power consumption monitoring in machine tools (Jemielniak,  13 ), infrared thermography (Saatçı et al.,  28 ), and cutting force measurement (Jáuregui et al.,  12 ; Jemielniak & Arrazola,  14 ). The primary advantages of such methods include their non-intrusive nature and the possibility of seamless integration with machine tools, enabling real-time process supervision. However, their main drawbacks lie in limited flexibility-each cutting condition typically requires separate calibration, and signal interpretation strongly depends on the workpiece material, lubrication state, and cutting environment-as well as relatively low robustness to process disturbances.",
+        "Direct methods rely on visual or microscopic examination of tool wear regions, such as the flank, rake, and cutting edge surfaces. Common approaches include employing optical instruments such as toolmaker’s microscopes and workshop magnifiers, which provide sufficient resolution for evaluating wear (Čerče et al.,  3 ). More advanced techniques are also used, including dedicated CCD camera systems (Loizou et al.,  19 ; Peng et al.,  23 ), Focus-Variation microscopy, scanning electron microscopy (Liu et al.,  18 ; Vučina et al.,  37 ), or 3D optical scanners (Valigi et al.,  36 ). These methods provide very high precision in both classification and dimensional quantification of worn areas, while simultaneously capturing detailed information about surface morphology and topography. However, these approaches remain largely manual and exhibit limited inspection throughput, which makes a complete evaluation of the cutting tool a highly time-consuming process.",
+        "Given the rapid advancement of machine learning and computer vision technologies, their integration with industrial inspection systems has attracted considerable research interest. In particular, deep learning methods have been successfully applied to defect detection, fault diagnosis, and wear assessment tasks, often outperforming traditional rule-based image processing approaches in terms of robustness and adaptability.",
+        "For semantic segmentation problems related to tool condition monitoring, many recent solutions are based on encoder–decoder architectures derived from U-Net (Gao et al.,  8 ; Schlager et al.,  29 ; Schlegel et al.,  30 ). Such approaches have demonstrated strong performance in identifying wear-related regions and other manufacturing defects, with reported IoU values exceeding 0.9 in controlled application scenarios. Recent studies have also explored attention mechanisms, feature-fusion strategies, and lightweight network designs to improve performance under limited data availability and computational constraints (Sun et al.,  33 ; Tao et al.,  34 ).",
+        "For the specific case of gear cutting tools, Kamratowski et al. recently presented a vision-based framework for wear detection and quantification aimed at supporting tool regeneration decisions (Kamratowski et al.,  16 ). By comparing conventional image-processing techniques with a deep learning segmentation model based on a U-Net architecture with an EfficientNet backbone, the authors demonstrated accurate localisation and dimensional assessment of worn regions. Their results highlighted the potential of learning-based approaches for supporting industrial wear inspection while simultaneously indicating the importance of computational efficiency and robustness for practical deployment.",
+        "Nevertheless, the study also identified several limitations, including sensitivity to variations in illumination and surface reflections, which may adversely affect segmentation reliability under industrial conditions. In addition, the relatively high computational complexity of the proposed architecture highlights the need for more lightweight and computationally efficient solutions suitable for large-scale deployment. It is also worth noting that although the presented vision-based method could be readily integrated with image acquisition systems, it was not embedded within a broader, end-to-end automated tool inspection framework. This observation indicates a gap remaining in the development of integrated inspection systems that combine acquisition, analysis, and decision support for practical industrial use.",
+        "In summary, the authors identify a clear need for a dedicated, automated inspection system designed specifically for the evaluation of gear hobbing tools. Such a solution should form part of a broader framework for tool condition monitoring and regeneration planning, enabling seamless integration with industrial maintenance workflows. To be successful in production environments, the applied machine vision and machine learning methods must demonstrate high robustness to variable environmental conditions, such as illumination, focus, or surface contamination, ensuring consistent performance under real-world industrial settings (Marciniak et al.,  20 ; Rolih et al.,  26 ). Furthermore, the system should exhibit low computational complexity, ensuring fast and reliable operation on standard hardware (Chen et al.,  5 ).",
+        "In response, the authors present a vision-based inspection system for the evaluation of gear hob cutters, designed as an operator-assistance tool to support wear estimation and regeneration decision-making. The key highlights of the study are as follows: enhanced wear segmentation stability and spatial consistency through the formulation of a compound loss function integrating Binary Cross Entropy (BCE), Dice–Sørensen, Focal Tversky, Isolation Penalty, and Total Variation terms, perturbation analysis under simulated variations (illumination, focus, and contamination), providing an initial assessment of framework resilience against environmental acquisition variances within adopted operational ranges, a multi-stage vision pipeline coupling a YOLO12-based defect detector with a custom lightweight segmentation architecture (Ghost Slim U-Net), integration of automated image acquisition, defect detection, wear segmentation, and dimensional wear quantification within a unified inspection framework. scan-level data aggregation with visualisation-driven operator support to streamline wear tracking and assist consistent tool regeneration decisions."
+      ]
+    },
+    {
+      "heading": "Materials and methods",
+      "paragraphs": []
+    },
+    {
+      "heading": "Problem definition",
+      "paragraphs": [
+        "Cutting tools are fundamental components in machining operations, as they directly engage with the workpiece to remove material through shear deformation. However, during operation, they progressively deteriorate due to friction, elevated temperature, and cyclic mechanical stresses. This phenomenon-known as  tool wear -manifests in several characteristic forms, including flank wear, crater wear, notch wear, and adhesion or diffusion effects, each influencing cutting performance differently (Cheng et al.,  4 ; Colantonio et al.,  7 ). Progressive wear leads to a deterioration of surface finish, dimensional accuracy, and overall machining efficiency.",
+        "The present study focuses on a specific class of cutting tools -  gear hob cutters . In industrial practice, these tools undergo periodic  regeneration  to restore their cutting capability. The simplest and most common regeneration method involves the removal of material from the front (rake) face of the cutting tooth-commonly referred to as  re-sharpening from the tooth face . This process effectively re-establishes the cutting edge geometry but requires precise determination of the material allowance to be removed (known as the  stock removal allowance ). Grinding is performed in successive vertical rows (i.e., along the tool axis), which means that the wear for each row must first be estimated. The final regeneration allowance is determined by the maximum wear observed among all rows. It is not feasible to apply different allowances for individual rows, as the grinding process must preserve geometric uniformity and axial alignment across the entire tool profile (Hodgyai et al.,  10 ).",
+        "Wear defects can be categorised not only by their visual morphology but also by their practical impact on the regeneration process. Some forms-such as uniform flank wear-are predictable and allow straightforward correction. Others, such as notch wear or edge chipping, are irregular and may compromise tool integrity, while minor adhesion or surface contamination generally do not affect machining performance but can hinder defect detection (Astakhov,  1 ). Given this variability, accurate and repeatable wear estimation is essential. Manual inspection, though common, is time-consuming, subjective, and prone to inconsistency, particularly when dealing with fine or subtle wear patterns. In contrast, an intelligent, vision-based system leveraging deep learning can automatically assess wear distribution, detect anomalies, and reduce gross human errors in measurement or judgment. Such a system can support operators by providing objective, quantitative input for regeneration decisions-specifically, determining the appropriate stock removal allowance.",
+        "Consequently, there exists a strong need for an  operator-assisted ,  intuitive , and  computationally efficient  wear estimation system that seamlessly integrates into the industrial workflow. For gear hob cutters, such a solution enables rapid and reliable determination of wear and regeneration parameters, enhancing precision, efficiency, and decision confidence while minimising the risk of critical misestimations."
+      ]
+    },
+    {
+      "heading": "Defect catalogue",
+      "paragraphs": [
+        "Building upon the need for reliable and automated assessment of tool condition, a dedicated catalogue of surface anomalies was developed to support systematic analysis and model training. Each anomaly type was characterised in terms of its visual appearance, repeatability, and frequency of occurrence throughout the tool’s operational lifecycle. The resulting catalogue serves both as a reference for the operator and as a foundation for supervised learning and quantitative evaluation of wear patterns.",
+        "In total, four primary categories of surface anomalies were identified: Flank wear:  the most common wear type, characterised by predictable and repeatable depth, occurring exclusively on the flank face. Notch wear:  material loss caused by brittle fracture at the cutting edge or tooth sides, exhibiting irregular geometry and unpredictable depth. Built-up edge:  adhesion of machining material fragments to the cutting edge, extending beyond the nominal tooth perimeter. Although easily removed during sharpening, such deposits may obscure other defects. Contamination:  foreign material deposited on the tool surface. The identified anomalies were subsequently analysed with respect to their structural characteristics, regeneration relevance, and mutual similarity. Large instances of  notch wear , such as complete tooth breakouts, were excluded from the dataset, as they manifest as missing surface regions and cannot be reliably represented in image-based analysis.",
+        "Considering established industrial practice, and acknowledging that the boundary between edge wear and minor forms of surface degradation is often ambiguous and requires expert interpretation in a given process context, the defect classes  flank wear  and minor  notch wear  located at the cutting edge were merged into a single class denoted as  edge wear . The size and morphology of this consolidated class have a direct and dominant influence on regeneration decisions, as the entire affected region must be removed during the re-sharpening process.",
+        "As a result, three final defect classes were defined for the purposes of this study:  edge wear ,  built-up , and  contamination ."
+      ]
+    },
+    {
+      "heading": "Automatic data acquisition",
+      "paragraphs": [
+        "The studies presented in this work were inspired by real industrial needs and conducted with a focus on practical applicability. Consequently, the image acquisition system was developed using a heavily modified VENTURION 600 V420E measurement system (ZOLLER GmbH & Co. KG, Germany). The existing kinematic configuration of the device, consisting of motorised  X  and  Z  linear axes and rotational  C -axis, enabled precise and rapid positioning of the tool as well as a fully automated scanning process.",
+        "The original sensor configuration was dismantled and replaced with a custom-designed vision system comprising a monochromatic Basler ACE U ACA4024-8GM camera (Basler AG, Germany), featuring a 1/1.7\" sensor with a resolution of 4024  × \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\times $$\\end{document}  3036 pixels, and a TC23009 telecentric lens (Opto Engineering, Italy). This configuration provided a field of view of approximately 7.5  × \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\times $$\\end{document}  5.6 mm, which, when positioned normal to the device’s  C -axis, enabled direct observation of the entire tool tooth (Fig.  1 ). This enabled the derivation of a spatial calibration factor corresponding to 1 pixel = 1.84  μ \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\mu $$\\end{document} m. Fig. 1 Machine vision image acquisition system:  A  - camera,  B  - telecentric lens,  D  - gear hob,  E  - imaging system field of view,  F  - dark-field working illuminators,  G  - bright-field preview illuminator,  H  - optical filter blocking the visible spectrum,  J  - real-world implementation of the inspection system,  X ,  Z  - linear positioning axes,  C  - rotary axis Fig. 2 Example images from the prepared dataset. Red polygons indicate annotated  edge wear  regions, while green and blue bounding boxes denote  built-up  material and surface  contamination , respectively",
+        "To minimise the influence of the industrial environment on image acquisition, as well as the impact of the acquisition process on the surroundings, the vision system employed illumination outside the visible spectrum. A long-pass optical filter with a 750 nm cutoff was mounted on the lens, effectively blocking the visible spectrum and transmitting infrared wavelengths. Illumination was provided by two infrared LEDs (centre wavelength 850 nm) installed at a large angle relative to the camera’s optical axis in a dark-field configuration. This arrangement enabled imaging of defects on the surfaces of the tool teeth. The lighting system was designed symmetrically, allowing observation of teeth orientated both to the left and to the right. For visual preview and preparatory operations prior to scanning, additional bright-field illumination using identical light sources was employed.",
+        "The station was equipped with a PC and monitor, allowing the operator not only to initiate and supervise the scanning procedure, but also to review and edit the acquired results. Although the image acquisition process itself is fully automated, the operator is required to provide basic information about the inspected tool, either manually or by following the steps of an interactive wizard, and to perform system referencing using the first complete tooth located at the top of the tool. The required tool parameters include: Number of rows (number of teeth along the circumference of the tool), Number of sections (number of teeth along the tool axis), Pitch diameter, Tool height, Lead direction, Module. Based on these parameters, the system determines the positions of subsequent teeth and automatically executes the image acquisition sequence.",
+        "At the beginning of the procedure, the camera is positioned at a suitable distance along the  X -axis to ensure proper focus. Subsequently, by means of vertical movements along the  Z -axis and rotational movements of the tool around the  C -axis, the system sequentially positions the camera relative to individual teeth and acquires the corresponding images.",
+        "The acquired images, together with a mapping file containing their spatial coordinates in the machine coordinate system, are stored on disk for further processing in subsequent stages of the pipeline."
+      ]
+    },
+    {
+      "heading": "Prepared dataset",
+      "paragraphs": [
+        "The dataset was constructed from 50 scans of cutting tools, encompassing both upper and lower relief surfaces. The scans were acquired from 21 distinct tool instances under varying tool conditions, including immediately after machining, after coating removal, and after regrinding. In accordance with the industrial practice of the expert partner, the study was limited to a selected group of  gear hob cutters  characterised by similar geometry and comparable wear behaviour resulting from their operating conditions. Consequently, the presented dataset was regarded as adequately representative for the intended validation objectives, encompassing the key operating conditions and variability relevant to the considered industrial context. The experimental design was therefore considered suitable for assessing the proposed methodology within its defined application scope.",
+        "Edge wear regions and additional surface anomalies, such as built-up edge formations and surface contamination, were annotated using polygonal masks. The final dataset consisted of 2500 annotated images containing: 2487 instances of  edge wear , 563 instances of  built-up , 579 instances of  contamination . Representative examples from the dataset are presented in Fig.  2 .",
+        "The analysis of polygon shape and spatial distribution, illustrated in Fig.  3 , reveals clear differences between the edge wear annotations and the remaining defect classes. Edge wear polygons are characteristically long and narrow, forming slender structures that are consistently localised within a well-defined image region corresponding to the cutting edge of the tooth scan. In contrast, surface artefacts such as contamination and built-up material exhibit more irregular geometries. Built-up material tends to cluster in close proximity to the edge wear regions, particularly on their left-hand side corresponding to the relief face of the tool, whereas contamination instances are predominantly distributed across the remaining tooth surface to the right of the cutting edge. Fig. 3 Analysis of defect size and spatial distribution within the image. All reported dimensions are normalised with respect to the image size. The red dashed line indicates the approximate location of the cutting edge",
+        "A 5-fold cross-validation protocol was employed for all experiments conducted in this study. The prepared dataset was partitioned into five equal subsets at the scan level rather than the image level. These subsets were subsequently used to train and validate five independent models. Such a strategy ensured that images originating from the same tool instance and wear condition were not simultaneously present in the training, validation, and test sets, thereby reducing the risk of data leakage and overly optimistic performance estimates caused by correlated samples. The exact distribution of defect class instances across the prepared cross-validation folds is presented in Table  1 . All results reported in the following sections are presented as the arithmetic mean and standard deviation across the evaluated folds. Table 1 Distribution of defect class instances across the cross-validation folds in  train ,  val  and  test  subsets Fold Edge wear Built-up Contamination Train 1 1649 364 382 Val 1 554 129 113 Test 1 554 128 153 Train 2 1620 372 383 Val 2 550 108 132 Test 2 549 134 112 Train 3 1651 356 393 Val 3 542 151 100 Test 3 549 106 127 Train 4 1627 369 385 Val 4 539 107 141 Test 4 559 156 104 Train 5 1650 384 357 Val 4 539 116 138 Test 4 548 104 140"
+      ]
+    },
+    {
+      "heading": "Proposed processing pipeline",
+      "paragraphs": [
+        "The processing of data acquired during tool scanning is divided into three main steps, as illustrated in Fig.  4 : (1)  image processing , in which each input image is analysed to detect surface anomalies, resulting in bounding boxes for contamination and built-up regions, as well as polygon-based segmentation of  edge wear ; (2)  defect analysis and measurement , where dimensional wear measurements are performed individually for each tooth based on the detected  edge wear  regions; and (3)  results post-processing and visualisation , in which scan-level filtering, aggregation, and visualisation of the obtained results are carried out. At each stage, data are exchanged with the database, as the workflow utilises not only the acquired images but also operator-provided information describing the inspected tool. Fig. 4 Overview of the proposed scan data processing and visualisation pipeline for supporting tool regeneration decisions"
+      ]
+    },
+    {
+      "heading": "Image processing",
+      "paragraphs": [
+        "In the first step of the proposed pipeline, each image is processed individually. Given the characteristics of the input images described in Subsect. “ Prepared dataset ” and the need for precise determination of wear values, the authors proposed decomposing the image processing step and employing two deep learning models (Fig.  5 ).",
+        "The raw input image acquired from the scanning machine undergoes initial pre-processing consisting of alpha correction with a factor of 1.5 to enhance image contrast, followed by gamma correction with a factor of 1.75 to normalise illumination. After this step, the image is vertically cropped; the cropping value is determined by the pitch of the cutting tool and remains constant within a single scan. Subsequently, the tooth surface image is downscaled to the target resolution and passed to the first detector, whose task is to identify and locate both  edge wear  defects and other surface defects ( contaminations  and  built-ups ). Fig. 5 Diagram of of the proposed two-stage image processing method",
+        "The bounding boxes of the detected  edge wear  defects are filtered, and the largest one is used to define the Region of Interest (ROI) for the semantic segmentation stage, while the remaining detections are stored in the database. The ROI is extracted from the image at its original resolution and then rescaled to match the input size of the segmentation model. The resulting segmentation mask is subjected to contour extraction and filtering, and the final polygon is stored in the database. The entire image analysis procedure is executed in a loop and repeated for all images acquired during the scanning of the tool."
+      ]
+    },
+    {
+      "heading": "Defect analysis and measurement",
+      "paragraphs": [
+        "In the subsequent processing step, dimensional quantification of  edge wear  is performed individually for each tooth. As an initial stage, the inclination angle of the cutting edge is estimated. For each tooth, the detected  edge wear  polygon is loaded and a line is fitted to the segmented region using the  fitLine  function from the OpenCV library. The obtained line parameters are subsequently used to estimate the cutting-edge inclination angle, as defined in Eqs. ( 1 ) and ( 2 ): 1 φ raw = arctan v x v y , if | v y | > 10 - 6 , 90 ∘ , otherwise , \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\begin{aligned} \\varphi _{raw} = {\\left\\{ \\begin{array}{ll} \\arctan \\!\\left( \\dfrac{v_x}{v_y}\\right) , & \\text {if } |v_y| > 10^{-6}, \\\\ 90^{\\circ }, & \\text {otherwise}, \\end{array}\\right. } \\end{aligned}$$\\end{document} 2 φ = φ raw - 90 ∘ , if φ raw > 0 ∘ , 90 ∘ + φ raw , otherwise . \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\begin{aligned} \\varphi = {\\left\\{ \\begin{array}{ll} \\varphi _{raw} - 90^{\\circ }, & \\text {if } \\varphi _{raw} > 0^{\\circ }, \\\\ 90^{\\circ } + \\varphi _{raw}, & \\text {otherwise}. \\end{array}\\right. } \\end{aligned}$$\\end{document} where: v x \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$v_x$$\\end{document}  and  v y \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$v_y$$\\end{document}  are the horizontal and vertical vector components, respectively, φ \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\varphi $$\\end{document}  is the computed angle of the cutting edge (in degrees). The values obtained for individual teeth are subsequently post-processed to enhance robustness against local segmentation errors and atypical detections. Outlier values are rejected according to the criterion  | v - v mean | > 2 · v std \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$|v - v_{\\text {mean}}| > 2 \\cdot v_{\\text {std}}$$\\end{document} , after which the median of the remaining measurements is calculated to obtain the final cutting-edge inclination angle ( φ \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\varphi $$\\end{document} ).",
+        "Subsequently, dimensional measurements are performed for each detected contour. First, the contour is rotated by the angle  φ \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\varphi $$\\end{document}  estimated in the previous step. Next, an approximate cutting-edge outline is determined by fitting a 4th-degree Chebyshev polynomial to the left boundary of the  edge wear  mask. The distance between the fitted outline and the left boundary of the mask is then calculated along the contour profile; negative values are replaced by the fitted outline itself. This procedure yields a wear intensity profile along the segmented  edge wear  region (Fig.  6 ). The numerical wear value is computed as the 95th percentile of the predicted wear intensity values within the segmented region. This percentile-based measurement strategy, derived from the approximated cutting-edge outline, reduces the influence of small surface contaminants or minor artefacts that may be falsely classified as  edge wear , thereby improving the robustness of the wear estimation. The procedure used to determine the optimal percentile threshold is described in Appendix E. Fig. 6 Visualisation of the processing stages in the  edge wear  measurement procedure:  A  ROI with the detected  edge wear  polygon,  B  rotated polygon with the approximated cutting edge marked in blue, and  C  extracted wear intensity profile together with the resulting  edge wear  value (red)"
+      ]
+    },
+    {
+      "heading": "Results post-processing and visualisation",
+      "paragraphs": [
+        "In the final step of the processing pipeline, the collected data for each tooth of the tool are visualised in the form of wear maps, either as a 3D representation or as a 2D planar visualisation (unfolded view of the rotary tool). The operator is provided with the capability to analyse the data and, with the support of the information system, to correct or disregard potential inconsistencies. This functionality is available at two levels: Single-tooth level:  inspection of measurement data in textual form and visualisation on the scan-acquired image; the operator may choose to disregard a measurement or manually overwrite it. Scan level:  inspection of 2D/3D wear maps and execution of automated filtering procedures, such as discarding  X % \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$X\\%$$\\end{document}  of images with the lowest confidence score, excluding images corresponding to the top and bottom regions of the tool (i.e., incomplete teeth), or removing outliers (using the interquartile range outlier detection method). The operator may also exclude selected vertical sections of the tool. Additionally, the operator is provided with other potentially useful information, such as the detected presence of built-ups. A large number of such artefacts indicates that the tool was improperly prepared for scanning and may serve as grounds for rejecting the entire scan.",
+        "Finally, the system suggests the grinding allowance as the maximum wear value detected for the given tool. After verification and possible modification by the operator, this value, together with the remaining data obtained during the scan, is used to generate a report containing information about the tool parameters, its current condition, and the recommended reconditioning method, supplemented with a time–cost analysis."
+      ]
+    },
+    {
+      "heading": "Deep learning models",
+      "paragraphs": [
+        "As the primary defect detector, the authors employed the YOLO12s object detection model (Jocher et al.,  15 ), based on the YOLO (You Only Look Once) architecture (Redmon et al.,  25 ), which is characterised by its compact size (9.3 million parameters) and high inference speed. The input image resolution was set to 960 px. The model hyperparameters and the data augmentation methods applied are described in Appendix A.",
+        "As the  edge wear  segmentation model, the authors proposed a modified U-Net architecture (Ronneberger et al.,  27 ), referred to as the  Ghost Slim U-Net  (Fig.  7 ). The proposed architecture integrates Ghost Convolutions, a reduced number of channels (8 instead of the standard 64), and an additional filtering layer. Ghost Convolution blocks replace standard 2D convolutions by first generating a compact set of intrinsic feature maps via a primary convolution, followed by lightweight depthwise operations that produce complementary “ghost” feature responses (Han et al.,  9 ). Although these lightweight operations effectively reduce model complexity, their dependence on a small number of intrinsic filters and linear feature synthesis can limit feature diversity and increase sensitivity to shifts in input distributions. To mitigate this, standard convolution blocks were retained in the first two encoder stages, increasing representational redundancy and frequency coverage at the input level, thereby ensuring that a broader set of stable features is captured and propagated through deeper layers. A new bottleneck module was designed to improves the stability of learned representations while preserving robustness to distribution shifts and maintaining a low computational overhead. The primary convolutional block is responsible for feature extraction, whereas an additional residual component based on global spatial averaging introduces a weak, channel-dependent contextual signal. This mechanism enhances the presence of informative features without altering their spatial localisation and functions as an auxiliary regularisation mechanism. Fig. 7 Diagram of developed Ghost Slim U-NET",
+        "The authors proposed a custom compound loss function tailored to the segmentation task, defined as a weighted sum of several complementary components (Eq.  3 ): 3 L combo = λ BCE L BCE + λ Dice L Dice + λ FT L FT + λ IP L IP + λ TV L TV , \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\begin{aligned} \\mathcal {L}_{\\text {combo}} = \\lambda _{\\text {BCE}} \\, \\mathcal {L}_{\\text {BCE}} + \\lambda _{\\text {Dice}} \\, \\mathcal {L}_{\\text {Dice}} + \\lambda _{\\text {FT}} \\, \\mathcal {L}_{\\text {FT}} + \\lambda _{\\text {IP}} \\, \\mathcal {L}_{\\text {IP}} + \\lambda _{\\text {TV}} \\, \\mathcal {L}_{\\text {TV}}, \\end{aligned}$$\\end{document} which represents a weighted combination of the following loss components: the pixel-wise Binary Cross-Entropy (BCE) loss ( L BCE \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\mathcal {L}_{\\text {BCE}}$$\\end{document} ), the Dice–Sørensen loss ( L Dice \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\mathcal {L}_{\\text {Dice}}$$\\end{document} ), the Focal Tversky loss ( L FT \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\mathcal {L}_{\\text {FT}}$$\\end{document} ), the Isolation Penalty ( L IP \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\mathcal {L}_{\\text {IP}}$$\\end{document} ), and the Total Variation regularisation term ( L TV \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\mathcal {L}_{\\text {TV}}$$\\end{document} ). The weighting coefficients  λ BCE , λ Dice , λ FT , λ IP \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\lambda _{\\text {BCE}}, \\lambda _{\\text {Dice}}, \\lambda _{\\text {FT}}, \\lambda _{\\text {IP}}$$\\end{document} , and  λ TV \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\lambda _{\\text {TV}}$$\\end{document}  are specified in Table  2 . A detailed description and the mathematical formulations of the individual loss components are provided in Appendix B, while the procedure used to determine the optimal loss weights is described in Appendix C. Table 2 Loss function weights used during U-Net training Loss Component Weight ( λ \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\lambda $$\\end{document} ) Binary Cross-Entropy (BCE) 0.50 Dice–Sørensen Loss (Dice) 1.25 Focal Tversky Loss (FT) 0.40 Isolation Penalty (IP) 0.15 Total Variation (TV) 0.135"
+      ]
+    },
+    {
+      "heading": "Model preparation",
+      "paragraphs": [
+        "All edge wear segmentation models in this study were trained using the hyperparameters summarised in Table  3 . For all non-YOLO architectures, custom training scripts implemented in the Python framework were employed, enabling the integration of dedicated augmentation procedures, learning rate scheduling strategies, and Automatic Mixed Precision (AMP) training. For the learning rate scheduler used in the described models, the warmup phase increased the learning rate linearly from 1/ N  (where  N  denotes the number of warmup epochs) to the initial learning rate  l r 0 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$lr_{0}$$\\end{document} . During the main training phase, the learning rate was subsequently updated according to a cosine schedule, decreasing from  l r 0 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$lr_{0}$$\\end{document}  to  l r 0 · l r f \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$lr_{0} \\cdot lr_{f}$$\\end{document} . Table 3 Training hyperparameters and augmentation methods used during edge wear segmentation models training Category Parameter U-Net based SegFormer Fast-SCNN YOLO12 Optimiser β 1 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\beta _1$$\\end{document}  (Adam) 0.900 0.900 0.900 0.900 β 2 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\beta _2$$\\end{document}  (Adam) 0.999 0.999 0.999 0.999 Weight decay 0.0001 0.0001 0.0001 0.0005 Warmup epochs 5 5 5 5 Epochs 50 20 15 40 Batch size 64 24 64 16 Scheduler Initial LR ( l r 0 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$lr_0$$\\end{document} ) 0.001 0.001 0.001 0.001 Final LR factor ( l r f \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$lr_f$$\\end{document} ) 0.1 0.1 0.1 0.01 Cosine LR scheduler True True True True Augmentations Brightness 0.50 0.50 0.50 0.75 Contrast 0.50 0.50 0.50 - Rotation (degrees) 10.0 10.0 10.0 10.0 Translation ±0.25 ±0.25 ±0.25 ±0.25 Scale ±0.25 ±0.25 ±0.25 ±0.25 Shear (degrees) 5.0 5.0 5.0 5.0 Perspective 0.05 0.05 0.05 0.000125 Flip up–down 0.50 0.50 0.50 0.50 Flip left–right 0.50 0.50 0.50 0.50 Blur kernel size 5 5 5 - Blur probability 0.25 0.25 0.25 -",
+        "For all experiments, the final model weights used for further evaluation were selected based on the minimum validation loss achieved during training. The operating points (confidence thresholds) for each  edge wear  segmentation model were determined through an analysis of the relationship between the  F 1 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$F_{1}$$\\end{document} -score and the confidence threshold on the validation dataset. This procedure enabled the selection of thresholds ensuring stable and reliable mask generation. For the defect detector, a fixed confidence threshold of 0.40 was used in all experiments."
+      ]
+    },
+    {
+      "heading": "Annotation analysis",
+      "paragraphs": [
+        "The  edge wear  annotations used in this study were created in accordance with operational guidelines provided by the industrial partner collaborating on the deployment of the inspection system. Consequently, the definition of edge wear reflects established industrial practice applied during tool qualification for regeneration rather than a formal metrological standard.",
+        "To assess annotation consistency, an additional experiment involving two independent annotators was conducted on a randomly selected subset of 100 images. For each corresponding pair of segmentation masks, the Jaccard index (IoU) was calculated. Representative examples are shown in Fig.  8 . Fig. 8 Comparison of segmentation masks independently produced by two expert annotators, illustrating annotation variability",
+        "The obtained mean inter-annotator agreement reached  IoU = 0.814 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\textrm{IoU}=0.814$$\\end{document} , indicating substantial consistency while also confirming the inherent ambiguity of precise wear boundary delineation. In practice, the transition between worn and unworn regions is often gradual and affected by operational interpretation, illumination conditions, contamination, and surface texture. Therefore, the employed masks should be regarded as expert-driven approximations of functionally relevant wear regions rather than objective physical ground truth with strictly defined boundaries.",
+        "This observation is important when interpreting the reported quantitative results. In the proposed framework, dimensional metrics such as MAE are intended as practical wear quantification indicators consistent with industrial inspection practice rather than strict metrological accuracy measures. To further contextualise these metrics, an additional wear quantification analysis was performed using the two independent annotation sets, resulting in  MAE = 4.58 μ m \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\textrm{MAE}=4.58~\\mu m$$\\end{document}  and  RMSE = 5.90 μ m \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\textrm{RMSE}=5.90~\\mu m$$\\end{document} .",
+        "These values provide an approximate reference level associated with annotation variability and operational ambiguity. Consequently, the dimensional errors reported for the evaluated segmentation models should be interpreted relative to this practical consistency level."
+      ]
+    },
+    {
+      "heading": "Experimental setup and system validation",
+      "paragraphs": [
+        "To evaluate the proposed image processing method, a series of experiments were designed to validate its individual components: the defect detector, the  edge wear  segmentator, and the complete system.",
+        "For the surface anomaly detection task (defect detector), the evaluation was performed at the image level, reflecting a presence/absence inspection commonly applied in industrial quality control. The detection of built-up material and surface contamination was formulated as independent binary classification tasks for each defect class. System performance was assessed using precision, recall, and  F 1 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$F_{1}$$\\end{document} -score metrics.",
+        "In contrast to the image-level evaluation applied for surface anomaly detection, the edge wear segmentation task (Edge Wear Segmentator) requires accurate localisation and delineation of worn regions at the pixel level. Therefore, a custom pixel-wise evaluation procedure was employed. For each image, precision, recall, and  F 1 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$F_{1}$$\\end{document} -score were computed based on pixel-wise correspondence between predicted and annotated wear regions, and subsequently averaged over the entire dataset. The definitions of the employed metrics are provided below (Eqs.  4 – 6 ). 4 Precision = TP T P + F P , \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\begin{aligned} \\text {Precision} = \\frac{TP}{TP + FP}, \\end{aligned}$$\\end{document} 5 Recall = TP T P + F N , \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\begin{aligned} \\text {Recall} = \\frac{TP}{TP + FN}, \\end{aligned}$$\\end{document} 6 F 1 = 2 · Precision · Recall Precision + Recall , \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\begin{aligned} F_{1} = 2 \\cdot \\frac{\\text {Precision} \\cdot \\text {Recall}}{\\text {Precision} + \\text {Recall}}, \\end{aligned}$$\\end{document} where  TP ,  FP , and  FN  denote the number of true positive, false positive, and false negative pixels, respectively.",
+        "The Jaccard index (Intersection over Union, IoU) was also used, as defined below (Eq.  7 ): 7 IoU = | y true ∩ y pred | + ε | y true | + | y pred | - | y true ∩ y pred | + ε , \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\begin{aligned} \\text {IoU} = \\frac{|\\text {y}_{\\text {true}} \\cap \\text {y}_{\\text {pred}}| + \\varepsilon }{|\\text {y}_{\\text {true}}| + |\\text {y}_{\\text {pred}}| - |\\text {y}_{\\text {true}} \\cap \\text {y}_{\\text {pred}}| + \\varepsilon }, \\end{aligned}$$\\end{document} where: y true \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$y_{\\text {true}}$$\\end{document}  - ground truth mask, y pred \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$y_{\\text {pred}}$$\\end{document}  - predicted mask, ε \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\varepsilon $$\\end{document}  - small constant to avoid division by zero. This approach enables the evaluation of  edge wear  segmentation at the pixel level, which is essential for subsequent quantitative wear estimation and for supporting the selection of an appropriate tool regeneration strategy.",
+        "Mean Absolute Error (MAE) and Root Mean Square Error (RMSE) were used as metrics of wear quantification error. These metrics directly assess the accuracy of the estimated edge wear values and therefore reflect the performance of the complete processing pipeline, encompassing segmentation, post-processing, and final wear quantification. As such, they provide a comprehensive evaluation of the final output of the system, namely the edge wear measurement used to support regeneration decisions.",
+        "The experimentation, including the training of the machine learning models as well as the validation of the system, was carried out locally on a workstation equipped with an Intel Xeon Silver 4110 CPU (Intel Corporation, USA), 64GB RAM and an Nvidia RTX 4080 graphics card with 16GB VRAM (NVIDIA Corporation, USA)."
+      ]
+    },
+    {
+      "heading": "Ablation study of the compound loss components",
+      "paragraphs": [
+        "For the proposed  edge wear  segmentation task, an ablation study was conducted to evaluate the contribution of individual components of the compound loss function (Table  2 ). The analysis was performed using pixel-wise metrics, including the Jaccard index and the  F 1 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$F_{1}$$\\end{document} -score, in order to quantify the influence of each loss term on segmentation performance. For comparison, a model trained using the full compound loss was included, as well as a baseline trained with a standard BCE loss. All experiments were conducted using the proposed  Ghost Slim U-Net  architecture."
+      ]
+    },
+    {
+      "heading": "Evaluation of the Ghost Slim U-Net architecture",
+      "paragraphs": [
+        "To evaluate the proposed architecture, it was compared against selected efficient image segmentation models, namely: Vanilla U-Net, SegFormer-B0 (Xie et al.,  39 ), Fast-SCNN (Poudel et al.,  24 ), YOLO12n-seg instance segmentation model (nano variant). All non-YOLO models were trained using the proposed compound loss function. This experimental design enables a direct comparison between the proposed method, classical U-Net-based approaches, and lightweight segmentation architectures.",
+        "For the evaluation, the  F 1 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$F_{1}$$\\end{document} -score and Jaccard index were computed, together with the average inference time. The reported inference time corresponds to the full processing pipeline, including image pre-processing and tensor conversion."
+      ]
+    },
+    {
+      "heading": "End-to-end system evaluation",
+      "paragraphs": [
+        "In the case of the overall system evaluation, validation was performed for the complete processing pipeline, from ROI extraction to final wear quantification. This experiment enabled the assessment not only of individual module performance, but also of their interoperability, robustness to error propagation, and overall system reliability under realistic operating conditions. The experiment was conducted using the  Ghost Slim U-Net  model trained with the compound loss function."
+      ]
+    },
+    {
+      "heading": "System robustness analysis",
+      "paragraphs": [
+        "To evaluate the robustness of the proposed system, additional experiments were conducted under controlled variations in image acquisition conditions. Three types of perturbations were considered: (i) Gaussian blur to simulate defocus, (ii) gamma correction to model illumination changes, and (iii) synthetic contamination and built-up regions (Fig.  9 ). Fig. 9 Examples of introduced synthetic perturbations at different intensity levels (images cropped for visualisation purposes)",
+        "The robustness study evaluates the stability of  edge wear  segmentation under these controlled disturbances, which are commonly used proxies for variability in industrial vision systems. It should be emphasised that these synthetic perturbations do not fully represent all sources of variability in real production environments, but provide a reproducible framework for comparative analysis (Huang et al.,  11 ).",
+        "Performance degradation was quantified using the MAE of wear quantification as the primary metric, while the area under the performance curve (AUC) was computed to summarise overall stability under increasing disturbance levels. This aggregated measure enables a relative comparison of methods within a controlled evaluation setting."
+      ]
+    },
+    {
+      "heading": "Results and discussion",
+      "paragraphs": []
+    },
+    {
+      "heading": "Ablation study of the edge wear segmentator",
+      "paragraphs": [
+        "The ablation study, the results of which are presented in Table  4 , demonstrates that the proposed compound loss achieves the highest segmentation performance, obtaining an  F 1 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$F_{1}$$\\end{document} -score of 0.936 and a Jaccard index of 0.881. Removing any of the constituent terms results in a performance decrease, indicating that the individual components provide complementary supervision during training.",
+        "Among all loss components, BCE has the greatest impact on the final performance, with its removal causing the largest reduction in both  F 1 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$F_{1}$$\\end{document} -score and Jaccard index. Dice loss also contributes substantially by improving region-overlap optimisation. Focal Tversky and Total Variation losses provide smaller but consistent improvements, suggesting benefits in handling difficult samples and promoting spatial smoothness. The Isolation Penalty has only a limited effect on the quantitative metrics considered in this study, although it may influence structural properties that are not fully captured by  F 1 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$F_{1}$$\\end{document} -score and Jaccard index.",
+        "Overall, the results indicate that the performance gain arises from the combined action of multiple complementary objectives rather than from any single loss component alone. While further improvements may potentially be achieved through more extensive hyperparameter optimisation of the loss weights, such an approach would substantially increase both computational cost and development time. Table 4 Influence of individual compound loss components on the segmentation performance of the proposed  Ghost Slim U-Net  model, evaluated using the  F 1 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$F_{1}$$\\end{document} -score and Jaccard index (IoU) Loss function F 1 [ - ] \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$F_{1}~[-]$$\\end{document} IoU [ - ] \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\text {IoU}~[-]$$\\end{document} Pure-BSE loss 0.922 ± 0.004 0.857 ± 0.006 Proposed compound loss 0.936 ± 0.002 0.881 ± 0.004 Compound loss w/o BCE 0.932 ± 0.003 0.874 ± 0.005 Compound loss w/o DICE 0.934 ± 0.003 0.878 ± 0.005 Compound loss w/o Focal Tversky 0.935 ± 0.002 0.879 ± 0.003 Compound loss w/o Isolation Penalty 0.936 ± 0.002 0.880 ± 0.003 Compound loss w/o Total Variation 0.935 ± 0.002 0.879 ± 0.003",
+        "The comparative evaluation (Table  5 ) shows that the proposed Ghost Slim U-Net achieves competitive segmentation performance while maintaining substantially lower computational requirements than the evaluated reference architectures. The model obtained an  F 1 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$F_{1}$$\\end{document} -score of 0.936 and a Jaccard index of 0.881, yielding performance comparable to the considerably larger Vanilla U-Net ( F 1 = 0.937 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$F_{1}=0.937$$\\end{document} , Jaccard  = 0.883 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$=0.883$$\\end{document} ). This was achieved using only 0.28M parameters and 4.62 GFLOPs, corresponding to approximately 123x fewer parameters and 113x lower computational complexity than the baseline U-Net.",
+        "In addition, Ghost Slim U-Net achieved the highest inference throughput (111.6 images/s) among the evaluated segmentation models. Compared with other lightweight architectures, including YOLO12n, FastSCNN, and SegFormer-B0, the proposed model provided comparable or better segmentation accuracy while maintaining the smallest model size and the highest processing speed. These results suggest that Ghost Slim U-Net offers an attractive accuracy-efficiency trade-off for vision-based tool wear assessment, particularly in applications where computational resources are limited. Table 5 Comparison of the proposed method with selected efficient image segmentation models in terms of  F 1 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$F_{1}$$\\end{document} -score and Jaccard index (IoU), images per second (Images/s), number of parameters and Giga-floating point operations per second (GLFOPs) Model name F 1 [ - ] \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$F_{1}~[-]$$\\end{document} IoU [ - ] \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\text {IoU}~[-]$$\\end{document} Images/s Params GFLOPs Ghost Slim U-Net 0.936 ± 0.002 0.881 ± 0.004 111.6 0.28M 4.62 Vanilla U-Net 0.937 ± 0.001 0.883 ± 0.002 28.9 34.52M 522.17 YOLO12n 0.922 ± 0.003 0.857 ± 0.005 35.6 2.86M 18.22 SegFormer-B0 0.907 ± 0.004 0.833 ± 0.007 54.9 7.71M 28.13 FastSCNN 0.916 ± 0.003 0.848 ± 0.005 93.5 1.14M 1.58"
+      ]
+    },
+    {
+      "heading": "System robustness analysis",
+      "paragraphs": [
+        "The results of the robustness analysis are presented in Fig.  10 . The selected models were evaluated under three types of artificially introduced anomalies: gamma modification, gaussian blur, and simulated contaminations. Fig. 10 Results of the robustness evaluation for different models in the  edge wear  segmentation and measurement task under varying acquisition conditions (e.g., illumination, focus, and surface contamination)",
+        "The robustness analysis conducted under gamma correction, blur, and synthetic contamination perturbations (Fig.  10 ) demonstrated competitive performance of the proposed  Ghost Slim U-Net  architecture. Among the evaluated lightweight segmentation networks, the model achieved the lowest overall  A U C MAE \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$AUC_{MAE}$$\\end{document}  value (15.36), indicating the highest stability across the considered perturbation scenarios. In particular, it obtained the best result under contamination perturbations (7.71) and remained competitive under gamma (16.27) and blur (22.11) distortions, ranking second only to SegFormer-B0 in these categories.",
+        "Despite being designed primarily for computational efficiency, Ghost Slim U-Net maintained stable segmentation performance across the considered perturbation scenarios. Compared with other lightweight architectures, including YOLO12n-seg and Fast-SCNN, the proposed model generally exhibited lower performance degradation under increasing disturbance levels. Fig. 11 Results of the robustness evaluation for compound and BCE loss function in the  edge wear  segmentation and measurement task under varying acquisition conditions (e.g., illumination, focus, and surface contamination",
+        "The robustness evaluation indicates that the proposed Compound Loss may provide benefits beyond improvements in nominal segmentation accuracy (Fig.  11 ). While its performance under gamma correction and blur perturbations remains comparable to the baseline BSE loss, a notable difference is observed for synthetic contamination artefacts. Specifically, the  A U C MAE \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$AUC_{MAE}$$\\end{document}  decreases from 10.68 to 7.71, corresponding to approximately 28% lower performance degradation.",
+        "This observation suggests that the additional structural constraints introduced by the Compound Loss contribute to maintaining more stable segmentation outputs in the presence of localised image disturbances. This behaviour is particularly relevant for contamination-related artefacts, including built-up regions that may partially obscure wear boundaries. Although the analysis was performed using synthetic perturbations, the results indicate improved robustness of the proposed loss formulation under the considered contamination scenarios.",
+        "It should be noted that the performed robustness analysis is based on controlled synthetic perturbations and therefore represents a comparative evaluation framework rather than a comprehensive assessment of real-world industrial variability. Furthermore, robustness to acquisition-related disturbances should not be interpreted as robustness to domain shifts arising from changes in tool geometry, coating type, or wear mechanisms. Addressing such cases would require the acquisition of representative data and subsequent model adaptation.",
+        "Nevertheless, the obtained results indicate that the proposed  Ghost Slim U-Net  architecture maintains competitive segmentation performance under the considered perturbation scenarios while preserving high computational efficiency. Similarly, the proposed Compound Loss consistently reduced performance degradation under contamination-related disturbances, suggesting improved robustness within the scope of the evaluated conditions."
+      ]
+    },
+    {
+      "heading": "End-to-end system evaluation",
+      "paragraphs": [
+        "For the detection of surface anomalies at the image level ( built-ups ,  contaminations ), the task was formulated as a binary classification problem, independently evaluated for each defect class. The detected information is treated as auxiliary feedback for the operator, providing an indication of scan quality and surface condition without directly affecting downstream dimensional wear measurements. For built-up material detection, the system achieved an  F 1 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$F_{1}$$\\end{document} -score of  0.761 ± 0.005 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$0.761\\pm 0.005$$\\end{document} , with a precision of  0.850 ± 0.005 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$0.850\\pm 0.005$$\\end{document}  and a recall of  0.690 ± 0.006 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$0.690\\pm 0.006$$\\end{document} . For the second anomaly class, an  F 1 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$F_{1}$$\\end{document} -score of  0.824 ± 0.003 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$0.824\\pm 0.003$$\\end{document}  was obtained, with a precision of  0.825 ± 0.005 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$0.825\\pm 0.005$$\\end{document}  and a recall of  0.825 ± 0.003 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$0.825\\pm 0.003$$\\end{document} .",
+        "These results suggest that image-level anomaly detection can provide useful contextual information for operator-assisted inspection, although its reliability is limited by the small spatial extent and sparsity of the considered defects. In particular, minor contaminations often occupy only a few pixels, which increases sensitivity to image resolution and annotation precision. While higher-resolution imaging or more complex detection architectures could potentially improve performance, such modifications would also increase computational cost, which is a relevant constraint in large-scale scanning workflows.",
+        "For the edge wear segmentation task, the proposed pipeline incorporating the  Ghost Slim U-Net  model achieved an  F 1 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$F_{1}$$\\end{document} -score of  0.886 ± 0.004 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$0.886\\pm 0.004$$\\end{document} , with a recall of  0.910 ± 0.004 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$0.910\\pm 0.004$$\\end{document}  and a precision of  0.877 ± 0.007 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$0.877\\pm 0.007$$\\end{document} . For the corresponding wear quantification task, the model obtained a mean absolute error (MAE) of  4.05 ± 0.23 μ m \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$4.05\\pm 0.23\\mu m$$\\end{document}  and a root mean squared error (RMSE) of  8.63 ± 0.53 μ m \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$8.63\\pm 0.53\\mu m$$\\end{document} . The discrepancy between MAE and RMSE indicates the presence of a small number of higher-error cases, which are further analysed in the following subsection. The obtained MAE and RMSE values are of the same order of magnitude as the variability observed in the annotation analysis (Section “ Annotation analysis ”), suggesting that the reported error levels are influenced by the inherent uncertainty of expert-defined wear boundaries. Fig. 12 Error analysis in the wear quantification task for selected categories of input data",
+        "The obtained MAE is lower than the value reported by Kamratowski et al. for gear hobbing tools (MAE =  19.95 μ m \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$19.95 \\mu m$$\\end{document} ) (Kamratowski et al.,  16 ). It should be noted that there is no universally defined acceptance threshold for wear quantification error in cutting tool regeneration, as existing standards primarily address geometric tolerances of new tools or metrological limits of measurement systems rather than operational wear estimation. In practice, wear assessment thresholds are typically defined in a process-specific manner and interpreted jointly with expert knowledge. Within this context, the reported results indicate that the proposed system produces estimates consistent with application-oriented wear assessment requirements.",
+        "The average processing time was 95 ms per image. This consisted of first-stage defect detection and post-processing (61.2 ms), second-stage segmentation and post-processing (28.8 ms), and edge wear quantification (4.9 ms). The timing analysis indicates that the first-stage defect detector (YOLO12s) constitutes the largest computational component of the pipeline. Consequently, further reductions in processing time may be achievable through the adoption of a more computationally efficient detection architecture, analogous to the optimisations introduced in the segmentation stage."
+      ]
+    },
+    {
+      "heading": "Measurement outlier analysis",
+      "paragraphs": [
+        "The observed discrepancy between the Mean Absolute Error (MAE) and the Root Mean Square Error (RMSE) for edge wear measurements indicates the presence of outliers in the evaluation results. To further analyse this effect, an additional stratified evaluation was conducted, dividing the dataset into the following subsets: edge wear  samples without additional surface artefacts, grouped according to wear severity: low wear:  < 50 μ \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$< 50~\\mu $$\\end{document} m (1378 samples), medium wear: 50– 100 μ \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$100~\\mu $$\\end{document} m (475 samples), high wear:  > 100 μ \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$> 100~\\mu $$\\end{document} m (115 samples), samples containing  built-up  material near the cutting edge, but without surface  contamination  (250 samples), samples containing surface  contamination , but without  built-up  material (278 samples). Fig. 13 Selected examples corresponding to the largest errors in edge wear quantification produced by the proposed system. Row  A  presents a case in which no edge wear should be detected, as the cutting edge is obscured by built-up material. Rows  B  and  C  show examples where small, elongated built-ups protruding from the cutting edge were incorrectly classified as  edge wear",
+        "Analysis in different severity regimes of  edge wear  (Fig.  12 ) reveals a gradual degradation in the accuracy of the quantification with increasing wear. For low wear levels ( < 50 μ m \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$<50\\mu m$$\\end{document} ), the model achieves a MAE of  1.83 μ m \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$1.83\\mu m$$\\end{document}  and a RMSE of  4.99 μ m \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$4.99\\mu m$$\\end{document} , while performance decreases for moderate (50– 100 μ m \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$100\\mu m$$\\end{document} ) and severe ( > 100 μ m \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$>100\\mu m$$\\end{document} ) wear, reaching  7.75 μ m \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$7.75\\mu m$$\\end{document}  MAE and  13.96 μ m \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$13.96\\mu m$$\\end{document}  RMSE for the latter category.",
+        "Samples containing  built-up  material at the cutting edge exhibit moderate MAE ( 5.62 μ m \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$5.62\\mu m$$\\end{document} ) but very high RMSE ( 13.11 μ m \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$13.11\\mu m$$\\end{document} ), indicating increased error variability and the occurrence of larger prediction outliers. This observation suggests that built-up material located directly on the cutting edge may partially obscure the true wear boundary, leading to occasional over- or underestimation of wear dimensions. In contrast, samples affected by surface  contamination  achieve much lower error values (MAE  2.68 μ m \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$2.68\\mu m$$\\end{document} , RMSE  6.06 μ m \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$6.06\\mu m$$\\end{document} ), indicating that although contamination can occasionally be confused with wear-related structures, its influence on measurement accuracy is not as pronounced as that of the built-up material located at the cutting edge.",
+        "In general, performance degradation is more pronounced for extreme wear geometries and irregular cutting-edge conditions.",
+        "Further qualitative analysis of selected high-error cases (Fig.  13 ) provides additional insight into these failure modes. In Fig.  13 A, a representative case is shown where a substantial built-up (residual adhered workpiece material) is incorrectly segmented as edge wear. In Fig.  13 B and C, the model identifies the main wear region, but smaller elongated built-up structures are partially merged with the segmentation mask. These cases highlight the difficulty of separating wear from contamination when they co-occur spatially.",
+        "These observations highlight a limitation of fully automated interpretation in scenarios involving complex surface conditions. In the proposed workflow, the system therefore provides visual and quantitative outputs intended to support operator review, including detailed wear maps and auxiliary defect detections. Additional scan-level filtering and inspection tools are available to assist in identifying ambiguous or corrupted measurements, as described in Section “ Results post-processing and visualisation ”."
+      ]
+    },
+    {
+      "heading": "Scan-level inspection results",
+      "paragraphs": [
+        "For the analysis of wear quantification errors at the scan level (as opposed to cross-validation fold aggregation), the obtained error values were MAE=  4.05 ± 2.62 μ m \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$4.05\\pm 2.62 \\mu m$$\\end{document}  and RMSE =  6.79 ± 5.35 μ m \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$6.79~\\pm 5.35\\mu m$$\\end{document} , with an average maximum observed scan-level error of  27.76 ± 29.27 μ m \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$27.76\\pm 29.27\\mu m$$\\end{document} .",
+        "To investigate the influence of post-processing on error reduction, three scan-level filtering strategies were evaluated: (i) automatic outlier removal using interquartile range (IQR) analysis, (ii) optional operator-assisted removal of a small fraction of high-error predictions (top 2%), enabled by the proposed visualisation module, and (iii) a hybrid approach combining both methods.",
+        "As reported in Table  6 , the hybrid strategy yields the lowest error values, with MAE =  2.34 ± 1.97 μ m \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$2.34\\pm 1.97\\mu m$$\\end{document}  and RMSE =  3.40 ± 3.48 μ m \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$3.40\\pm 3.48\\mu m$$\\end{document} . Under this configuration, the maximum scan-level error is reduced to  11.34 ± 16.07 μ m \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$11.34\\pm 16.07\\mu m$$\\end{document} . Table 6 Comparison of scan-level post-processing methods and their impact on final wear quantification errors Post-processing method M A E [ μ m ] \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$MAE~[\\mu m]$$\\end{document} R M S E [ μ m ] \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$RMSE~[\\mu m]$$\\end{document} Max. error  [ μ m ] \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$[\\mu m]$$\\end{document} None 3.16 ± 2.72 5.98 ± 5.79 27.76 ± 29.27 Automatic outlier filtering (IQR) 2.47 ± 2.21 3.77 ± 4.20 13.72 ± 19.22 Operator-assisted filtering 2.66 ± 2.31 4.23 ± 4.44 15.62 ± 19.12 Combined automatic + manual method 2.34 ± 1.97 3.40 ± 3.48 11.34 ± 16.07",
+        "In the subsequent step, the processing time required for a complete tool scan was analysed. The total processing time, including file input/output operations and SQL database communication but excluding acquisition system latency, amounted to 10 min 20 s for a representative tool comprising 812 cutting teeth. This corresponds to an average processing time of approximately 760 ms per tooth, with image processing requiring 95 ms per image. The reported result was obtained using a sequential processing scheme, in which individual tooth images were processed one at a time. Further reduction of processing time may be achievable through parallelisation of independent processing steps, enabling simultaneous analysis of multiple teeth.",
+        "The main time constraint in the overall workflow appears to be the image acquisition stage. The currently used  move-stop-capture  mode significantly increases data collection time. A continuous acquisition strategy with constant rotational speed could potentially reduce this overhead and improve overall throughput, although its practical implementation would require synchronisation with the imaging system. Fig. 14 Visualisation of tool wear (edge wear) in  A  3D cylindrical representation and  B  2D flat representation",
+        "The conducted analysis indicates that the application of automatic filtering methods, complemented by optional operator intervention, may improve scan-level measurement consistency. The proposed system provides dedicated visualisation and data inspection tools that enable such a workflow.",
+        "In this setup, operator involvement is shifted from manual inspection of individual cutting edges to the review of aggregated digital measurement results. Although this may change the nature of the interaction with the data, the overall workflow remains semi-automated, with the operator initiating the scan and subsequently validating the generated outputs.",
+        "Compared with traditional manual inspection, which relies on direct visual assessment of each cutting edge, the proposed approach reduces the need for low-level inspection tasks by focusing operator attention on higher-level interpretation of computed results (e.g., Fig.  14 ).",
+        "The combination of system-generated measurements and domain expertise supports structured decision-making regarding tool condition assessment and regeneration planning, while limiting the influence of purely subjective visual evaluation."
+      ]
+    },
+    {
+      "heading": "Conclusion",
+      "paragraphs": [
+        "This study presented a vision-based inspection framework for gear hob cutter evaluation, integrating defect detection, wear segmentation, and wear quantification within a unified processing pipeline. The proposed approach investigated the applicability of deep learning methods for supporting tool regeneration workflows through more consistent and repeatable wear assessment.",
+        "Using the proposed  Ghost Slim U-Net  architecture and Compound Loss formulation, the system achieved an average segmentation  F 1 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$F_{1}$$\\end{document} -score of  0.886 ± 0.004 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$0.886\\pm 0.004$$\\end{document}  and a wear quantification error of MAE =  4.05 ± 0.23 μ m \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$4.05\\pm 0.23\\mu m$$\\end{document} . The image processing stage required 95 ms per image, while the complete workflow executed on the prototype inspection setup corresponded to an average processing time of approximately 760 ms per cutting tooth.",
+        "The obtained results suggest that the proposed pipeline can support semi-automated wear assessment in industrial inspection workflows. However, the presented study should be regarded as a feasibility investigation performed on a limited industrial dataset. The proposed approach remains constrained by annotation subjectivity, the resource-intensive data acquisition process, and the limited representation of tool geometries, coatings, and wear mechanisms available in the current dataset.",
+        "Future work will focus on expanding the dataset with additional industrial cases and performing validation on a broader range of wear mechanisms and tool configurations. Particular attention will be devoted to synthetic data generation and simulation-based approaches, including physically based rendering environments, to improve data diversity, scalability, and model generalisation."
+      ]
+    }
+  ],
+  "tables": [
+    {
+      "caption": "Distribution of defect class instances across the cross-validation folds in  train ,  val  and  test  subsets",
+      "headers": [
+        "Fold",
+        "Edge wear",
+        "Built-up",
+        "Contamination"
+      ],
+      "rows": [
+        [
+          "Train 1",
+          "1649",
+          "364",
+          "382"
+        ],
+        [
+          "Val 1",
+          "554",
+          "129",
+          "113"
+        ],
+        [
+          "Test 1",
+          "554",
+          "128",
+          "153"
+        ],
+        [
+          "Train 2",
+          "1620",
+          "372",
+          "383"
+        ],
+        [
+          "Val 2",
+          "550",
+          "108",
+          "132"
+        ],
+        [
+          "Test 2",
+          "549",
+          "134",
+          "112"
+        ],
+        [
+          "Train 3",
+          "1651",
+          "356",
+          "393"
+        ],
+        [
+          "Val 3",
+          "542",
+          "151",
+          "100"
+        ],
+        [
+          "Test 3",
+          "549",
+          "106",
+          "127"
+        ],
+        [
+          "Train 4",
+          "1627",
+          "369",
+          "385"
+        ],
+        [
+          "Val 4",
+          "539",
+          "107",
+          "141"
+        ],
+        [
+          "Test 4",
+          "559",
+          "156",
+          "104"
+        ],
+        [
+          "Train 5",
+          "1650",
+          "384",
+          "357"
+        ],
+        [
+          "Val 4",
+          "539",
+          "116",
+          "138"
+        ],
+        [
+          "Test 4",
+          "548",
+          "104",
+          "140"
+        ]
+      ],
+      "header_groups": [],
+      "table_alignment_status": "resolved",
+      "row_provenance": [
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 8,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 8,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 8,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 8,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 9,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 9,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 9,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 9,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 10,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 10,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 10,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 10,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 11,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 11,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 11,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 11,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 12,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 12,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 12,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 12,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 13,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 13,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 13,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 13,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 14,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 14,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 14,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 14,
+            "source_col": 4
+          }
+        ]
+      ],
+      "tbody_alignment_status": "resolved"
+    },
+    {
+      "caption": "Loss function weights used during U-Net training",
+      "headers": [
+        "Loss Component",
+        "Weight ( λ \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\lambda $$\\end{document} )"
+      ],
+      "rows": [
+        [
+          "Binary Cross-Entropy (BCE)",
+          "0.50"
+        ],
+        [
+          "Dice–Sørensen Loss (Dice)",
+          "1.25"
+        ],
+        [
+          "Focal Tversky Loss (FT)",
+          "0.40"
+        ],
+        [
+          "Isolation Penalty (IP)",
+          "0.15"
+        ],
+        [
+          "Total Variation (TV)",
+          "0.135"
+        ]
+      ],
+      "header_groups": [],
+      "table_alignment_status": "resolved",
+      "row_provenance": [
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 2
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 2
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 2
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 2
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 2
+          }
+        ]
+      ],
+      "tbody_alignment_status": "resolved"
+    },
+    {
+      "caption": "Training hyperparameters and augmentation methods used during edge wear segmentation models training",
+      "headers": [
+        "Category",
+        "Parameter",
+        "U-Net based",
+        "SegFormer",
+        "Fast-SCNN",
+        "YOLO12"
+      ],
+      "rows": [
+        [
+          "Optimiser",
+          "β 1 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\beta _1$$\\end{document}  (Adam)",
+          "0.900",
+          "0.900",
+          "0.900",
+          "0.900"
+        ],
+        [
+          "Optimiser",
+          "β 2 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\beta _2$$\\end{document}  (Adam)",
+          "0.999",
+          "0.999",
+          "0.999",
+          "0.999"
+        ],
+        [
+          "Optimiser",
+          "Weight decay",
+          "0.0001",
+          "0.0001",
+          "0.0001",
+          "0.0005"
+        ],
+        [
+          "Optimiser",
+          "Warmup epochs",
+          "5",
+          "5",
+          "5",
+          "5"
+        ],
+        [
+          "Optimiser",
+          "Epochs",
+          "50",
+          "20",
+          "15",
+          "40"
+        ],
+        [
+          "Optimiser",
+          "Batch size",
+          "64",
+          "24",
+          "64",
+          "16"
+        ],
+        [
+          "Scheduler",
+          "Initial LR ( l r 0 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$lr_0$$\\end{document} )",
+          "0.001",
+          "0.001",
+          "0.001",
+          "0.001"
+        ],
+        [
+          "Scheduler",
+          "Final LR factor ( l r f \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$lr_f$$\\end{document} )",
+          "0.1",
+          "0.1",
+          "0.1",
+          "0.01"
+        ],
+        [
+          "Scheduler",
+          "Cosine LR scheduler",
+          "True",
+          "True",
+          "True",
+          "True"
+        ],
+        [
+          "Augmentations",
+          "Brightness",
+          "0.50",
+          "0.50",
+          "0.50",
+          "0.75"
+        ],
+        [
+          "Augmentations",
+          "Contrast",
+          "0.50",
+          "0.50",
+          "0.50",
+          "-"
+        ],
+        [
+          "Augmentations",
+          "Rotation (degrees)",
+          "10.0",
+          "10.0",
+          "10.0",
+          "10.0"
+        ],
+        [
+          "Augmentations",
+          "Translation",
+          "±0.25",
+          "±0.25",
+          "±0.25",
+          "±0.25"
+        ],
+        [
+          "Augmentations",
+          "Scale",
+          "±0.25",
+          "±0.25",
+          "±0.25",
+          "±0.25"
+        ],
+        [
+          "Augmentations",
+          "Shear (degrees)",
+          "5.0",
+          "5.0",
+          "5.0",
+          "5.0"
+        ],
+        [
+          "Augmentations",
+          "Perspective",
+          "0.05",
+          "0.05",
+          "0.05",
+          "0.000125"
+        ],
+        [
+          "Augmentations",
+          "Flip up–down",
+          "0.50",
+          "0.50",
+          "0.50",
+          "0.50"
+        ],
+        [
+          "Augmentations",
+          "Flip left–right",
+          "0.50",
+          "0.50",
+          "0.50",
+          "0.50"
+        ],
+        [
+          "Augmentations",
+          "Blur kernel size",
+          "5",
+          "5",
+          "5",
+          "-"
+        ],
+        [
+          "Augmentations",
+          "Blur probability",
+          "0.25",
+          "0.25",
+          "0.25",
+          "-"
+        ]
+      ],
+      "header_groups": [],
+      "table_alignment_status": "resolved",
+      "row_provenance": [
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 6
+          }
+        ],
+        [
+          {
+            "source": "carried",
+            "source_row_index": 0,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 6
+          }
+        ],
+        [
+          {
+            "source": "carried",
+            "source_row_index": 0,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 6
+          }
+        ],
+        [
+          {
+            "source": "carried",
+            "source_row_index": 0,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 6
+          }
+        ],
+        [
+          {
+            "source": "carried",
+            "source_row_index": 0,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 6
+          }
+        ],
+        [
+          {
+            "source": "carried",
+            "source_row_index": 0,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 6
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 6
+          }
+        ],
+        [
+          {
+            "source": "carried",
+            "source_row_index": 6,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 6
+          }
+        ],
+        [
+          {
+            "source": "carried",
+            "source_row_index": 6,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 8,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 8,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 8,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 8,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 8,
+            "source_col": 6
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 9,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 9,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 9,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 9,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 9,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 9,
+            "source_col": 6
+          }
+        ],
+        [
+          {
+            "source": "carried",
+            "source_row_index": 9,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 10,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 10,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 10,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 10,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 10,
+            "source_col": 6
+          }
+        ],
+        [
+          {
+            "source": "carried",
+            "source_row_index": 9,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 11,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 11,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 11,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 11,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 11,
+            "source_col": 6
+          }
+        ],
+        [
+          {
+            "source": "carried",
+            "source_row_index": 9,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 12,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 12,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 12,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 12,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 12,
+            "source_col": 6
+          }
+        ],
+        [
+          {
+            "source": "carried",
+            "source_row_index": 9,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 13,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 13,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 13,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 13,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 13,
+            "source_col": 6
+          }
+        ],
+        [
+          {
+            "source": "carried",
+            "source_row_index": 9,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 14,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 14,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 14,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 14,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 14,
+            "source_col": 6
+          }
+        ],
+        [
+          {
+            "source": "carried",
+            "source_row_index": 9,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 15,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 15,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 15,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 15,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 15,
+            "source_col": 6
+          }
+        ],
+        [
+          {
+            "source": "carried",
+            "source_row_index": 9,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 16,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 16,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 16,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 16,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 16,
+            "source_col": 6
+          }
+        ],
+        [
+          {
+            "source": "carried",
+            "source_row_index": 9,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 17,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 17,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 17,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 17,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 17,
+            "source_col": 6
+          }
+        ],
+        [
+          {
+            "source": "carried",
+            "source_row_index": 9,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 18,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 18,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 18,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 18,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 18,
+            "source_col": 6
+          }
+        ],
+        [
+          {
+            "source": "carried",
+            "source_row_index": 9,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 19,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 19,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 19,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 19,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 19,
+            "source_col": 6
+          }
+        ]
+      ],
+      "tbody_alignment_status": "resolved"
+    },
+    {
+      "caption": "Influence of individual compound loss components on the segmentation performance of the proposed  Ghost Slim U-Net  model, evaluated using the  F 1 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$F_{1}$$\\end{document} -score and Jaccard index (IoU)",
+      "headers": [
+        "Loss function",
+        "F 1 [ - ] \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$F_{1}~[-]$$\\end{document}",
+        "IoU [ - ] \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\text {IoU}~[-]$$\\end{document}"
+      ],
+      "rows": [
+        [
+          "Pure-BSE loss",
+          "0.922 ± 0.004",
+          "0.857 ± 0.006"
+        ],
+        [
+          "Proposed compound loss",
+          "0.936 ± 0.002",
+          "0.881 ± 0.004"
+        ],
+        [
+          "Compound loss w/o BCE",
+          "0.932 ± 0.003",
+          "0.874 ± 0.005"
+        ],
+        [
+          "Compound loss w/o DICE",
+          "0.934 ± 0.003",
+          "0.878 ± 0.005"
+        ],
+        [
+          "Compound loss w/o Focal Tversky",
+          "0.935 ± 0.002",
+          "0.879 ± 0.003"
+        ],
+        [
+          "Compound loss w/o Isolation Penalty",
+          "0.936 ± 0.002",
+          "0.880 ± 0.003"
+        ],
+        [
+          "Compound loss w/o Total Variation",
+          "0.935 ± 0.002",
+          "0.879 ± 0.003"
+        ]
+      ],
+      "header_groups": [],
+      "table_alignment_status": "resolved",
+      "row_provenance": [
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 3
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 3
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 3
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 3
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 3
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 3
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 3
+          }
+        ]
+      ],
+      "tbody_alignment_status": "resolved"
+    },
+    {
+      "caption": "Comparison of the proposed method with selected efficient image segmentation models in terms of  F 1 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$F_{1}$$\\end{document} -score and Jaccard index (IoU), images per second (Images/s), number of parameters and Giga-floating point operations per second (GLFOPs)",
+      "headers": [
+        "Model name",
+        "F 1 [ - ] \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$F_{1}~[-]$$\\end{document}",
+        "IoU [ - ] \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\text {IoU}~[-]$$\\end{document}",
+        "Images/s",
+        "Params",
+        "GFLOPs"
+      ],
+      "rows": [
+        [
+          "Ghost Slim U-Net",
+          "0.936 ± 0.002",
+          "0.881 ± 0.004",
+          "111.6",
+          "0.28M",
+          "4.62"
+        ],
+        [
+          "Vanilla U-Net",
+          "0.937 ± 0.001",
+          "0.883 ± 0.002",
+          "28.9",
+          "34.52M",
+          "522.17"
+        ],
+        [
+          "YOLO12n",
+          "0.922 ± 0.003",
+          "0.857 ± 0.005",
+          "35.6",
+          "2.86M",
+          "18.22"
+        ],
+        [
+          "SegFormer-B0",
+          "0.907 ± 0.004",
+          "0.833 ± 0.007",
+          "54.9",
+          "7.71M",
+          "28.13"
+        ],
+        [
+          "FastSCNN",
+          "0.916 ± 0.003",
+          "0.848 ± 0.005",
+          "93.5",
+          "1.14M",
+          "1.58"
+        ]
+      ],
+      "header_groups": [],
+      "table_alignment_status": "resolved",
+      "row_provenance": [
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 6
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 6
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 6
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 6
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 6
+          }
+        ]
+      ],
+      "tbody_alignment_status": "resolved"
+    },
+    {
+      "caption": "Comparison of scan-level post-processing methods and their impact on final wear quantification errors",
+      "headers": [
+        "Post-processing method",
+        "M A E [ μ m ] \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$MAE~[\\mu m]$$\\end{document}",
+        "R M S E [ μ m ] \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$RMSE~[\\mu m]$$\\end{document}",
+        "Max. error  [ μ m ] \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$[\\mu m]$$\\end{document}"
+      ],
+      "rows": [
+        [
+          "None",
+          "3.16 ± 2.72",
+          "5.98 ± 5.79",
+          "27.76 ± 29.27"
+        ],
+        [
+          "Automatic outlier filtering (IQR)",
+          "2.47 ± 2.21",
+          "3.77 ± 4.20",
+          "13.72 ± 19.22"
+        ],
+        [
+          "Operator-assisted filtering",
+          "2.66 ± 2.31",
+          "4.23 ± 4.44",
+          "15.62 ± 19.12"
+        ],
+        [
+          "Combined automatic + manual method",
+          "2.34 ± 1.97",
+          "3.40 ± 3.48",
+          "11.34 ± 16.07"
+        ]
+      ],
+      "header_groups": [],
+      "table_alignment_status": "resolved",
+      "row_provenance": [
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 4
+          }
+        ]
+      ],
+      "tbody_alignment_status": "resolved"
+    },
+    {
+      "caption": "Training hyperparameters and augmentation methods",
+      "headers": [
+        "Category",
+        "Parameter",
+        "Value"
+      ],
+      "rows": [
+        [
+          "General",
+          "Epochs",
+          "200"
+        ],
+        [
+          "General",
+          "Patience",
+          "50"
+        ],
+        [
+          "General",
+          "Batch size",
+          "12"
+        ],
+        [
+          "General",
+          "Image size",
+          "960"
+        ],
+        [
+          "Loss gain",
+          "Box loss gain",
+          "7.5"
+        ],
+        [
+          "Loss gain",
+          "Class loss gain",
+          "0.25"
+        ],
+        [
+          "Loss gain",
+          "DFL gain",
+          "2.0"
+        ],
+        [
+          "Optimiser",
+          "Optimiser",
+          "Adam"
+        ],
+        [
+          "Optimiser",
+          "Momentum ( β 1 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\beta _1$$\\end{document} )",
+          "0.900"
+        ],
+        [
+          "Optimiser",
+          "Weight decay",
+          "0.0005"
+        ],
+        [
+          "Learning rate",
+          "Initial LR ( l r 0 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$lr_0$$\\end{document} )",
+          "0.001"
+        ],
+        [
+          "Learning rate",
+          "Final LR factor ( l r f \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$lr_f$$\\end{document} )",
+          "0.01"
+        ],
+        [
+          "Learning rate",
+          "Cosine LR scheduler",
+          "True"
+        ],
+        [
+          "Warmup",
+          "Warmup epochs",
+          "5.0"
+        ],
+        [
+          "Warmup",
+          "Warmup momentum",
+          "0.60"
+        ],
+        [
+          "Warmup",
+          "Warmup bias LR",
+          "0.10"
+        ],
+        [
+          "Augmentations",
+          "HSV-Hue",
+          "0.0"
+        ],
+        [
+          "Augmentations",
+          "HSV-Saturation",
+          "0.0"
+        ],
+        [
+          "Augmentations",
+          "HSV-Value",
+          "0.75"
+        ],
+        [
+          "Augmentations",
+          "Rotation (degrees)",
+          "±5"
+        ],
+        [
+          "Augmentations",
+          "Translation",
+          "±0.20"
+        ],
+        [
+          "Augmentations",
+          "Scale",
+          "±0.30"
+        ],
+        [
+          "Augmentations",
+          "Shear (degrees)",
+          "±5"
+        ],
+        [
+          "Augmentations",
+          "Perspective",
+          "0.000125"
+        ],
+        [
+          "Augmentations",
+          "Flip up–down",
+          "0.50"
+        ],
+        [
+          "Augmentations",
+          "Flip left–right",
+          "0.50"
+        ],
+        [
+          "Augmentations",
+          "Mosaic",
+          "1.0"
+        ],
+        [
+          "Augmentations",
+          "Close mosaic (last N epochs)",
+          "20"
+        ]
+      ],
+      "header_groups": [],
+      "table_alignment_status": "resolved",
+      "row_provenance": [
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 3
+          }
+        ],
+        [
+          {
+            "source": "carried",
+            "source_row_index": 0,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 3
+          }
+        ],
+        [
+          {
+            "source": "carried",
+            "source_row_index": 0,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 3
+          }
+        ],
+        [
+          {
+            "source": "carried",
+            "source_row_index": 0,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 3
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 3
+          }
+        ],
+        [
+          {
+            "source": "carried",
+            "source_row_index": 4,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 3
+          }
+        ],
+        [
+          {
+            "source": "carried",
+            "source_row_index": 4,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 3
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 3
+          }
+        ],
+        [
+          {
+            "source": "carried",
+            "source_row_index": 7,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 8,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 8,
+            "source_col": 3
+          }
+        ],
+        [
+          {
+            "source": "carried",
+            "source_row_index": 7,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 9,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 9,
+            "source_col": 3
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 10,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 10,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 10,
+            "source_col": 3
+          }
+        ],
+        [
+          {
+            "source": "carried",
+            "source_row_index": 10,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 11,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 11,
+            "source_col": 3
+          }
+        ],
+        [
+          {
+            "source": "carried",
+            "source_row_index": 10,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 12,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 12,
+            "source_col": 3
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 13,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 13,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 13,
+            "source_col": 3
+          }
+        ],
+        [
+          {
+            "source": "carried",
+            "source_row_index": 13,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 14,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 14,
+            "source_col": 3
+          }
+        ],
+        [
+          {
+            "source": "carried",
+            "source_row_index": 13,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 15,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 15,
+            "source_col": 3
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 16,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 16,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 16,
+            "source_col": 3
+          }
+        ],
+        [
+          {
+            "source": "carried",
+            "source_row_index": 16,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 17,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 17,
+            "source_col": 3
+          }
+        ],
+        [
+          {
+            "source": "carried",
+            "source_row_index": 16,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 18,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 18,
+            "source_col": 3
+          }
+        ],
+        [
+          {
+            "source": "carried",
+            "source_row_index": 16,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 19,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 19,
+            "source_col": 3
+          }
+        ],
+        [
+          {
+            "source": "carried",
+            "source_row_index": 16,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 20,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 20,
+            "source_col": 3
+          }
+        ],
+        [
+          {
+            "source": "carried",
+            "source_row_index": 16,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 21,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 21,
+            "source_col": 3
+          }
+        ],
+        [
+          {
+            "source": "carried",
+            "source_row_index": 16,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 22,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 22,
+            "source_col": 3
+          }
+        ],
+        [
+          {
+            "source": "carried",
+            "source_row_index": 16,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 23,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 23,
+            "source_col": 3
+          }
+        ],
+        [
+          {
+            "source": "carried",
+            "source_row_index": 16,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 24,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 24,
+            "source_col": 3
+          }
+        ],
+        [
+          {
+            "source": "carried",
+            "source_row_index": 16,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 25,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 25,
+            "source_col": 3
+          }
+        ],
+        [
+          {
+            "source": "carried",
+            "source_row_index": 16,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 26,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 26,
+            "source_col": 3
+          }
+        ],
+        [
+          {
+            "source": "carried",
+            "source_row_index": 16,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 27,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 27,
+            "source_col": 3
+          }
+        ]
+      ],
+      "tbody_alignment_status": "resolved"
+    }
+  ]
+}

@@ -1,0 +1,208 @@
+{
+  "doi": "10.1007/s12666-026-03914-w",
+  "title": "Simulation Framework for Cost-Effective One-Shot Forming of Steel-Based Fibre Metal Laminates in Lightweight Automotive Structures",
+  "abstract": "Abstract Recently, there was an increase in the demand for lightweight, high-performance automotive structures, which has induced an interest in steel-based fibre metal laminates (FMLs). The conventional separate heating and forming stages for the metal and fibre-reinforced polymer (FRP) are time- and cost-consuming, which limits the industrial applications. This study presents a simulation-driven methodology for cost-effective one-shot forming of steel (DP780) and FRP (GF/PA6). A coupled thermo-mechanical model is created in Abaqus to represent the nonlinear response of FRP stacks, accounting for temperature-dependent material properties and interactions between FRP layers and steel. The simulation predicts key process defects, including steel–FRP interfacial gaps, FRP delamination, and excessive thickness deviations. The results show good agreement with experimental trials, confirming the model’s accuracy. The simulation framework demonstrates its capability to model the novel forming process for FMLs and to implement it in the industrial-scale production of lightweight, high-performance automotive FML components.",
+  "journal": "Transactions of the Indian Institute of Metals",
+  "year": "2026",
+  "sections": [
+    {
+      "heading": "Introduction",
+      "paragraphs": [
+        "To support the transition towards low-carbon mobility, further reductions in structural mass are essential, especially in body-in-white (BIW) systems where weight savings directly translate to energy efficiency. Fibre metal laminates (FMLs), hybrids of metal alloys, and fibre-reinforced polymer (FRP) sheets proven in aerospace offer superior strength-to-weight ratio, fatigue, and impact resistance [ 1 ,  2 ]. Therefore, automotive interest in the multi-material structures is growing [ 3 ,  4 ]. A novel patent-pending one-shot forming technology has been developed at Imperial College London. In this process, the metal sheet and FRP blank are heated, transferred, and shaped simultaneously, offering a way to simplify the process while avoiding the need of adhesives. The novel process allows for a fast production cycle, with stamping and in-die quenching completed in about 30 s using a cold tool. Through precise thermal control, the temperature gradient at the steel–polymer interface is effectively managed, promoting strong and consistent interfacial bonding without causing thermal degradation of the polymer, thereby preserving the integrity and performance of the final component.",
+        "The overall process route is illustrated in Fig.  1 , which includes several key stages: first, both material blanks are heated to the required processing temperatures. The heated components are then transferred to the press, where the FRP layers are positioned and stacked onto the metal sheet. Next, the FRP and metal layers are formed simultaneously in a single press operation, allowing their shapes to be matched and consolidated at the same time. Finally, the newly formed hybrid FML component is held within the cold die to rapidly quench, stabilise its geometry, and enable effective adhesion, completing the one-shot forming process. Fig. 1 Schematic illustration of the proposed one-shot forming process",
+        "By using cold tooling with controlled in-die quenching, such an approach can achieve robust metal–polymer bonding within cycle times compatible with high-rate automotive production.",
+        "The simulation data are derived from actual experimental trials, ensuring that the results closely reflect real-world conditions. The key process parameters considered in the study include the temperatures of both the FRP and DP780 at the onset of the exit the furnaces, as well as the forming temperatures applied during processing. In addition, factors such as the forming speed and the thickness of the spacer are taken into account, as they play a significant role in influencing the overall forming behaviour and final material characteristics.",
+        "The main objective of this study was to establish a dedicated simulation framework for the novel one-shot forming process of FML components, with the help of implementing it in industrial applications. The work contained two phases: the first is experimental forming trials of U-shaped component to validate the FE model, and the second phase is building up the FE model and validation process."
+      ]
+    },
+    {
+      "heading": "Experimental Work",
+      "paragraphs": [
+        "In this work, a U-shaped demonstrator part as shown in Fig.  2  was designed and used to investigate the feasibility of the new forming process for FML for industrial applications. The part was structured with one blank with 1.2 mm thickness from advanced high-strength steel (AHSS), dual-phase DP780, and four piles (0.5 mm thickness each) of glass-fibre polyamide 6 (GF/PA6) thermoplastics on top of the DP780 blank. The part design and blank configuration are shown in Fig.  2 . Fig. 2 a  Design and ( b ) the blank configuration including a DP780 blank and a FRP blank consolidated from four piles of prepreg",
+        "The heating and forming system used for the one-shot forming including the assembled forming tool set on a high-rate 250 kN hydraulic press is shown in Fig.  3 . In the forming trials, two different furnaces were placed on either side of the press to separately heat the DP780 and FRP to ensure safe material handling. The furnace temperatures for DP780 and GF/PA6 were 400 °C and 270 °C, respectively. The forming temperature was 350 °C for DP780, while the forming temperature of the GF/PA6 was fixed close to the melting temperature of PA6, which was 230 °C. This helped to suppress excessive through-thickness polymer flow at the interface, which could otherwise lead to interfacial polymer depletion and weakened bonding, while still minimising void formation and delamination. Two different trials were performed with different forming speeds, 100 mm/s and 150 mm/s. Fig. 3 Equipment layout of one-shot forming and detailed view of forming tool assembly",
+        "Figure  4  presents the formed U-shaped component along with micrographs of two different regions (the sidewall and the top surface) of the part at forming speed of 100 mm/s. These micrographs were used to examine the quality of inter-ply bonding between the FRP plies and the bonding behaviour at the FRP–steel interface. The sidewall micrograph reveals pronounced fibre–matrix interfacial delamination in the region highlighted in Fig.  4 . In contrast, the micrograph taken from the top region of the U-shaped component shows good inter-ply bonding. In addition, good bonding at the FRP-steel interface was achieved throughout the entire component. Fig. 4 Micrograph of GF/PA6 showing inter-ply delamination within GF/PA6, at the forming speed of 100 mm/s",
+        "On the other hand, at a fast-forming speed of 150 mm/s, the formed component showed a good inter-ply bonding with no notable delamination across the whole part as shown in the micrographs (sidewall and top regions) in Fig.  5 . Fig. 5 Micrograph of GF/PA6 showing no notable inter-ply delamination at the forming speed of 150 mm/s"
+      ]
+    },
+    {
+      "heading": "Simulation Model Development and Validation",
+      "paragraphs": [
+        "The main objective of this work is to establish a complete simulation framework for the one-shot forming for FML component. One key aspect for developing a new simulation framework is to validate the FE model using experimental data and actual measurement from the physically formed component. The above experimental trials for the U-shaped parts will be used in the validation stage. A distinctive simulation model for one-shot forming of U-shaped part was built in Abaqus 2024 FE package as shown in Fig.  6 . The model contains 3D solid model of the tools and blank design, process parameters, and FE parameters. The kinematics of the tool movement is illustrated as follows: die is movable in the stamping direction (towards the punch), fixed punch, and activated blank holder with holding pressure to control the blank movement between the die and blank holder surfaces. Fig. 6 FE process model built in Abaqus showing loading and boundary conditions",
+        "The material cards for FRP and DP780 were created based on experimental testing as shown in Fig.  7 . FRP underwent bias extension test conducted at different strain rates but at only one temperature (230 °C °C), as the effect of temperature on FRP is negligible at melting condition. However, DP780 underwent uniaxial tensile tests conducted at different temperatures but at only one strain rate, since the effect of strain rate on DP780 is negligible. Fig. 7 Material data of ( a ) FRP from bias extension testing and ( b ) DP780 from uniaxial testing",
+        "The process parameters of the simulation model for one-shot forming for FML component are illustrated in Table  1 .\n Table 1 The process parameters for the FE model Parameter Value Type of analysis Heat transfer: Thermo-mechanical coupled forming analysis Forming: Dynamic, Explicit (Isothermal) Number of steps 2 (Heat Transfer + Forming) Step type Dynamic, Temp-Disp, Explicit Mesh size DP780 (1 mm) and GF/PA6 (1 mm) Steel temperature (at the onset of placement on the tool) 350 °C FRP (at the onset of placement on the tool) 230 °C Stacking 1 s (the time between the blank being placed on the tool and tool start to move down from forming) Forming speed/stroke 100 and 150 mm/s Boundary conditions • Top die move in -Y direction • Punch is stationary • Blank holding force applied to the blank holder in Y direction /s",
+        "The interfaces between adjacent GF/PA6 plies were represented by cohesive surfaces employing a cohesive zone model (CZM) to assess the potential for delamination. The mechanical behaviour of the cohesive surfaces was modelled using a bilinear traction separation law [ 6 ]. Within this formulation, the normal and shear tractions ( t ₙ,  t ₛ, and  t ₜ) increase linearly with respect to the corresponding stiffness parameters ( k ₙ,  k ₛ, and  k ₜ), where the subscripts  n ,  s , and  t  symbolise the normal and two shear directions of the interface, respectively. Damage initiation occurs once any traction component reaches its associated maximum nominal stress [ 6 ]. This maximum nominal stress criterion is given by Eq. ( 1 ).",
+        "Maximum stress criterion, 1 M A X t n t n max , t s t s max , t t t t max = 1 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$MAX\\left\\{ {\\frac{{t_{n} }}{{t_{n}^{max} }},\\frac{{t_{s} }}{{t_{s}^{max} }},\\frac{{t_{t} }}{{t_{t}^{max} }}} \\right\\} = 1$$\\end{document}",
+        "After damage initiation, the damage evolution was governed by the Benzeggagh–Kenane (BK) mixed-mode fracture criterion, which is particularly useful when the critical fracture energies during deformation purely along the first and the second shear directions are the same ( G s c = G t c \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$G_{s}^{c} = G_{t}^{c}$$\\end{document} ), as defined in Eq. ( 2 )[ 5 ]: 2 G n c + G s c - G n c G S G T η = G c \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$G_{n}^{c} + \\left( {G_{s}^{c} - G_{n}^{c} } \\right)\\left\\{ {\\frac{{G_{S} }}{{G_{T} }}} \\right\\}^{\\eta } = G^{c}$$\\end{document} where  G c \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$G^{c}$$\\end{document}  is the energy dissipated during the damage process, which controls the maximum separation that defines damage evolution.  G S  =  G s  +  G t ,  G T  =  G n  +  G S , where  G n ,  G s,  and  G t  are the dissipated energy in the normal and two shear directions during cohesive damage (N/mm).  η \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\eta$$\\end{document}  is a material constant [ 5 ]  G n c \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$G_{n}^{c}$$\\end{document}  and  G s c \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$G_{s}^{c}$$\\end{document}  are the critical fracture energy in cohesive zone model at the normal and shear directions (N/mm). The  G n c , G s c \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$G_{n}^{c} ,{ }G_{s}^{c}$$\\end{document} , and η are material constants to be specified in Abaqus. A linear damage evolution was used, resulting in the cohesive surface damage,  D , defined as in Eq. ( 3 ): 3 D = δ m f δ m max - δ m 0 δ m max δ m f - δ m 0 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$D = \\frac{{\\delta_{m}^{f} \\left( {\\delta_{m}^{max} - \\delta_{m}^{0} } \\right)}}{{\\delta_{m}^{max} \\left( {\\delta_{m}^{f} - \\delta_{m}^{0} } \\right)}}$$\\end{document} where  δ m f = 2 G c / T eff 0 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\delta_{m}^{f} = 2G^{c} /T_{eff}^{0}$$\\end{document}  with  T eff 0 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$T_{eff}^{0}$$\\end{document}  being effective traction at damage initiation,  δ m max \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\delta_{m}^{max}$$\\end{document}  is the maximum effective displacement during the loading history,  δ m 0 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\delta_{m}^{0}$$\\end{document}  is the effective displacement at damage initiation, and  δ m f \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\delta_{m}^{f}$$\\end{document}  is effective displacement at complete failure.  D  is a scalar damage variable, which monotonically evolves from 0 to 1 as the damage grows. Upon reaching 1, the interface fails and the adjacent plies delaminated [ 6 ]. The full details of cohesive contact and associated damage model were presented in Zerong et al. [ 6 ].",
+        "Figure  8  shows the temperature evolution of the DP780-GF/PA6 interface within a stacking time of 1.0 s. From the figure, it is shown that the surface temperatures of DP780 during the stacking is reduced from 350 °C to 334 °C at the start of forming stage. The surface of GF/PA6 was heated by the DP780 to above not only its  T m , but also the recommended minimum consolidation temperatures, which allows the post-forming bonding between the hot DP780 and the molten GF/PA6 matrix and without requiring additional adhesives. Fig. 8 Surface temperature evolution of DP780 and FRP during heat transfer and forming steps",
+        "Figure  9  shows a direct comparison between the physical formed FML part and the simulated part at forming speed of 100 mm/s. The simulation results show the damage parameter variation and cohesive surface damage (CSDMG). It is obvious that the damage (in this case, fibre separation) occurred in the same location as in the physical part. From the simulation results, the damage variable reached the critical threshold value of 1.0, which indicates that the delamination occurred. It could be concluded that the simulation model for one-shot forming process of FML allows accurate predictions of formability and failure. Fig. 9 Comparison between experimental and simulation showing the extent of delamination represented by the distribution of CSDMG across various interface layers of the four plies of FRP at forming speed of 100 mm/s",
+        "To explore this further, another comparison between the physical formed part and simulated part has been carried out at forming speed of 150 mm/s as shown in Fig.  10 . The simulation results show a good agreement with experimental findings, and the damage scaler (CSDMG) is less than the threshold value (< 1), indicating that no notable delamination or porosity was observed within the GF/PA6 laminate. Fig. 10 Comparison between experimental and simulation showing no notable inter-ply delamination at the forming speed of 150 mm"
+      ]
+    },
+    {
+      "heading": "Conclusion",
+      "paragraphs": [
+        "This work demonstrates the capability of the novel one-shot stamping process for forming AHSS-based multi-material structures, combining dual-phase steel (DP780) with low-cost glass-fibre-reinforced polyamide 6 (GF/PA6). The process enables a rapid production cycle, completing stamping and in-die quenching in approximately 30 s using a cold tool, without the need for adhesives or curing. By employing a tailored thermal pathway, the process effectively bridges the temperature difference at the steel–polymer interface, ensuring strong interfacial bonding while preventing polymer degradation. Laboratory-scale U-shaped demonstrator components were formed under different conditions to investigate the effect of forming parameters to the part quality. In this study, a dedicated simulation framework for one-shot forming of steel-based fibre metal laminates was developed using the data derived from actual experimental trials, ensuring that the results closely reflect real-world conditions. The framework can predict the final geometry, local delamination in the inter-ply bonding for GF/PA6, and metal thinning and necking after one-shot forming of a steel-based FML part. Two distinct trial conditions were used to validate the simulation model. The first condition involved forming the U-shaped part at a punch speed of 100 mm/s, which revealed inter-ply delamination in the part sidewall. The second condition, conducted at 150 mm/s, showed no notable delamination. This comparison suggests that the proposed simulation framework can accurately model the one-shot stamping process for manufacturing steel-based multi-material structures consisting of DP780 steel and GF/PA6 laminate."
+      ]
+    }
+  ],
+  "tables": [
+    {
+      "caption": "The process parameters for the FE model",
+      "headers": [
+        "Parameter",
+        "Value"
+      ],
+      "rows": [
+        [
+          "Type of analysis",
+          "Heat transfer: Thermo-mechanical coupled forming analysis Forming: Dynamic, Explicit (Isothermal)"
+        ],
+        [
+          "Number of steps",
+          "2 (Heat Transfer + Forming)"
+        ],
+        [
+          "Step type",
+          "Dynamic, Temp-Disp, Explicit"
+        ],
+        [
+          "Mesh size",
+          "DP780 (1 mm) and GF/PA6 (1 mm)"
+        ],
+        [
+          "Steel temperature (at the onset of placement on the tool)",
+          "350 °C"
+        ],
+        [
+          "FRP (at the onset of placement on the tool)",
+          "230 °C"
+        ],
+        [
+          "Stacking",
+          "1 s (the time between the blank being placed on the tool and tool start to move down from forming)"
+        ],
+        [
+          "Forming speed/stroke",
+          "100 and 150 mm/s"
+        ],
+        [
+          "Boundary conditions",
+          "• Top die move in -Y direction • Punch is stationary • Blank holding force applied to the blank holder in Y direction"
+        ]
+      ],
+      "header_groups": [],
+      "table_alignment_status": "resolved",
+      "row_provenance": [
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 2
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 2
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 2
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 2
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 2
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 2
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 2
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 2
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 8,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 8,
+            "source_col": 2
+          }
+        ]
+      ],
+      "tbody_alignment_status": "resolved"
+    }
+  ]
+}

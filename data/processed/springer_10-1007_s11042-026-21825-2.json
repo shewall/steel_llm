@@ -1,0 +1,891 @@
+{
+  "doi": "10.1007/s11042-026-21825-2",
+  "title": "Bayesian active learning with monte carlo dropout and pseudo-labelling for steel defect classification",
+  "abstract": "Abstract Modern industries are heavily reliant on steel, which acts as an indicator of the progress of a nation. Steel is essential to the economy due to its variety of applications. However, surface defects in the steel hot-rolling process can significantly compromise the quality of the final product. Traditional manual examination-based defect classification techniques are manual, arbitrary, and less precise. Modern computer vision techniques have emerged as a potential solution, but deep learning models require extensive labelled data, which is costly and labour-intensive. Semi-supervised techniques, such as pseudo-labelling, may not provide an optimal guarantee of accuracy, and active learning methods often require significant manual annotation efforts, which are resource-intensive. To address the challenges of defect classification in steel production, we present a novel deep learning framework that enhances accuracy and reduces manual labelling effort. Our approach integrates pseudo-labelling with the application of Monte Carlo dropout-based active learning. By employing this method, we identify the most uncertain samples for manual annotation and use pseudo-labelling for certain cases, incorporating human verification for greater reliability. This iterative process efficiently utilises unlabelled data, optimising model performance with less dependency on extensive labelled datasets. We have employed a simulated verification process using a controlled library, allowing proof of concept evaluation of the hybrid framework. Experimental results on the steel defect dataset demonstrate that the entropy based heuristics achieved up to 99.73% classification accuracy, effectively reducing human labelling effort while maintaining robust performance.",
+  "journal": "Multimedia Tools and Applications",
+  "year": "2026",
+  "sections": [
+    {
+      "heading": "Introduction",
+      "paragraphs": [
+        "The Industrial Revolution created a significant pull towards the modernisation of industries, making steel the most considerable metal in quantity and its range of applications. The production and utilisation of steel can be used as a measure of a country’s development [ 1 ]. Steel is an iron-carbon alloy with less than 2.0% carbon, 1.0% manganese, and trace quantities of silicon, phosphorus, sulphur, and oxygen. It is one of the materials that is entirely recyclable. According to the World Steel Organisation, the quantity of steel utilised globally in 2018 totalled approximately 1.7 billion metric tonnes.",
+        "It is always beneficial to detect defects early, together with proper quality control procedures, to reduce economic losses. Steel producers must provide a high-quality product that fulfils the expectations of their customers. Defect classification is equally essential as defect detection for steel sheet grading since the usability and related penalties imposed by various utilities depend on the quantity and kind of the defect [ 2 ].",
+        "Steel manufacturers produce significant amounts of unlabelled data alongside steel production. Manually annotating this vast data requires substantial capital [ 3 ]. This bottleneck leads small-scale steel industries to continue manual quality checks, causing severe downtime and resource wastage. The variety in defect presentations under the same label makes classifying local areas of surface defects on hot-rolled steel surfaces challenging [ 2 ].",
+        "These datasets typically include high-resolution images of steel surfaces captured during various production stages. Key features recorded for defect classification include: Surface Texture and Patterns : Variations in surface texture and patterns that might indicate different types of defects. Defect Shape and Size : The geometry and dimensions of observable defects. Positional Information : The specific location on the steel sheet where defects are observed. Effectively utilising this large pool of unlabelled data is challenging. To address this, we propose a combination of two prominent techniques, Semi-Supervised Learning (SSL) and Deep Bayesian Active Learning (DBAL), to intelligently leverage the unlabelled data and enhance model performance.",
+        "Semi-supervised learning (SSL) uses a small set of labelled data to make predictions on unlabelled data, which is beneficial for steel defect classification where a large amount of unlabelled data is available. A key technique in SSL is pseudo-labelling, where a model trained on a limited labelled dataset predicts labels for unlabelled data, which are then used as ground truth for further training. This method can improve the accuracy of steel defect classification models and reduce the cost, time, and effort required for manual labelling. However, pseudo-labelling can lead to misclassifications, potentially decreasing accuracy.",
+        "Deep Bayesian Active Learning (DBAL) complements SSL by iteratively selecting the most informative data points for labelling, guided by Bayesian principles [ 4 ]. Our implementation uses Monte Carlo Dropout, which aligns with Bayesian principles by enabling sampling from the model’s posterior distribution, providing an efficient approximation for Bayesian inference in the DBAL framework [ 5 ]. This approach aims to achieve maximum performance by accurately computing the Bayesian posterior of the output distribution, facilitating the selection of the most informative samples for labelling and thereby improving the model’s performance iteratively through active learning [ 6 ].",
+        "Our study combines SSL and DBAL to address the challenges of each approach. We propose a framework that leverages the strengths of both techniques, utilising Bayesian principles to guide active learning. This integration optimises the performance of machine learning models by enhancing their learning efficiency and accuracy while minimising the need for extensive labelled data. The framework incorporates Bayesian Active Learning, pseudo-labelling, and human-in-the-loop techniques, creating a synergistic effect that mitigates the individual limitations of SSL and DBAL.",
+        "Our experiments employed multiple active learning strategies, including BALD (Bayesian Active Learning by Disagreement), entropy-based methods, and random sampling. BALD maximises information gain by selecting samples where the model’s predictions are most uncertain, based on the disagreement among multiple predictions generated through Monte Carlo Dropout [ 7 ]. Entropy-based methods measure prediction uncertainty by calculating the entropy of the output distribution, prioritising samples with higher entropy for labelling. Random sampling selects samples without considering model uncertainty. By comparing these strategies, our framework ensures that the labelled dataset is enriched with the most informative samples, improving the model’s learning efficiency and robustness.",
+        "Together, these elements create a comprehensive and powerful approach to optimise machine learning models for defect classification in steel production, leveraging the strengths of active learning and Bayesian principles to achieve superior performance.",
+        "This work introduces a unified, model-agnostic framework that integrates Bayesian Active Learning, pseudo-labelling, and selective Human-in-the-Loop (HITL) verification into a single learning workflow. The first contribution is the synergistic combination of entropy-based uncertainty sampling with confidence-driven pseudo-labelling, reducing annotation effort while mitigating error propagation. The second contribution is a balanced human-oracle strategy that selectively verifies only high-confidence pseudo-labels, significantly minimising manual intervention while preserving label quality. The third contribution is an empirical demonstration that the proposed framework achieves performance comparable to state-of-the-art methods using substantially fewer labelled samples, highlighting its efficiency and practical relevance for industrial defect classification.",
+        "To guide the reader through our contributions and findings, the remainder of the paper is organised as follows: Section  2  provides an in-depth review of the existing literature, focusing on the methodologies and techniques previously employed in the field. Section  3  outlines the proposed methodology, detailing the unique features that contribute to its novelty and effectiveness. Section  4  describes the experimental setup, including the dataset and evaluation metrics. Section  5  presents the results of the experiments, offering quantitative evidence of the methodology’s performance and discusses the results, interpreting their implications and comparing them to existing approaches. Finally, Section  6  concludes the paper by summarising the essential findings and suggesting avenues for future research."
+      ]
+    },
+    {
+      "heading": "Related work",
+      "paragraphs": [
+        "Defects on hot rolled steel affect the steel manufacturers adversely. To prevent these defects, various measures are taken during hot rolling, such as controlling the temperature and pressure, using proper lubrication, and inspecting the steel for faults before and after processing. Proper handling and storage of the steel can also help to prevent surface defects [ 8 ]. Fig. 1 Visual representation of steel defects from the NEU steel database [ 9 ]",
+        "The critical issues while classifying the steel images are intra-class and inter-class defects. The resemblances of defects within the classes, such as the horizontal, diagonal, and vertical patterns, make it challenging to recognise defects like scratches. The interclass similarities of the defect-crazing, pitted surface and rolled-in scale make the classification difficult. Due to the lighting, the grayscale nature of the dataset can lead to inaccurate intraclass defect detection. Recognising these defects can be challenging in industrial settings where tonnes of hot-rolled steel are manufactured daily. Additionally, the limited availability of comprehensive defect datasets poses a significant challenge for deep learning models in accurately recognising and classifying steel surface defects [ 10 ]. In summary, hot-rolled steel is a versatile material. Still, it is essential to be aware of potential surface defects and take steps to prevent them from ensuring the quality and reliability of the final product.",
+        "Deep learning has sparked interest in artificial intelligence for its potential to solve complicated challenges. It solves the complexities of high-dimensional data and applies to a wide range of STEM subjects. It has set records in image classification, object detection, pose estimation, and speech recognition, among other things [ 11 ]. In deep learning, the layers of neurons are linked between input and output and equipped with activation functions, weights, and biases. The central concept is to minimise the loss during the backpropagation stage by updating the weights and biases [ 12 ].",
+        "Boudaif et al. proposed an intelligent system that combines AlexNet and the Support Vector Machine(SVM) to classify surface defects. The model modifies the remaining convolutional layers to extract low-level features fed into the SVM classifier [ 13 ]. Chen et al. proposed an ensemble method integrating different deep convolutional neural networks (DCNNs), Residual Networks and Wide Residual Networks to improve the overall accuracy [ 14 ]. Bouguettaya et al. proposed a transfer learning technique that employed ensembles of two state-of-the-art CNN architectures, MobileNet-V2 and Xception, to classify hot-rolled steel surface defects [ 15 ]. Ge et al. proposed an Enhanced Deep Convolutional Generative Adversarial Network (EDCGAN) based data enhancement model to generate training samples for steel surface defect classification. The mixed dataset improves classification results and can increase the training samples despite limited original samples [ 16 ].",
+        "He et al. proposed a new hierarchical learning framework in which a multi-scale receptive field is used to extract multi-scale features, and autoencoders are trained to reduce the dimension of these features to improve generalisation with a penalty term image reconstruction to reduce deviation [ 17 ]. Zheng et al. proposed a deep neural network, called DARCNN, to automatically recognise surface defects in hot-rolled steel strips, combining a channel attention mechanism with residual blocks to focus on significant feature channels [ 18 ]. Vikanksh et al. proposed a deep learning framework NSLNet which addresses the vulnerabilities of deep learning-based computer vision models against adversaries and improves their robustness against image perturbations where histogram equalisations are used as the initial step to reduce the perturbation effects [ 19 ].",
+        "Zhao et al. proposed a few-shot learning-based method for strip steel surface defect classification using a feature-aware network (FaNet) with a novel feature-attention convolution module (FAC) and an online feature-enhance integration module (FEI) [ 20 ]. He et al. proposed CAE-SGAN is a semi-supervised learning method which uses a stacked CAE with a passthrough layer to extract features and introduces SGAN for semi-supervised learning, attaining significant improvement in classification accuracy and includes reconstruction as a regularisation item in the training process [ 21 ]. Wang et al. proposed a graph-based semi-supervised method for surface defect classification named MMGCN which constructs multiple micrographs instead of a large graph to improve class separation, and label unlabelled samples by propagating label information from labelled samples [ 22 ]. Zhang et al. utilised the power of transfer learning and ResNet-50 to classify steel surface defects[ 23 ]. Zhang et al. proposed a semi-supervised dual-stream neural network that generates numerous defect samples for pretraining and uses transfer learning for classification. The research showed that optimised GANs using CNNs improved generated image quality [ 24 ]. Due to the unavailability of annotated data, the focus is slowly shifting towards unsupervised models [ 25 ]. Guan et al. addressed the issue of limited data size by proposing an algorithm that uses a Generative Adversarial Network (GAN) to generate images of defects. EfficientNet was then trained on the expanded dataset to accurately classify the steel surface defects [ 26 ].",
+        "According to the literature, deep learning is increasingly considered for surface defect classification because of its proficiency with highly dimensional data. Convolutional neural networks (CNNs), ensemble approaches, transfer learning, generative adversarial networks (GANs), and attention processes have all been explored."
+      ]
+    },
+    {
+      "heading": "Bayesian active learning",
+      "paragraphs": [
+        "Deep Bayesian Active Learning (DBAL) effectively utilises limited data by integrating Bayesian inference principles into the active learning framework. Primarily focusing on uncertainty sampling, DBAL identifies and prioritises data points where the model’s predictions exhibit the highest uncertainty. This approach is especially valuable in scenarios where data is scarce and acquiring high-quality annotations is expensive. By targeting the most informative data points for labelling, DBAL significantly enhances model performance [ 27 ]. A key technique in this process is Monte Carlo (MC) Dropout, which is employed during inference to maintain dropout layers active. This allows the model to generate multiple predictions for the same input, creating a distribution of outputs that represent the uncertainty in the model’s predictions as displayed in Fig.  2 . Leveraging this distribution, DBAL more effectively discerns which data points will yield the greatest benefit for training, thereby optimising the learning process under data constraints [ 5 ]. Fig. 2 Bayesian Active Learning [ 28 ]",
+        "Bayesian inference techniques introduce a probabilistic approach to both machine learning and deep learning, enabling the integration of uncertainty and variability within the models. Bayesian approaches, particularly in the context of active learning, have garnered interest for their proficiency in representing uncertainty and achieving enhanced generalisation with limited data [ 29 ].",
+        "Gal et al. demonstrated that Bayesian Active Learning approaches excel in various problem settings due to their effective uncertainty representation and data optimisation. This approach focuses on optimal batch selection through data posterior analysis, considering the predictive posterior distribution in scenarios where labels are not initially available [ 30 ]. Siddhant et al. conducted extensive experiments across different models and acquisition functions in natural language processing tasks. Despite the inherent challenges in active learning for model comparison, their results consistently indicated that deep Bayesian Active Learning outperformed other methods in terms of overall performance [ 31 ].",
+        "Mobiny et al. introduced MC-DropConnect, an approach to approximate Bayesian inference in DNNs by using a Bernoulli distribution on model weights. This technique effectively captures model uncertainty in critical domains like medical diagnosis and autonomous driving, enhancing both prediction accuracy and uncertainty estimation without significant computational overhead [ 32 ]. He et al. proposed a novel Bayesian deep learning framework for hyperspectral image classification, which emphasises both accuracy and uncertainty estimation. This framework incorporates Bayesian Gabor layers and a Bayesian fully connected layer, offering a comprehensive approach to uncertainty management at both feature extraction and classification stages. Their findings demonstrate enhanced performance in terms of accuracy and uncertainty on public datasets, marking a significant contribution to the field [ 33 ]."
+      ]
+    },
+    {
+      "heading": "Pseudo-labelling",
+      "paragraphs": [
+        "Pseudo-labelling is indeed a common technique used in semi-supervised learning. It leverages the predictive power of a trained model to make predictions on unlabelled data, treating these predictions as pseudo-labels. These pseudo-labels are combined with the original labelled data to create an expanded training set [ 34 ]. A confidence threshold is set to filter out uncertain predictions and avoid false positives. Only predictions with confidence above the threshold are considered reliable and included in the pseudo-labelled data. This helps ensure the pseudo-labels’ quality and improves the model’s overall performance [ 35 ].",
+        "However, only a tiny fraction of samples are correctly labelled. The process of pseudo-labelling usually begins with a small pool of labelled data. As the iterations progress, the training set grows larger by incorporating pseudo-labelled samples. The number of iterations, the confidence threshold, and the model’s convergence play crucial roles in determining the size and composition of the training set throughout the process [ 36 ]. By iteratively refining the model with pseudo-labelled data, pseudo-labelling harnesses the collective knowledge gained from labelled and unlabelled data, improving the model’s ability to generalise and make accurate predictions. Overall, pseudo-labelling is an effective technique in semi-supervised learning that maximises the utilisation of unlabelled data and enhances the model’s performance by leveraging the strengths of both labelled and pseudo-labelled samples. Liu et al. proposed Anti-curriculum Pseudo-labelling (ACPL), an algorithm for semi-supervised medical image analysis. ACPL tackles multi-class, multi-label challenges and imbalanced learning, outperforming state-of-the-art methods on thorax disease and skin lesion classification benchmarks. The algorithm selects informative unlabelled samples and improves training balance, allowing it to handle diverse medical image classification tasks [ 37 ].",
+        "Zhang et al. proposed a pseudo-label enhancement framework for weakly supervised video anomaly detection. The method utilises completeness and uncertainty properties to improve self-training by introducing a multi-head classification module with a diversity loss to generate initial pseudo-labels covering various abnormal events [ 38 ]. Bonilla et al. introduced curriculum labelling, a pseudo-labelling approach for semi-supervised learning, demonstrating its competitiveness and resilience to out-of-distribution samples. The method incorporates curriculum learning principles and avoids concept drift by restarting model parameters [ 34 ]. Song et al. proposed to improve the MsxMatch algorithm by implementing active learning techniques [ 39 ].",
+        "In summary, pseudo-labelling is a valuable tool that harnesses the collective knowledge of labelled and unlabelled data, enhancing model generalisation and prediction accuracy in semi-supervised learning tasks."
+      ]
+    },
+    {
+      "heading": "Human-in-the-loop",
+      "paragraphs": [
+        "Humans are involved at various points in machine learning, from labelling, model development, tuning hyperparameters, training, inference etc. The underlying basis of human-in-the-loop is to make humans more effective and efficient along with machines [ 40 ]. Active learning [ 6 ], Interactive Machine Learning [ 41 ], and Machine teaching [ 42 ] are a few examples of approaches used in human-in-the-loop [ 43 ]. Shen et al. introduced an Active Defect Discovery (ADD) method to address the issue of high false-positive rates in unsupervised defect detection. Their approach combines the Isolation Forest as a baseline defect detector with a new algorithm called Sparse Approximated Linear Defect Discovery (SALDD) to improve detection accuracy while minimising labelling costs [ 44 ].",
+        "Delussu et al. proposed a HITL approach for person re-identification, utilising user feedback during system operation to address domain shift. By adapting relevance feedback algorithms, they reduce the semantic gap and achieve promising results in re-identification tasks. This research highlights the potential of HITL in person re-identification [ 45 ]. Rozanec et al. conducted experiments to evaluate the effectiveness of defect hinting techniques in improving the accuracy of defect inspection tasks. Participants, including researchers, students, and manual visual inspectors, labelled 600 images using different hinting techniques. The results showed that the application of hinting techniques positively impacted the labelling accuracy, highlighting the potential of integrating human expertise in the AI-driven quality inspection process [ 46 ].",
+        "Our work introduces a novel framework that optimally utilises unlabelled data to boost the performance of machine learning models, integrating human-in-the-loop strategies with active learning and pseudo-labelling. This approach uniquely addresses gaps in the existing literature by minimising the traditional reliance on extensive manual annotations that often lead to human fatigue and error. Importantly, instead of relying on complete human annotation, our method strategically utilises human oracles primarily for verifying highly confident pseudo-labels. This verification process significantly reduces the workload on human annotators by focusing their efforts on confirming model predictions rather than generating them, thereby decreasing both annotation costs and time.",
+        "Furthermore, our system efficiently leverages both uncertain and highly confident samples through iterative refinement. This not only reduces the need for exhaustive human input but also ensures high accuracy in the labelling process. By decreasing human involvement in the annotation loop, our approach promotes scalability with large datasets, leading to a more balanced training set and enhanced model performance.",
+        "From the literature, it is evident that each technique, SSL and DBAL, independently strives to achieve state-of-the-art results in defect classification. Our work proposes to combine these techniques, leveraging their complementary strengths to create a more robust and efficient framework for steel defect classification together with HITL."
+      ]
+    },
+    {
+      "heading": "Methodology and techniques",
+      "paragraphs": []
+    },
+    {
+      "heading": "",
+      "paragraphs": [
+        "This section details the methodology employed in our research to address the challenge of steel defect classification using a novel framework that integrates human-in-the-loop strategies with active learning and pseudo-labelling. Our approach aims to enhance model performance while reducing human annotation effort and improving the accuracy of defect classification. The primary objective of this research is to develop an efficient framework for classifying surface defects in hot-rolled steel."
+      ]
+    },
+    {
+      "heading": "",
+      "paragraphs": [
+        "The optimisation problem is subject to the following constraints and challenges:"
+      ]
+    },
+    {
+      "heading": "Inter-class and intra-class similarities",
+      "paragraphs": [
+        "The defect patterns may exhibit similarities within and between classes, making the distinction challenging."
+      ]
+    },
+    {
+      "heading": "Quality assurance",
+      "paragraphs": [
+        "The solution must ensure the quality and dependability of steel products by accurately classifying defects. The proposed framework combines Bayesian Active Learning, pseudo-labelling, and human-in-the-loop approaches to address the above challenges."
+      ]
+    },
+    {
+      "heading": "Scarcity of labels",
+      "paragraphs": [
+        "There is often a lack of extensive labelled datasets for training robust models in this domain. This scarcity necessitates the use of semi-supervised learning techniques to maximise the utility of available data."
+      ]
+    },
+    {
+      "heading": "Overview of our proposed method: bayesian active learning and semi-supervised with human in the loop",
+      "paragraphs": [
+        "The proposed framework integrates Bayesian Active Learning, pseudo-labelling, and human-in-the-loop techniques to enhance the performance of machine learning models for defect classification as displayed in Fig.  3 . This framework utilises two data pools: labelled and unlabelled. Initially, the model is trained using 100 randomly selected samples from the unlabelled pool, which are manually labelled by human experts. After this initial training, the model enters a prediction phase where it identifies the least confident samples from the remaining unlabelled data.",
+        "To determine the uncertainty of predictions, Bayesian Active Learning with Monte Carlo dropout is employed. Entropy heuristics are used to measure this uncertainty. The least confident samples, identified as having high uncertainty, were actively labelled. These newly labelled samples are added to the labelled pool. The model is then retrained using this expanded labelled dataset, iteratively improving its performance.",
+        "In subsequent iterations, the model again enters inference mode, generating predictions on the remaining unlabelled data using Monte Carlo dropout. Entropy heuristics are applied to identify the most confident samples, which are those with low entropy indicating high certainty. If the confidence score of these samples is above a set threshold of 90%, they are pseudo-labelled and then presented to the human oracle for verification to ensure accuracy and remove misclassifications. The verified pseudo-labelled samples are added to the combined labelled pool for further retraining of the model. This process alternates between Bayesian Active Learning and pseudo-labelling, continuing until the desired accuracy is achieved or the unlabelled pool is exhausted. Fig. 3 Overview of the Bayesian Active Learning and Semi-supervised learning with Human in the loop"
+      ]
+    },
+    {
+      "heading": "Formulation of Bayesian active learning using monte carlo dropout for steel defect classification",
+      "paragraphs": [
+        "We consider a supervised learning problem with inputs represented as  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$ x \\in \\mathcal {X} $$\\end{document} , where each  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$ x $$\\end{document}  corresponds to features in the input space, and corresponding outputs as  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$ y \\in \\mathcal {Y} $$\\end{document} . For classification problems,  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$ y $$\\end{document}  takes discrete labels from  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$ \\{1, 2, \\dots , K\\} $$\\end{document}  for  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$ K $$\\end{document}  classes. We aim to learn a deep learning model for vision problems that predicts the outputs and can also model the uncertainty in its predictions [ 47 ].",
+        "To improve the performance of machine learning models, we present an advanced Deep Bayesian Active Learning (DBAL) framework in the proposed study. It combines the ideas of Bayesian Active Learning, pseudo-labelling, and human-in-the-loop approaches. The two separate data pools that are used in this architecture are an unlabelled pool and a labelled pool. To create a working knowledge base, the model is first trained on a randomly chosen section of data that was taken from the unlabelled pool.",
+        "Our approach uses a Convolutional Neural Network (CNN) for image classification, employing a sophisticated Bayesian framework to incorporate parameter uncertainty directly into the model’s predictions.",
+        "We outline this process using a set of equations, each of which highlights a key component of our Bayesian deep learning model [ 48 ].",
+        "The foundational aspect of our model is given by the direct model prediction, formulated as: 1 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\begin{aligned} P(y|x,\\Theta ) = \\text {softmax}(f(x; \\Theta )) \\end{aligned}$$\\end{document} This equation outlines the probability distribution over possible classes  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$y$$\\end{document}  for a given input image  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$x$$\\end{document}  and a set of model parameters  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\Theta $$\\end{document} . Here,  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$f$$\\end{document}  represents the predictive function of the CNN, which processes  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$x$$\\end{document}  through a sequence of convolutional, activation, and pooling layers, subsequently applying the softmax function to the final layer’s activations to get a probability distribution.",
+        "Before adding the parameters, we establish the prior distribution of  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\Theta $$\\end{document} ,  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$P(\\Theta )$$\\end{document} , reflecting our initial beliefs about the parameter distribution:  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\Theta \\sim P(\\Theta )$$\\end{document} . The application of Bayes’ Theorem updates our beliefs about  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\Theta $$\\end{document}  based on the observed data, yielding the posterior distribution :  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$P(\\Theta |\\text {Data}) = P(\\text {Data}|\\Theta )P(\\Theta ) / P(\\text {Data})$$\\end{document}",
+        "We introduce the concept of the marginal likelihood,  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$P(\\text {Data})$$\\end{document} , which normalises the posterior to ensure it represents a proper probability distribution:  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$P(\\text {Data}) = \\int P(\\text {Data}|\\Theta )P(\\Theta )d\\Theta $$\\end{document}",
+        "The likelihood function,  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$P(\\text {Data}|\\Theta )$$\\end{document} , determines the likelihood of the observed data for various parameter values: 2 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\begin{aligned} P(\\text {Data}|\\Theta ) = \\prod _i P(y_i|x_i,\\Theta ) \\end{aligned}$$\\end{document} Assuming data point independence, the likelihood of the data given  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\Theta $$\\end{document}  is the product of the probabilities of each observed data point, central to updating our beliefs about  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\Theta $$\\end{document}  in light of new data.",
+        "Within the Bayesian framework, the predictive distribution for a new input  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$x^*$$\\end{document}  is derived by integrating over all possible configurations of the model parameters  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\Theta $$\\end{document} , as follows: 3 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\begin{aligned} P(y^*|x^*, \\text {Data}) = \\int P(y^*|x^*, \\Theta )P(\\Theta |\\text {Data})d\\Theta \\end{aligned}$$\\end{document} This integral accounts for the uncertainty in  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\Theta $$\\end{document}  by weighting each potential configuration by its posterior probability  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$P(\\Theta |\\text {Data})$$\\end{document} . However, directly computing this integral is infeasible for high-dimensional  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\Theta $$\\end{document} , necessitating approximation methods [ 5 ].",
+        "The high-dimensional nature of  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\Theta $$\\end{document}  in deep neural networks renders the direct computation of this integral infeasible, necessitating approximation techniques for practical implementation. Gal et al. suggest that using dropout during the testing phase, known as Monte Carlo dropout (MC-dropout), can be used to assess the uncertainty in the predictions of neural networks [ 5 ]. Monte Carlo methods approximate the expected value of the predictive distribution by averaging over samples drawn from the posterior distribution. MC-dropout involves training a neural network with dropout as usual, but during testing, dropout remains active to estimate predictive uncertainty. For a given test input  x , MC-dropout conducts  M  stochastic forward passes through the neural network to produce  M  samples [ 49 ]. 4 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\begin{aligned} \\mathbb {E}_{P(\\Theta |\\text {Data})}[P(y^*|x^*, \\Theta )] \\approx \\frac{1}{M} \\sum _{m=1}^{M} P(y^*|x^*, \\Theta _m) \\end{aligned}$$\\end{document} Here,  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\Theta _m$$\\end{document}  represents samples from the posterior distribution  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$P(\\Theta |\\text {Data})$$\\end{document}  and  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${E}_{P(\\Theta |\\text {Data})}$$\\end{document}  denotes the expected value of the predictive distribution over  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$y^*$$\\end{document}  given a new input  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$x^*$$\\end{document} .  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$M$$\\end{document}  is the number of stochastic forward passes through the model with dropout enabled. To ensure the quality of approximations, we employed a large number of stochastic forward passes. We set this to be 15 based on computational resource constraints and preliminary experiments indicating reasonable performance.",
+        "Monte Carlo Dropout operationalises this approximation in deep learning by applying dropout during the forward pass to simulate drawing samples from the posterior distribution of weights [ 5 ]. Each dropout application generates a distinct network, corresponding to a specific  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\hat{\\Theta }_m$$\\end{document} . MC-dropout is straightforward to implement and computationally less intensive compared to ensemble models and variational Bayes [ 49 ]. MC-dropout utilises dropout during both training and testing, requiring only multiple stochastic forward passes to estimate predictive uncertainty. In contrast, ensemble models train multiple separate neural networks, significantly increasing computational load during both training and inference. Consequently, MC-dropout offers a simpler and more scalable approach for uncertainty estimation in neural networks.",
+        "To articulate the application of MC Dropout at the layer level: 5 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\begin{aligned} \\hat{F}_{n\\ell } \\approx \\text {diag}(z_{n\\ell }) *F_\\ell \\end{aligned}$$\\end{document} Here,  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$z_{n\\ell }$$\\end{document}  is a binary mask generated from a Bernoulli distribution for the  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\ell $$\\end{document} -th layer during the  n -th sample’s forward pass, and  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$*$$\\end{document}  denotes the element-wise multiplication operation applied in the context of the layer’s output[ 5 ].",
+        "Given  M  stochastic forward passes with dropout, the empirical approximation of the Bayesian predictive distribution is computed as: 6 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\begin{aligned} \\hat{P}(y^*|x^*, \\text {Data}) \\approx \\frac{1}{M} \\sum _{m=1}^{M} P(y^*|x^*, \\hat{\\Theta }_m) \\end{aligned}$$\\end{document} For classification tasks, each forward pass  m  produces a set of class probabilities  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$P(y^*=k|x^*, \\hat{\\Theta }_m)$$\\end{document}  for each class  k . The average probability of class  k  across all passes is: 7 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\begin{aligned} \\bar{P}(y^*=k|x^*) = \\frac{1}{M} \\sum _{m=1}^{M} P(y^*=k|x^*, \\hat{\\Theta }_m) \\end{aligned}$$\\end{document} Entropy quantifies the uncertainty in the averaged probability distribution. It is calculated as: 8 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\begin{aligned} H(\\bar{P}(y^*|x^*)) = -\\sum _k \\bar{P}(y^*=k|x^*) \\log (\\bar{P}(y^*=k|x^*)) \\end{aligned}$$\\end{document} After the model is inferred on  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$ D_U $$\\end{document} , using equation ( 8 ) predictive entropy for each data point is predicted again. This equation calculates the entropy  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$H(y^*|x^*)$$\\end{document}  for a data point  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$x^*$$\\end{document} , where  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\bar{P}(y^*|x^*)$$\\end{document}  is the average predicted probability of class  c  for data point  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$x^*$$\\end{document} , averaged over all  T  stochastic forward passes.",
+        "Here,  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$H(\\bar{P}(y^*|x^*))$$\\end{document}  represents the entropy of the averaged probability distribution, providing a measure of the predictive uncertainty. Higher entropy values indicate greater uncertainty, as the probability distribution is more uniform, suggesting the model does not strongly favour any particular class [ 50 ].",
+        "The validity of the empirical approximation is supported by the Law of Large Numbers, which states that as  M  increases, the sample mean of the predictions converges to the expected value under the posterior distribution, validating the MC Dropout approximation.",
+        "The Bayesian Active Learning process was initialised by randomly sampling 10% of the unlabelled dataset to form the initial labelled pool  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$D_L$$\\end{document} , while the remaining samples composed the unlabelled pool  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$D_U$$\\end{document} . At each iteration, the model trained on  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$D_L$$\\end{document}  was evaluated on  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$D_U$$\\end{document}  using Monte Carlo (MC) dropout to estimate predictive uncertainty. The number of stochastic forward passes  M  was set to 15, following prior work [ 5 ,  51 ] and verified empirically in preliminary experiments, where increasing  M  beyond 15 produced negligible changes in the entropy estimates while substantially increasing computation time. Thus,  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$M=15$$\\end{document}  provided a stable and computationally efficient approximation of the predictive distribution.",
+        "At each active-learning epoch, the top 50 uncertain samples (based on entropy or BALD heuristic) were selected from  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$D_U$$\\end{document}  and queried for labels. Samples with model confidence above 90% were pseudo-labelled and the highest entropy were labelled by humans. The newly labelled and pseudo-labelled samples were then added to  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$D_L$$\\end{document} , after the human-in-the-loop verification and the model was retrained. The loop continued until (i) validation accuracy plateaued for five epochs or (ii) the labelling budget was reached."
+      ]
+    },
+    {
+      "heading": "Formulation of pseudo labelling and human in the loop verification",
+      "paragraphs": [
+        "The next step after Bayesian Active Learning using MC-dropout is to identify and label the most uncertain data points. These labelled points are then added to the total labelled pool. These processes happen in real time settings and the human gets the feedback immediately about the most uncertain data points. The model is subsequently retrained with this combined labelled data. In the following step, we again perform  M  stochastic forward passes using ( 7 ), but this time we focus on the least uncertain samples which are given pseudo-labels. The model infers on  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$ D_U $$\\end{document}  where the predictive entropy for each data point is calculated using the ( 8 ). This equation calculates the entropy  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$H(y^*|x^*)$$\\end{document}  for a data point  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$x^*$$\\end{document} , where  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\bar{p}(y_c^*|x^*)$$\\end{document}  is the average predicted probability of class  c  for data point  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$x^*$$\\end{document} , averaged over all  M  stochastic forward passes.",
+        "After performing  M  stochastic forward passes, the model identifies the least  k  uncertain samples, with a confidence threshold greater than 90% and pseudo-labels them. A human then reviews these pseudo-labels to correct any mistakes.",
+        "This process is alternated between Bayesian Active Learning and pseudo-labelling and it continues until the expected accuracy is achieved or the unlabelled pool is exhausted.",
+        "The selection criterion for pseudo-labelling can be formalised as follows: 9 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\begin{aligned} X_{\\text {confident}} = \\{x^* | H(y^*|x^*) \\le M_{\\text {confident}}\\} \\end{aligned}$$\\end{document} where  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$T_{\\text {confident}}$$\\end{document}  is a predefined threshold for selecting highly confident predictions. For each data point  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$x^*$$\\end{document}  in  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$X_{\\text {confident}}$$\\end{document} , a pseudo-label is assigned based on the class with the maximum predicted probability: 10 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\begin{aligned} \\hat{y} = \\arg \\max _c \\bar{p}(y_c^*|x^*) \\end{aligned}$$\\end{document} If the confidence of the prediction (measured by  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\max _c \\bar{p}(y_c^*|x^*)$$\\end{document} ) exceeds a certain confidence threshold, these data points are pseudo-labelled.",
+        "These pseudo-labels are then subject to verification by a human annotator before being integrated into the labelled pool of the dataset for subsequent training iterations of the model. This verification step ensures the quality and reliability of the pseudo-labels:",
+        "Action 1 : Correct pseudo-labels are directly added to the labelled dataset.",
+        "Action 2 : Incorrect pseudo-labels are corrected by the human oracle before addition to the labelled dataset.",
+        "This real-time verification mechanism acts as a quality control measure, minimising the risk of propagating errors through the model’s training process. By incorporating both automated pseudo-labelling and human oversight, the process effectively leverages the model’s predictive capabilities while safeguarding against the accumulation of mislabelled data.",
+        "The process of pseudo-labelling aims to augment the training dataset with additional labelled examples, leveraging the model’s current predictive capability to generate new labels for unlabelled data. This strategy can effectively enlarge the training set, especially when acquiring true labels is costly or time-consuming. By iteratively updating the model with pseudo-labelled data, we can potentially improve its performance and generalisation capability on unseen data."
+      ]
+    },
+    {
+      "heading": "Summary of the proposed framework",
+      "paragraphs": [
+        "The active learning process is carried out in alternating cycles of Bayesian Active Learning and pseudo-labelling: In even-numbered iterations, Bayesian Active Learning is employed for uncertainty estimation and human labelling of high-entropy data points. In odd-numbered iterations, pseudo-labelling is utilised, where the model’s high-confidence predictions are reviewed and verified by human experts. This iterative cycle continues until a predetermined number of iterations is reached or a specific performance threshold is achieved as displayed in Fig.  4 . This approach synergistically combines model-driven uncertainty assessments and human expertise, enhancing the model’s accuracy in defect classification on steel surfaces. Fig. 4 Flowchart showing the Bayesian Active Learning and Semi-supervised learning with Human in the loop",
+        "Algorithm 1 Bayesian active learning and pseudo-labelling for steel surface defect classification ."
+      ]
+    },
+    {
+      "heading": "Methodological contributions",
+      "paragraphs": [
+        "The key methodological contributions of this work can be summarised as follows: Hybrid Active Learning + Pseudo-labelling Strategy.  We alternate Bayesian Active Learning (uncertainty sampling) and pseudo-labelling phases in even and odd iterations respectively, which allows the model to exploit both scarce human annotations and abundant unlabelled data in a complementary fashion. Selective Human Verification of Predictions.  Unlike standard pseudo-labelling, our framework routes only low-confidence predictions to human verification or correction from incorrect pseudo-labels, thus reducing annotation overhead while maintaining high label quality. Model-agnostic.  Our framework supports both pseudo-labelling and human verification in a model-agnostic fashion and it does not depend on any particular network architecture. Simulated Human-in-the-Loop Protocol.  In our experiments, the human verification is simulated via the BAAL oracle, allowing controlled evaluation of the human-in-the-loop concept without requiring actual annotators — facilitating reproducibility and rapid iteration."
+      ]
+    },
+    {
+      "heading": "Experimental setup",
+      "paragraphs": [
+        "Thorough experimental validation is essential for the proposed framework for classifying surface defects in hot-rolled steel to be effective. In this part, we outline the extensive set of tests performed to evaluate our strategy’s viability, efficiency, and scalability. The tests are intended to compare the model to current state-of-the-art techniques and to shed light on how the model performs under various scenarios. We start by outlining the dataset that we utilised as the basis for our empirical research. We then go into depth on the assessment measures used, such as accuracy, F1 score, and confusion matrix, to give a comprehensive picture of the model’s capabilities. The experimental conditions and model training subsections further explain the hardware and software setups, learning parameters, and training techniques. To assess robustness against random initialisation, the proposed framework (entropy heuristic) was additionally evaluated across three random seeds (43, 123, and 456). These repeated runs were used to compute the mean and standard deviation of the reported accuracy and F1 score in Section  5.3 .",
+        "ResNet-18 was used as the backbone architecture in the experiments and comprises 18 convolutional layers based on residual learning, which improves optimisation while maintaining high classification accuracy. Residual learning mitigates degradation in deeper networks and alleviates the vanishing-gradient problem by enabling layers to learn residual mappings [ 52 ]. ResNet-18 was selected because it offers a favourable balance between computational efficiency and representational capacity, making it a lightweight yet effective architecture for moderate-sized industrial image datasets. This trade-off has been supported in prior literature, where ResNet-18 has demonstrated strong performance as a practical baseline for defect classification and active-learning applications [ 5 ]. The primary objective of this work was to evaluate the proposed Bayesian active-learning and pseudo-labelling framework rather than optimise backbone complexity. As the framework is model-agnostic, it can be readily integrated with alternative architectures such as EfficientNet or DenseNet in future work. The implementation code is publicly available at  https://github.com/ashys2012/Bayesian_Active_learning_With_Pseudo_labelling_HITL.git ."
+      ]
+    },
+    {
+      "heading": "Dataset",
+      "paragraphs": [
+        "The surface defect database at Northeastern University (NEU) has 1,800 grayscale images organised into six classes, with 300 samples in each class, as shown in Fig.  1  [ 53 ]. The six types of hot-rolled steel strip surface defects: are crazing (Cr), inclusion (In), patches (Pa), pitted surface (PS), rolled-in scale (RS), and scratches (Sc). The images in the dataset are all 200 x 200 pixels in size. Crazing appears as a network of cracks on the steel surface due to the formation of oxide layers during rolling. Patches are irregularities on the surface caused by non-uniform heating during rolling, while inclusions are particles of impurities trapped in the steel. Pitted surfaces are caused by corrosion or exposure to acidic environments, while rolled-in scale occurs due to iron oxide scales on the surface during rolling. Scratches are surface blemishes caused by mechanical damage during handling and transportation. The NEU surface defect database exclusively comprises images of defective steel and lacks examples of non-defective ’normal’ steel surfaces. Consequently, detecting defects essentially becomes an exercise in identifying anomalies within the presented defect types."
+      ]
+    },
+    {
+      "heading": "Evaluation metrics",
+      "paragraphs": []
+    },
+    {
+      "heading": "",
+      "paragraphs": [
+        "Evaluating the performance of a classification model requires a comprehensive set of measures to gauge its accuracy and robustness accurately. In this study, we selected three critical evaluation indicators to assess our proposed framework’s efficacy for classifying surface defects in hot-rolled steel. These include the accuracy score, which measures the ratio of correctly classified samples; the F1 score, a harmonised metric of precision and recall; and the confusion matrix, which offers an in-depth understanding of the model’s performance across various classes. Together, these indicators furnish a holistic assessment, facilitating an in-depth understanding of the model’s overall functionality, its areas of strength, and potential avenues for improvement."
+      ]
+    },
+    {
+      "heading": "Accuracy",
+      "paragraphs": [
+        "is defined as the percentage of correct predictions out of the total predictions made. It is calculated using the formula: 11 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\begin{aligned} \\text {Accuracy} = \\frac{\\text {TP} + \\text {TN}}{\\text {TP} + \\text {TN} + \\text {FP} + \\text {FN}} \\end{aligned}$$\\end{document} where the terms are defined as follows: TP (True Positive) : The number of correct positive predictions. TN (True Negative) : The number of correct negative predictions. FP (False Positive) : The number of incorrect positive predictions. FN (False Negative) : The number of incorrect negative predictions. This metric is commonly used in machine learning and can be calculated using the  sklearn  library in Python."
+      ]
+    },
+    {
+      "heading": "The F1 score",
+      "paragraphs": [
+        "is a measure that assesses the balance between precision and recall. It is calculated using the formula: 12 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\begin{aligned} \\text {F1 Score} = 2 \\times \\frac{\\text {Precision} \\times \\text {Recall}}{\\text {Precision} + \\text {Recall}} \\end{aligned}$$\\end{document} where the terms are defined as follows: Precision : The ratio of true positive predictions to the total number of positive predictions. Recall : The ratio of true positive predictions to the total number of actual positive cases. The F1 score is a commonly used metric in machine learning for evaluating the performance of classification models, especially in situations where the class distribution is imbalanced. It can be calculated using the  sklearn  library in Python."
+      ]
+    },
+    {
+      "heading": "A Confusion Matrix",
+      "paragraphs": [
+        "is a table used for evaluating the effectiveness of a classification model. It reflects the model’s number of correct and wrong predictions in a tabular format. By analysing the confusion matrix, we can gain insights into the overall accuracy of the model and its performance with respect to individual classes, including where it tends to make mistakes. This detailed view helps identify specific areas for improvement and fine-tune the model."
+      ]
+    },
+    {
+      "heading": "Experimental settings",
+      "paragraphs": [
+        "The settings will be default for all the experiments carried out. The experiments were conducted on a Linux operating system using an Intel i7 processor running at 3.60 GHz with 32 GB of RAM, and the graphics processing unit used was an Nvidia Quadro P5000. PyTorch (1.10.1) was the deep learning framework employed in this study. The learning rate was fixed at 0.001, chosen based on its common usage in similar deep-learning applications and found to be effective in preliminary experiments. The momentum value was set to 0.9, which is widely used in the machine learning and neural network fields. The batch size was set to 32, balancing convergence speed and memory usage, and the number of training epochs was fixed at 30. For the active learning process, 50 of the most informative samples were selected and added to the pool (Table  1 ). Table 1 Hyperparameter configuration used for the Bayesian active learning and pseudo-labelling experiments Hyperparameter Value Active learning query size 50 Pseudo-labelling query size 50 Number of active learning rounds (epochs) 30 Batch size 32 Learning rate 0.001 Confidence threshold 0.9 Monte Carlo iterations 15",
+        "The dataset was split with 1200 images used for training and 600 for testing. Basic augmentation methods such as random flip and normalisation were performed to preprocess the images. A confidence threshold of 90% was used in pseudo-labelling, empirically chosen to ensure high accuracy in pseudo-labelled samples, effectively balancing confidence and error rates. An automated oracle mechanism was employed to manage the active learning queries, to maintain cost efficiency. This was implemented using a library that handled the active learning queries and revealed the actual labels only when queried by the active learning process. This approach masked the actual labels and only revealed them to the model during active learning queries, ensuring efficient and consistent querying of the labels, thereby reducing potential human error and speeding up the process [ 54 ]."
+      ]
+    },
+    {
+      "heading": "Human-in-the-loop verification process",
+      "paragraphs": [
+        "The proposed framework integrates a simulated human-in-the-loop (HITL) mechanism during the active learning cycle to ensure label reliability while minimising annotation effort. The active learning experiments were implemented using the BAAL library [ 54 ]. In each active learning iteration, the trained model evaluated the unlabelled pool, and samples with a confidence score above 90 % were automatically assigned pseudo-labels. This static confidence threshold was selected to maintain a balance between pseudo-labelling accuracy and sample diversity. The human verifier’s role was limited to correcting pseudo-labels which were misclassified during pseudo-labelling.",
+        "Because the experiments were conducted using simulated human responses (through the BAAL oracle function), no physical human interface, annotation tool, or timing constraint was applied. The algorithm automatically selected the top 50 most uncertain samples per iteration for verification. In a real-world deployment, these interactions would occur via a dedicated annotation interface, allowing operators to confirm or correct pseudo-labels in real time. This simulation was used for cost efficiency, rapid experimentation and consistency across iterations, while still reflecting the expected impact of human-in-the-loop verification on overall model performance."
+      ]
+    },
+    {
+      "heading": "Results and discussion",
+      "paragraphs": [
+        "This research’s primary objective is to validate our innovative framework’s effectiveness. This framework uniquely integrates Bayesian Active Learning, pseudo-labelling, and human-in-the-loop verification to maximise the utility of unlabelled data. To demonstrate the advantages of our approach, we compare its performance against both Bayesian Active Learning, pseudo-labelling and ensemble learning independently [ 55 ].",
+        "To achieve this, we have conducted three sets of experiments:  Bayesian Active Learning Baseline : The first experiment establishes a baseline by evaluating the effectiveness of the Bayesian Active Learning technique using MC dropout. Heuristics such as entropy, BALD, and random selections are used to provide a baseline comparison. Pseudo-Labelling Baseline : The second experiment assesses the effectiveness of pseudo-labelling techniques, utilising comparison heuristics akin to those used in Active Learning. It is based on the fundamental intuition that the initial labels produced may be underconfident, potentially failing to meet the necessary threshold. Conversely, after the initial few epochs, the model might become overconfident, leading to incorrect classifications. Justifying this approach permits an evaluation of label quality and the model’s dependence on precise annotations. By identifying and correcting incorrect pseudo-labels with the help of the human oracle, and then reincorporating them into the labelled pool, we enhance the training process. This step is crucial for measuring the resilience of the pseudo-labelling technique against label noise which is a prevalent issue in semi-supervised learning scenarios. Proposed Framework Evaluation : The final experiment focuses on assessing the effectiveness of our integrated framework. We employ a variety of heuristics, including entropy, BALD, and a random selection, to understand their impact on the model’s performance. The experiment aims to delve deeper into the effectiveness of different heuristics within our Bayesian Active Learning framework. This includes focusing on the selection of both the most uncertain and the most confident samples from an unlabelled data pool. These experiments are designed to test the proposed method against Bayesian Active Learning and pseudo-labelling approaches, providing a comprehensive evaluation of the framework’s performance in comparison with them."
+      ]
+    },
+    {
+      "heading": "Bayesian active learning using monte carlo dropout",
+      "paragraphs": [
+        "This section presents the results of the active learning experiments conducted within a Bayesian framework, utilising Monte Carlo (MC) dropout for uncertainty estimation. The experiments compare the performance of BALD (Bayesian Active Learning by Disagreement), Entropy, and Random heuristics [ 56 ,  57 ]. Figures  5  and  6  display the test accuracy and F1-score graphs, indicating that all heuristics yield similar accuracy levels. However, within the Bayesian context, the BALD heuristic outperforms the Entropy and Random heuristics at the 10th active learning epoch with a total of 330 labelled samples. Yet, this superior performance of BALD diminishes in the following iteration.",
+        "As the active learning process progresses, the Entropy heuristic demonstrates robust improvement, matching the performance of BALD by the 23rd epoch with 560 labelled samples. By the 26th epoch, the performance of the Random heuristic aligns with that of BALD and Entropy.",
+        "Upon further examination, it is noted that the Entropy and Random heuristics maintain an impressive accuracy of 97.40%, slightly outstripping the accuracy of BALD at 95.60%. The peak accuracies for Entropy and Random are 98.33%, while BALD reaches a peak of 98.00%. These results highlight the effectiveness of the Bayesian approach, particularly with the Entropy and Random heuristics, in the latter stages of the active learning epochs.",
+        "Analysis of the confusion matrices from the training phase reveals that the sample selection by the Entropy and BALD heuristics—both of which are informed by the Bayesian framework and leverage MC dropout—results in an imbalanced representation among the classes. On the other hand, the Random heuristic demonstrates a more equitable distribution of classes. In the testing phase, the confusion matrices as shown in Fig.  7  consistently misclassified the ’pitted surface’ defect as ’crazing’ for all heuristics. This misclassification, likely due to the inherent similarity between the two defect classes, leads to a reduction in overall model accuracy. Consistent with findings from ’Towards Robust and Reproducible Active Learning using Neural Networks’, active learning (AL) methods displayed marginal or no advantage over the random sampling baseline under experimental conditions even in our case after using MC dropout as Bayesian inference [ 58 ].",
+        "In summary, while the BALD heuristic initially shows promise in the Bayesian Active Learning framework, Entropy and Random heuristics eventually exhibit superior performance, especially in later epochs. Fig. 5 Test accuracy for Bayesian Active Learning experiments Fig. 6 Test F1 score for Bayesian Active Learning experiments Fig. 7 Confusion matrices for the Bayesian Active Learning heuristics (Test)"
+      ]
+    },
+    {
+      "heading": "Semi supervised learning using pseudo-labelling",
+      "paragraphs": [
+        "The pseudo-labelling experiments reveal the comparable performance of the BALD and Random heuristics. As depicted in Fig.  8 , at approximately the 28th epoch, BALD and Random converge at 94.00% accuracy and steadily rise to 97.00% in the following ten epochs. Meanwhile, Entropy rises steadily from 78.00% in the 28th epoch to 94.00% in the 48th pseudo-label epoch. In the later Pseudo label epochs, specifically, the 53rd, BALD’s accuracy declines by 2.00%, remaining comparable to Entropy’s. In this experiment, Random outperforms the other heuristics.",
+        "Further, we observe that, in each Pseudo label epoch, the selection of the most confident BALD samples produces numerous incorrect pseudo-labels, which require correction by a human-in-the-loop. Incorporating incorrect pseudo-labels into the labelled loop could have catastrophic consequences. While Random initially produced a few incorrect pseudo-labels in the early pseudo-label epochs, it drastically reduced them. Entropy, on the other hand, had the least number of incorrect pseudo-labels. The human corrected all incorrect pseudo-labels in the loop before being fed back into the labelled set.",
+        "BALD heuristic, which strategically selected samples based on high model uncertainty and treated its samples as either high entropy or significant disagreement among the model’s predictions—consistently resulted in a substantial number of incorrect pseudo-labels as we see from Fig.  10 . This can be primarily attributed to BALD’s tendency towards incorporating challenging samples into the training set, by increasing the risk of mislabelling. BALD is efficient in identifying informative samples, but its aggressive strategy towards uncertainty compromises the labelling accuracy. Similarly, in terms of the F1 score, Figure  9  illustrates that Random achieves superior performance throughout the experiment, further reinforcing its overall effectiveness compared to BALD and Entropy. From the confusion matrices in Fig.  11 , we can see the model finds it difficult to predict pitted surfaces correctly misclassifying it as crazing, inherently due to the similarities in the defect textures. Fig. 8 Test accuracy for pseudo-labelling experiments Fig. 9 Test F1 score for pseudo-labelling experiments Fig. 10 Incorrect number of pseudo-labels for each heuristics in each epoch",
+        "In the initial stages of pseudo-labelling with random sampling, a large number of incorrect pseudo-labels were observed due to the heuristic’s unbiased sample selection. This approach led to challenges in accurately classifying difficult samples. However, as training progressed, a noticeable decrease in incorrect pseudo-labels was observed, indicating an improvement in the model’s classification abilities across a diverse set of samples. This improvement suggests that despite its initial drawbacks, random sampling ultimately enhances the model’s adaptability and understanding of the data through exposure to diverse instances highlighting a balance between the challenges of random sampling and the benefits of diverse data exposure in semi-supervised learning.",
+        "The entropy heuristic, focused on samples with low entropy, effectively reducing incorrect pseudo-labels by selecting those where the model was highly confident. This strategy, emphasising samples, naturally resulted in higher accuracy in pseudo-labelled samples. By avoiding hard-to-classify cases and prioritising confident samples, entropy-based selection demonstrated a superior ability to maintain label integrity, demonstrating its efficacy in improving model performance in low-uncertainty situations. This method emphasises the importance of a careful selection process in increasing pseudo-label accuracy. Fig. 11 Confusion matrices for the pseudo-labelling experiment (Test)",
+        "It is important to note that the early epochs of pseudo-labelling using the entropy heuristic exhibited slower progress. This slowdown was primarily due to the implementation of a cautious 90% confidence threshold for selecting samples. In the initial stages, the model, working with limited data, often failed to achieve this high level of confidence, leading to fewer samples being selected for pseudo-labelling. Consequently, this not only slowed the rate of expanding the labelled dataset but also affected the model’s ability to quickly converge.",
+        "Additionally, to ensure the reliability and accuracy of the pseudo-labels, a human-in-the-loop manually verified and corrected each incorrect pseudo label generated during the Pseudo-label epochs. This manual verification and correction process enhanced the overall quality control of the pseudo-labels and contributed to the refinement and improvement of the training data.",
+        "In summary, the BALD heuristic resulted in a high occurrence of incorrect pseudo-labels by focusing on highly uncertain samples, reflecting its aggressive exploration strategy. The random heuristic initially produced a large number of mislabelled instances due to its unselective selection process, but incorrect labels decreased over time as the model’s generalisation improved. The entropy heuristic achieved comparable accuracy in pseudo-labelling with some setbacks in the initial epochs, together with the least number of incorrect pseudo-labels due to prioritising highly confident samples. This cautious and conservative approach resulted in the selection of the most reliable data for training, demonstrating its effectiveness in maintaining label integrity throughout the pseudo-labelling process.",
+        "In conclusion, the presence of a human verification feedback system plays a pivotal role in safeguarding the reliability of pseudo-labels generated during the training process. Without this human intervention, the pseudo-labelling approach could potentially lead to catastrophic outcomes by propagating and amplifying label errors throughout the model’s training data. Such errors, if unchecked, might severely degrade the model’s performance and its ability to generalise from the training data to real-world scenarios. Therefore, integrating human oversight not only mitigates these risks but also enhances the overall robustness and accuracy of the learning system, underscoring its indispensability in scenarios where high-quality labelling is crucial."
+      ]
+    },
+    {
+      "heading": "Proposed framework: Bayesian active learning and with semi-supervised learning using pseudo-labelling with human in the loop",
+      "paragraphs": [
+        "In our proposed approach of combining pseudo-labelling with Bayesian Active Learning and human-in-the-loop, we evaluated the performance of three widely used heuristics: BALD, random, and entropy. A summary of the experimental results is tabulated in Table  2 , which highlights the performance of the BALD, Random, and Entropy heuristics across various epochs. The accuracy results from Fig.  12  indicate that entropy outperformed the other two heuristics concerning accuracy. At the 24th Bayesian Active Learning epoch, entropy achieved 96.00% accuracy, followed by random at 91.00% and BALD at 89.00%. Furthermore, entropy maintained the accuracy steadily, reaching a maximum accuracy of 97.95%. In comparison, random only reached a maximum accuracy of 97.11%, while BALD reached a maximum accuracy of 96.99%. We observed distinct patterns and outcomes for different heuristics. For the entropy heuristic, pseudo-labelling remained highly reliable across repeated runs, yielding on average approximately one incorrect pseudo-label correction across three random seeds, consistent with the behaviour illustrated in Fig.  13 . The random heuristic initially had a high number of incorrect pseudo-labels, then it reduced as the model started to generalise. However, the BALD heuristic demonstrated significant improvement, initially producing a few incorrect predicted pseudo-labels in the early epochs, which then stabilised. Nevertheless, towards the later stages, BALD did exhibit a slight increase in the count of incorrect pseudo-labels, reaching around 1 or 2 from epoch 14 onwards. BALD and random had 23 and 47 incorrect pseudo-labels, respectively, during experiments. The analysis of the train confusion matrices for the BALD and entropy heuristics shows that class imbalance persists in the dataset. In contrast, the random heuristic exhibits relatively balanced samples across the classes throughout the training process. Examining the test confusion matrices from Fig.  14  specifically for the BALD heuristic, we observe that patches are incorrectly predicted as pitted surface defects. Similarly, in the test confusion matrices for the entropy and random heuristics, we notice that pitted surface defects are incorrectly labelled as crazing. We emphasise that the human-in-the-loop mechanism was critical in correcting the errors in the pseudo-labelling process. Overall, our experiments demonstrate the effectiveness of combining active learning and pseudo-labelling with the added benefit of human intervention in correcting errors. The results also suggest that entropy is a reliable heuristic for active learning, with better performance than BALD and random. To assess robustness, the proposed Bayesian Active Learning + pseudo-labelling (Entropy heuristic) experiment was repeated across three random seeds (43, 123, and 456). The mean test accuracy was  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$99.73 \\pm 0.14\\%$$\\end{document}  and the F1 score was  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$99.73 \\pm 0.14\\%$$\\end{document} , indicating highly stable performance across random initialisation.",
+        "In summary, our study demonstrates the efficacy of various heuristics in an active learning framework with pseudo-labelling and human involvement. The entropy heuristic performed well, reaching high accuracy due to its precision in selecting low-entropy, high-confidence samples. This strategy and human verification ensured the reliability of training data while minimising inaccurate classifications. In contrast, despite its initially high error rate, the random heuristic improved over time as the model’s generalisation skills improved classification tasks. BALD, with its emphasis on high-uncertainty samples, demonstrated significant advances, but it also encountered difficulties with ambiguous situations, indicating the ongoing risk of mislabelling. Furthermore, we detected an influence of class imbalance, particularly in the BALD heuristic, indicating the importance of appropriate heuristic selection to handle such imbalances. Our approach emphasises the importance of heuristic selection and the crucial role of human intervention in refining the pseudo-labelling process, thereby improving the model’s efficiency and accuracy in defect classification tasks.",
+        "Overall, the proposed framework reduces the human effort in Bayesian Active Learning, which can maximise the throughput from the unlabelled data, achieved by incorporating pseudo-labelling. The proposed framework is also model agnostic, and any models can be used with this framework. However, the framework’s performance depends on the choice of the heuristics used in the active learning and pseudo-labelling processes. Table 2 Summary of results of the experiments performed (Test) Experiment Heuristic Accuracy (Convergence) Incorrect pseudo-labels Labelled Training Samples Time (minutes) Bayesian Active Learning BALD 96.58% N/A 560 60 Entropy 97.67% N/A 700 51 Random 96.52% N/A 660 49 Pseudo-labelling BALD 97.00% 805 700 127 Entropy 98.67% 24 1080 98 Random 97.33% 114 820 96 Bayesian Active Learning +Pseudo-labelling (Proposed Method) BALD 98.33% 23 450 95 Entropy 99.73% ± 0.14% 1 280 75 Random 97.67% 47 420 73 Combination (BALD + Entropy) 98.67% 12 310 80 Ensemble Learning Model [ 55 ] 99.72% N/A 1440 N/A Active Learning [ 55 ] Entropy 97.37% N/A 1050 46 Note: N/A indicates data not applicable and the bold values denote the best performing metrics"
+      ]
+    },
+    {
+      "heading": "Combination heuristic",
+      "paragraphs": [
+        "In addition to the previous experiments, we investigated a combination heuristic approach using entropy for selecting the most uncertain samples and BALD for choosing the most confident samples. At the 18th epoch, an accuracy of 93.05% was achieved and gradually increased to 98.00%, which was maintained after that. However, we observed 12 incorrect pseudo-labels throughout the experiment that were greater than entropy but lower than BALD and random heuristics. The combination approach performed could not perform comparably to our proposed approach, but further exploring various heuristic combinations may improve performance. Fig. 12 Accuracy vs Epoch graph for the proposed framework Fig. 13 Incorrect number of pseudo-labels per epoch for the proposed framework Fig. 14 Confusion matrices for the proposed framework (Test)"
+      ]
+    },
+    {
+      "heading": "Conclusion and future work",
+      "paragraphs": [
+        "This research has addressed a significant challenge in the quality assurance of steel products through an innovative semi-supervised learning framework that integrates Bayesian Active Learning, pseudo-labelling, and human-in-the-loop methodologies in real-time. Our approach effectively addresses the challenges of inter-class and intra-class similarities among defect patterns, which are known to complicate the defect classification process. This effectiveness has been demonstrated experimentally through our results. By implementing a model-agnostic framework, we ensure broad applicability and flexibility in accommodating various machine learning models, thereby enhancing defect classification accuracy while reducing the reliance on extensive labelled datasets. Experimental evaluation on the NEU surface defect dataset shows that HITL achieves a classification accuracy of 99.73 %, while requiring only 23 % of manual annotations, thereby reducing human labelling effort by 80 %.",
+        "The novel contributions of our hybrid framework are threefold. Firstly, integrating Bayesian Active Learning with entropy-based oracle labelling and selective human verification which enhances the accuracy and efficiency of the model. This integration significantly mitigates the risk of misclassification common in pseudo-labelling approaches. Secondly, our framework judiciously incorporates human expertise to verify labels only when the model’s confidence threshold is exceeded, optimising human effort and ensuring high-quality data annotation in real-time. Thirdly, our empirical results demonstrate that our framework not only achieves performance comparable to state-of-the-art methods but does so with substantially fewer labelled examples, showcasing its efficiency and cost-effectiveness in leveraging unlabelled data.",
+        "However, the study’s limitations include the absence of actual human involvement in the experimental phases, which was substituted with a library to simulate true labels for cost efficiency. Future research will focus on the actual integration of human verification to assess the real-world applicability of the human-in-the-loop approach. Additionally, exploring a wider array of heuristics, active learning techniques, and other semi-supervised learning strategies will further enhance our framework. The present study was conducted solely on the NEU surface defect dataset, which is a widely used benchmark for steel defect classification; however, the cross-domain generalisability of the proposed framework to other industrial materials and inspection settings remains an open question. Future work will therefore extend the methodology to diverse datasets, including steel images without defects as well as datasets from other domains, to further validate and refine the approach. Additionally, we plan on incorporating defect detection using advanced algorithms in the future using our hybrid active learning approach. This framework could also be applied to other industrial quality control scenarios, such as identifying defects in textiles or electronics, monitoring manufacturing processes in automotive assembly, enhancing anomaly detection in surveillance systems, and improving diagnostic accuracy in medical imaging.",
+        "In summary, our research provides a robust framework for defect classification in steel production, promising substantial reductions in manual annotation efforts and improvements in model accuracy and generalisation capabilities. This work not only advances the field of semi-supervised learning in industrial applications but also sets a foundation for future explorations into more effective human-machine collaborative systems."
+      ]
+    }
+  ],
+  "tables": [
+    {
+      "caption": "Hyperparameter configuration used for the Bayesian active learning and pseudo-labelling experiments",
+      "headers": [
+        "Hyperparameter",
+        "Value"
+      ],
+      "rows": [
+        [
+          "Active learning query size",
+          "50"
+        ],
+        [
+          "Pseudo-labelling query size",
+          "50"
+        ],
+        [
+          "Number of active learning rounds (epochs)",
+          "30"
+        ],
+        [
+          "Batch size",
+          "32"
+        ],
+        [
+          "Learning rate",
+          "0.001"
+        ],
+        [
+          "Confidence threshold",
+          "0.9"
+        ],
+        [
+          "Monte Carlo iterations",
+          "15"
+        ]
+      ],
+      "header_groups": [],
+      "table_alignment_status": "resolved",
+      "row_provenance": [
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 2
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 2
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 2
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 2
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 2
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 2
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 2
+          }
+        ]
+      ],
+      "tbody_alignment_status": "resolved"
+    },
+    {
+      "caption": "Summary of results of the experiments performed (Test)",
+      "headers": [
+        "Experiment",
+        "Heuristic",
+        "Accuracy (Convergence)",
+        "Incorrect pseudo-labels",
+        "Labelled Training Samples",
+        "Time (minutes)"
+      ],
+      "rows": [
+        [
+          "Bayesian Active Learning",
+          "BALD",
+          "96.58%",
+          "N/A",
+          "560",
+          "60"
+        ],
+        [
+          "",
+          "Entropy",
+          "97.67%",
+          "N/A",
+          "700",
+          "51"
+        ],
+        [
+          "",
+          "Random",
+          "96.52%",
+          "N/A",
+          "660",
+          "49"
+        ],
+        [
+          "Pseudo-labelling",
+          "BALD",
+          "97.00%",
+          "805",
+          "700",
+          "127"
+        ],
+        [
+          "",
+          "Entropy",
+          "98.67%",
+          "24",
+          "1080",
+          "98"
+        ],
+        [
+          "",
+          "Random",
+          "97.33%",
+          "114",
+          "820",
+          "96"
+        ],
+        [
+          "Bayesian Active Learning +Pseudo-labelling (Proposed Method)",
+          "BALD",
+          "98.33%",
+          "23",
+          "450",
+          "95"
+        ],
+        [
+          "",
+          "Entropy",
+          "99.73% ± 0.14%",
+          "1",
+          "280",
+          "75"
+        ],
+        [
+          "",
+          "Random",
+          "97.67%",
+          "47",
+          "420",
+          "73"
+        ],
+        [
+          "Combination (BALD + Entropy)",
+          "",
+          "98.67%",
+          "12",
+          "310",
+          "80"
+        ],
+        [
+          "Ensemble Learning Model [ 55 ]",
+          "",
+          "99.72%",
+          "N/A",
+          "1440",
+          "N/A"
+        ],
+        [
+          "Active Learning [ 55 ]",
+          "Entropy",
+          "97.37%",
+          "N/A",
+          "1050",
+          "46"
+        ]
+      ],
+      "header_groups": [],
+      "table_alignment_status": "resolved",
+      "row_provenance": [
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 6
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 6
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 6
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 6
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 6
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 6
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 6
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 6
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 8,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 8,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 8,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 8,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 8,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 8,
+            "source_col": 6
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 9,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 9,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 9,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 9,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 9,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 9,
+            "source_col": 6
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 10,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 10,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 10,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 10,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 10,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 10,
+            "source_col": 6
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 11,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 11,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 11,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 11,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 11,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 11,
+            "source_col": 6
+          }
+        ]
+      ],
+      "tbody_alignment_status": "resolved"
+    }
+  ]
+}

@@ -1,0 +1,568 @@
+{
+  "doi": "10.1007/s41939-026-01247-1",
+  "title": "Cyclic heating effects on microstructure development in duplex stainless steel manufactured via wire-arc directed energy deposition",
+  "abstract": "Abstract The industrial integration of duplex stainless steels fabricated via Wire-Arc Directed Energy Deposition (WA-DED) remains severely hindered by unpredictable microstructural heterogeneities. Due to the layer-wise deposition process, the material undergoes repetitive solid-state thermal cycles (SSTCs) that critically disrupt the essential ferrite–austenite phase balance. To decode the real-time physical mechanisms governing these cyclic phase transformations, a comprehensive cross-scale methodology is introduced. Initial WA-DED experiments utilizing ER2209 wire were conducted to capture the process-induced thermal histories. These thermal profiles were subsequently replicated via in situ heating within a scanning electron microscope using micro-electromechanical systems, and the findings were validated through precipitation-kinetics modeling based on the CALPHAD framework. The findings reveal a significant vertical phase gradient driven by SSTCs. The austenite fraction surges from approximately 57% in newly deposited layers to 80% after merely two reheating cycles, with no additional phase transformation triggered by subsequent SSTCs. Both in situ observations and kinetic modeling indicate that this rapid ferrite-to-austenite conversion proceeds mainly by diffusion-controlled growth of pre-existing austenite along ferrite–austenite interfaces, rather than by nucleation of new austenite grains. Crucially, phase evolution is dictated by the integrated thermal history within specific cooling intervals (t 12/8  and t 8/5 ), rather than the absolute peak reheating temperatures. Despite these phase shifts, macroscopic hardness remains remarkably uniform, as strict interpass temperature control effectively mitigates excessive and uncontrolled heat accumulation. By quantitatively linking localized thermal histories to real-time phase kinetics, this work establishes a robust predictive framework that forms the mechanistic basis for optimizing deposition strategies and ensuring the reliable performance of industrial WA-DED components. Graphical abstract",
+  "journal": "Multiscale and Multidisciplinary Modeling, Experiments and Design",
+  "year": "2026",
+  "sections": [
+    {
+      "heading": "Introduction",
+      "paragraphs": [
+        "Wire-Arc Directed Energy Deposition (WA-DED) enables the layer-wise fabrication of components by melting wire feedstock with an electric arc. This technique is widely recognized as a material-efficient method for producing large-format components at high deposition rates, with established applications in sectors such as aerospace, automotive, and marine (Guo et al.  8 ; Shah et al.  26 ; Wu et al.  34 ).",
+        "Duplex stainless steels (DSS) are particularly attractive for these applications due to their characteristic dual-phase microstructure, which provides an excellent combination of mechanical strength and corrosion resistance (Lippold and Kotecki  18 ; Zhang et al.  37 ). These properties depend critically on maintaining an appropriate balance between ferrite (body-centered cubic, bcc) and austenite (face-centered cubic, fcc) (Lippold and Kotecki  18 ). Even moderate deviations from this balance can significantly influence both mechanical performance and corrosion behavior, particularly in alloys with multi-phases such as DSS (Nilsson  19 ).",
+        "However, when DSS are processed by WA-DED, pronounced microstructural inhomogeneities frequently arise. These spatial variations in the ferrite–austenite ratio inherently promote anisotropies in the resulting mechanical and corrosion properties (Zhang et al.  37 ), thereby posing a major obstacle to industrial certification of WA-DED-produced DSS components. Although the phase balance in DSS is fundamentally governed by the thermal history of the material, regardless of the manufacturing route, the thermal history generated during WA-DED is uniquely complex. The layer-wise nature of the process introduces repeated heating and cooling events, resulting in a highly non-uniform thermal evolution that is inherently difficult to predict and control (Reindl et al.  24 ,  25 ), especially when compared to conventional casting or single-pass welding (Francois et al.  7 ).",
+        "A central metallurgical challenge arises from the solid-state thermal cycles (SSTCs) inherent to WA-DED. Unlike conventional processing routes, previously deposited layers in WA-DED are reheated multiple times by subsequent passes. These reheating cycles may exceed the ferrite-to-austenite transformation temperature, triggering solid-state phase changes that strongly influence microstructural evolution (Hosseini et al.  11 ). The cumulative nature of these SSTCs contributes directly to the observed heterogeneities and complicates predictive control of local phase balance and component reliability (Hosseini et al.  11 ; Zhang et al.  37 ).",
+        "Recent investigations into additively manufactured DSS 2209 confirm pronounced spatial heterogeneity in phase proportions driven by distinct thermal histories (Attar et al.  3 ; Hejripour et al.  10 ; Hosseini et al.  12 ; Karunanithi et al.  13 ; Queguineur et al.  22 ; Westin et al.  32 ; Yang et al.  36 ). For instance, Yang et al. ( 36 ) identified a gradient in austenite content, ranging from 50% in the fifth layer to 63% in the thirtieth, attributing this to heat accumulation and reduced cooling rates in upper layers, which promote diffusion-controlled phase transformation. Similarly, Attar et al. ( 3 ) reported austenite levels peaking at 76% at greater distances from the substrate, highlighting the dominance of thermal history over composition.",
+        "The ferrite-to-austenite transformation itself is governed by specific temperature intervals during cooling, most notably t 12/8  (1200 °C → 800 °C) and t 8/5  (800 °C → 500 °C). Extended t 12/8  times promote diffusion-controlled austenite formation, whereas minimizing the t 8/5  interval is essential to suppress the formation of detrimental intermetallic phases such as sigma and chi, as well as chromium nitrides, all of which can lead to local embrittlement (Verma and Taiwade  31 ; Zhang et al.  37 ). As WA-DED induces these thermal intervals repeatedly and with substantial layer-to-layer variation, understanding and predicting the resulting phase evolution remains a significant materials science challenge. While several studies have documented phase fractions after WA-DED, the real-time mechanisms by which SSTCs influence transformation kinetics remain poorly characterized (Haghdadi et al.  9 ; Hosseini et al.  11 ). In particular, it is unclear how cyclic reheating at different intensities and frequencies affects the stability and growth of each phase, or whether it promotes unwanted secondary phases.",
+        "This study addresses this knowledge gap through a cross-scale methodology that integrates macroscopic WA-DED experiments, in situ replication of SSTC using a micro-electromechanical systems (MEMS) heater operated within a scanning electron microscope (SEM) (Koenig et al.  15 ), and kinetic phase-diagram calculations (CALPHAD). By decoupling the individual effects of cyclic reheating, this research establishes a predictive framework for microstructure development. These findings aim to contribute to optimized deposition strategies and facilitate broader industrial adoption of as-built DSS WA-DED parts."
+      ]
+    },
+    {
+      "heading": "Materials and methods",
+      "paragraphs": []
+    },
+    {
+      "heading": "WA-DED process parameters and temperature monitoring",
+      "paragraphs": [
+        "Multi-layer structural walls made out of DSS were fabricated. This involved the use of an S235JR substrate (30 × 300 × 10 mm) and ER2209 filler wire (1.2 mm diameter, supplied by Böhler Welding). The nominal chemical compositions of the substrate and filler material are listed in Table  1 . Table 1 Nominal chemical composition of the S235JR substrate and ER2209 filler wire (wt.%) Fe C Si Mn Cr Ni Mo N P S Cu ER2209 Bal. 0.02 0.5 1.6 22.5 8.8 3.1 0.15 S235JR Bal. 0.2 1.4 0.012 0.04 0.04 0.55",
+        "Deposition was conducted via gas metal arc welding (GMAW) with controlled short arc welding, utilizing a Fronius TPS 400i power source controlled by a six-axis KUKA KR 70 R2100 robot. A series of specimens with 5, 6, 7, 8, 9, and 10 layers was produced, maintaining a strict maximum interlayer temperature of 100 °C. All substrates were fixed to a mechanical stop to ensure reproducible sample positioning and boundary conditions.",
+        "Thermal monitoring was executed using two Optris CTL pyrometers: one mounted on the robot arm to monitor the interlayer temperature (calibrated measuring range 50–400 °C), and the second positioned to record the temperature evolution at a fixed point in layer five (calibrated measuring range 200–1500 °C). Following validation against spot-welded K-type thermocouples at identical locations, an emissivity of 0.88 was established for both pyrometers. The experimental setup is illustrated in Fig.  1 . Fig. 1 Experimental setup:  a  Full system overview including all equipment and sensors,  b  Detail of pyrometer and thermocouple measurement spots used for calibration and during the experiments",
+        "According to preliminary tests and comparable to the methodology of Wu et al. ( 35 ), a feed rate of 6.5 m/min was applied with a welding current of 177 A and a voltage of 13.3 V. The robot operated at a speed of 0.35 m/min, and a Sagox 2 K shielding gas (Westfalen AG, 2.5% CO 2  in Ar) was supplied at a flow rate of approximately 15 l/min. All walls were built using a unidirectional deposition strategy under constant process parameters to isolate the thermal history from directional or process-related variations."
+      ]
+    },
+    {
+      "heading": "Materials characterization techniques",
+      "paragraphs": [
+        "To ensure consistent sample referencing during this study, the nomenclature defined in Table  2  is adopted. This notation distinguishes between the total number of deposited layers (Sample nL ), the individual layer under consideration (L i ), and the cumulative number of SSTCs experienced locally by the material (SSTC j ). Table 2 Nomenclature and indexing scheme used for spatial and thermal referencing of samples and layers Notation Description Sample nL Specimen comprising  n  total deposited layers e.g.,  Sample 5L  consisting of five layers in total L i The  i -th deposited layer counted from the substrate surface e.g.,  L₁  represents the first layer added to the substrate plate SSTC j The  j -th SSTC experienced by a layer e.g.,  SSTC 0  refers to thermal exposure during a layer’s own deposition",
+        "Metallographic specimens were sectioned from the central region of the samples, oriented perpendicular to the welding direction (cross-section), and prepared via standard mechanical polishing using diamond suspensions down to a final particle size of 0.25 µm (cf. preparation according to Westin et al.  33 ). Optical microscopy (OM) was conducted using a Leica DM 6 M microscope on samples etched with Beraha II reagent to characterize the general microstructure. Hardness mapping was conducted using a QNESS 60A + EVO system with an applied load of HV1 and a grid spacing of 0.5 mm.",
+        "High-resolution microstructural analysis was carried out using a Thermo Fisher Verios SEM equipped with an Oxford Symmetry S3 Electron Backscatter Diffraction (EBSD) system. Large-area EBSD mapping provided statistical data on phase distribution. Data were acquired at an accelerating voltage of 20 kV, a beam current of 1 µA, and a working distance of 10 mm, with an exposure time of 0.2 ms per pattern and a step size of 0.75 µm. EBSD data were processed using Aztec 6.2 and AztecCrystal software, including removal of non-indexed points and automated clean-up procedures such as wild spike removal, correction of isolated misindexed pixels (1-pixel neighborhood), and two-step zero-solution removal (levels 3 and 4)."
+      ]
+    },
+    {
+      "heading": "CALPHAD",
+      "paragraphs": [
+        "Phase evolution during SSTC was simulated using a CALPHAD-based thermodynamic and kinetic modeling framework implemented in MatCalc version 6.04 (Kozeschnik and Caballero  16 ). Simulations utilized the nominal alloy composition detailed in Table  1 . Equilibrium phase calculations were carried out using the (ME-Fe.tdb, version 1.4.2) thermodynamic database. Diffusion-controlled phase transformations were modeled using precipitation kinetics simulations with the same thermodynamic database in combination with the (ME-Fe.ddb, version 1.2) mobility database.",
+        "The precipitation-kinetics simulations were performed using a mean-field approach in which nucleation, growth, and dissolution are treated simultaneously. The model combines classical nucleation theory with the size-class-based SFFK formulation (Kozeschnik et al.  17 ; Svoboda et al.  29 ). The precipitation domain was defined with ferrite (BCC_A2) as the matrix and austenite (FCC_A1) as the precipitate phase. Austenite was represented by 25 size classes with radii ranging from 1 × 10 −8  to 1 × 10 −6  m. This range defines the discretization of the precipitate population rather than a physical limit on the austenite grain size. An initial austenite phase fraction of 50% was used, consistent with the equilibrium thermodynamic prediction for the investigated alloy and with the initial condition of the in situ MEMS experiment. This initial fraction was supplied together with a corresponding initial austenite size distribution, which served as the starting precipitate population for the kinetic simulation.",
+        "Austenite nucleation was assumed to occur heterogeneously at ferrite grain boundaries, in agreement with microstructural observations in DSS, where austenite forms at ferrite grain boundaries and subsequently grows into ferrite grains (Alvarez-Armas and Degallaix-Moreuil  2 ). A spherical critical nucleus was assumed. The ferrite/austenite interfacial energy was calculated internally in MatCalc using the generalized nearest-neighbour broken-bond model with a size correction (Sonderegger and Kozeschnik  27 ,  28 ), resulting in values of approximately 0.11–0.13 J m −2  during the simulated thermal history. The density of grain-boundary nucleation sites was derived from the matrix microstructure parameters, using a ferrite grain diameter of 100 µm and a dislocation density of 1 × 10 12  m −2 .",
+        "The interface mobility was set sufficiently high so that no additional interface-reaction barrier was imposed. Therefore, austenite growth was treated as diffusion-controlled under local equilibrium at the moving ferrite/austenite interface. Within this mean-field framework, each phase is represented by a homogeneous average composition, and intragranular concentration gradients are not spatially resolved. The experimentally measured thermal histories were used directly as input to reproduce the actual SSTCs and to follow the evolution of austenite growth, dissolution, phase stability, and phase fractions during thermal cycling."
+      ]
+    },
+    {
+      "heading": "MEMS-based in situ thermal cycling",
+      "paragraphs": [
+        "Local microstructural evolution under SSTC was investigated using a bulk-like specimen thermally cycled in a MEMS-based in situ SEM heating system designed to reproduce WA-DED-relevant SSTC conditions and enable post-cycle EBSD analysis. A 50 × 50 × 5 µm 3  specimen was extracted using a Plasma Focused Ion Beam (Thermo Fisher Hydra) (Koenig et al.  14 ) from Sample 5L , region L 5  beneath the equiaxed grain zone, which does not remelt under typical WA-DED conditions, allowing direct comparison with the as-printed microstructure. Thermal cycling was performed using a DENSsolutions Wildfire device providing localized Joule heating of a molybdenum resistive element with closed-loop temperature control based on a pre-calibrated resistance–temperature relationship, enabling heating rates up to 1000 °C s ⁻1  as previously validated on bulk-like Fe samples (Koenig et al.  15 ).",
+        "EBSD characterization was conducted before and after thermal cycling (quasi in situ) using a Thermo Fisher Helios Nanolab 600 equipped with an EDAX Hikari detector and operated at 20 kV, 22 nA, and a 10 mm working distance. To avoid beam-induced heating effects, the electron beam was blanked during thermal cycling, despite the MEMS heater’s compensation capability (Koenig et al.  14 ), and was reactivated only for analysis. Data were acquired using classic Hough-based indexing with low Hough resolution, a 9 × 9 convolution mask, 96 × 96 pixel binning, a 1° theta step size, and detection of three to seven Kikuchi bands per pattern, and processed using EDAX OIM Analysis 9™ with a minimum confidence index of 0.1, neighbor confidence index correlation, grain dilation, a grain tolerance angle of 5°, and a minimum grain size of five pixels."
+      ]
+    },
+    {
+      "heading": "Results and discussion",
+      "paragraphs": []
+    },
+    {
+      "heading": "As-built microstructure and build-direction-dependent properties",
+      "paragraphs": [
+        "Cross-sectional analyses were performed to assess the influence of repeated SSTCs on the phase balance of as-printed 2209 DSS. The investigation focuses on the phase evolution along the build direction (BLD) and its relationship to the layer-wise thermal history inherent in multi-layer deposition. To exclude compositional dilution effects arising from a possible interaction with the baseplate, the analysis was limited to regions above the fifth deposited layer. Representative OM micrographs of the cross-sections from the selected samples are shown in Fig.  2 . Fig. 2 a  Cross-sectional OM images of three specimens (etched with Beraha II), with L 5  highlighted in red as the primary region of interest.  b  Detailed micrographs from Sample 10L  (L 1 , L 5 , L 8 , and L 10 ) as indicated in ( a ), where austenite (white) and ferrite (blue) phases are revealed",
+        "The overview micrographs in Fig.  2 a demonstrate that all samples exhibit a uniform increase in build height, with an average layer height of approximately 2.5 mm and a constant layer width. This indicates a stable deposition process with controlled thermal management and consistent mechanical positioning. Consequently, a reliable position-dependent comparison along the BLD is feasible across different samples.",
+        "The OM micrographs in Fig.  2 a reveal the characteristic microstructure of WA-DED samples, featuring distinct fusion lines and epitaxially grown, aligned columnar grains extending across multiple layers. The higher-magnification micrographs (Fig.  2 b) further reveal spatial variations in the ferrite–austenite phase distribution within individual specimens. In particular, a vertical gradient is observed along the build direction, where the uppermost layer (i.e., the most recently deposited) exhibits a higher ferrite fraction (bluish contrast after Beraha II etching), while the underlying layers show comparatively increased austenite content. While L 1  is depicted to illustrate the initial build, it is excluded from subsequent analysis due to significant elemental dilution and altered thermal conditions caused by the substrate acting as a massive heat sink. Furthermore, as macrostructural Beraha II etching contrast can visually distort apparent phase fractions, precise quantitative evaluation relies exclusively on the high-resolution EBSD analysis (Sect.  3.2 ), strictly focusing from L 5  onwards to ensure representative steady-state conditions.",
+        "To evaluate how the layer-dependent thermal history and resulting phase heterogeneities translate into local mechanical properties, spatially resolved HV1 hardness mapping was performed across the cross-sections. As depicted in Fig.  3 , these measurements were systematically acquired along both the deposition and transverse directions for Sample 5L  and Sample 10L . Fig. 3 Hardness mapping:  a  Schematic overview of HV1 hardness mapping locations and orientations,  b  transverse (X position) and deposition-direction (Y position) hardness maps of Sample 5L , and  c  corresponding hardness maps of Sample 10L",
+        "Overall, the hardness mappings reveal only minor variations along the BLD, with average values of 252 ± 6 HV for Sample 5L  and 251 ± 9 HV for Sample 10L . This stable hardness profile strongly correlates with previous studies, closely matching the values around 250 HV observed by Akbarzadeh et al. ( 1 ) and complementing the 265–270 HV range documented by Posch et al. ( 20 ). Bellamkonda et al. ( 4 ) also confirmed this trend of low spatial variation, although their specific HV0.5 measurements resulted in higher values exceeding 300 HV (HV0.5). This uniformity stems from the strict interpass temperature control, which effectively mitigated heat accumulation. While unconstrained heat build-up would induce steeper hardness gradients, such conditions do not reflect relevant industrial boundary conditions. At the base of the builds, both the transverse and deposition-direction maps show a distinct drop in hardness within the dilution zone, resulting from compositional dilution with the softer substrate material. Nevertheless, subtle hardness shifts are occasionally visible, for example in the top region of Sample 5L  in L 5  (Fig.  3 b), averaging around 260 ± 6 HV. Such localized trends can be driven by higher local cooling rates and the absence of intrinsic reheating from subsequent deposition passes, as observed in Reindl et al. ( 24 ) and ( 25 )."
+      ]
+    },
+    {
+      "heading": "Layer-wise evolution of phase distribution under successive solid-state thermal cycles",
+      "paragraphs": [
+        "To evaluate the influence of increasing SSTCs, EBSD phase maps were analyzed for samples with total deposited layers ranging from Sample 5L  to Sample 10L , focusing on L 5  and above, as shown in Fig.  4 a. Each tile represents the central region of a specific layer (L i ), with the layer number increasing from bottom to top and the total build height (Sample nL ) from left to right. Within each column, the top image corresponds to the most recently deposited layer, while the images below show progressively earlier layers. This arrangement illustrates how deeper layers experience additional SSTCs, since moving downward in a column corresponds to more reheating events, and moving rightward adds both build height and an additional thermal cycle to the existing layers. Fig. 4 a  Phase maps showing the evolution of phase fractions as a function of Sample nL  and L i .  b  Box plot illustrating the variation in austenite content from L n  to L n–5",
+        "From Fig.  4 a, the phase distribution varies with increasing numbers of SSTCs. Visually, a trend can be observed where the uppermost layers, which have just solidified, have a higher ferrite content (red), while deeper layers, those that have been subjected to a number of SSTC n , show progressively increasing austenite content (blue). While some variability exists between samples, the top layers contain approximately 50–60% austenite as determined by EBSD measurements, compared to around 70–80% austenite in the thermally cycled lower layers.",
+        "This trend is further evident in Fig.  4 b, which presents a boxplot of the austenite content across different layer positions. L n  and the layer beneath it (L n-1 ) show lower austenite fractions than previous layers (e.g., L n-2 , L n-3 ). This highlights the influence of repeated SSTC in promoting austenite stabilization during the WA-DED process. In this context, it is important to note that the number of available data points decreases with increasing depth (higher L n-x ), since the total number of deposited layers limits the number of positions that can be compared. For example, L n-5  has only one possible reference position, whereas L n  can be compared across all samples. Consequently, the narrower spread for L n-4  and L n-5  mainly reflects the smaller sample size rather than reduced variability in the material itself.",
+        "The observed behavior is consistent with prior research on the effects of SSTC in DSS. For instance, Hosseini et al. (Hosseini et al.  12 ) reported that increasing the number of thermal cycles and prolonged reheating at elevated temperatures (i.e., longer t 12/8  times) led to higher austenite fractions. They attributed this to repeated exposure above the austenitization temperature, which facilitates the formation of additional austenite. Similarly, Putz et al. ( 21 ) observed an increase in austenite content from approximately 40% to 50% with additional deposition layers during multipass welding, highlighting the role of reheating-induced austenite formation. Although these trends generally agree, direct comparisons of absolute austenite fractions between different studies remain challenging. Changes in processing parameters, including deposition strategy, shielding gas composition, and heat input, will affect nitrogen loss, cooling rates, and peak temperatures during thermal cycling, which in turn impact phase fractions.",
+        "While previous studies have explored the cumulative effects of thermal cycling, few have examined how individual SSTCs influence microstructural evolution on a layer-by-layer basis. To resolve this, the microstructural evolution of L 5  under successive SSTCs was analyzed. The specific regions investigated, corresponding to L 5 , are highlighted by a red box in Fig.  2 a.",
+        "The measured thermal exposure of L 5  experienced by Sample 10L  during the deposition of the subsequent layers (L 6 –L 10 ) is summarized in Fig.  5 a. The thermal history consists of five successive SSTCs (SSTC 1 –SSTC 5 ) with progressively decreasing peak temperatures. The first cycle reaches approximately 912 °C, followed by 716 °C, 587 °C, 489 °C, and 419 °C for SSTC 2 –SSTC 5 , respectively. These thermal profiles define the temperature–time conditions used as input for the CALPHAD-based precipitation kinetics simulations and provide the basis for interpreting the phase stability and transformation behavior shown in Fig.  5 b–d. Fig. 5 Influence of solid-state thermal cycles (SSTCs) on phase evolution in layer L 5  during WA-DED.  a  Measured thermal history of L 5  showing successive reheating cycles with decreasing peak temperatures.  b  CALPHAD-calculated equilibrium phase fractions as a function of temperature; dashed lines indicate SSTC peak temperatures.  c  Evolution of simulated austenite nucleation density during the applied SSTCs.  d  CALPHAD-based precipitation kinetics simulation showing ferrite and austenite phase fractions during successive SSTCs",
+        "The corresponding equilibrium phase fractions calculated using CALPHAD are shown in Fig.  5 b as a function of temperature, with the vertical dashed lines indicating the peak temperatures associated with each SSTC extracted from Fig.  5 a. Although the WA-DED process operates under strongly non-equilibrium conditions, the equilibrium phase diagram provides insight into the thermodynamic stability of the phases. Austenite is stabilized relative to ferrite within the intermediate temperature range encountered during the early thermal cycles, such that the peak temperatures reached during SSTC 1  and SSTC 2  lie well within this stability window, whereas the later cycles approach its lower boundary. This progressive reduction in peak temperature therefore implies a decreasing thermodynamic driving force for further ferrite-to-austenite transformation during the later SSTCs.",
+        "To evaluate how thermal exposure during SSTCs influences the nucleation and growth of austenite, kinetic simulations were conducted, and the results are shown in Fig.  5 c. The evolution of the austenite nucleation density during the applied SSTCs indicates that the nucleation density remains nearly constant throughout the thermal cycling sequence, with only a minor fluctuation during the initial reheating stage. After the first cycle, the nucleation density stabilizes, and no significant increase in nucleation events is observed during the subsequent SSTCs. This behavior suggests that nucleation occurs primarily during early thermal exposure, most likely at ferrite grain boundaries, which serve as preferential sites for austenite nucleation. The nearly constant number density therefore indicates that nucleation contributes negligibly during the subsequent SSTCs.",
+        "The resulting phase fraction evolution predicted by the CALPHAD-based precipitation kinetics model is presented in Fig.  5 d. Starting from an initial ferrite–austenite balance of approximately 50%–50%, the first applied SSTC leads to a rapid increase in the austenite fraction to approximately 76%, accompanied by a corresponding decrease in ferrite content. Subsequent thermal cycles produce only minor variations in the phase fractions, with the austenite content stabilizing near 77% for SSTC 2 –SSTC 5 . Since the simulated austenite number density remains nearly constant, this increase in austenite fraction is attributed predominantly to the growth of the pre-existing austenite population rather than to the formation of new austenite grains. This saturation behavior indicates that the thermal exposure associated with the first reheating cycle provides sufficient temperature and diffusion time to drive most of the ferrite-to-austenite transformation. The later SSTCs, characterized by progressively lower peak temperatures, provide insufficient thermodynamic driving force and kinetic mobility to significantly alter the established phase balance.",
+        "Overall, the results in Fig.  5  demonstrate that the evolution of austenite in layer L 5  during WA-DED is governed by the combined influence of thermodynamic stability and kinetic constraints under repeated solid-state thermal cycling. While equilibrium calculations define the temperature range over which austenite formation is thermodynamically favored, the precipitation kinetics simulations reveal that the transformation proceeds predominantly through growth of existing grain boundary austenite rather than extensive nucleation of new grains. Once the initial transformation occurs during the early SSTCs, the phase fractions reach a stable level, and subsequent thermal cycles produce only minor changes in the overall phase balance."
+      ]
+    },
+    {
+      "heading": "In situ replication of solid-state thermal cycling by MEMS-based SEM heating",
+      "paragraphs": [
+        "While bulk microstructural characterization captures the cumulative effects of repeated thermal cycling, it does not resolve the response of individual microstructural features to a single SSTC. To address this limitation, a MEMS-based in situ SEM heating approach was employed to reproduce a WA-DED-relevant thermal cycle at the local scale and to directly assess the resulting microstructural evolution by EBSD (Koenig et al.  15 ). The results are summarized in Fig.  6 , showing the thermal profile of SSTC 1  as recorded by the pyrometer and closely mimicked by the Digiheater software (Fig.  6 a) and the microstructure before and after one mimicked thermal cycle (SSTC 1 , Fig.  6 b). In all inverse pole figure (IPF) and phase maps, the BLD is oriented upwards. Fig. 6 a  Comparison of the measured WA-DED thermal cycle for SSTC 1  and the corresponding cycle reproduced by the MEMS heater.  b  EBSD maps, including IPF and phase distribution, showing the microstructure before and after the mimicked thermal cycle",
+        "During the cooling phase of SSTC 1 , the silicon nitride membrane of the MEMS chip fractured at approximately 150 °C. Consequently, the EBSD dataset labeled SSTC 1  was acquired from a sample with a broken membrane, which introduced a slight drift during data acquisition. However, since the fracture occurred near the end of the thermal cycle at a temperature range where no significant microstructural changes are expected, the resulting data are considered valid. Despite the membrane fracture, the overall data quality remained sufficient for reliable phase identification and analysis of phase fractions. However, minor local distortions due to drift may affect the apparent morphology of small features at the microscale.",
+        "This assessment is further supported by confidence index (CI) values exceeding the applied filtering threshold. Owing to the membrane failure, additional SSTCs could not be performed on this specimen. Notwithstanding this limitation, the quasi in situ dataset captures a complete WA-DED–relevant cycle at the local scale and provides grain-resolved evidence for the microstructural evolution.",
+        "Despite this limitation, the phase maps clearly indicate a pronounced shift in phase fractions, with the microstructure evolving from an initial balance of approximately 50% austenite and 50% ferrite to about 78% austenite and 22% ferrite after the mimicked SSTC 1  cycle (cf. Fig.  6 b). As discussed previously, this change is consistent with the peak temperature during SSTC exceeding the austenite formation threshold, thereby enabling a solid-state transformation from ferrite to austenite.",
+        "Although the total number of grains within the bulk-like specimen is limited, the observed transformation appears to proceed predominantly through the growth of pre-existing austenite grains rather than by nucleation of new austenitic grains. This is evidenced by the preservation of crystallographic orientations within individual austenite grains before and after thermal cycling, as revealed by the IPF maps. Instead of forming new orientations, existing austenitic regions expand, suggesting that the transformation front propagates along the original austenite–ferrite interfaces, which act as preferential sites for initiating solid-state phase transformations during thermal exposure due to their elevated interfacial energy and high mobility (Tripathi et al.  30 ). Consequently, such boundaries play a critical role in governing phase transformation behavior during SSTC. This observation is in line with the dynamic CALPHAD simulations (Fig.  5 ), which indicate that the austenite increase during SSTC 1  arises predominantly from growth of existing austenite rather than the formation of new austenitic grains. While local coarsening between adjacent austenite grains cannot be excluded, the available data do not allow for a systematic assessment of grain-to-grain interactions. The dominant observation remains the preservation of crystallographic orientations, indicating that phase transformation is primarily governed by the growth of pre-existing austenite into ferrite."
+      ]
+    },
+    {
+      "heading": "Synthesis of as-built, MEMS, and CALPHAD transformation kinetics",
+      "paragraphs": [
+        "To place the results of the cross-methodological approach in the context of the L 5  evolution, Table  3  summarizes the cycle-resolved temperature–time metrics alongside the corresponding austenite phase fractions for the as-built samples (ex situ), the dynamic CALPHAD simulations, and the MEMS experiment (in situ). By utilizing identical welding parameters and strictly maintaining a constant interlayer temperature, highly stable thermal boundary conditions are established from L 5  onwards. Consequently, the characteristic cooling rates do not vary significantly between samples. It should therefore be emphasized that these temperature–time characteristics are derived exclusively from the experimentally measured thermal history of the representative layer L 5 , for which a complete dataset was available. This approach enables a focused analysis of the relationship between thermal exposure and phase evolution at the local scale. Table 3 Summary of temperature–time characteristics and corresponding austenite fractions for SSTC 0 –SSTC 3 , shown for the ex situ as-built measurements, the CALPHAD simulations, and the in-situ MEMS-mimicked cycle Temperature/time characteristics Phase fractions of austenite (in %) T peak  [°C] t 12/8  [s] t 8/5  [s] As-built CALPHAD MEMS SSTC 0 liquid 8.1 15.5 57 ± 4 50 50 SSTC 1 912 5.7 17.5 58 ± 4 76 78 SSTC 2 716 – 19.5 80 ± 4 77 – SSTC 3 587 – 13.5 75 ± 4 77 –",
+        "Variability in the ex situ data was estimated by calculating the standard deviation of phase-fraction measurements from 50 × 50 µm 2  areas, corresponding to the bulk-like specimen dimensions, extracted from region L 5  of the WA-DED-built structure.",
+        "Overall, the MEMS-mimicked SSTC reproduced the general trend in austenite fraction evolution observed in the as-built material, increasing the austenite fraction from ~ 50% to ~ 78%. However, a distinct kinetic delay is evident in the macroscopic as-built sample. Despite the first reheating peak (~ 912 °C) providing thermodynamically favorable conditions, the measured phase fraction remains largely unchanged after SSTC 1  (~ 58%). This is linked to the brief thermal exposure (~ 24 s for t 12/8  + t 8/5 ), which severely restricts the slow diffusion of substitutional elements like Ni in austenite (Ramirez et al.  23 ), leaving the transformation incomplete. As emphasized by Hosseini et al. ( 11 ), significant macroscopic phase changes in DSS require cumulative thermal exposure. Only when subjected to the cumulative thermal input of the initial cycles (~ 43 s above 500 °C) does the macroscopic austenite fraction experience a significant increase, reaching ~ 80% by SSTC 2 .",
+        "In contrast, after only one mimicked thermal cycle, the resulting MEMS austenite level already matched the values typically observed after SSTC 2  in the as-built condition. This discrepancy may be attributed to the limited analyzed area in the in situ approach, which is more susceptible to local variations in the initial microstructure. Furthermore, while massive WA-DED deposits exhibit strong spatial sensitivity to local thermal profiles resulting in complex secondary austenite precipitation (Cederberg et al.  5 ; Hosseini et al.  11 ), the substantially smaller dimensions of the MEMS specimen effectively minimize internal thermal gradients (Bellamkonda et al.  4 ). This scale reduction promotes a highly uniform thermal response, driving a more homogeneous and kinetically accelerated phase transformation. As reflected by the large standard deviation associated with the as-built SSTC 1  condition, the analyzed region may either represent an outlier or coincidentally contain a microstructural zone predisposed to austenite formation.",
+        "To obtain statistically more robust data and better capture microstructural heterogeneity, future studies should employ larger bulk-like specimens containing a higher number of grains and greater microstructural diversity. Since SSTC 2  could not be performed due to membrane failure, it remains unclear whether continued thermal cycling would have led to further transformation or whether a stabilized phase balance had already been reached. As a result, the evolution of phase stability and transformation saturation during subsequent thermal exposures could not be assessed. In addition to specimen size, environmental effects must be considered when interpreting the results. Heating experiments performed under vacuum may promote nitrogen evaporation at elevated temperatures due to reduced vapor pressure, potentially altering the local alloy composition (Chavez  6 ; Karunanithi et al.  13 ). As nitrogen is a strong austenite stabilizer in DSS, its loss would be expected to reduce, rather than increase, the austenite fraction. The substantial increase in austenite observed after a single SSTC therefore suggests that nitrogen loss, if present, was minimal.",
+        "Finally, differences in thermal boundary conditions and heat dissipation between the MEMS setup and the actual WA-DED wall may contribute to deviations in transformation behavior. Notably, the good agreement between the dynamic CALPHAD calculations and the in situ MEMS result supports the thermal-history fidelity of the MEMS approach, but it also underscores a likely source of discrepancy: in WA-DED, temperatures were measured at the  s urface, whereas features within the bulk most likely experienced slightly different time–temperature profiles. As a result, the effective accumulated time above transformation temperatures can vary within the wall, even for nominally identical cycles. Additional experiments will be necessary to fully disentangle these effects. Even so, the preliminary quasi in situ SEM observations on bulk-like specimens already highlight the strong potential of the MEMS-based approach for advancing mechanistic understanding of phase-formation pathways under WA-DED-relevant thermal cycling."
+      ]
+    },
+    {
+      "heading": "Conclusion",
+      "paragraphs": [
+        "This study investigated the microstructural evolution of 2209 DSS during WA-DED, focusing specifically on the SSTCs inherent to the process and their effect on austenite-ferrite phase evolution. By combining macroscopic cross-sectional analysis, in situ MEMS-based electron microscopy, and CALPHAD-based precipitation-kinetics simulations, the following principal conclusions are drawn: The ferrite-to-austenite transformation is dictated by the total accumulated thermal exposure within critical transformation intervals (t 12/8  and t 8/5 ), not peak temperature alone. Phase conversion is negligible during the brief initial reheating (SSTC 1 ) but surges to ~ 80% during SSTC 2  due to prolonged thermal exposure. Austenite content stabilizes at 75 ± 4% after the first few cycles, as subsequent cycles (SSTC 3 –SSTC 5 ) provide insufficient thermodynamic driving force for further microstructural evolution. Macroscopic hardness remains largely uniform along the build direction (~ 250 HV1), with a slight increase in the uppermost layers. SSTC-induced phase variations do not compromise the overall mechanical stability. CALPHAD-based precipitation-kinetics simulations show strong quantitative agreement with the MEMS approach, accurately predicting phase evolution based on measured thermal histories. In situ MEMS-based SEM heating successfully replicates WA-DED thermal histories on bulk-like specimens, experimentally confirming that the ferrite-to-austenite transformation proceeds predominantly by growth of pre-existing austenite at ferrite–austenite interfaces rather than by nucleation of new grains. This mechanistic framework provides a predictive basis for tailoring thermal histories, enabling targeted in-process temperature control to optimize phase balances and accelerate the industrial certification of WA-DED DSS components."
+      ]
+    }
+  ],
+  "tables": [
+    {
+      "caption": "Nominal chemical composition of the S235JR substrate and ER2209 filler wire (wt.%)",
+      "headers": [
+        "",
+        "Fe",
+        "C",
+        "Si",
+        "Mn",
+        "Cr",
+        "Ni",
+        "Mo",
+        "N",
+        "P",
+        "S",
+        "Cu"
+      ],
+      "rows": [
+        [
+          "ER2209",
+          "Bal.",
+          "0.02",
+          "0.5",
+          "1.6",
+          "22.5",
+          "8.8",
+          "3.1",
+          "0.15",
+          "",
+          "",
+          ""
+        ],
+        [
+          "S235JR",
+          "Bal.",
+          "0.2",
+          "",
+          "1.4",
+          "",
+          "",
+          "",
+          "0.012",
+          "0.04",
+          "0.04",
+          "0.55"
+        ]
+      ],
+      "header_groups": [],
+      "table_alignment_status": "resolved",
+      "row_provenance": [
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 7
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 8
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 9
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 10
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 11
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 12
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 7
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 8
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 9
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 10
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 11
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 12
+          }
+        ]
+      ],
+      "tbody_alignment_status": "resolved"
+    },
+    {
+      "caption": "Nomenclature and indexing scheme used for spatial and thermal referencing of samples and layers",
+      "headers": [
+        "Notation",
+        "Description"
+      ],
+      "rows": [
+        [
+          "Sample nL",
+          "Specimen comprising  n  total deposited layers e.g.,  Sample 5L  consisting of five layers in total"
+        ],
+        [
+          "L i",
+          "The  i -th deposited layer counted from the substrate surface e.g.,  L₁  represents the first layer added to the substrate plate"
+        ],
+        [
+          "SSTC j",
+          "The  j -th SSTC experienced by a layer e.g.,  SSTC 0  refers to thermal exposure during a layer’s own deposition"
+        ]
+      ],
+      "header_groups": [],
+      "table_alignment_status": "resolved",
+      "row_provenance": [
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 2
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 2
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 2
+          }
+        ]
+      ],
+      "tbody_alignment_status": "resolved"
+    },
+    {
+      "caption": "Summary of temperature–time characteristics and corresponding austenite fractions for SSTC 0 –SSTC 3 , shown for the ex situ as-built measurements, the CALPHAD simulations, and the in-situ MEMS-mimicked cycle",
+      "headers": [
+        "",
+        "T peak  [°C]",
+        "t 12/8  [s]",
+        "t 8/5  [s]",
+        "As-built",
+        "CALPHAD",
+        "MEMS"
+      ],
+      "rows": [
+        [
+          "SSTC 0",
+          "liquid",
+          "8.1",
+          "15.5",
+          "57 ± 4",
+          "50",
+          "50"
+        ],
+        [
+          "SSTC 1",
+          "912",
+          "5.7",
+          "17.5",
+          "58 ± 4",
+          "76",
+          "78"
+        ],
+        [
+          "SSTC 2",
+          "716",
+          "–",
+          "19.5",
+          "80 ± 4",
+          "77",
+          "–"
+        ],
+        [
+          "SSTC 3",
+          "587",
+          "–",
+          "13.5",
+          "75 ± 4",
+          "77",
+          "–"
+        ]
+      ],
+      "header_groups": [
+        {
+          "label": "Temperature/time characteristics",
+          "start_col": 2,
+          "end_col": 4
+        },
+        {
+          "label": "Phase fractions of austenite (in %)",
+          "start_col": 5,
+          "end_col": 7
+        }
+      ],
+      "table_alignment_status": "resolved",
+      "row_provenance": [
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 7
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 7
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 7
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 7
+          }
+        ]
+      ],
+      "tbody_alignment_status": "resolved"
+    }
+  ]
+}

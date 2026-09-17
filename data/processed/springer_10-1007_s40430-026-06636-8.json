@@ -1,0 +1,2246 @@
+{
+  "doi": "10.1007/s40430-026-06636-8",
+  "title": "Effects of Z-seam mitigation on energy absorption and dimensional accuracy of printed circular tubes",
+  "abstract": "Abstract In Fused Filament Fabrication (FFF), the Z-seam is the start–stop discontinuity formed at the beginning and end of each deposited perimeter, degrades both dimensional accuracy and crash energy absorption by acting as a stress concentration and tear-initiation site. This study quantitatively assesses advanced mitigation strategies to simultaneously optimize dimensional fidelity and crashworthiness in ABS circular tubes. Seam modification strategies comprising Pressure Advance to compensate for nozzle pressure lag and the Scarf Joint seam to replace abrupt steps with tapered overlaps were evaluated individually and in combination. Seam placement using Aligned, Back, and Nearest positions was controlled via a full factorial design of twelve build conditions. Quasi-static axial compression tests quantified energy absorption metrics, while full-field 3D scan-to-CAD analysis quantified dimensional deviation and oversize. Pressure Advance increased stiffness by stabilizing extrusion flow, whereas the Scarf Joint redistributed the seam discontinuity, reduced peak force, and promoted progressive folding. Seam placement strongly governed energy absorption where Back placement consistently outperformed other configurations. The combined Pressure Advance–Scarf Joint configuration with Back seam placement achieved the optimal multi-objective response, delivering a SEA of 16.95 kJ kg⁻ 1 , EA of 23.50 daJ, and CFE of 50.96%, while also exhibiting the high dimensional compliance. To resolve trade-offs between geometric accuracy and mechanical performance, a hybrid framework integrating two-way ANOVA and SHapley Additive exPlanations (SHAP) was applied. SHAP attribution revealed that seam placement governed absorbed energy variance, whereas seam modification dominated stiffness and crush force efficiency, establishing Z-seam control as an optimization-ready design variable for crashworthy FFF components.",
+  "journal": "Journal of the Brazilian Society of Mechanical Sciences and Engineering",
+  "year": "2026",
+  "sections": [
+    {
+      "heading": "Introduction",
+      "paragraphs": [
+        "Material Extrusion (MEX), a category of additive manufacturing (AM) processes, has become one of the most widely adopted technologies for fabricating parts from thermoplastic polymers and composites [ 1 ]. This prevalence is largely due to the technology’s low initial investment, operational simplicity, and compatibility with a broad range of materials. The most common MEX process is known by the trademarked term Fused Deposition Modeling (FDM), a process in which a thermoplastic filament is fed from a spool, heated to a semi-molten state within a liquefier, and extruded through a nozzle. The part is constructed layer-by-layer as the nozzle deposits material onto a build platform, with its path precisely controlled by a digital model [ 2 ].",
+        "Initially developed for rapid prototyping, the application space for FDM has expanded dramatically. It is now increasingly utilized for the production of functional, end-use components in demanding sectors such as aerospace, automotive, and healthcare [ 3 ]. This transition from producing form-and-fit prototypes to manufacturing engineering-grade parts has intensified the need for components with reliable and predictable properties [ 4 ]. To achieve this, a systematic optimization of process parameters is required to strike an ideal balance between two primary objectives: robust mechanical properties and high dimensional accuracy [ 5 ].",
+        "The fabrication of components with strong mechanical performance presents a multi-faceted engineering challenge that requires a comprehensive methodology, integrating advancements across material science, printer technology advancements, process parameter optimisation, and post-processing techniques [ 6 ]. In the realm of material science, this includes the development of high-performance engineering thermoplastics and composite filaments reinforced with short or continuous fibers to drastically improve stiffness and tensile strength [ 7 ]. Furthermore, multi-material printing enables the fabrication of complex components by combining polymers with distinct properties within a single part [ 8 ]. The potential of these materials is then realized through meticulous process optimisation. Key parameters such as infill density and type [ 9 ], line height [ 10 ] and line width [ 11 ], print orientation [ 12 ], and thermal factors like extrusion temperature [ 13 ] are manipulated to promote strong interlaminar adhesion. Finally, upon completion of printing, post-processing methods like thermal annealing [ 14 ,  15 – 16 ] can further augment performance by relieving internal stresses and improving the final part’s strength and stability.",
+        "The second core challenge is the attainment of both high dimensional accuracy and a superior, defect-free surface finish, which is critical for any component requiring tight tolerances and consistent geometric fidelity. Dimensional accuracy refers to the degree to which the final printed object conforms to its Computer-Aided Design (CAD) model [ 17 ]. Geometric inconsistencies are commonly introduced through material shrinkage [ 18 ], thermal gradients [ 19 ], and characteristic print artifacts such as the stairstep effect on sloped surfaces [ 20 ], base-layer bulging known as elephant’s foot [ 21 ], localized defects like blobs and zits, and the Z-seam [ 22 ].",
+        "Mitigating these issues begins with the printer’s hardware and technology. A rigid mechanical frame with a precise motion system is an essential prerequisite for repeatability[ 23 ], while advancements like closed-loop stepper motors can correct for positional errors in real-time [ 24 ]. Stable thermal control, typically achieved via an enclosed and actively heated build chamber, is also crucial for minimizing and normalizing material shrinkage, particularly for engineering-grade polymers [ 25 ].",
+        "Slicing parameter optimization remains one of the most effective and accessible strategies. For instance, lower layer heights reduce the visual and dimensional impact of the staircase effect, while precise calibration of the material flow rate prevents over- or under-extrusion that leads to blobs and dimensional error [ 26 ]. The Z-seam, caused by the pressure dynamics of starting and stopping extrusion, can be carefully managed through strategic placement on sharp corners or non-critical surfaces to hide its appearance [ 27 ].",
+        "Finally, post-processing techniques improve the final dimensional accuracy and surface quality. Subtractive methods like precision sanding can eliminate visual discontinuities such as layer lines and seam artifacts [ 28 ]. Conversely, additive methods like coating or vapor smoothing can be applied to create a uniform, smooth finish, completing the process of producing an engineering-grade component [ 29 ].",
+        "The Z-seam, an inherent discontinuity in parts produced by FDM, is not merely a cosmetic artifact but a critical feature that impacts dimensional accuracy and mechanical performance [ 27 ]. It introduces a geometric imperfection acting as a stress concentration point that can initiate failure under load. While slicing software allows for seam placement and perimeter tuning to manage trade-offs between surface finish and precision, these strategies are largely ineffective for cylindrical geometries which lack sharp corners to conceal the discontinuity. On such curved surfaces, the seam’s detrimental effects on aesthetics, local accuracy, and structural reliability are magnified. Despite various empirical mitigation strategies, a comprehensive quantitative understanding of the Z-seam’s coupled influence across mechanical and dimensional domains remains underexplored. Addressing this gap is essential for developing the predictive models required to transition FDM from a prototyping tool to a method for industrial-grade production.",
+        "This issue becomes especially critical in the design of energy-absorbing structures, such as automotive crash boxes, which are engineered to convert kinetic energy into plastic deformation during an impact. Thin-walled circular tubes are widely favored for these applications due to their predictable, symmetric deformation behavior and high energy absorption efficiency [ 30 ]. However, the presence of a Z-seam introduces a significant geometric discontinuity, creating a preferential site for stress concentration and failure initiation under the compressive loads characteristic of a crash event. This seam-induced imperfection threatens to undermine the otherwise superior performance of circular cross-sections in safety–critical applications [ 31 ]. Indeed, previous studies investigating FDM-fabricated circular hollow tubes have reported a wide range of failure modes that are strongly dependent on the material system, reinforcement strategy, and seam-related defects. For instance, quasi-static compression tests on PETG reinforced with short carbon fibers revealed that the majority of specimens failed directly at the Z-seam location, where crack initiation and subsequent propagation occurred along the vertical seam line [ 31 ]. Similarly, investigations on PLA circular tubes incorporating an internal concentric ring reported vertical tearing during compression, indicating the presence of dominant axial weakness paths attributed to the manufacturing process [ 32 ]. Conversely, studies on polyamide (PA) tubes reinforced with glass and carbon fibers demonstrated more stable collapse behaviors; glass fiber–reinforced PA exhibited largely progressive deformation with limited Euler-type buckling, while carbon fiber–reinforced PA showed a stable progressive folding mode [ 33 ]. Additional work on circular tubes fabricated from various PLA grades (PLA + , PLA-ST, PLA-LW, PLA-CF), PETG, and ABS has also reported predominantly progressive folding behavior despite the presence of unmodified Z-seams [ 30 ,  34 ]. Collectively, these observations indicate that while progressive collapse is achievable in FDM-printed circular tubes, the Z-seam remains a governing factor in failure initiation, often introducing critical variability that compromises the reliability required for energy-absorbing applications.",
+        "Therefore, a systematic evaluation of the Z-seam’s influence on the structural integrity of such components is imperative. Investigating the effect of Z-seam through quasi-static axial compression testing is vital to characterizing its impact on deformation behavior and failure mechanisms. The insights gained will be essential for developing optimized slicing strategies and design guidelines to enhance the reliability of FDM-produced parts in load-bearing and safety–critical contexts.",
+        "This work explores strategies for minimizing the Z-seam to enhance the dimensional accuracy of manufactured components. To evaluate the influence of a reduced z-seam on both dimensional precision and energy absorption capacity, thin-walled circular tubes were subjected to quasi-static compression tests. This geometry was strategically chosen because circular profiles are not only known for their high energy absorption performance, but their continuous, cornerless surface makes z-seam defects more prominent and impossible to conceal [ 27 ,  33 ].",
+        "The development of Z-seam management features in 3D printing slicers has been a continuous evolution driven by the need for improved surface quality and mechanical performance. The evolution of Z-seam management in Fused Deposition Modeling (FDM) has been marked by progressive refinements in both slicing software and printer firmware, aimed at improving surface quality, dimensional precision, and mechanical integrity. Consequently, the management of Z seam discontinuities has evolved from rudimentary placement controls to sophisticated firmware and geometric solutions. While early slicing strategies focused on concealing the seam via spatial alignment or randomization, significant improvements arose from firmware level algorithms specifically Pressure Advance and Linear Advance which modulate extrusion to counter nozzle pressure lag. Most recently, geometric strategies such as the Scarf Joint have been implemented to replace abrupt layer transitions with tapered overlaps, shifting Z seam management from a cosmetic fix to a functional design parameter.",
+        "From the various Z-seam improvement methods available, this study assesses the efficacy of three prominent techniques: seam positioning (back, aligned, nearest), Pressure Advance, and the Scarf Joint Seam. The research quantifies the influence of these methods on key part characteristics, including dimensional accuracy, surface topology, and compressive mechanical properties.",
+        "Seam positioning is a fundamental slicer process that dictates the location of the Z-seam by strategically placing the start and end point of each layer’s external perimeter. Common placement strategies include Back, which fixes the seam to the back of the build plate; Aligned, which stacks all points into a single vertical line; and Nearest, which attempts to hide the seam on the closest available geometric corner. The chosen strategy is critical for managing the final aesthetic and mechanical properties of the part.",
+        "Pressure Advance, and its equivalent Linear Advance in Marlin firmware, is a predictive firmware-level algorithm designed to compensate for the dynamic effects of pressure within the printer’s hotend. In a standard FDM system, the molten polymer acts as a compressible fluid that creates a viscoelastic lag between the extruder gear motion and the actual nozzle output. This hysteresis typically results in excess pressure and blobs when the nozzle decelerates at the end of a seam, and a pressure deficit or gap when it accelerates at the start. Pressure Advance proactively modulates the filament feed rate by pressurizing the nozzle before acceleration and relieving pressure before deceleration. This process ensures the extrusion flow consistently matches the nozzle velocity and effectively eliminates these start-stop artifacts.",
+        "The Scarf Joint Seam is a geometric slicing strategy that fundamentally alters the seam topology by drawing inspiration from the overlapping joinery method used in woodworking. While a traditional Z-seam forms an abrupt butt joint where the perimeter start and end points meet vertically to create a distinct weak point, the scarf joint replaces this with a sloped, overlapping interface. The slicer achieves this by tapering the extrusion path so that the nozzle ramps the flow down to a thin taper at the end of a loop and ramps it up at the start of the next. This blended transition eliminates the sharp vertical discontinuity and distributes the bond over a larger surface area, which significantly improves both surface continuity and mechanical integrity.",
+        "Despite the Z-seam’s recognized impact on dimensional accuracy, surface topology, and mechanical properties, its comprehensive influence remains underexplored in the academic literature. A range of studies has explored basic z-seam mitigation strategies through parameter optimization, material design, and structural control. Irimia et al. [ 27 ] systematically investigated the effect of slicer parameters Z Seam Alignment (ZSA), Seam Corner Preference (SCP), Outer Wall Wipe Distance (WD), and Coasting Volume (CV) and demonstrated that strategic tuning of these inputs can substantially reduce seam area and improve visual quality. Their work highlighted a trade-off: while certain configurations minimized seam size, others better concealed the seam for improved appearance, emphasizing the importance of tailoring settings to application-specific requirements. Similarly, Aguirre et al. [ 21 ] integrated z-seam control into a printer-specific profiling procedure. By aligning the z-seam to the sharpest corner and enabling the coasting feature, they reduced dimensional inaccuracies, particularly in cylindrical parts. Other researchers have addressed the z-seam from a mechanical integrity standpoint. Chafik et al. identified the z-seam as a consistent failure site under tensile loading at higher print temperatures, recommending its relocation to low-stress regions such as corners to avoid premature failure [ 35 ]. Likewise, Economides et al. observed that z-seam discontinuities acted as crack initiation sites in carbon-fiber-reinforced Polyethylene Terephthalate Glycol (PETG) specimens during compression, reinforcing the need for seam-aware design and slicing strategies to enhance structural performance [ 31 ]. Beyond parameter tuning, material formulation has also proven effective in reducing z-seam defects. Liu et al. found that blending Polylactic Acid (PLA) into Ethylene Vinyl Acetate (EVA) significantly decreased z-seam area and width in both cubic and toroidal models. Improvements were most pronounced up to 5% PLA content, beyond which benefits plateaued demonstrating that modest material modifications can notably enhance surface quality by improving flow stability and interlayer adhesion [ 36 ]. Not all studies viewed the z-seam as a flaw to eliminate. Shim and Hou reframed it as a diagnostic tool, showing that the periodic patterns of z-seams serve as “fingerprints” of slicer behavior. Different slicing programs were found to produce distinct seam patterns, providing a forensic pathway to identify slicer origin or detect process inconsistencies. This perspective introduces a novel functional role for the z-seam in validating prints and tracing digital provenance in additive manufacturing workflows [ 37 ]. In some cases, rather than optimizing the z-seam, researchers chose to control and standardize its position to ensure reliable experimental results. For instance, Tamaşag et al., investigating in-process filament colouring, fixed the seam location to prevent it from skewing tensile and surface roughness measurements an approach that underscores the z-seam’s capacity to introduce variability even in unrelated research domains [ 38 ]. Lastly, Weflen and Frank, in developing a hybrid additive–subtractive system for fabricating polymer-metal components, encountered z-seam over-extrusion issues at longer layer times. By adjusting the pre-start delay before extrusion, they minimized excess deposition at the seam, achieving better surface uniformity and dimensional accuracy. Their work further demonstrated the value of geometry-dependent, dynamic parameter tuning to manage seam formation in complex or large-scale prints [ 39 ]. Collectively, these studies reveal that the z-seam is far more than a superficial printing artifact. It plays a pivotal role across aesthetic quality, structural reliability, material-process interaction, and digital traceability, warranting deliberate attention in both research and practice.",
+        "Systematic investigations into advanced Z-seam mitigation strategies and their broader impact on print performance remain limited. One of the earliest academic studies on pressure compensation, Tronvoll et al. introduced and validated the Linear Advance 1.0 algorithm in Marlin firmware, targeting extrusion defects during print head acceleration and deceleration. Using an Original Prusa i3 MK2.5 and PLA at three layer heights (0.10, 0.20, 0.30 mm), they found that lower layer heights required significantly higher compensation values, with the optimal value at 0.1 mm nearly double that of 0.3 mm. The results closely aligned with a Simulink simulation, supporting the theoretical model’s validity [ 40 ]. Expanding on pressure control for dimensional accuracy, Grgić et al. calibrated a Creality Ender-3 Pro for functional FDM assemblies using ISO 286-1:2010 tolerancing. They applied a Linear Advance factor of 25 and optimized Hole Horizontal Expansion (HHE) to 0.13 mm, improving internal feature accuracy. Additionally, a CAD strategy based on the arithmetic mean of tolerance bounds yielded clearance fits tighter than standards. The study demonstrated how combining extrusion tuning, slicer compensation, and design-level adjustments can enhance precision in low-cost systems [ 41 ]. In a more automated context, Al Nabhani et al. developed a machine-to-machine calibration framework using machine vision to optimize pressure advance in real time. A high-end “instrumented” printer with a 3D scanner determined optimal parameters by analyzing calibration beads, then transferred the adjusted G-code to a standard “production” printer. Tested on a ball valve component, the system successfully corrected over- and under-extrusion defects seen in uncalibrated prints. Their work highlights a scalable, Industry 4.0-compatible approach for improving extrusion quality across networked FDM platforms [ 42 ].",
+        "While existing literature indicates that firmware features like Linear Advance and Pressure Advance can enhance product quality and dimensional accuracy in Fused Deposition Modeling (FDM), a comprehensive understanding of their effects on engineering-grade materials and specific mechanical applications remains limited. Therefore, this study investigates the impact of various Z-seam improvement techniques on parts fabricated from Acrylonitrile Butadiene Styrene (ABS). This engineering thermoplastic was selected for its high glass transition temperature and toughness, making it a viable candidate for energy-absorbing structures such as crash boxes. To this end, thin-walled circular tubes were manufactured using these different techniques, and their dimensional accuracy and surface topology were characterized. The specimens were then subjected to quasi-static axial compression tests to evaluate how each Z-seam improvement strategy influences their resulting energy absorption performance and failure modes. Finally, the experimental dataset was systematically analyzed using a two-way Analysis of Variance (ANOVA) to determine whether the effects of Z-seam distribution and modification strategies are statistically distinguishable from experimental scatter, with main effects and interaction plots employed to elucidate directional trends and factor interplay. To complement this variance-based inference and to interrogate the explainable structure of the measured responses, a SHAP (SHapley Additive exPlanations) analysis built on gradient-boosted regression models was further applied to quantify relative parameter importance and resolve potentially non-linear influences on the mechanical performance that may not be statistically resolvable through ANOVA alone."
+      ]
+    },
+    {
+      "heading": "Material and method",
+      "paragraphs": []
+    },
+    {
+      "heading": "Design and fabrication of ABS circular thin-wall structure",
+      "paragraphs": [
+        "This study investigates the energy absorption performance of circular cross-section structures featuring a visually improved z-seam. First, the hollow structure was designed using CAD software. The tubular geometry was defined with an outer diameter of 30 mm, a wall thickness of 2 mm and a height of 80 mm.",
+        "The specimens were fabricated using a Bambu Lab P1S fused filament fabrication system equipped with a 0.4 mm stainless steel nozzle. A commercial white Acrylonitrile Butadiene Styrene filament with a nominal diameter of 1.75 mm (ABG, Turkey) was used throughout the study. To ensure a consistent and reproducible baseline print quality prior to investigating Z-seam strategies, a systematic pre-calibration procedure was carried out using the integrated calibration tools of Orca Slicer and widely adopted open-source calibration geometries.",
+        "Calibration was performed using parameter-specific calibration towers, defined as vertically segmented test specimens in which a single process parameter is varied stepwise along the build height while all other parameters are kept constant. This approach enables direct comparison of printing outcomes under identical environmental and geometric conditions. The calibration procedure included nozzle temperature calibration, build plate temperature evaluation, printing speed optimization, extrusion multiplier calibration, and retraction distance and speed optimization.",
+        "For nozzle temperature calibration, a temperature tower spanning 220–240 °C in 5 °C increments was printed in accordance with the filament manufacturer’s recommended processing window. The optimal temperature was selected based on visual inspection of interlayer bonding, surface uniformity, and the absence of under-extrusion or excessive surface gloss associated with overheating. A nozzle temperature of 235 °C provided the best balance between layer adhesion and surface finish and was therefore adopted. Given the susceptibility of ABS to warping and inadequate bed adhesion, build plate temperature was evaluated independently by printing identical test geometries at 80, 90, and 100 °C. The selection criterion was complete first-layer adhesion without edge lifting or corner warping. A bed temperature of 100 °C was found to be the most effective and was used for all subsequent prints. Printing speed was calibrated using a speed tower in which the nominal print speed was varied from 30 to 80 mm/s in 10 mm/s increments. The selection criterion was the preservation of geometric fidelity and surface quality, assessed visually and by confirming the absence of ringing, vibration artifacts, or under-extrusion. A printing speed of 40 mm/s yielded the most consistent surface quality and dimensional stability and was therefore selected. The extrusion multiplier was calibrated using a dedicated flow rate test structure with extrusion multiplier values ranging from 0.94 to 1.00 in increments of 0.02. The optimal value was determined through visual assessment of surface texture and line overlap, with the explicit objective of avoiding over-extrusion manifested as ridging or material buildup. An extrusion multiplier of 0.98 produced uniform extrusion and well-defined perimeters and was adopted. Retraction behavior was optimized to minimize stringing and oozing using a retraction test geometry. Retraction distance was varied between 0.6 and 1.2 mm in 0.2 mm increments, while retraction speed was varied from 25 to 45 mm/s in 5 mm/s increments. The optimal values were identified through visual inspection of stringing between features and the absence of extrusion delays at restart points. A retraction distance of 0.8 mm and a retraction speed of 30 mm/s provided the best overall performance. In addition, the part cooling fan speed was fixed at 25% for all prints to balance layer adhesion and surface stability when processing ABS. All calibrated parameters, including nozzle temperature of 235 °C, build plate temperature of 100 °C, printing speed of 40 mm/s, extrusion multiplier of 0.98, retraction distance of 0.8 mm, retraction speed of 30 mm/s, and cooling fan speed of 25%, were held constant for the fabrication of all specimens. This ensured that differences observed in the Z-seam analysis originated from seam placement strategies rather than variations in baseline printing conditions.",
+        "The optimal Pressure Advance value was identified through a multi-stage calibration process using the integrated routines within Orca Slicer. The calibration began by defining a start point, an end point, and a specific step increment for the pressure advance coefficient. The PA Line test was first executed to print a series of straight lines where each individual line corresponded to a distinct PA value within this defined range. This visual assessment allowed for the selection of the specific line that yielded the most uniform extrusion free of defects. Subsequently, the PA Pattern method was employed to print a series of 90° corners. Similar to the line test, each corner feature in this pattern was printed with a different PA value based on the pre-defined range and step to identify the setting that produced the sharpest vertices with the fewest gaps or bulges. Finally, a PA Tower was printed for fine-grained analysis using a hollow pentagonal structure where the PA value changed continuously along the  z -axis. The height of the region displaying optimal quality was measured and multiplied by a factor of 0.002 to derive the final firmware coefficient for the direct-drive extruder. This empirically derived value (0.0265) was then applied to the filament profile to compensate for nozzle pressure hysteresis during acceleration and deceleration.",
+        "The Scarf Joint Seam was applied to both inner and outer perimeter walls by configuring the slicer to generate a tapered interface. To maximize the available bonding surface area while maintaining geometric fidelity on the 30 mm diameter curvature, a scarf length of 20 mm with 10 steps was selected. This configuration directed the nozzle to taper the extrusion path via downward and upward sloping ramps at the loop’s start and end points. This process created a blended, overlapping transition that distributed the discontinuity across a larger surface area rather than forming a standard vertical butt joint. Following production, all specimens underwent a rigorous visual inspection to identify imperfections such as voids or cracks, and any defective samples were excluded from testing.",
+        "To systematically evaluate the effects of different printing parameters, the hollow tubes were fabricated in twelve unique configurations. This experimental design combined four distinct feature enhancement groups with three different seam placement options. The enhancement groups consisted of specimens printed with Pressure Advance only, with a Scarf Joint seam only, with both features applied simultaneously, and a baseline group with neither improvement. Each of these groups was then printed using Back, Aligned, and Nearest seam placements, creating a full factorial study to assess the individual and combined effects of these settings. For each of these 12 cases, three identical specimens were produced for quasi-static compression testing, leading to a total of 36 test samples. The complete full factorial experimental design, distinguishing Z-seam strategies by their underlying control mechanisms and defining the corresponding alphanumeric nomenclature, is summarized in Table  1 . Table 1 Full factorial experimental design matrix and specimen nomenclature Z-seam strategy Modification feature Seam placement aligned (A) Seam placement back (B) Seam placement nearest (N) Baseline None N–A N–B N–N Dynamic flow compensation Pressure Advance P–A P–B P–N Seam topology modification Scarf Joint Seam S–A S–B S–N Hybrid Pressure Advance and Scarf Joint Seam P–S–A P–S–B P–S–N"
+      ]
+    },
+    {
+      "heading": "Experimental procedure and visual examination",
+      "paragraphs": [
+        "Quasi-static compression tests were performed using a Shimadzu Universal Testing Machine equipped with a 100 kN load cell. Following the ASTM D695 standard, a constant compression speed of 1.6 mm/min was applied. Throughout each test, force–displacement data were recorded at 20 Hz, and images of the deformation were captured at 11.2 mm intervals up to a total displacement of 56 mm.",
+        "After fabrication, specimens were scanned to analyze their geometry using a Moose 3D Scanner. The scanner was configured for an accuracy of 0.03 mm, a resolution of 0.07 mm, and a frame rate of 10 fps. For the procedure, each tube was placed on a rotational table while the scanner was positioned at a fixed distance of 160 mm. The scanned data was then imported into free trial version of Geomagic Control X software. A mesh-to-CAD comparison was conducted by aligning the scanned data with the original CAD model of the tubes. This process served to quantitatively evaluate the manufacturing accuracy and identify any dimensional deviations from the nominal design."
+      ]
+    },
+    {
+      "heading": "Results and discussion",
+      "paragraphs": []
+    },
+    {
+      "heading": "Energy absorption performance metrics and results evaluation",
+      "paragraphs": [
+        "The energy absorption capacity of materials is a pivotal parameter in applications requiring impact mitigation and crashworthiness. This characteristic is most effectively quantified through quasi-static compression testing, wherein a specimen is compressed at a constant, low velocity between a stationary and a moving platen. During this process, force and displacement are continuously recorded, yielding a force–displacement curve that encapsulates the material’s mechanical response under load. This curve typically exhibits four distinct regions, as illustrated in Fig.  1 . The initial region corresponds to linear elastic deformation, characterized by a steep increase in force with minimal displacement. This response is governed primarily by the material’s stiffness and the elastic bending of its microstructural features, such as tube walls. The termination of this region is marked by the Peak Crushing Force (PCF), signifying the yield point and the onset of irreversible deformation. Fig. 1 Force–displacement curve regions [ 43 ]",
+        "Beyond the PCF lies the plateau region, which is the most critical for energy absorption. In this phase, the force remains relatively constant while the specimen undergoes significant deformation via progressive folding, buckling, or crushing. The morphology of the plateau whether smooth or oscillatory reflects the underlying crushing mechanism and structural instabilities of the material. A long, stable plateau indicates sustained energy dissipation with controlled deformation [ 44 ].",
+        "As the material structure collapses and internal voids are eliminated, the response transitions into the densification region, characterized by a sharp increase in force with minimal additional displacement. Here, opposing material surfaces are in direct contact, resulting in rapidly increasing resistance to further compression [ 45 ].",
+        "An ideal energy-absorbing material exhibits a low PCF to reduce initial impact loads and a long, stable plateau to maximize energy dissipation before densification. The total energy absorbed is represented by the area under the force–displacement curve. This area is maximized when the plateau region features extensive folding or crush events, indicating a high capacity for controlled and progressive energy dissipation [ 46 ].",
+        "To rigorously assess the crashworthiness of a structure, several key performance indicators are derived from the force–displacement response obtained during quasi-static compression testing. The Total Energy Absorption (EA), which reflects the energy dissipated throughout the crushing process, is quantified as the area under the force–displacement curve and calculated by the integral: \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$EA=\\underset{0}{\\overset{ \\delta }{\\int }}F\\left(x\\right)dx$$\\end{document} The terms F(x) and δ denote the instantaneous crushing force and the crushing distance, respectively. Another essential parameter is the Specific Energy Absorption (SEA), which normalizes the absorbed energy by the mass  m  of the specimen, enabling comparison across different materials and geometries: \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$SEA=EA/m$$\\end{document} The Mean Crushing Force (MCF), defined as the average force sustained over the displacement range, is computed by the following formula. \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$MCF=EA/\\updelta$$\\end{document} MCF provides insight into the structure’s load-bearing behavior during the entire deformation process; a higher MCF typically indicates superior energy absorption capacity. To evaluate the efficiency of energy absorption, the Crush Force Efficiency (CFE) is introduced. It is defined as the ratio of the mean force to the Peak Crushing Force (PCF) the maximum force recorded during initial yielding: \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$CFE=MCF/PCF$$\\end{document} CFE values range between 0 and 1, with values approaching 1 denoting optimal crash performance, characterized by a nearly rectangular force–displacement curve with a long, stable plateau [ 47 ]. The initial stiffness (k) of the structure, representing its resistance to elastic deformation, is calculated from the slope of the force–displacement curve in the linear elastic region [ 48 ].",
+        "An ideal energy-absorbing structure should exhibit a low PCF to minimize initial impact severity, followed by a high and stable MCF that enables sustained energy dissipation through progressive deformation. The combination of high EA, high SEA, and CFE approaching unity indicates excellent crashworthiness, particularly in weight-sensitive applications. Moreover, achieving optimal crash performance requires balanced stiffness. Overly stiff structures may fail catastrophically or transmit high loads to adjacent components, compromising safety. Conversely, structures with inadequate stiffness may undergo premature collapse without sufficient energy dissipation. Therefore, the most effective designs possess moderate stiffness, enabling controlled deformation mechanisms such as plastic folding, buckling, or progressive crushing while maintaining structural integrity and maximizing energy absorption efficiency [ 48 ].",
+        "The results of the quasi-static compression tests were systematically analyzed using established performance metrics. These results are presented in the form of bar charts, with error bars representing the standard deviation to illustrate data variability and experimental repeatability. To ensure clarity and facilitate meaningful comparisons, the mechanical performance associated with each z-seam modification is individually highlighted in the graphs. This visualization approach provides a comprehensive and intuitive understanding of how z-seam positioning influences key crashworthiness parameters. This methodology facilitates a comprehensive comparative analysis of seven key performance indicators: Mean Crushing Force (MCF), Peak Crushing Force (PCF), Total Absorbed Energy, Specific Energy Absorption (SEA), Stiffness, Maximum Stress and Crushing Force Efficiency (CFE). To improve data clarity and allow for direct comparison, performance indicators were grouped into two separate graphs based on their numerical magnitude. The first graph consolidates the force and stiffness metrics, displaying Mean Crushing Force (MCF) and Peak Crushing Force-Max Force (PCF) in Newtons (N), and Stiffness in Newtons per millimeter (N/mm). The second graph presents the remaining metrics, including Specific Energy Absorption (SEA) in kilojoules per kilogram (kJ/kg), Total Absorbed Energy in decajoules (daJ), Maximum Stress in megapascals (MPa), Mass in grams (g), and Crushing Force Efficiency (CFE) as a percentage (%). To track each configuration, a systematic nomenclature was adopted to designate specimens based on their specific z-seam improvement method. A systematic nomenclature was adopted to designate each specimen by encoding its specific configuration. This alphanumeric code’s final letter denotes the seam location: A for Aligned, N for Nearest, and B for Back. The initial letters in the code identify the z-seam improvement method used: N indicates that neither pressure advance nor a scarf joint seam was applied, S denotes a Scarf joint seam, P signifies that pressure advance was applied, and P–S means both pressure advance and a scarf joint seam were utilized together.",
+        "Figure  2  presents the variation in stiffness (N/mm), mean crushing force (MCF, N), and peak crushing force-max force (PCF, N) across specimens fabricated with different z-seam improvement methods and seam locations. Fig. 2 Stiffness, MCF, and PCF variations across Z-seam modification methods",
+        "The results clearly demonstrate that both Z-seam modification strategies and seam placement exert a decisive influence on specimen stiffness, which governs not only the elastic response but also the initiation and stability of progressive collapse in energy-absorbing structures. The application of Pressure Advance (P) consistently increased stiffness, producing a more rigid structure. This behavior can be attributed to improved extrusion pressure regulation, which enhances interlayer bonding continuity and reduces void formation at the seam, thereby increasing effective load transfer in the elastic regime. Conversely, the Scarf Joint (S) modification noticeably decreased stiffness relative to the baseline, as the tapered seam geometry intentionally disrupts axial material continuity, introducing localized compliance that facilitates early deformation. Within each modification group, the Nearest seam location consistently resulted in the lowest stiffness values, reflecting the detrimental effect of concentrating geometric discontinuities within high-stress regions directly engaged during axial loading.",
+        "In the context of energy absorption, neither extreme stiffness nor excessive flexibility is desirable. Overly stiff structures tend to exhibit unstable or brittle collapse, characterized by high peak forces and limited folding, whereas excessively compliant structures collapse prematurely with insufficient resistance, resulting in poor energy dissipation. Consequently, a moderate stiffness level is required to promote controlled, progressive folding. The combined Pressure Advance–Scarf Joint (PS) configuration provides this balanced response, yielding stiffness values lower than the rigid P group yet higher than the flexible S group. This intermediate stiffness enables stable fold initiation while preserving sufficient load-bearing capacity throughout collapse. Accordingly, a configuration such as P–S–A (Pressure Advance + Scarf Joint with Aligned seam) represents an effective engineering compromise, achieving a favorable balance between structural rigidity and deformability that is essential for crashworthy energy-absorbing components.",
+        "Peak Crushing Force (PCF) trends further reinforce this interpretation. In crashworthiness applications, a lower PCF is desirable, as high initial forces correspond to greater impact loads transmitted to occupants. The unmodified baseline specimens, particularly N–B, exhibited the highest and therefore least favorable PCF values. In contrast, the Scarf Joint modification proved most effective in reducing peak force. This reduction arises from the seam’s ability to act as a controlled deformation trigger, smoothing force build-up during collapse initiation. While Pressure Advance and the combined PS strategy also reduced PCF relative to the baseline, their effect was less pronounced, reflecting the competing influence of increased material continuity on peak load formation. With respect to seam placement, the Back location consistently produced higher PCF values, as fold initiation is delayed when the seam is shielded from the primary loading face, whereas the Nearest location yielded the lowest peak forces by promoting earlier instability.",
+        "Mean Crushing Force (MCF) provides a complementary measure of sustained energy absorption capability, as higher MCF values indicate the structure’s ability to maintain load throughout progressive collapse. Several configurations exhibit superior performance in this regard, notably PS–B and P–B, as well as S–A. These results suggest that once collapse is initiated, enhanced interlayer cohesion from Pressure Advance allows the structure to sustain higher average loads, particularly when combined with seam placements that delay catastrophic fracture. Collectively, these findings indicate that optimal crashworthy performance in FDM-fabricated ABS structures is achieved not by maximizing any single response, but by strategically tuning Z-seam geometry and placement to balance stiffness, peak force mitigation, and sustained crushing resistance a design principle directly relevant to lightweight crash boxes and energy-absorbing structural components.",
+        "Figure  3  evaluates the remaining performance metrics of the energy-absorbing structures, including their weight and mechanical properties. Fig. 3 Variations in mass, SEA, absorbed energy, maximum stress, and CFE across Z-seam modification methods",
+        "All specimens were weighed prior to testing, with dimensional consistency ensured across the dataset. Specimens fabricated with a Scarf Joint seam exhibited systematically lower mass than the other configurations, which is directly attributable to the suppression of material bulging and blob formation at the Z-seam. By redistributing the seam over an inclined interface, the Scarf Joint reduces localized over-extrusion and excess filament accumulation. This localized mass reduction is mechanically relevant, as it simultaneously decreases local stiffness at the seam region, creating a compliant trigger that alters the onset and evolution of collapse. Consequently, specimens incorporating the Scarf Joint exhibit lower initial rigidity than their non-scarf counterparts, an effect that directly influences subsequent energy absorption behavior.",
+        "For Total Absorbed Energy (EA), where higher values correspond to improved crashworthiness, the results identify clear top-performing configurations. The specimen combining both modifications with a Back seam (PS–B) achieved the highest absorbed energy (23.50 daJ), closely followed by the Pressure Advance–Back configuration (P–B). This trend highlights Pressure Advance as a primary contributor to energy dissipation, as improved pressure regulation enhances interlayer bonding and enables sustained load transfer during progressive folding. In contrast, the S–N (Scarf–Nearest) specimen absorbed the least energy, indicating that excessive compliance combined with an unfavorable seam location leads to premature collapse and limited resistance during deformation.",
+        "Specific Energy Absorption (SEA), which normalizes energy absorption by specimen mass and is therefore critical for lightweight structural design, further clarifies the interaction between processing strategies. While Pressure Advance (P) and the Scarf Joint (S) produced limited improvements when applied independently, their combined application resulted in a clear synergistic enhancement of SEA, with PS–B achieving the highest value (16.95 kJ/kg). This synergy arises because Pressure Advance compensates for the local compliance introduced by the Scarf Joint, producing a seam that is both geometrically smooth and structurally dense. Seam location plays a decisive role, with the Back position consistently enhancing SEA, likely due to delayed seam engagement during folding, whereas the Nearest position yields the lowest values by concentrating structural discontinuities in highly stressed regions.",
+        "Peak Crushing Force (PCF), which directly correlates with maximum stress transmitted during impact, provides further insight into crashworthiness performance. Because excessively high PCF values are undesirable from a safety perspective, an optimal structure must balance peak force reduction with sustained load capacity. The unmodified baseline specimens exhibited the highest and least favorable PCF values. Both Pressure Advance and the Scarf Joint significantly reduced PCF, with the Scarf Joint showing a more pronounced effect due to its ability to blunt the initial force peak by introducing a controlled deformation zone. Notably, the combined P–S configuration produced an intermediate PCF lower than the baseline yet higher than the Scarf-only case indicating a deliberate moderation of force transmission rather than an uncontrolled reduction in resistance. This behavior reflects a desirable compromise between safety and structural integrity.",
+        "Crushing Force Efficiency (CFE), defined as the ratio of Mean Crushing Force (MCF) to PCF, captures the stability of the force–displacement response. Higher CFE values indicate a more uniform crushing process with reduced force oscillations. Both Pressure Advance and Scarf Joint modifications improved CFE, with the Scarf Joint exerting the stronger individual influence. A clear synergistic effect emerges when both strategies are combined, yielding the highest CFE values, particularly for PS–B, followed by S–A. This improvement confirms that combined seam smoothing and pressure regulation promote a more ideal collapse mode, characterized by sustained resistance without excessive initial force spikes.",
+        "Taken together, the combined analysis of stiffness, EA, SEA, PCF, MCF, and CFE demonstrates that Z-seam mitigation strategies influence crashworthiness primarily by altering seam morphology, local stiffness, and fold initiation behavior. Pressure Advance enhances interlayer cohesion and structural rigidity, increasing MCF and total energy absorption, but at the cost of elevated PCF if applied alone. Conversely, the Scarf Joint reduces mass and stiffness, suppresses peak forces, and promotes early folding, but may limit total energy dissipation if not compensated. The combined P–S strategy reconciles these competing effects, yielding moderate stiffness, reduced PCF, high MCF, and the highest SEA through stable, progressive folding. Two distinct interaction modes are observed: synergistic interactions, such as for CFE and SEA, where combined modifications outperform individual strategies, and balancing interactions, where opposing effects produce intermediate performance. Seam placement further modulates these mechanisms, with the Back location consistently enhancing performance through geometric shielding, while the Nearest location introduces structural weaknesses that degrade response. Ultimately, integrating Pressure Advance and Scarf Joint modifications particularly with a Back seam placement emerges as the most effective strategy for maximizing energy absorption, crashworthiness, and lightweight efficiency in FDM-fabricated ABS structures."
+      ]
+    },
+    {
+      "heading": "Deformation modes",
+      "paragraphs": [
+        "In structural mechanics, axial compression failure modes are broadly classified into progressive and global buckling, a distinction that is critical for energy-absorbing applications such as crashworthy components and protective structures. Progressive buckling involves localized, sequential deformation and is highly favorable for energy dissipation due to its ability to sustain load over an extended crushing stroke. This mode typically occurs in two forms: concertina buckling, featuring uniform, axisymmetric folds resembling an accordion, and diamond buckling, characterized by non-axisymmetric, diamond-shaped lobes. Concertina buckling is especially desirable for its stable post-buckling behavior and consistent load plateau, enabling efficient and predictable energy absorption. It is strongly influenced by structural geometry, material properties and the use of triggering mechanisms like grooves or notches to initiate folding. Diamond buckling, while still progressive, often appears in longer or thinner shells and exhibits more complex, less uniform collapse patterns. Despite greater load fluctuations, it still provides substantial energy absorption through plastic deformation, particularly when precise concertina folding is impractical. In contrast, global buckling, such as Euler-type instability, leads to a catastrophic, column-like bending of the entire structure. This failure mode results in a sharp peak followed by a sudden drop in load-carrying capacity, severely limiting energy dissipation. The fundamental difference lies in post-buckling behavior: while progressive modes absorb energy gradually through sequential plastic deformation, global buckling ends abruptly after a single instability event. For this reason, modern energy-absorbing designs prioritize progressive mechanisms especially concertina buckling through optimized geometries, material selection, filler integration, and strategic triggering. Understanding and controlling these distinct collapse modes is essential for achieving high-performance, reliable energy management in advanced structural systems.",
+        "The failure modes of the various Z-seam improvements were rigorously visualized and analyzed through a sequential photographic study. For each distinct case comprising the baseline “without improvement” scenario, individual Z-seam improvement techniques, and the synergistic application of both improvement techniques a series of five images was captured at precise deformation distances of 11.2 mm, 22.4 mm, 33.6 mm, 44.8 mm, and 56 mm. This systematic visual documentation allowed for a detailed observation and comparative analysis of the evolving deformation patterns and ultimate failure characteristics across all tested configurations. For each case, a set of images is prepared with the Z-seam position aligned, at the back and nearest, arranged from top to bottom. Figure  4  shows the baseline case without Pressure Advance or the Scarf joint seam, presented from top to bottom as Aligned, Back, and Nearest. Fig. 4 Deformation modes of baseline specimens with Z-seam positions aligned, back and nearest (top to bottom)",
+        "The specimen manufactured with an aligned Z-seam configuration demonstrates a catastrophic failure mode governed by the structural integrity of the seam itself. Unlike a ductile collapse, this specimen fails due to a rapid fracture propagation directly along the vertical seam line. Upon initial loading, the specimen begins to deform; however, by the second stage, a vertical crack appears along the Z-seam. As compression increases, this crack rapidly propagates, splitting the specimen in a zipper-like fashion. This delamination halts further plastic deformation and folding. By the final stage, the structure has fully separated, with both halves splaying outward evidence of failure initiated at the seam. This behavior confirms that the aligned Z-seam acts as a critical stress concentrator and structural weakness. Poor interlayer adhesion at the extrusion start-stop point creates a continuous low-strength path prone to failure under tensile hoop stresses, leading to premature, brittle-like collapse. The specimen with the Z-seam positioned at the back exhibits a mixed-mode failure, combining elements of brittle fracture and ductile collapse. Rather than a clean buckle or immediate seam split, failure initiates with interlayer delamination at the contact points with the platens. Subsequent deformation follows an irregular, asymmetric folding pattern, less uniform than typical concertina buckling. In the later stages, the Z-seam becomes a point of weakness, leading to a delayed but less catastrophic seam opening compared to the fully aligned case. This behavior suggests partial energy absorption through non-ideal plastic deformation before seam integrity is lost. While still a weak point, the back-positioned seam allows for greater deformation and structural resistance, likely due to a different stress distribution than the fully aligned configuration. The specimen printed with the ‘nearest’ Z-seam strategy, which randomizes seam locations layer by layer, exhibits a distinct failure mode. By avoiding a continuous vertical seam, it prevents catastrophic splitting and instead fails via progressive buckling. This buckling forms a diamond-shaped lobar pattern, with angled folds collapsing sequentially. However, the process is not entirely ductile localized brittle fractures occur within the folds due to weak inter- and intra-layer adhesion at scattered seam points. The specimen with the Z-seam located at the ‘back’ position exhibits a mixed-mode failure, characterized by initial interlayer delamination at the vertices followed by a combination of buckling and partial seam fracture. The failure sequence commences with visible delamination at the specimen-platen interface, after which the structure undergoes general buckling. Concurrently, a vertical fracture develops along the seam path, though this cleavage is notably less severe than that observed in the fully aligned configuration. This suggests a higher effective adhesion in the ‘back’ position. The improved resistance to splitting may be attributed to the nature of the seam’s path on a curved surface, which is often slightly angled rather than perfectly vertical. This non-linear alignment disrupts the continuity of the weak plane along the print’s axis, providing greater resistance to fracture and allowing for more energy to be absorbed through plastic deformation before the seam’s integrity is ultimately compromised.",
+        "As a result, while the global structure deforms progressively, local fractures limit plastic deformation and reduce overall energy absorption. The ‘nearest’ strategy thus avoids catastrophic failure but introduces distributed micro-defects, resulting in a hybrid mode: ductile buckling with localized brittle damage.",
+        "Figure  5  shows the specimens with Pressure Advance applied, ordered from top to bottom as Aligned, Back, and Nearest. Despite this adjustment, vertical splits along the Z-seam are still observed. Fig. 5 Deformation modes of Pressure Advance implemented specimens with Z-seam positions aligned, back and nearest (top to bottom)",
+        "The specimen fabricated with an aligned Z-seam and optimized with Pressure Advance fails via a mechanism combining general buckling with a dominant brittle fracture, and does not exhibit a folding behavior. Under axial compression, the cylindrical structure undergoes plastic deformation that results in outward radial expansion, or barreling, which in turn generates significant tensile hoop stresses across the specimen’s circumference. Although Pressure Advance improves material adhesion, the aligned seam persists as a primary stress concentrator where these hoop stresses are maximized, causing the initiation and subsequent propagation of a vertical fracture along the seam’s axis. This progressive brittle fracture constitutes the ultimate failure mode for the specimen, preempting the development of any other collapse mechanism and demonstrating that the seam remains the critical structural weakness despite the processing improvements. The ‘nearest’ Z-seam configuration, when combined with Pressure Advance, exhibited progressive folding behavior accompanied by localized splits. Although the randomized seam locations prevent the formation of a continuous vertical weakness, they still act as scattered points of stress concentration. As folding progresses, these regions are susceptible to micro-fractures and surface delaminations. While these small cracks do not merge into a catastrophic split, they compromise structural integrity throughout the deformation process. This behavior indicates that even with optimized extrusion, the ‘nearest’ seam strategy leads to a composite failure mode global ductile buckling consistently accompanied by localized brittle fractures at the dispersed seam sites.",
+        "Figure  6  shows the specimens with the Scarf joint seam implemented, ordered from top to bottom as Aligned, Back, and Nearest. While this approach effectively prevented Z-seam splitting, it did not result in a consistent or fully stable folding pattern. Fig. 6 Deformation modes of Scarf Joint Seam–implemented specimens with Z-seam positions aligned, back, and nearest",
+        "The implementation of an aligned scarf joint results in a ductile-dominant, mixed-mode failure, representing a significant improvement over all previous configurations. The specimen exhibits no vertical splitting, confirming that the overlapping geometry of the scarf joint effectively distributes tensile hoop stresses and creates a bond at the seam with strength comparable to the bulk material. The primary failure mechanism is progressive buckling, and due to this progressive collapse, the structure has a high tendency to absorb energy. However, the buckling does not proceed in a perfectly uniform manner; instead, the folds develop asymmetrically. This indicates that despite the robust seam, some minor structural heterogeneities persist, leading to a mixed-mode response. Nonetheless, the scarf joint successfully transforms the catastrophic brittle failure of the baseline case into a robust failure mechanism governed primarily by ductile deformation. The specimen featuring a scarf joint at the ‘back’ position exhibited the more ideal failure response of other configurations, characterized by a almost uniform and symmetrical progressive buckling. Consistent with the effectiveness of the scarf joint modification, there was no evidence of splitting or fracture in the implemented region, confirming the high integrity of the bond. This superior performance suggests a beneficial mechanical interaction whereby the modification locally lowers the structure’s rigidity. This localized reduction in stiffness may function as a controlled initiation point for the collapse, promoting a more orderly and symmetrical buckling sequence which, in turn, enhances the structure’s ability to absorb energy in a predictable, fully ductile manner. The ‘nearest’ Z-seam configuration with the scarf joint implemented resulted in a progressive buckling failure that was visibly non-uniform. While the individual scarf joints were robust enough to prevent localized failure at the seam points, their random distribution throughout the specimen’s geometry appears to have created an irregular stress concentration profile. This heterogeneous stress field dictated the subsequent structural collapse, leading to an asymmetric buckling sequence that lacked the high degree of uniformity seen in the ‘back’ scarf joint configuration. This outcome suggests that while strengthening the seam itself is critical, the placement strategy of even a robust seam plays a significant role in determining the uniformity and predictability of the component’s ultimate failure mode.",
+        "Figure  7  shows the deformation modes for specimens with both Pressure Advance and the Scarf joint seam, ordered from top to bottom as Aligned, Back, and Nearest. A more uniform and progressive folding behavior is observed when both modification techniques are implemented, resulting in improved energy-absorbing performance. Fig. 7 Deformation modes of specimens incorporating both Pressure Advance and Scarf Joint Seam configurations with Z-seam orientations aligned, back, and nearest",
+        "The synergistic application of both Pressure Advance and the scarf joint seam on the aligned configuration results in a significantly enhanced structural response, improving beyond the effects of either individual modification. The specimen fails via a ductile-dominant progressive buckling, characterized by a collapse pattern that approximates a diamond failure mode. Although the collapse is not perfectly symmetrical, this configuration achieves the most uniform folding behavior observed among all test cases. This advanced ductile folding demonstrates that the combined optimization strategy successfully transforms the inherently weak aligned seam into a robust structure capable of a highly controlled, energy-absorbing collapse. The ‘back’ Z-seam configuration with both modifications applied also fails via a mixed-mode progressive buckling, characterized by dominant ductile behavior with no splitting observed at the seam. Although the collapse is visually less uniform than that of the optimized aligned Z-seam specimen, it exhibits a mechanically advantageous characteristic. During compression, this configuration develops a higher number of distinct hinges or folds throughout its structure. This formation of more collapse hinges, despite the lack of perfect symmetry, ultimately results in a superior energy absorption performance. The ‘nearest’ Z-seam configuration with both modifications applied resulted in a non-uniform progressive buckling. A distinguishing feature of this failure mode was the occurrence of localized fragmentation, where small pieces of material were observed to split from the main structure during the collapse. This indicates that while the global failure was ductile, the random distribution of the seam created stress concentrations that led to localized brittle fractures. Despite the non-uniform folding and the presence of fragmentation, the specimen still demonstrated good energy absorbing behavior.",
+        "Previous studies investigating FDM-fabricated circular hollow tubes for energy-absorbing applications have reported a wide range of failure modes, strongly dependent on material system, reinforcement strategy, and seam-related defects. Quasi-static compression tests on PETG reinforced with short carbon fibers revealed that the majority of specimens failed at the Z-seam location, where crack initiation and subsequent propagation occurred along the vertical seam line [ 31 ]. Similarly, investigations on PLA circular tubes incorporating an internal concentric ring connected to the outer shell by four radial ribs reported vertical tearing during compression, indicating the presence of dominant axial weakness paths [ 32 ]. In contrast, studies on polyamide (PA) tubes reinforced with glass and carbon fibers demonstrated more progressive collapse behavior: glass fiber–reinforced PA exhibited largely progressive deformation with limited Euler-type buckling, whereas carbon fiber–reinforced PA showed a more stable progressive folding mode [ 33 ]. Additional work on circular tubes fabricated from PLA + , PLA-ST, PLA-LW, PLA-CF, and PETG [ 34 ], as well as PLA-, ABS-, and PETG-based hollow tubular structures produced with conventional slicing strategies, reported predominantly progressive folding behavior under axial compression, despite the presence of unmodified Z-seams [ 30 ]. These observations indicate that progressive collapse can occur in FDM-printed circular tubes, although seam-induced weaknesses often remain a governing factor in failure initiation and variability. In the present study, the baseline specimens fabricated without Z-seam modifications exhibited failure modes consistent with seam-dominated fracture reported in the literature. For both aligned and back seam distributions, failure initiated with the appearance of a vertical crack along the Z-seam during the early stages of loading, followed by rapid crack propagation that split the specimen longitudinally in a zipper-like manner, suppressing progressive folding. In contrast, specimens printed with the nearest seam strategy avoided continuous vertical seam formation and consequently exhibited progressive buckling behavior. The implementation of Pressure Advance alone did not fundamentally alter this trend: seam-dominated fracture persisted for aligned and back distributions, while nearest configurations continued to deform progressively. By comparison, the introduction of the Scarf Joint seam modification resulted in progressive folding behavior across all seam distribution cases, indicating effective disruption of the continuous weak plane at the seam. When both Pressure Advance and Scarf Joint modifications were applied simultaneously, all specimens consistently exhibited stable progressive folding, confirming a synergistic effect in suppressing seam-driven fracture and promoting controlled energy-absorbing deformation.",
+        "These findings align well with prior reports and reinforce the conclusion that Z-seam morphology, rather than material alone, plays a decisive role in governing collapse modes in FDM-fabricated circular tubes. By redistributing or geometrically diffusing the seam, the transition from brittle, seam-controlled failure to progressive, energy-efficient folding can be reliably achieved, even without altering the base material system."
+      ]
+    },
+    {
+      "heading": "Visual examinations",
+      "paragraphs": [
+        "The effect of advanced Z-seam modifications on surface topography and dimensional accuracy was quantified using scan-to-CAD deviation analysis. ABS tubes (15 mm height) were fabricated under each Z-seam condition; the 15 mm height was chosen to ensure unobstructed line-of-sight and adequate depth of field for capturing the inner lumen during 3D scanning. Both inner and outer surfaces were scanned; reconstructed surfaces were rigidly registered to the nominal CAD model, and deviation maps and dimensional metrics were computed; this was performed in Geomagic Control X (3D Systems; trial license). Conformance was reported as the percentage of surface area within a ± 1% tolerance band, along with mean deviation, RMS, and the fractions above/below tolerance. Geometric deviations are tabulated in Table  2 . The software computes, for each measured vertex, the signed distance to its associated reference position on the CAD model; the signed magnitude (the gap distance) is reported as the pointwise deviation. Negative values indicate the scanned geometry lies inside/undersized relative to CAD; positive values indicate it is outside/oversized. Min denotes the most negative deviation (smallest gap), Max the most positive deviation (largest gap), Average the arithmetic mean of all deviations, RMS the root-mean-square deviation, Std. Dev. the standard deviation of deviations, and Var. their variance. The Inside Tolerance (%) metric gives the fraction of points within the user-defined tolerance band (± 1%), quantifying geometric conformance. Table 2 Geometric deviations Code Minimum Maximum Average RMS Standard deviation Variance Inside tolerance Above tolerance Below tolerance N–A − 0.222 0.24 0.0386 0.0793 0.0693 0.0038 74.8026 24.6767 0.5207 N–B − 0.2455 0.2053 0.0416 0.0738 0.061 0.0045 77.7422 21.8375 0.4203 N–N − 0.1742 0.26 0.0434 0.0782 0.0651 0.0031 73.4319 26.3679 0.2002 P–A − 0.2089 0.2127 0.0333 0.0767 0.0691 0.0055 76.6163 22.7597 0.624 P–B − 0.2088 0.2126 0.0333 0.0767 0.0691 0.0037 76.6186 22.7574 0.624 P–N − 0.1716 0.2234 0.0499 0.0785 0.0607 0.0033 75.0633 24.6799 0.2568 S–A − 0.1109 0.2207 0.0389 0.0726 0.0613 0.0048 79.9929 19.934 0.0731 S–B − 0.0803 0.2257 0.0459 0.0814 0.0672 0.0048 73.1097 26.8903 0 S–N − 0.0894 0.2687 0.0448 0.0713 0.0554 0.0037 81.2492 18.7508 0 P–S–A − 0.1039 0.2367 0.043 0.0859 0.0744 0.0048 75.6384 24.3604 0.0012 P–S–B − 0.0863 0.2066 0.0422 0.0743 0.0612 0.0037 79.5048 20.4952 0 P–S–N − 0.0672 0.2138 0.0542 0.0791 0.0576 0.0042 72.443 27.557 0",
+        "The tabulated results show clear effects of Z seam strategy on scan to CAD conformance under a ± 1% band. Relative to the baseline without compensation, introducing a scarf joint seam denoted S consistently reduces RMS deviation and increases the percentage of points within the tolerance band. This outcome indicates effective suppression of the localized height step at the layer start and stop. Pressure advance denoted P lowers the share of points that are out of tolerance, which improves dimensional compliance, but produces limited or mixed change in RMS. This pattern implies that flow precompensation mainly mitigates outward drift while the topographic imprint of the seam remains visible in the surface undulation. The combined method denoted PS generally preserves the tolerance benefit and can approach the best overall conformance, although the response of RMS depends on tuning. Practical experience suggests that advance gain, scarf angle and length, seam-adjacent speeds and accelerations, and perimeter count should be co-adjusted to avoid residual micro undulations when both controls are active.",
+        "Seam location exerts a secondary influence compared with method selection, but its signatures are informative. Placing the seam at Back typically reduces the maximum positive deviation, which points to a reduction of local material build up where the seam is hidden on the reverse side. The Nearest placement exhibits the lowest minimum values, that is the most negative deviations, which indicates localized inward bias near the area where the seam is parked and heat dissipation is less favorable. Averaged across methods, Back and Aligned locations also reduce the overall out of tolerance share compared with Nearest, while RMS differences among the three placements are modest. This behavior is consistent with location redistributing the imprint toward less critical regions rather than eliminating it.",
+        "The decomposition of out of tolerance is dominated by the over tolerance component. The below tolerance share is very small in all cases. This asymmetry reflects a systematic outward bias of the printed geometry. Contributing factors include transient over extrusion at layer initiation and termination, thermal expansion and swelling of deposited filaments before full cooling, and acceleration and jerk dynamics that concentrate small excess material near the seam path. With the chosen registration and projection settings, small alignment errors also tend to manifest as positive distances rather than negative distances, which further reduces the frequency of below tolerance points.",
+        "These observations align with the intended mechanisms of the controls. The scarf joint diffuses the seam over an inclined and extended interface, lowering peak local error and improving both RMS and tolerance conformance. Pressure advance anticipates volumetric demand and reduces flow lag and overshoot, which tightens compliance by curbing positive deviations that most often exceed the upper limit. When both are combined in PS, the tolerance benefit is retained but the RMS response becomes sensitive to parameterization, so co-optimization is recommended.",
+        "For additively manufactured ABS tubes, the most robust practice is to adopt the scarf joint as the default Z seam strategy to minimize undulation and maximize in tolerance area. Pressure advance should be applied where compliance with the tolerance band is the binding requirement and RMS is already acceptable for function and appearance. The combined PS method is appropriate when both effects are needed, provided that the parameters are calibrated for the specific geometry and toolpath. Where visibility or interface constraints dictate placement, parking the seam at Back provides a practical reduction of the maximum deviation and a lower out of tolerance share with minimal impact on RMS.",
+        "Applying both modifications, pressure advance and a scarf seam, resulted in higher energy absorption metrics, as shown in the previous section, with the largest gains observed for the Aligned and Back seam placements. Consistent with the scan to CAD analysis, the Back location provided the second best dimensional accuracy, which limits gap variation and seam induced stress concentrators, stabilizes progressive crushing, and increases specific energy absorption. For energy absorbing hollow tubes, production with pressure advance and a scarf seam, and placement of the Z seam at the Back location, is therefore recommended by this study.",
+        "The deviation maps in Fig.  8  illustrate the spatial distribution of scan-to-CAD deviations. Columns encode the Z-seam control: first, neither pressure advance nor scarf joint seam; second, pressure advance; third, scarf joint seam; fourth, both applied. Rows encode seam location: top, Aligned; middle, Back; bottom, Nearest. Fig. 8 Deviation maps of tubes",
+        "The maps corroborate the quantitative trends. A scarf-joint seam suppresses the seam-induced height step and, among the single controls, yields the most uniform fields. Pressure advance reduces the extent and intensity of oversize regions, improving tolerance compliance, although a faint inward line texture remains on the inner surface. The combined P–S condition exhibits the cleanest tolerance behavior with minimal exceedances, while Back placement reduces maximum positive deviations and Nearest placement produces the deepest negative deviations. These observations support using a scarf seam as the default strategy for energy-absorbing ABS tubes, adding pressure advance when tighter tolerance compliance is required, and placing the Z-seam at the Back location when feasible."
+      ]
+    },
+    {
+      "heading": "Statistical analysis of experimental factors",
+      "paragraphs": [
+        "In order to evaluate the statistical significance of the experimental results and quantify the influence of the Z-seam improvement strategies, the compression test data were analyzed using) two-way Analysis of Variance (ANOVA). This analysis was conducted using Minitab statistical software. The statistical framework was selected to achieve distinct analytical objectives: first, a Main Effects Analysis was performed to isolate and determine the individual influence of the Z-seam Modification and Seam Distribution on the critical mechanical responses (Stiffness, Crush Force Efficiency, Total Absorbed Energy, and Specific Energy Absorption). Second, an Interaction Analysis was conducted to assess the interplay between these factors, determining if the performance of a specific seam modification is statistically dependent on its geometric placement. The detailed statistical decomposition of Stiffness, Crush Force Efficiency, Total Absorbed Energy, and Specific Energy Absorption is summarized in Table  3 . The two-way ANOVA partitions the total experimental variability into contributions arising from the main effects of Modification and Distribution, their interaction, and the residual error. For each source of variation, the sum of squares quantifies the magnitude of variability, which is normalized by the corresponding degrees of freedom to obtain the mean square. The ratio of each factor’s mean square to the error mean square yields the F-statistic, which provides a measure of the strength of the effect relative to experimental noise. Statistical significance is assessed using the associated  p  values, with values below 0.05 indicating a statistically significant effect. In addition, the contribution ratio expresses the proportion of total variance explained by each source, enabling identification of the dominant factors governing mechanical response relative to variability inherent to the experimental process;these statistically signifi cant p-values and dominant variance contributions are highlighted in bold. Table 3 Two-way analysis of variance (ANOVA) results for energy absorb metrics Source of variation Sum of squares Mean square F-value P  value Contribution (%) Stiffness  Modification 39,671.55 13,223.85 10.94 0.0001 45.9  Distribution 10,584.89 5292.44 4.38 0.024 12.3  Interaction 7091.58 1181.93 0.98 0.462 8.3  Error 29,018.88 1209.12 33.5  Total 86,366.90 100 Crush Force Efficiency (CFE)  Modification 36.6 12.2 3.27 0.038 25.7  Distribution 0.11 0.056 0.015 0.985 0.1  Interaction 16.34 2.72 0.73 0.63 11.5  Error 89.42 3.73 62.7  Total 142.47 100 Specific Energy Absorption (SEA)  Modification 1.24 0.413 1.29 0.299 10.7  Distribution 1.065 0.533 1.67 0.21 9.2  Interaction 1.712 0.285 0.89 0.515 14.8  Error 7.662 0.319 65.3  Total 11.679 100 Total Absorbed Energy (EA)  Modification 150.62 50.21 0.8 0.508 6.7  Distribution 241.24 120.62 1.91 0.169 10.7  Interaction 324.23 54.04 0.86 0.539 14.4  Error 1511.90 62.99 68.2  Total 2227.99 100",
+        "A notable outcome of the two-way ANOVA is the relatively high contribution of the residual error term, particularly for energy-based metrics. While stiffness exhibits a moderate error contribution of 33.5%, the error fraction increases to 62.7%, 65.3%, and 68.2% for CFE, SEA, and EA, respectively. This behavior reflects the fundamentally different deformation mechanisms governing these responses. Stiffness is primarily controlled by initial elastic deformation and global structural geometry, which are highly repeatable under controlled manufacturing conditions. In contrast, EA, SEA, and CFE are governed by progressive collapse phenomena, including localized buckling, interlayer fracture, and plastic hinge formation, which are inherently sensitive to microscale variations in interlayer bonding and filament morphology characteristic of FDM-printed ABS. Consequently, the statistical evaluation of post-yield energy-based metrics is interpreted with appropriate caution and focuses on identifying robust trends that persist despite intrinsic experimental variability.",
+        "Among the evaluated responses, stiffness demonstrated the strongest statistical signal. Modification emerged as the dominant control factor (F = 10.94,  p  = 0.0001), explaining 45.9% of the total variance, indicating a variance contribution approximately an order of magnitude greater than the residual noise. Seam Distribution was also statistically significant (F = 4.38,  p  = 0.024), though its contribution was secondary (12.3%).",
+        "For Crush Force Efficiency, despite the substantial residual variance (62.7%), Modification remained statistically significant (F = 3.27,  p  = 0.038), accounting for 25.7% of the total variance. This result is mechanically consistent with the stiffness findings, as seam modification governs local rigidity and directly influences the initial peak force, which dominates the efficiency ratio. Seam Distribution was statistically negligible (F = 0.015,  p  = 0.985), contributing only 0.1% of the total variance. Although the interaction term accounted for 11.5% of the variance, it did not achieve statistical significance ( p  = 0.630), indicating that its effect is masked by experimental scatter.",
+        "For Total Absorbed Energy and Specific Energy Absorption, neither Modification nor Seam Distribution achieved statistical significance, with low F-values (0.80–1.91) and  p  values exceeding the 0.05 threshold. The controlled factors collectively explain less than 20% of the total variance for both metrics, confirming that energy absorption behavior in these thin-walled structures is dominated by stochastic fracture and collapse processes rather than deterministic seam strategy effects.",
+        "While the ANOVA results quantify the statistical significance and relative magnitude of variance contributions, they do not convey the direction or qualitative nature of the observed effects. To facilitate physical interpretation of the printing parameters, the main effects plots presented in Fig.  9  illustrate the mean response at each level of the Modification and Distribution factors. Importantly, these plots remain informative even in the presence of elevated residual variance, as they reflect systematic shifts in the central tendency of the response rather than point-wise variability. Consequently, the main effects plots enable direct visualization of how individual seam strategies influence mechanical performance, complementing the ANOVA findings by clarifying effect directionality and supporting interpretation of statistically robust trends. Fig. 9 Main effects plots for Energy Absorb Metrics",
+        "The response for stiffness reveals a clear structural hierarchy driven by seam geometry; the ‘PA’ modification yields the highest mean stiffness (~ 1745 N/mm), indicating that the precise extrusion control reinforces the vertical seam stack against initial compression. Conversely, the ‘Scarf’ strategy results in a sharp reduction in rigidity (~ 1660 N/mm). This suggests that while the tapered joint improves surface finish, the reduced material overlap in the transition zone creates a localized compliance that weakens the structure’s initial elastic response. Regarding distribution, the ‘Aligned’ placement maximizes stiffness by creating a continuous vertical rib, whereas the ‘Nearest’ distribution scatters the discontinuity, effectively interrupting the load path. In contrast, Crush Force Efficiency (CFE) exhibits a distinct binary step-change behavior. The plot shows that both Scarf-based strategies (‘PA and Scarf’ and ‘Scarf’) elevate the mean efficiency from a baseline of ~ 48% to over 50%. This confirms that the primary inhibitor of efficiency is the “seam blob” typical of standard printing; by eliminating this protrusion via the Scarf joint, the initial peak load is blunted, bringing the peak force closer to the mean crushing force, regardless of where the seam is located.",
+        "For the energy absorption metrics (EA and SEA), the analysis reveals a notable synergistic trend in the material processing parameters. While ‘PA’ alone or ‘Scarf’ alone result in lower energy absorption compared to the ‘None’ baseline, the combined ‘PA and Scarf’ (Hybrid) modification achieves the highest mean performance across all metrics. This indicates that the mechanisms of Pressure Advance and Scarf Joint are complementary; the PA algorithm compensates for the potential under-extrusion in the Scarf taper, creating a seam that is both geometrically smooth and internally dense. Furthermore, the distribution plot for energy identifies the ‘Back’ position as the optimal seam location. This creates a “geometric shielding” effect: by placing the defect on the face opposite the impactor, the seam is subjected to tensile stresses later in the crushing sequence compared to the ‘Aligned’ or ‘Nearest’ positions, thereby preserving the structural integrity of the primary folding faces for the maximum duration.",
+        "To further elucidate the interplay between the printing parameters, the interaction plots presented in Fig.  10  were examined to determine whether the effectiveness of a given seam modification strategy is contingent upon seam distribution. Interpretation of these plots is based on the relative geometry of the response profiles: parallel trends indicate additive and independent effects, whereas non-parallel or intersecting trends suggest potential factor coupling. Fig. 10 Interaction plots for Energy Absorb Metrics",
+        "For stiffness, the interaction plot exhibits a localized deviation from strict parallelism, manifested as a rank reversal at the Nearest distribution. While the Pressure Advance (PA) strategy yields the highest stiffness for the Aligned and Back placements, its performance deteriorates markedly when the seam is spatially dispersed, crossing below the None baseline. From a purely visual standpoint, this behavior suggests that the stiffening benefit of PA is sensitive to seam continuity. However, the corresponding interaction term is statistically insignificant ( p  = 0.462), indicating that the observed crossover occurs within overlapping confidence bounds imposed by experimental scatter. Consequently, despite the apparent visual interaction, stiffness remains primarily governed by global seam geometry rather than by a statistically robust coupled mechanism, confirming Modification as the dominant and repeatable control factor.",
+        "In the case of Crush Force Efficiency (CFE), the interaction plot displays a pronounced crossover between the high-performing modification strategies. The pure Scarf configuration achieves maximum efficiency at the Aligned position but degrades at the Back location, whereas the Hybrid (PA + Scarf) strategy exhibits the opposite trend, improving at the Back position and surpassing the pure Scarf. This “X-shaped” response indicates a trade-off between peak performance and spatial robustness: the pure Scarf strategy delivers higher nominal efficiency but is more location-sensitive, while the Hybrid modification provides a more stable response across seam placements. Nevertheless, due to the substantial residual variance, this interaction does not reach statistical significance ( p  = 0.630). Mechanistically, this implies that while seam location influences local fold initiation, it does not systematically amplify or suppress the modification effect sufficiently to establish a deterministic interaction.",
+        "For Total Absorbed Energy and Specific Energy Absorption, the interaction plots reveal non-parallel trends characterized by a localized maximum associated with the Hybrid–Back configuration. This behavior is consistent with the inherently stochastic nature of post-yield progressive collapse, where localized buckling, interlayer fracture, and crack propagation are highly sensitive to microscale filament morphology and bonding variability. Although the Hybrid–Back combination exhibits an elevated mean response, the absence of statistical significance (p > 0.05) confirms that this behavior cannot be interpreted as a repeatable synergistic interaction. Instead, it represents a potential design preference whose effect is masked by intrinsic process variability.",
+        "Overall, the interaction plots are fully consistent with the ANOVA results. While visual features such as rank reversals in stiffness and stability crossovers in CFE are observable, the mechanical response is dominated by main effects rather than statistically validated interactions. For post-yield energy-based metrics in particular, apparent interaction trends are secondary to the inherent experimental variability characteristic of fracture-controlled deformation in FDM-printed thin-walled structures."
+      ]
+    },
+    {
+      "heading": "Analysis and evaluation of ınput parameter effects on performance metrics using artificial ıntelligence-based machine learning models",
+      "paragraphs": [
+        "In contemporary engineering research, artificial intelligence (AI), particularly through machine learning (ML) and deep learning (DL) methodologies, has become an essential tool for uncovering intricate, non-linear relationships between input parameters and performance outcomes. Traditional analytical and empirical approaches often struggle to accurately model these interactions, particularly in high-dimensional datasets or scenarios characterized by interdependent variables [ 49 ]. ML algorithms such as decision tree ensembles including Random Forest and CatBoost as well as neural networks, provide robust predictive capabilities by directly learning complex patterns within datasets [ 50 ]. Beyond prediction alone, advancements in explainable AI (XAI) enable deeper interpretability, empowering researchers to understand and quantify each input feature’s contribution to the predicted outcomes. Methods such as SHAP (SHapley Additive exPlanations), permutation importance, and attention mechanisms in DL architectures offer quantifiable insights into both the relative and directional influence of input variables [ 51 ]. Such interpretability is crucial for enhancing model transparency, optimizing engineering designs, and facilitating data-driven decision-making across critical domains including additive manufacturing, structural optimization, and material selection, where multiple interacting factors influence overall performance [ 52 ].",
+        "SHAP is a model-agnostic interpretability framework grounded in cooperative game theory, specifically leveraging Shapley values from economic theory. It assigns importance values to input features based on their contribution to the predictions, effectively calculating the average marginal impact of each feature across all possible combinations. This rigorous mathematical approach ensures a fair attribution of feature influence, enabling researchers to identify key variables and ascertain both the magnitude and direction (positive or negative) of their impacts. Notably, SHAP operates as a post-hoc analytical method, applicable across diverse model types ranging from decision trees to neural networks. Its dual capability of providing local (instance-specific) and global (dataset-wide) explanations renders SHAP exceptionally valuable in engineering contexts where physical interpretability holds equal significance to predictive accuracy. Practical applications include the analysis of material behavior, identification of failure mechanisms, and assessment of structural performance [ 53 ].",
+        "CatBoost (Categorical Boosting), developed by Yandex, is a powerful gradient boosting algorithm specifically tailored for structured datasets containing categorical features, a common scenario in engineering applications. Utilizing decision tree ensembles, CatBoost iteratively minimizes a defined loss function, progressively aggregating weak learners into a robust predictive model. One of its primary strengths is the native handling of categorical variables without extensive preprocessing, such as one-hot encoding, thereby simplifying dataset preparation for materials classification, cross-sectional geometry categorization, and process parameter modeling. CatBoost employs Ordered Boosting to systematically reduce overfitting risks by sequentially organizing data subsets for each iteration, complemented by robust L2 regularization techniques to enhance generalization. These characteristics make CatBoost particularly advantageous for analyzing small, experimentally constrained datasets. Additionally, its seamless integration with SHAP analysis facilitates detailed interpretability alongside accurate predictions, providing comprehensive insights into the influences of design parameters and material properties on engineering outcomes [ 54 ].",
+        "In this study, CatBoost regression combined with SHAP analysis was employed to systematically examine the effects of basic slicing parameters specifically Z-seam distributions (aligned, back, nearest) and advanced slicing parameters, namely Pressure Advance and Scarf Joint Seam implementations, both individually and collectively, on the energy absorption characteristics of 3D-printed thin-walled circular polymeric tubes. Following comprehensive data cleaning and validation, which included group-wise statistical comparisons to discern fundamental performance trends, the model was trained using one-hot encoding to represent categorical variables clearly and effectively.",
+        "Regularized CatBoost models were developed for each performance metric, including Specific Energy Absorption (SEA), Stiffness, Crushing Force Efficiency (CFE), and Absorbed Energy, and validated through Leave-One-Out Cross-Validation (LOOCV). LOOCV is particularly beneficial for smaller datasets, maximizing data utilization while providing a reliable estimate of generalization performance [ 55 ]. SHAP values were subsequently calculated to quantify both the relative importance and directional influence of each input feature.",
+        "Under the adopted cross-validation protocol, the predictive performance of the regression models was evaluated using variance-based and error-based metrics for absorbed energy (EA), stiffness, specific energy absorption (SEA), and crush force efficiency (CFE). The resulting coefficients of determination (R 2 ) were 0.32 for absorbed energy, 0.66 for stiffness, 0.34 for SEA, and 0.37 for CFE. Root mean square error (RMSE) values were 9.58 for absorbed energy, 42.56 for stiffness, 0.69 for SEA, and 2.36 for CFE, corresponding to relative RMSE values of 4.2%, 2.5%, 4.2%, and 4.8%, respectively. Mean absolute errors (MAE) were 7.96, 34.50, 0.57, and 1.78, while mean absolute percentage errors (MAPE) were 3.52%, 2.03%, 3.53%, and 3.64% for EA, stiffness, SEA, and CFE, respectively.",
+        "The coefficient of determination (R 2 ) quantifies the proportion of the total observed variance in the response variable that is explained by the model; higher R 2  values indicate stronger explanatory power, while low values reflect either model limitations or, more commonly in post-yield responses, high intrinsic experimental scatter. Because R 2  is variance-based, it is particularly sensitive to stochastic fluctuations and between-sample variability. In contrast, the root mean square error (RMSE) measures the typical magnitude of the prediction error in the original physical units of the response and therefore provides a direct indication of absolute predictive accuracy; lower RMSE values correspond to more accurate predictions. To enable comparison across response metrics with different magnitudes, the percentage RMSE (%RMSE) normalizes RMSE by the mean response level, yielding a scale-independent indicator of prediction accuracy, with smaller values indicating better model performance. The mean absolute error (MAE) represents the average absolute difference between predicted and measured values and, like RMSE, is expressed in the same units as the target variable; lower MAE values indicate closer agreement between predictions and observations. Mean absolute percentage error (MAPE) further quantifies predictive accuracy by averaging the absolute percentage deviation between predicted and experimental values across all samples. Expressed as a percentage, MAPE is scale-free and lower values indicate greater accuracy. According to the Lewis benchmark [ 56 ,  57 ], MAPE values below 10% correspond to highly accurate forecasting, values between 10 and 20% indicate good forecasting, values between 20 and 50% represent reasonable forecasting, and values exceeding 50% are considered inaccurate.",
+        "For stiffness, the model achieves a moderate-to-strong fit (R 2  = 0.66) combined with very low RMSE (2.5%) and MAPE (2.03%), indicating that both variance capture and absolute predictive accuracy are high. Consequently, SHAP attributions for stiffness are considered robust for identifying dominant parameters and their directional influence. For absorbed energy and SEA, R 2  values are comparatively low (≈0.32–0.34), reflecting the dominance of residual variability associated with stochastic post-yield deformation mechanisms, including localized buckling, interlayer fracture, and crack propagation. Nevertheless, the corresponding RMSE and MAPE values remain below 5%, demonstrating that the models accurately predict the central tendency of these responses despite limited variance explanation. Accordingly, SHAP results for EA and SEA remain informative for identifying influential factors and qualitative trends, although effect magnitudes should be interpreted with caution.",
+        "A similar behavior is observed for CFE, where R 2  = 0.37 reflects the compounded variability inherent to this metric, which is defined as a ratio of peak and mean crushing forces and therefore amplifies experimental noise. Despite this, the low RMSE (4.8%) and MAPE (3.64%) indicate accurate estimation of the overall performance level. Following the Lewis benchmark, all MAPE values fall within the “highly accurate forecasting” regime (< 10%), confirming strong absolute predictive performance across all response metrics. The apparent discrepancy between low R 2  and low percentage-based error metrics therefore arises from the predominance of irreducible experimental scatter rather than from model inadequacy. As a result, the developed models are well suited for estimating mean structural performance and extracting physically meaningful trends, while fine-scale discrimination between closely spaced experimental groups remains limited by intrinsic process variability.",
+        "The trends identified through the SHAP-based regression analysis are fully consistent with the statistical structure revealed by the two-way ANOVA. In the ANOVA results, stiffness exhibited the lowest residual error contribution and the strongest main-effect dominance, indicating a largely deterministic response governed by seam modification and distribution. This behavior is directly reflected in the regression performance, where stiffness achieved the highest R 2  alongside very low RMSE and MAPE values, confirming both strong variance explanation and high absolute predictive accuracy. In contrast, absorbed energy, SEA, and CFE were characterized in the ANOVA by dominant residual error contributions (> 60%), reflecting the stochastic nature of post-yield collapse mechanisms in FDM-printed structures. Correspondingly, the regression models for these metrics yielded comparatively low R 2  values, indicating limited variance capture, while maintaining low RMSE and MAPE values that confirm accurate prediction of mean response levels. This convergence of ANOVA and regression evidence demonstrates that the reduced explanatory power for energy-based metrics is driven by irreducible experimental scatter rather than model inadequacy. Consequently, both analyses consistently support the interpretation that stiffness is governed by robust, repeatable geometric effects, whereas post-yield performance metrics are dominated by intrinsic variability, for which SHAP-derived trends remain physically meaningful but should be interpreted at a qualitative or trend-based level rather than as precise quantitative predictors.",
+        "The SHAP analysis outcomes were visualized through comparative bar charts, clearly depicting the relative contributions of basic and advanced slicing parameters to each energy absorption metric. Additionally, SHAP heatmaps were created to elucidate the individual and combined effects of parameter selections on performance, identifying slicing parameters that positively or negatively influenced energy absorption behavior. The analytical insights derived from the model closely corresponded with experimental results, providing a robust, data-driven framework for understanding and optimizing slicing parameter interactions and their impact on energy absorption performance.",
+        "The relative importance of Z-seam distribution and advanced Z-seam modification on various energy absorption metrics was quantified using SHAP-based feature importance analysis. The comparative bar chart presented in Fig.  11  provides clear insight into this critical research question, revealing whether basic slicing parameters or advanced slicing modifications serve as the dominant design variable for each mechanical performance indicator. Fig. 11 Relative ımportance of Z-seam modification versus Z-Seam distribution on performance metrics",
+        "The SHAP-based feature importance analysis reveals distinct trends in how basic and advanced Z-seam parameters influence energy absorption metrics. For total absorbed energy, the basic Z-seam distribution defined by the placement of the seam (aligned, back, nearest) emerges as the dominant factor, accounting for 55.1% of the overall importance, whereas advanced modification techniques contribute 44.9%. This underscores that the spatial distribution of the seam plays a more critical role in determining the structure’s energy absorption capacity during compression. In contrast, stiffness is predominantly governed by advanced Z-seam modifications, such as Pressure Advance and Scarf Joint, which collectively represent 67.9% of the importance, compared to only 32.1% for the basic distribution. This finding highlights the necessity of advanced seam control for applications requiring enhanced structural rigidity. For specific energy absorption (SEA), both parameter categories exert considerable influence, with advanced modifications having a slightly higher impact (53.3%) than basic distribution (46.7%). This suggests that an optimal SEA can be achieved by simultaneously tuning both the seam placement and implementing advanced modifications. Finally, crushing force efficiency (CFE) is overwhelmingly dictated by advanced Z-seam modifications, which account for 79.8% of the importance, leaving only 20.2% to basic seam distribution. Therefore, maximizing CFE is contingent upon the effective deployment of advanced seam techniques, rather than simple alterations of the seam location.",
+        "The directional SHAP heatmap presented in Fig.  12  offers detailed insights into the effects of slicing parameters on specific energy absorption metrics by visualizing the average impact of each parameter on model predictions. In this visualization, blue cells indicate a negative influence, signifying that the parameter decreases the value of the target metric, whereas red cells denote a positive influence, reflecting a increase in performance. The intensity of the color corresponds to the strength of the effect, while the numerical values within each cell represent the average SHAP magnitude where larger absolute values indicate a stronger impact on the predicted metric. Fig. 12 Average Directional SHAP impact of each modification on target metrics",
+        "Among all evaluated metrics, stiffness is the parameter most strongly influenced by Z-seam mitigation strategies, indicating that slicing modifications have a particularly pronounced effect on the structural rigidity of the printed tubes. This is followed by absorbed energy, which also shows notable sensitivity to slicing conditions. In contrast, both SEA and CFE exhibit relatively minor variations across the tested parameters. For absorbed energy, the Back seam distribution emerges as the most influential, positively affecting the metric, while Pressure Advance also contributes favorably, and the Nearest seam distribution has a negative impact. In the case of stiffness, the Scarf Joint Seam modification leads to a substantial reduction, followed by a pronounced decrease with the Nearest distribution, whereas the Aligned distribution and Pressure Advance both enhance stiffness. The Back distribution has minimal influence on stiffness. For SEA, the Nearest distribution slightly decreases values, while all other parameters have modest positive effects. With respect to CFE, the Aligned distribution exerts a slight negative influence, while other parameters particularly the Scarf Joint Seam contribute positively. Taken together, these results suggest that combining Pressure Advance and Scarf Joint Seam modifications, while avoiding the Nearest seam distribution and favoring the Back distribution, is the optimal strategy for achieving a balance of moderate stiffness and improved energy absorption in FDM-fabricated structures.",
+        "To explicitly correlate the empirical findings with the statistical feature importance derived from the machine learning model, Table  4  presents a synthesis of the optimal experimental conditions alongside the primary algorithmic drivers. To establish a rigorous connection between these domains, the quantities reported in the summary table are defined as follows. The Optimal Experimental Combination corresponds to the slicing-parameter configuration that yielded the maximum measured value of the given response metric among all tested specimens. Complementing this, the ‘Dominant SHAP Variable’ is identified from the trained regression model as the input feature with the highest mean absolute SHAP value, indicating the parameter that contributes most strongly, on average, to the model’s predictions. The associated ‘Importance (%)’ is obtained by normalizing the mean absolute SHAP value of this dominant variable by the sum of mean absolute SHAP values across all input features, thereby expressing its contribution as a fraction of the total explainable model influence. Finally, the ‘Directional Impact’ is determined from the sign of the average SHAP value of the dominant variable when that feature is active; a positive sign indicates that the parameter increases the predicted response, while a negative sign indicates a reducing effect. Together, these definitions establish a transparent framework for directly comparing the experimentally optimal designs with the statistically most influential parameters identified by the SHAP analysis. Table 4 Correlation of optimal experimental configurations and SHAP-derived feature importance Response metric Optimal experimental combination Dominant SHAP variable Importance (%) Directional Impact Absorbed energy Back + PressureAdvance + ScarfJointSeam Pressure Advance 29.5 Positive Stiffness Aligned + PressureAdvance Scarf Joint Seam 54.0 Negative SEA Back + Scarf Joint Seam Scarf Joint Seam 33.5 Positive CFE Back + Scarf JointSeam Scarf Joint Seam 60.8 Positive",
+        "Building on this framework, the results summarized in Table  4  reveal a clear and physically consistent correspondence between experimentally observed optimal designs and the dominant drivers identified by the SHAP analysis. For Stiffness, the experimentally optimal configuration (Aligned + Pressure Advance) achieves maximum rigidity by excluding the Scarf Joint, a finding directly corroborated by SHAP: the Scarf Joint Seam is identified as the dominant variable (54.0% importance) with a distinct Negative (−) directional impact, quantifying the compliance penalty introduced by the tapered overlap. In contrast, Absorbed Energy is maximized by the ‘Back + Pressure Advance + Scarf Joint Seam’ combination, which is reflected in SHAP identifying Pressure Advance as the dominant variable (29.5%) with a Positive (+) contribution, underscoring its role in promoting extrusion consistency during progressive deformation. Similarly, for Crush Force Efficiency (CFE), the optimal experimental configuration (Back + Scarf Joint Seam) aligns with the SHAP attribution, which assigns the largest share of importance (60.8%) to the Scarf Joint Seam with a Positive (+) impact, confirming that the scarf geometry effectively smooths the crushing plateau. Although these energy-based metrics exhibit higher intrinsic variability,the consistency between the empirically optimal combinations and the SHAP-derived dominant variables supported by Mean Absolute Percentage Errors (MAPE) consistently below 4% indicates that the machine learning model successfully captures the systematic trends governing mean performance. Consequently, Table [X] provides a concise synthesis that links empirical optimization with statistically interpretable parameter effects, reinforcing the complementary nature of the experimental, ANOVA, and SHAP-based analyses.",
+        "A direct comparison of the ANOVA variance decomposition and the SHAP-based effect analysis demonstrates strong internal consistency and clear methodological complementarity. ANOVA assesses whether the influence of printing parameters is statistically resolvable relative to experimental scatter, whereas SHAP decomposes the explainable component of the regression model to identify dominant parameters and the direction of their effects on the mean response. For normalized stiffness, both approaches converge unequivocally: ANOVA identifies Z-seam modification as the dominant and highly significant factor (45.9% contribution,  p  = 0.0001), while SHAP independently attributes the majority of predictive importance (67.9%) to advanced seam strategies, confirming stiffness as a largely deterministic response governed by seam geometry and extrusion control. A similar convergence is observed for crush force efficiency (CFE), where ANOVA confirms modification as the only statistically significant factor despite substantial residual variance, and SHAP assigns 79.8% of total importance to seam modification, indicating that the mean efficiency level remains primarily controlled by modification-induced regulation of peak force. In contrast, for total absorbed energy (EA) and specific energy absorption (SEA), ANOVA shows that controlled factors fail to achieve statistical significance and that residual error exceeds 65%, reflecting the dominance of stochastic post-yield collapse mechanisms rather than the absence of systematic parameter effects. ANOVA therefore reaches its inferential limit for these responses, as factor-induced variance is insufficiently large relative to noise. Within a predictive framework, however, SHAP still reveals how the predictable fraction of EA and SEA is structured, identifying seam distribution as the dominant contributor for EA (55.1%) and a more balanced contribution for SEA. Consequently, SHAP does not contradict ANOVA but complements it by elucidating relative importance and directional tendencies within the bounds imposed by experimental variability; deterministic seam control governs stiffness and peak-force-related efficiency, whereas energy absorption metrics remain intrinsically noise-dominated and should be interpreted qualitatively rather than as statistically resolved effects."
+      ]
+    },
+    {
+      "heading": "Conclusion",
+      "paragraphs": [
+        "Advanced Z-seam control is demonstrated to systematically and reproducibly reshape both dimensional fidelity and the crushing response of FDM-printed ABS circular tubes. Among the evaluated crashworthiness metrics, initial stiffness emerges as the most sensitive response, exhibiting a clear dependence on Z-seam strategy. Stiffness decreases when the Scarf Joint seam and Nearest seam placement are employed, while it increases under Pressure Advance and under Aligned and Back placements, with Back performing at least equivalently to Aligned. This confirms that seam-related extrusion dynamics directly govern the early elastic–plastic response under axial loading.",
+        "A metric-resolved analysis reveals distinct governing levers for different performance objectives. Total absorbed energy is influenced more strongly by seam placement than by seam modification, with Back placement consistently yielding the highest energy absorption, followed by Aligned and Nearest. In contrast, stiffness is controlled primarily by the seam modification strategy rather than by placement. Specific energy absorption is dominated by seam modification and reaches its maximum when Pressure Advance and the Scarf Joint seam are applied simultaneously. Crush force efficiency is likewise significantly more sensitive to seam modification than to placement, indicating that local seam geometry and extrusion pressure control strongly affect load uniformity during progressive collapse.",
+        "These trends are consistent with the underlying physical mechanisms. Pressure Advance enhances interlayer bonding continuity and suppresses localized over-extrusion at seam initiation and termination, thereby increasing stiffness and promoting stable folding. The Scarf Joint seam redistributes the Z-seam discontinuity over an inclined overlap, reducing local material buildup and root-mean-square surface deviation, which intentionally lowers stiffness while enabling more regular and controlled folding. When combined, Pressure Advance and the Scarf Joint seam deliver the most favorable crash response, characterized by reduced peak crushing force, elevated mean crushing force, and the highest specific energy absorption particularly when the seam is placed at the Back location. Seam placement nevertheless remains influential: Back placement consistently improves absorbed energy, specific energy absorption, and dimensional tolerance behavior, whereas Nearest placement reduces stiffness and promotes distributed micro-defects that fragment under compressive loading.",
+        "Dimensional metrology independently confirms these mechanical trends. Specimens produced without any Z-seam mitigation exhibit the lowest proportion of surface geometry within the ± 1% tolerance band. All mitigation strategies increase dimensional compliance, with the Scarf Joint seam producing the most substantial improvement in in-tolerance surface area. Pressure Advance alone yields more modest gains in overall tolerance compliance, despite its effectiveness in suppressing oversize regions and increasing stiffness, highlighting a clear trade-off between dimensional conformity and mechanical rigidity.",
+        "The combined statistical and machine learning analyses provide complementary insight into these behaviors. Two-way ANOVA revealed that, for highly variable post-yield responses such as absorbed energy and specific energy absorption, factor contributions are partially masked by intrinsic experimental scatter, limiting the statistical resolvability of main effects despite clear directional trends. In contrast, stiffness and crush force efficiency exhibited stronger statistical sensitivity to Z-seam modification strategies.",
+        "To interrogate these relationships beyond variance-based inference, gradient-boosted regression models were employed and validated using Leave-One-Out Cross-Validation. While coefficient of determination (R 2 ) values remained moderate for energy-based metrics reflecting the inherently stochastic nature of progressive fracture the models achieved consistently low Mean Absolute Percentage Errors (below 4%) and relative RMSE values below 5%. This confirms high predictive fidelity for central performance tendencies despite irreducible experimental variability.",
+        "SHAP-based attribution bridges this gap by resolving relative parameter importance independent of strict statistical significance. Seam placement was identified as the dominant contributor to absorbed energy, whereas seam modification strategy governed stiffness and crush force efficiency. These findings explain why ANOVA alone cannot fully characterize contribution pathways for SEA and EA, while SHAP analysis successfully reveals their governing process variables.",
+        "From an optimization perspective consistent with Structural and Multidisciplinary Optimization frameworks, Z-seam modification and seam placement function as discrete design variables within a multi-objective design space. SHAP-informed ranking enables an efficient navigation toward a non-dominated solution set that balances dimensional accuracy, moderated peak force, elevated mean crushing force, and high specific energy absorption. Within this Pareto-optimal space, the combined application of Pressure Advance and the Scarf Joint seam with Back seam placement emerges as the most balanced solution, simultaneously maximizing specific energy absorption while achieving the highest dimensional compliance. This configuration therefore represents the optimal compromise between crash energy absorption and dimensional accuracy for FDM-printed ABS circular tubes under the investigated conditions.",
+        "For practical engineering implementation, the Scarf Joint seam should be adopted as the reference strategy when dimensional compliance and fold regularity are prioritized; Pressure Advance should be introduced when higher stiffness and tighter control of oversize deviations are required; and Back seam placement should be preferred for energy-absorbing components. Through coordinated tuning of Pressure Advance gain, Scarf Joint geometry, and local deposition paths near the seam, Z-seam management transitions from a cosmetic slicing choice into a quantifiable, optimization-ready design variable capable of delivering robust, lightweight crash elements suitable for safety–critical applications."
+      ]
+    }
+  ],
+  "tables": [
+    {
+      "caption": "Full factorial experimental design matrix and specimen nomenclature",
+      "headers": [
+        "Z-seam strategy",
+        "Modification feature",
+        "Seam placement aligned (A)",
+        "Seam placement back (B)",
+        "Seam placement nearest (N)"
+      ],
+      "rows": [
+        [
+          "Baseline",
+          "None",
+          "N–A",
+          "N–B",
+          "N–N"
+        ],
+        [
+          "Dynamic flow compensation",
+          "Pressure Advance",
+          "P–A",
+          "P–B",
+          "P–N"
+        ],
+        [
+          "Seam topology modification",
+          "Scarf Joint Seam",
+          "S–A",
+          "S–B",
+          "S–N"
+        ],
+        [
+          "Hybrid",
+          "Pressure Advance and Scarf Joint Seam",
+          "P–S–A",
+          "P–S–B",
+          "P–S–N"
+        ]
+      ],
+      "header_groups": [],
+      "table_alignment_status": "resolved",
+      "row_provenance": [
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 5
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 5
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 5
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 5
+          }
+        ]
+      ],
+      "tbody_alignment_status": "resolved"
+    },
+    {
+      "caption": "Geometric deviations",
+      "headers": [
+        "Code",
+        "Minimum",
+        "Maximum",
+        "Average",
+        "RMS",
+        "Standard deviation",
+        "Variance",
+        "Inside tolerance",
+        "Above tolerance",
+        "Below tolerance"
+      ],
+      "rows": [
+        [
+          "N–A",
+          "− 0.222",
+          "0.24",
+          "0.0386",
+          "0.0793",
+          "0.0693",
+          "0.0038",
+          "74.8026",
+          "24.6767",
+          "0.5207"
+        ],
+        [
+          "N–B",
+          "− 0.2455",
+          "0.2053",
+          "0.0416",
+          "0.0738",
+          "0.061",
+          "0.0045",
+          "77.7422",
+          "21.8375",
+          "0.4203"
+        ],
+        [
+          "N–N",
+          "− 0.1742",
+          "0.26",
+          "0.0434",
+          "0.0782",
+          "0.0651",
+          "0.0031",
+          "73.4319",
+          "26.3679",
+          "0.2002"
+        ],
+        [
+          "P–A",
+          "− 0.2089",
+          "0.2127",
+          "0.0333",
+          "0.0767",
+          "0.0691",
+          "0.0055",
+          "76.6163",
+          "22.7597",
+          "0.624"
+        ],
+        [
+          "P–B",
+          "− 0.2088",
+          "0.2126",
+          "0.0333",
+          "0.0767",
+          "0.0691",
+          "0.0037",
+          "76.6186",
+          "22.7574",
+          "0.624"
+        ],
+        [
+          "P–N",
+          "− 0.1716",
+          "0.2234",
+          "0.0499",
+          "0.0785",
+          "0.0607",
+          "0.0033",
+          "75.0633",
+          "24.6799",
+          "0.2568"
+        ],
+        [
+          "S–A",
+          "− 0.1109",
+          "0.2207",
+          "0.0389",
+          "0.0726",
+          "0.0613",
+          "0.0048",
+          "79.9929",
+          "19.934",
+          "0.0731"
+        ],
+        [
+          "S–B",
+          "− 0.0803",
+          "0.2257",
+          "0.0459",
+          "0.0814",
+          "0.0672",
+          "0.0048",
+          "73.1097",
+          "26.8903",
+          "0"
+        ],
+        [
+          "S–N",
+          "− 0.0894",
+          "0.2687",
+          "0.0448",
+          "0.0713",
+          "0.0554",
+          "0.0037",
+          "81.2492",
+          "18.7508",
+          "0"
+        ],
+        [
+          "P–S–A",
+          "− 0.1039",
+          "0.2367",
+          "0.043",
+          "0.0859",
+          "0.0744",
+          "0.0048",
+          "75.6384",
+          "24.3604",
+          "0.0012"
+        ],
+        [
+          "P–S–B",
+          "− 0.0863",
+          "0.2066",
+          "0.0422",
+          "0.0743",
+          "0.0612",
+          "0.0037",
+          "79.5048",
+          "20.4952",
+          "0"
+        ],
+        [
+          "P–S–N",
+          "− 0.0672",
+          "0.2138",
+          "0.0542",
+          "0.0791",
+          "0.0576",
+          "0.0042",
+          "72.443",
+          "27.557",
+          "0"
+        ]
+      ],
+      "header_groups": [],
+      "table_alignment_status": "resolved",
+      "row_provenance": [
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 7
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 8
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 9
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 10
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 7
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 8
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 9
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 10
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 7
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 8
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 9
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 10
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 7
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 8
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 9
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 10
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 7
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 8
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 9
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 10
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 7
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 8
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 9
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 10
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 7
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 8
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 9
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 10
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 7
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 8
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 9
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 10
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 8,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 8,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 8,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 8,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 8,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 8,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 8,
+            "source_col": 7
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 8,
+            "source_col": 8
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 8,
+            "source_col": 9
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 8,
+            "source_col": 10
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 9,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 9,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 9,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 9,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 9,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 9,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 9,
+            "source_col": 7
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 9,
+            "source_col": 8
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 9,
+            "source_col": 9
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 9,
+            "source_col": 10
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 10,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 10,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 10,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 10,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 10,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 10,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 10,
+            "source_col": 7
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 10,
+            "source_col": 8
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 10,
+            "source_col": 9
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 10,
+            "source_col": 10
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 11,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 11,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 11,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 11,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 11,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 11,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 11,
+            "source_col": 7
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 11,
+            "source_col": 8
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 11,
+            "source_col": 9
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 11,
+            "source_col": 10
+          }
+        ]
+      ],
+      "tbody_alignment_status": "resolved"
+    },
+    {
+      "caption": "Two-way analysis of variance (ANOVA) results for energy absorb metrics",
+      "headers": [
+        "Source of variation",
+        "Sum of squares",
+        "Mean square",
+        "F-value",
+        "P  value",
+        "Contribution (%)"
+      ],
+      "rows": [
+        [
+          "Stiffness",
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          "Modification",
+          "39,671.55",
+          "13,223.85",
+          "10.94",
+          "0.0001",
+          "45.9"
+        ],
+        [
+          "Distribution",
+          "10,584.89",
+          "5292.44",
+          "4.38",
+          "0.024",
+          "12.3"
+        ],
+        [
+          "Interaction",
+          "7091.58",
+          "1181.93",
+          "0.98",
+          "0.462",
+          "8.3"
+        ],
+        [
+          "Error",
+          "29,018.88",
+          "1209.12",
+          "",
+          "",
+          "33.5"
+        ],
+        [
+          "Total",
+          "86,366.90",
+          "",
+          "",
+          "",
+          "100"
+        ],
+        [
+          "Crush Force Efficiency (CFE)",
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          "Modification",
+          "36.6",
+          "12.2",
+          "3.27",
+          "0.038",
+          "25.7"
+        ],
+        [
+          "Distribution",
+          "0.11",
+          "0.056",
+          "0.015",
+          "0.985",
+          "0.1"
+        ],
+        [
+          "Interaction",
+          "16.34",
+          "2.72",
+          "0.73",
+          "0.63",
+          "11.5"
+        ],
+        [
+          "Error",
+          "89.42",
+          "3.73",
+          "",
+          "",
+          "62.7"
+        ],
+        [
+          "Total",
+          "142.47",
+          "",
+          "",
+          "",
+          "100"
+        ],
+        [
+          "Specific Energy Absorption (SEA)",
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          "Modification",
+          "1.24",
+          "0.413",
+          "1.29",
+          "0.299",
+          "10.7"
+        ],
+        [
+          "Distribution",
+          "1.065",
+          "0.533",
+          "1.67",
+          "0.21",
+          "9.2"
+        ],
+        [
+          "Interaction",
+          "1.712",
+          "0.285",
+          "0.89",
+          "0.515",
+          "14.8"
+        ],
+        [
+          "Error",
+          "7.662",
+          "0.319",
+          "",
+          "",
+          "65.3"
+        ],
+        [
+          "Total",
+          "11.679",
+          "",
+          "",
+          "",
+          "100"
+        ],
+        [
+          "Total Absorbed Energy (EA)",
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        [
+          "Modification",
+          "150.62",
+          "50.21",
+          "0.8",
+          "0.508",
+          "6.7"
+        ],
+        [
+          "Distribution",
+          "241.24",
+          "120.62",
+          "1.91",
+          "0.169",
+          "10.7"
+        ],
+        [
+          "Interaction",
+          "324.23",
+          "54.04",
+          "0.86",
+          "0.539",
+          "14.4"
+        ],
+        [
+          "Error",
+          "1511.90",
+          "62.99",
+          "",
+          "",
+          "68.2"
+        ],
+        [
+          "Total",
+          "2227.99",
+          "",
+          "",
+          "",
+          "100"
+        ]
+      ],
+      "header_groups": [],
+      "table_alignment_status": "resolved",
+      "row_provenance": [
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 1
+          },
+          {
+            "source": "spanned_empty",
+            "source_row_index": 0,
+            "source_col": 1
+          },
+          {
+            "source": "spanned_empty",
+            "source_row_index": 0,
+            "source_col": 1
+          },
+          {
+            "source": "spanned_empty",
+            "source_row_index": 0,
+            "source_col": 1
+          },
+          {
+            "source": "spanned_empty",
+            "source_row_index": 0,
+            "source_col": 1
+          },
+          {
+            "source": "spanned_empty",
+            "source_row_index": 0,
+            "source_col": 1
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 6
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 6
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 6
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 6
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 6
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 1
+          },
+          {
+            "source": "spanned_empty",
+            "source_row_index": 6,
+            "source_col": 1
+          },
+          {
+            "source": "spanned_empty",
+            "source_row_index": 6,
+            "source_col": 1
+          },
+          {
+            "source": "spanned_empty",
+            "source_row_index": 6,
+            "source_col": 1
+          },
+          {
+            "source": "spanned_empty",
+            "source_row_index": 6,
+            "source_col": 1
+          },
+          {
+            "source": "spanned_empty",
+            "source_row_index": 6,
+            "source_col": 1
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 6
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 8,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 8,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 8,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 8,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 8,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 8,
+            "source_col": 6
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 9,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 9,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 9,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 9,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 9,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 9,
+            "source_col": 6
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 10,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 10,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 10,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 10,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 10,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 10,
+            "source_col": 6
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 11,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 11,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 11,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 11,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 11,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 11,
+            "source_col": 6
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 12,
+            "source_col": 1
+          },
+          {
+            "source": "spanned_empty",
+            "source_row_index": 12,
+            "source_col": 1
+          },
+          {
+            "source": "spanned_empty",
+            "source_row_index": 12,
+            "source_col": 1
+          },
+          {
+            "source": "spanned_empty",
+            "source_row_index": 12,
+            "source_col": 1
+          },
+          {
+            "source": "spanned_empty",
+            "source_row_index": 12,
+            "source_col": 1
+          },
+          {
+            "source": "spanned_empty",
+            "source_row_index": 12,
+            "source_col": 1
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 13,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 13,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 13,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 13,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 13,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 13,
+            "source_col": 6
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 14,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 14,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 14,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 14,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 14,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 14,
+            "source_col": 6
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 15,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 15,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 15,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 15,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 15,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 15,
+            "source_col": 6
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 16,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 16,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 16,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 16,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 16,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 16,
+            "source_col": 6
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 17,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 17,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 17,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 17,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 17,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 17,
+            "source_col": 6
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 18,
+            "source_col": 1
+          },
+          {
+            "source": "spanned_empty",
+            "source_row_index": 18,
+            "source_col": 1
+          },
+          {
+            "source": "spanned_empty",
+            "source_row_index": 18,
+            "source_col": 1
+          },
+          {
+            "source": "spanned_empty",
+            "source_row_index": 18,
+            "source_col": 1
+          },
+          {
+            "source": "spanned_empty",
+            "source_row_index": 18,
+            "source_col": 1
+          },
+          {
+            "source": "spanned_empty",
+            "source_row_index": 18,
+            "source_col": 1
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 19,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 19,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 19,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 19,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 19,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 19,
+            "source_col": 6
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 20,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 20,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 20,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 20,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 20,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 20,
+            "source_col": 6
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 21,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 21,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 21,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 21,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 21,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 21,
+            "source_col": 6
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 22,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 22,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 22,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 22,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 22,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 22,
+            "source_col": 6
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 23,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 23,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 23,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 23,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 23,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 23,
+            "source_col": 6
+          }
+        ]
+      ],
+      "tbody_alignment_status": "resolved"
+    },
+    {
+      "caption": "Correlation of optimal experimental configurations and SHAP-derived feature importance",
+      "headers": [
+        "Response metric",
+        "Optimal experimental combination",
+        "Dominant SHAP variable",
+        "Importance (%)",
+        "Directional Impact"
+      ],
+      "rows": [
+        [
+          "Absorbed energy",
+          "Back + PressureAdvance + ScarfJointSeam",
+          "Pressure Advance",
+          "29.5",
+          "Positive"
+        ],
+        [
+          "Stiffness",
+          "Aligned + PressureAdvance",
+          "Scarf Joint Seam",
+          "54.0",
+          "Negative"
+        ],
+        [
+          "SEA",
+          "Back + Scarf Joint Seam",
+          "Scarf Joint Seam",
+          "33.5",
+          "Positive"
+        ],
+        [
+          "CFE",
+          "Back + Scarf JointSeam",
+          "Scarf Joint Seam",
+          "60.8",
+          "Positive"
+        ]
+      ],
+      "header_groups": [],
+      "table_alignment_status": "resolved",
+      "row_provenance": [
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 5
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 5
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 5
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 5
+          }
+        ]
+      ],
+      "tbody_alignment_status": "resolved"
+    }
+  ]
+}

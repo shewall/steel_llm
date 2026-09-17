@@ -1,0 +1,2454 @@
+{
+  "doi": "10.1007/s11340-026-01351-w",
+  "title": "Inverse Method for Determination of Constitutive Behavior Using Spherical and Vickers Indentation",
+  "abstract": "Abstract Background There exists no experimentally validated indentation method to uniquely determine the plastic properties of a material whose hardening behavior is defined with a three-parameter model. Objective The present work aims to systematically investigate non-unique solutions associated with existing and newly proposed indentation methods, and to study the possibility and implications of pressure-induced strengthening during indentation. Methods The residual profiles left by spherical indentation in four materials with different strain hardening behavior were measured with a profilometer. Inverse finite element analysis of the indentation, iterating over hardening parameters to fit the experimental residual indentation profile, was used to map non-unique solutions. The ability of additional spherical indents of varying depth and of post-mortem microhardness measurements to identify unique solutions was assessed. Results Non-unique solutions of high work-hardening materials had large differences in flow behavior, enabling their distinguishability by microhardness measurement after spherical indentation, but not by multiple indents to varying depth. Improved agreement with uniaxial tension data was achieved through inclusion of a pressure-dependent plasticity model over assumed pressure-independence. Conclusions A method was established to uniquely determine a three-parameter hardening model using indentation techniques combining spherical indentation, contact profilometry, and Vickers microhardness before and after spherical indentation. Constitutive properties obtained from indentation tests are suggested to overestimate material strength if pressure-induced strengthening is not accounted for.",
+  "journal": "Experimental Mechanics",
+  "year": "2026",
+  "sections": [
+    {
+      "heading": "Introduction",
+      "paragraphs": [
+        "Indentation methods are well-suited for rapid assessment of the mechanical properties of metal alloys. Compared to uniaxial tension (UT) or uniaxial compression (UC) tests, indentation tests are often faster to conduct, require less material, and are relatively nondestructive, allowing components to be evaluated  in situ . The present study focuses on obtaining plastic properties using indentation, assuming prior knowledge of elastic properties.",
+        "While approximate analytical solutions have been obtained for the indentation contact pressure of rigid and elastic perfectly plastic materials, none have been obtained for the indentation response of a work-hardening material [ 1 ,  2 – 3 ]. There exist many techniques to quantify flow behavior using indentation data, but all ultimately depend on numerical methods [ 4 ,  5 – 6 ]. The present study used the inverse finite element analysis (FEA) technique, in which a spherical indentation was simulated and the hardening behavior iteratively adjusted to minimize the misfit between computational and experimental material response [ 7 ].",
+        "To obtain a unique description of the finite deformation constitutive behavior using inverse methods, sufficient information is needed to fit the number of constitutive model parameters. If information is lacking, a potentially infinite number of distinct constitutive models will produce the same indentation response, resulting in non-unique solutions.",
+        "An example of a two-parameter strain hardening model is the Hollomon equation [ 8 ]:",
+        "1 σ f = σ y 1 - n ( E ε ) n f o r ε ≥ σ y E \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${\\sigma}_{f}={{\\sigma}_{y}}^{1-n}({E\\varepsilon )}^{n} for\\;\\varepsilon \\ge \\frac{{\\sigma}_{y}}{E}$$\\end{document}",
+        "where  σ f  is the flow stress,  ε  is the true strain,  σ y  is the yield strength,  E  is Young’s modulus, and  n  is a strain-hardening coefficient. The single  n  parameter governing the curvature of the flow stress curve can approximate some, but not all engineering metals [ 8 ,  9 ]. Another two-parameter model is the linear hardening representation:",
+        "2 σ f = σ y + M ε p \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${\\sigma}_{f}={\\sigma}_{y}+M{\\varepsilon}_{p}$$\\end{document}",
+        "where  ε p  is the plastic strain and  M  is the constant strain hardening rate. Flow behavior may be captured by a linear hardening model at small strains, but this model has limited applicability to finite strains [ 10 ]. In contrast to these two-parameter models, the hardening behavior of most engineering metals can be captured by three-parameter hardening models, such as that of Voce [ 11 ]:",
+        "3 σ f = σ s - ( σ s - σ y ) e - ε p ε c \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${\\sigma}_{f}={\\sigma}_{s}-({\\sigma}_{s}-{\\sigma}_{y})e^{-\\frac{{\\varepsilon}_{p}}{{\\varepsilon}_{c}}}$$\\end{document}",
+        "where  σ s  is the saturation stress asymptotically approached by the flow stress and  ε c  is the characteristic strain controlling the rate of approach to  σ s .",
+        "A common scalar metric, hardness, only provides sufficient information to uniquely determine a single-parameter hardening model, as demonstrated by the solutions of Tabor and Johnson assuming perfect plasticity [ 2 ,  3 ].",
+        "Analysis of the force–displacement (FD) curve has been proposed for the determination of two-parameter hardening models. Despite theoretical analyses suggesting a unique solution [ 1 ,  12 ], the information contained in the FD curve has been found to be insufficient to distinguish non-unique solutions given minor experimental noise [ 13 ,  14 ]. However, it has been demonstrated that numerical analysis using the maximum force and residual indent profile measured using profilometry, termed indentation plastometry [ 7 ], can uniquely determine two hardening parameters [ 15 ,  16 ].",
+        "The inability of two-parameter hardening models to approximate the plastic behavior of many metals motivates the interpretation of indentation data using higher order models. Meng et al. found indentation plastometry insufficient to uniquely determine three hardening parameters [ 16 ]. A systematic investigation of the uncertainty associated with this non-uniqueness is lacking in literature, with Meng et al.’s study limited to discrete comparisons of individual non-unique solutions.",
+        "To our knowledge, no examples exist of an experimentally validated procedure to uniquely determine three hardening parameters to capture the plastic flow behavior of a material using indentation data. Although studies have fit hardening models containing three or more parameters to indentation data, the uniqueness question is either not addressed [ 17 ,  18 ] or, if it is, demonstrates non-uniqueness [ 16 ,  19 ]. The ASTM standard for indentation plastometry specifies that the maximum applied force and residual indentation profile should be analyzed using at least three hardening parameters, but does not address solution non-uniqueness [ 20 ]. Using synthetic data, Meng et al. demonstrated that non-unique solutions may be distinguished using multiple indentations to varying depths [ 16 ]; however, as the distinguishability between the responses of the non-unique solutions was low, the authors indicated that this method may be ineffective with the addition of experimental noise. There is thus a need to further investigate the relationship between material properties and indentation response to devise a higher-resolution methodology to distinguish non-unique solutions.",
+        "While the flow behavior of metals in most applications may be modeled as pressure-independent, as specified in the ASTM standard for indentation plastometry [ 20 ] and as justified by the general equivalence between yield stress in UT and UC [ 21 ], this approximation may break down at high absolute hydrostatic stresses. Jung modeled a pressure-dependent increase in lattice friction by quantifying the work required to overcome hydrostatic forces during the transient volume expansion required for dislocation motion, given as [ 22 ]:\n 4 Δ f p = f 0 2 p G dG dp 1 - γ p - γ p , \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\Delta {f}_{p}={f}_{0}\\left[2\\frac{p}{G}\\frac{dG}{dp}\\left(1-\\gamma p\\right)-\\gamma p\\right],$$\\end{document} where  Δf 0  is the increase in lattice friction due to pressure  p ,  f 0  is the lattice friction at zero pressure,  G  is the shear modulus,  dG dp \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\frac{dG}{dp}$$\\end{document}  is the derivative of the shear modulus with respect to pressure, and  γ  is compressibility, equal to the inverse of the bulk modulus. To use Eq.  4  to derive expressions for macroscopic pressure dependency of flow stress, its applicability to strengthening mechanisms besides lattice friction should be considered [ 23 ]. Jung found that the effect of hydrostatic stress was captured as a pressure-induced increase in the effective shear modulus when considering dislocation interaction forces. As elastic shear deformation precedes slip, lattice friction, solute strengthening, and dislocation density strengthening effects—and therefore, overall yield strength—all vary approximately proportionally with shear stiffness, and thus experience the same relative increase under pressure [ 24 ,  25 ,  26 ,  27 – 28 ]. The pressure-induced fractional increase in lattice friction may then be equated to the pressure-induced fractional increase in the von Mises equivalent stress at which yielding occurs, giving an expression for the asymmetry ratio of yield strength in UC ( σ c ) to that in UT ( σ t ) as:",
+        "5 σ c σ t = - B + B 2 + 4 A 2 A \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\frac{{\\sigma}_{c}}{{\\sigma}_{t}}=\\frac{-B+\\sqrt{{B}^{2}+4A}}{2A}$$\\end{document}",
+        "where  A = γ σ t 2 9 2 G dG dp \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$A=\\frac{\\gamma {\\sigma}_{t}^{2}}{9}\\left(\\frac{2}{G}\\frac{dG}{dp}\\right)$$\\end{document}  and  B = 1 - σ t 2 3 G dG dp 1 + γ σ t 3 - σ t 2 3 G dG dp + γ σ t 3 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$B=\\left[1-{\\sigma}_{t}\\left(\\frac{2}{3G}\\frac{dG}{dp}\\right)\\right]\\left(1+\\frac{\\gamma {\\sigma}_{t}}{3}\\right)-{\\sigma}_{t}\\left(\\frac{2}{3G}\\frac{dG}{dp}\\right)+\\frac{\\gamma {\\sigma}_{t}}{3}$$\\end{document} . The derivation is included in Appendix  A . Pressure-induced strengthening during indentation is predicted to manifest most strongly in materials with high yield strength, due to higher associated contact pressures, and with high relative pressure dependency of the shear modulus ( 1 G dG dp \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\frac{1}{G}\\frac{dG}{dp}$$\\end{document} ).",
+        "A first-principles study by Bulatov et al. [ 23 ] supported the plausibility of Jung’s hypothesized pressure-induced strengthening mechanism. Experimentally, the predictions of Jung’s model may be compared to the pressure-dependent uniaxial yield strength of aluminum and steel alloys measured by Spitzig and Richmond [ 29 ], Spitzig et al. (1975) [ 30 ] and Spitzig et al. (1976) [ 31 ] at room temperature in a pressure chamber.",
+        "Although Spitzig and Richmond compared some of these data against the predictions of the Jung model [ 29 ], a reevaluation is conducted in the present study to include data under compression, allowing comparisons at higher pressures. These experimental data are compared in Fig.  1  to Jung model predictions, recomputed in the present study using elastic properties given in Table  1  and reported ambient pressure  σ t  values. Along with the original nonlinear form of Jung’s relation, linear approximations neglecting the  γ  term and extrapolating the  σ c σ t \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\frac{{\\sigma}_{c}}{{\\sigma}_{t}}$$\\end{document}  ratio computed using Eq.  5  are shown. Fig. 1 Experimental [ 29 ,  30 – 31 ] and predicted values for increase in axial yield strength due to hydrostatic pressure, relative to the tensile yield strength measured at ambient pressure, for ( a ) grade 1100 aluminum, ( b ) quenched and tempered 4130 steel, ( c ) quenched and tempered 4330 steel, and ( d ) aged maraging steel. Dissimilar yield point elongation in tension and compression results in the discontinuity between tensile and compressive data in (b) and (c). Model predictions used the elastic properties given in Table  1 . Linear approximations of the nonlinear Jung model are shown, showing that the linear extrapolation of the  σ c σ t \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\frac{{\\sigma}_{c}}{{\\sigma}_{t}}$$\\end{document}  ratio computed using Eq.  5 , including  γ , introduces negligible error Table 1 Elastic properties used in FEA simulations or as input to the Jung model [ 22 ] Alloy E  (GPa) ν d G d P \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\frac{{\\varvec{d}}{\\varvec{G}}}{{\\varvec{d}}{\\varvec{P}}}$$\\end{document}  from Ref [ 32 ] SS316 193 0.27 1.71 Inconel 625 208 0.28 1.66 Al6061 69 0.33 1.74 Ti-6Al-4V 114 0.34 0.76 Grade 1100 Aluminum 69 0.33 1.75 4130, 4330, and Maraging Steel 198 0.29 1.80",
+        "The data suggest that Jung’s model provides a first-order approximation of the pressure-induced strengthening effect, with a tendency to underpredict experimental values. Spitzig and Richmond demonstrated that, despite negligible difference in tensile and compressive yield strength, grade 1100 aluminum had a 14% increase in tensile yield strength under a hydrostatic pressure of 828 MPa compared to that measured at atmospheric pressure [ 29 ]. This suggests that pressure dependency of yielding should be considered in high-pressure applications such as indentation, in which contact pressures reach the order of 1 GPa. If pressure-dependent yielding is not accounted for, component strength predicted from indentation data will be overestimated in all applications involving pressures lower than that of the indentation test itself.",
+        "A linear approximation of the Jung model, as needed to set the pressure dependency parameter in the Drucker-Prager yield criterion [ 33 ], when achieved by neglecting the  γ  term overestimates pressure-induced strengthening relative to the original nonlinear formulation as shown in Fig.  1 ; this also leads to an artificial improvement of the fit with experimental data. A linear extrapolation of the  σ c σ t \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\frac{{\\sigma}_{c}}{{\\sigma}_{t}}$$\\end{document}  ratio computed using Eq.  5 , however, introduces negligible error compared to the original form.",
+        "To address the existing inability to uniquely obtain three hardening parameters from indentation tests, the present study develops a framework to extract constitutive behavior using indentation plastometry accompanied by Vickers microhardness measurements before and after spherical indentation. Four validation alloys were studied: 316 stainless steel (SS316), Inconel 625, 6061 aluminum (Al6061), and Ti-6Al-4V. Each alloy was spherically indented, and residual indent profiles and FD curves were collected. UT and UC tests were performed on each alloy to obtain ground truth constitutive behavior for comparison. The non-unique solution space associated with standard indentation plastometry was mapped using inverse FEA of the indentation process, and the solution uncertainty associated with non-uniqueness was quantified. A dimensionless FEA indentation model was implemented to investigate non-unique solutions across a range of material parameters beyond those of the four experimentally studied alloys. Two methods of adding information to uniquely determine three hardening parameters, validated against ground truth UT data, were experimentally assessed: the use of multiple indents to different depths, and the measurement of Vickers microhardness before and after spherical indentation. To assess pressure dependency of flow behavior, indents were analyzed with and without pressure-dependent yield models. By accounting for non-unique solutions and high-pressure effects, this work provides a methodology to more accurately interpret plastic properties from indentation data compared to the standard indentation plastometry technique."
+      ]
+    },
+    {
+      "heading": "Experimental Methods",
+      "paragraphs": []
+    },
+    {
+      "heading": "Materials",
+      "paragraphs": [
+        "The alloys investigated included: extruded and age-hardened Al6061, hot-rolled and annealed SS316, wrought and annealed Inconel 625, and wrought Ti-6Al-4V. All samples were machined from plate stock using wire electrical discharge machining. To mitigate anisotropic effects, the loading direction was kept consistent among UT, UC and indentation tests."
+      ]
+    },
+    {
+      "heading": "Uniaxial Tension and Compression",
+      "paragraphs": [
+        "UT specimens with a gauge length of 21.3 mm and rectangular cross-section of 2 mm × 4 mm and cylindrical UC specimens with diameter 5 mm and height 11 mm were tested under quasistatic loading conditions using axial load frames (Criterion Model 43 and 45, respectively, MTS Systems Incorporated, Eden Prairie, MN, United States). UT data for Ti-6Al-4V were taken from ref. [ 34 ]; the Ti-6Al-4V UC and indentation specimens tested in the present study were extracted from the same baseplate as the UT specimens. Lubricant was applied to the platen-sample contact surface in UC tests to reduce friction (Jet-Lube Nikal Anti-Seize Compound, Whitmore Manufacturing LLC, Rockwall, TX, United States). Samples were painted with a black speckle pattern on top of a uniform white basecoat, allowing strains to be computed using digital image correlation (DIC, VIC-2D, VIC-3D, Correlated Solutions, Irmo, SC, United States), using a gauge length of 4 mm for the UC specimens. Yield strengths were determined using 0.2% strain offset. The remaining Voce hardening parameters, as given in Eq.  8 , were numerically fitted to UT data by grid search, using a mean absolute percentage error (MAPE) objective function."
+      ]
+    },
+    {
+      "heading": "Indentation",
+      "paragraphs": [
+        "Samples were cold-mounted in epoxy, ground, and polished to a mirror finish, with a final polish using either 0.5 μm colloidal silica or 0.5 μm alumina. Samples were indented with a spherical Si 3 N 4  indenter of radius 1.006 mm to a depth-to-radius (d/r) ratio of ~ 0.18 (PLX-Benchtop, Plastometrex Ltd, Cambridge, United Kingdom). FD curves were measured using the machine’s load cell and linear variable displacement transducer. Residual indentation profiles were measured using the machine’s contact profilometer. Eight radial scans, spaced at regular angular intervals, were averaged to determine an overall residual profile. The PLX-Benchtop returns three fitted Voce hardening parameters by solving the inverse indentation problem given the FD curve and residual profile following the ASTM-specified indentation plastometry procedure [ 7 ,  20 ]; these results were compared to those of the separate analyses performed in this study.",
+        "To test the first proposed method of adding information, additional indents were performed in each alloy over a d/r range of ~ 0.1 to 0.18 using indenters of radii 1.006 mm and 0.503 mm. To test the second proposed method of adding information, eight Vickers microhardness measurements (1 kgf, dwell time of 10 s, LM 110AT, LECO Inc., United States) were performed 0.8 mm from the center of the spherical indent, which was marked by the intersection of visible scan lines left by the contact profilometer as shown in Fig.  2 . Vickers indents were assessed by optical measurement of diagonal length. To determine the change in microhardness, ΔHV, caused by the spherical indent, ten Vickers microhardness measurements were performed using the same settings in the virgin material. Fig. 2 Optical image of spherical indentation into Inconel 625 sample using a 1.006 mm radius indenter, showing contact profilometer scan lines. Vickers hardness indents are shown at radial distances of 0.8 mm and 1.0 mm from the spherical indent center, adding information to determine a unique three-parameter hardening solution. Further analysis in the present study uses the 0.8 mm-distant indents due to greater sensitivity to the effects of spherical indentation"
+      ]
+    },
+    {
+      "heading": "Computational Methods",
+      "paragraphs": []
+    },
+    {
+      "heading": "Finite Element Model",
+      "paragraphs": [
+        "The sample was modeled as an isotropic elasto-plastic material with a linear Drucker-Prager pressure-dependent yield criterion, associated flow rule, and isotropic hardening. The yield criterion is given by: 6 q = σ t 1 + tan β 3 + p ∗ t a n ( β ) \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$q={\\sigma}_{t}\\left(1+\\frac{\\mathit{tan}\\left(\\beta \\right)}{3}\\right)+p*tan(\\beta )$$\\end{document}",
+        "where  q  is the von Mises equivalent stress at which yielding occurs and  β  is the angle of friction, governing the degree of pressure dependency. From Eq.  6 , the parameter  β  directly relates to tension–compression asymmetry as:\n 7 σ c σ t = 1 + t a n ( β ) 3 1 - t a n ( β ) 3 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\frac{{\\sigma}_{c}}{{\\sigma}_{t}}=\\frac{1+\\frac{tan(\\beta )}{3}}{1-\\frac{tan(\\beta )}{3}}$$\\end{document}",
+        "When  β  is set to 0°, tension–compression asymmetry disappears and Eq.  6  simplifies to the von Mises yield criterion.",
+        "The hardening curve is represented by a reparameterization of the Voce equation. Assuming an initial strain hardening rate at yield  M 0  that decays exponentially with constant  a  as a function of plastic strain gives: 8 σ eq = M 0 a 1 - e - a ε eq + σ t , \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${\\sigma}_{eq}=\\left(\\frac{{M}_{0}}{a}\\right)\\left(1-{e}^{-a{\\varepsilon}_{eq}}\\right)+{\\sigma}_{t},$$\\end{document} where equivalent stress  σ eq  and equivalent strain  ε eq  are defined to equal the flow stress and plastic strain, respectively, that would be measured in uniaxial tension, thus establishing the work conjugacy relationship for flow stress evolution along alternative strain paths. The exponential decay constant  a  is the inverse of Voce  ε c . Saturation stress is reached at infinite  ε p , giving: 9 σ s = M 0 a + σ t . \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${\\sigma}_{s}=\\frac{{M}_{0}}{a}+{\\sigma}_{t}.$$\\end{document}",
+        "As  a  approaches zero, Eq.  8  simplifies to a linear hardening model. Parameters  σ t ,  M 0 ,  and  a  are to be determined using indentation plastometry. Isotropy is assumed and Young’s modulus and Poisson’s ratio,  ν , were assumed to have the values given in Table  1 . Values of  dG dp \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\frac{dG}{dp}$$\\end{document}  were computed using a rule of mixtures approximation given known alloy compositions and elemental polycrystalline  dG dp \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\frac{dG}{dp}$$\\end{document}  values tabulated by Guinan and Steinberg [ 32 ]. The  β  parameter was computed using Eq.  5  and Eq.  7  for each point probed in ( σ t ,  M 0 , a)  parameter space to model pressure-dependent yielding, and was fixed at 0° to model pressure-independent yielding.",
+        "Spherical indentation was simulated using a 2D axisymmetric model (Abaqus, 2022, Dassault Systèmes, Vélizy-Villacoublay, France) with a rigid indenter and a cylindrical sample, with dimensions and boundary conditions shown in Fig.  3 a. The sample was discretized using a converged mesh of quadrilateral first order reduced integration elements (CAX4R) with a minimum side length of 10 μm, and a coefficient of friction of 0.2 was set between the indenter and sample surfaces. The indenter was loaded to the same maximum force as applied in the experimental indentation and unloaded, and the maximum indenter displacement ( u max ) and residual profile were recorded. Fig. 3 Schematic showing FEA simulations of indentation into Ti-6Al-4V with superimposed equivalent stress fields, with ( a ) axisymmetric 2D spherical indentation, shown after unload, ( b ) the axisymmetric spherical indentation revolved into a 3D cutaway representation, with the sub-region surrounding the Vickers microhardness indent site marked, ( c ) 3D sub-model used to represent the sub-region in (b), with faces loaded using displacement boundary conditions according to (b), and ( d ) the sub-region after loading and unloading the Vickers indenter",
+        "To simulate Vickers microhardness indentation at a radial distance of 0.8 mm from the center of the spherical indentation, a cuboid sub-region was established surrounding the Vickers indent site as shown in Fig.  3 b. A 3D FEA model of the sub region was created as shown in Fig.  3 c. The loading history of the axisymmetric spherical indentation was replicated by applying displacement boundary conditions, read from each discrete time step in the spherical indentation simulation, on the faces of the sub-region. Accumulated plastic strain and stress fields in the sub-region model were then confirmed to match those of the full spherical indentation simulation. To simulate Vickers indentation into virgin material without a preceding spherical indentation, all degrees of freedom were fixed on all faces except the top free surface and the plane of symmetry.",
+        "An analytically defined Vickers indenter was then loaded and unloaded using the same 1 kgf maximum force as used for the experimental indents, shown in Fig.  3 d. The sub-model was discretized using a converged mesh of eight-node reduced integration brick elements (C3D8R) with minimum side length 2.5 μm.",
+        "Simulated Vickers hardness was quantified using the mean lengths of the diagonals in the residual indentation, as projected into a plane parallel to the undeformed sample surface. The local maxima at the corners of the simulated indent were used as the datum points for diagonal length measurement, assuming that these points corresponded to those measured optically."
+      ]
+    },
+    {
+      "heading": "Optimization and the Non-unique Solution Space",
+      "paragraphs": [
+        "A loss function was established to quantify error between simulated and experimental residual profiles. To account for systematic error in determining the pre-indentation surface height of the experimental residual profile, simulated profiles were vertically shifted to match experimental depths. For direct comparison, simulated and experimental profiles were represented as 1D vectors,  h sim  and  h exp , respectively, representing the interpolated heights at 1000 equally spaced points along the radial axis. Loss was defined as: 10 L h sim , h exp = ∑ n = 1 1000 | h n sim - h n exp | h max exp - h min exp \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$L\\left({h}^{sim},{h}^{exp}\\right)=\\sum_{n=1}^{1000}\\frac{|{h}_{n}^{sim}-{h}_{n}^{exp}|}{{h}_{max}^{exp}-{h}_{min}^{exp}}$$\\end{document}",
+        "Despite the redundancy of the FD curve in providing plastic constitutive information when the indentation residual profile and loading force are available, aligning with Jiao et al.’s findings that FD curves may facilitate optimization when far from the solution in parameter space [ 15 ], loss was multiplied by an additional normalized penalty factor if the simulated maximum indenter displacement deviated from the experimental value by more than 20%, defined by: 11 L u u max sim , u max exp = | u max sim - u max exp | u max exp + 1 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${L}_{u}\\left({u}_{max}^{sim},{u}_{max}^{exp}\\right)=\\frac{|{u}_{max}^{sim}-{u}_{max}^{exp}|}{{u}_{max}^{exp}}+1$$\\end{document}",
+        "The removal of the penalty below a maximum displacement error of 20% mitigated the influence of experimental LVDT measurement error, which on the PLX-Benchtop is primarily intended for control during loading and is less accurate than the contact profilometer.",
+        "Given the form of the hardening law in Eq.  8 , the imposed constraint that a modeled material’s strain hardening rate must decrease monotonically while remaining positive, and that all non-unique solutions must have the same hardness, bounds may be placed on the three parameters  σ t , M 0 , and  a . To fulfill the hardening rate constraint, all three parameters must be positive and  M 0  cannot exceed  E . To fulfill the hardness constraint,  σ t  cannot exceed the yield strength of an elastic-perfectly plastic material whose hardness equals those of the non-unique solutions. A well-defined upper bound cannot be established  a priori  for  a .",
+        "As the residual profile and maximum load have been shown to uniquely determine a two-parameter hardening model, points in the  (σ t , M 0 , a)  solution space were mapped by fixing one parameter and iteratively optimizing the remaining two using the Nelder-Mead algorithm [ 35 ,  36 ] to minimize the loss defined in Eq.  10 . Solution uniqueness was assessed at several points using a 2D grid search. One bound was explored by fixing  a  at its lower bound value of near-zero, represented by 10 –5 , and searching over  σ t  and  M 0  for a solution. Another bound was explored by fixing  M 0  at its upper bound value of  E  and searching over  σ t  and  a . The bounded solution space was then mapped by successive searches over  σ t  and  M 0  at varying fixed  a  values.",
+        "The non-unique solution spaces corresponding to multiple indentations were mapped to identify a common solution, and the solution space of the indentation using the 1.006 mm radius indenter and d/r ratio ~ 0.18 was searched to locate the point at which simulated microhardness after spherical indentation matched the experimental value."
+      ]
+    },
+    {
+      "heading": "Dimensionless Indentation Model",
+      "paragraphs": [
+        "To investigate the non-unique solution space of a wider range of materials than represented by the four alloys experimentally studied here, the axisymmetric finite element model described in Sect. \" Finite element model \" was modified to be dimensionless using the following changes:",
+        "The von Mises yield criterion was adopted, with hardening modeled using the Voce equation (Eq.  8 ). Dimensionless constitutive parameters comprised  σ t / E ,  M 0 / σ t  and  a , with  ν  fixed at a value of 0.3.",
+        "Considering a spherical indenter of radius  r , the height and radius of the cylindrical sample part were both set equal to 4.75 r . The minimum element side length was set to 0.01 r . The indenter was statically displaced to a fixed depth of 0.2 r  and unloaded, with output represented by the residual profile and dimensionless Brinell hardness ( H B / E ).",
+        "Indentation into a large number of materials was simulated using a 2D uniformly distributed random sampling across the  σ t / E  and  M 0 / σ t  parameters with  a  fixed, and across the  σ t / E  and  a  parameters with  M 0 / σ t  fixed. At least 1600 points were sampled for each 2D search, after which output was expressed over a continuous domain using K-nearest neighbors interpolation with ten nearest neighbors, weighted linearly with distance.",
+        "Sets of non-unique solutions, i.e., points with identical residual profiles and values of  H B / E , were constructed using individual non-unique solutions found within discrete 2D slices across dimensionless Voce parameter space with either the  a  or  M 0 / σ t  parameter fixed. Across a 2D slice the  H B / E  constraint is met by a 1D set of points, from which a single best residual profile fit may be determined by minimization of the loss function in Eq.  10 .",
+        "Sixteen dimensionless materials, with  σ t / E  ranging linearly from 10 –3  to 1.1 × 10 –2 , with  M 0 / σ t  ranging logarithmically from 1/3 to 9, and with  a  fixed at its lower bound of near-zero, were used to seed the mapping of corresponding sets of non-unique solutions through the remainder of 3D dimensionless Voce parameter space. When discussing a given set of non-unique solutions, the solution at the lower  a  bound is henceforth referred to as the ‘seed material’."
+      ]
+    },
+    {
+      "heading": "Results and Discussion",
+      "paragraphs": []
+    },
+    {
+      "heading": "Experimental Results",
+      "paragraphs": [
+        "Superimposed true stress–strain curves for all UT and UC tests for the tested alloys are shown in Fig.  4 , with fitted constitutive parameters given in Table  2 . Table  3  gives the 0.2% offset yield stress of all uniaxial specimens, showing that tension–compression asymmetry was generally observed and often exceeded values predicted by the Jung model. FEA simulations of the UC test indicated that platen friction and sample tilt had negligible influence on the initial yield stress, suggesting that systematic experimental artifacts were not responsible for the observed asymmetry. Fig. 4 Superimposed true stress–strain curves, obtained from UT and UC tests, for ( a ) SS316, ( b ) Inconel 625, ( c ) Al6061, and ( d ) Ti-6Al-4V. The number of UT and UC specimens varied among the alloys, with the 0.2% offset yield stress of all curves given in Table  3 Table 2 Voce hardening parameters and UTS for the four studied alloys obtained from representative UT curves Alloy σ t  (MPa) M 0  (MPa) a UTS (MPa) SS316 312 2606 2.9 630 Inconel 625 445 3760 2.7 968 Al6061 282 1237 13.0 323 Ti-6Al-4V 973 4271 18.4 1044 Table 3 Yield strength (0.2% offset) values of all uniaxial samples, ratios of mean compressive strength to mean tensile strength, and compressive-tensile strength ratios predicted using the Jung model, taking the tensile strength as input Alloy σ t  (MPa) σ c  (MPa) σ c σ t \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\frac{{\\sigma}_{c}}{{\\sigma}_{t}}$$\\end{document} , exp.\n σ c σ t \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\frac{{\\sigma}_{c}}{{\\sigma}_{t}}$$\\end{document} , model\n SS316 297, 303, 312, 312, 316, 365 320, 335, 367 1.073 1.008 Inconel 625 436, 443, 445, 450, 457, 483 475 1.050 1.011 Al6061 280, 282, 284 293 1.038 1.023 Ti-6Al-4V 973 959, 978 0.995 1.018",
+        "Variation in initial yield stress across samples was high, relative to the absolute difference between tensile and compressive strength; thus the computed tension–compression ratios were likely influenced by noise. The data in Table  3  may be explained by a degree of pressure-induced strengthening greater than but to the same order of that predicted by the Jung model, as suggested by Fig.  1 , combined with experimental noise.",
+        "Log–log plots of flow stress versus plastic strain for the validation alloys shown in Fig.  5  demonstrate that the Hollomon model is able to capture the behavior of Al6061 and Ti-6Al-4V but not of SS316 or Inconel 625, motivating the use of a three-parameter hardening model. Fig. 5 Log–log plot of plastic regime of the true stress–strain curves of the four alloys investigated, showing that Ti-6Al-4V and Al6061 can be modeled using the Hollomon model while Inconel 625 and SS316 cannot due to their nonlinearity",
+        "Vickers microhardness values of all alloys before and after spherical indentation are given in Table  4 . The strain hardening of surrounding material and concomitant circumferential tensile residual stresses caused by spherical indentation together result in small ΔHV values.\n Table 4 Mean experimental Vickers hardness values (1 kgf) of sample materials before spherical indentation and after spherical indentation, 0.8 mm away from the center of the spherical indent. Standard deviations are given in parentheses Alloy Before spherical indentation (HV) After spherical indentation (HV) SS316 199 (4) 183 (4) Inconel 625 247 (5) 249 (6) Al6061 118 (2) 117 (4) Ti-6Al-4V 316 (8) 323 (9)"
+      ]
+    },
+    {
+      "heading": "Mapped Non-unique Solutions",
+      "paragraphs": [
+        "Grid searches consistently confirmed a global minimum in the 2D loss surfaces for which one of the three hardening parameters was fixed, suggesting a 1D non-unique solution space. Loss surfaces for the Inconel 625 indentation using a pressure-independent yield model, produced by grid searches at low and high fixed  a  values, along with the identical superimposed residual profiles associated with the minimum-loss solutions are shown in Fig.  6 , demonstrating large differences in flow behavior between non-unique solutions. Fig. 6 Loss surfaces, plotted at fixed  a  across the  (σ t ,M 0 )  plane in transformed 3D Voce parameter space, for the inverse FEA analysis of a spherical indent into Inconel 625 using a pressure-independent yield criterion, with minima marked. The similar minimum losses in ( a ) and ( b ), originating from the near-identical corresponding residual profiles in  (c) , demonstrate non-unique three-parameter solutions to the indentation plastometry problem that differ substantially in flow behavior, as also shown in Fig.  8",
+        "Solutions were found for the near-zero lower bound of  a  for all four alloys. SS316 and Inconel 625 solution spaces were mapped across an  a  domain sufficient to observe significant change in flow behavior, without precluding the possibility of solutions at higher  a  values. Solutions were found at the  M 0  =  E  upper bound in Al6061 and Ti-6Al-4V, fully defining the extent of solution uncertainty due to non-uniqueness in these two alloys. In every case, across a non-unique solution subspace an increase in  a  was associated with an increase in  M 0  and a decrease in  σ t .  Accordingly, the solutions at the lower-bound near-zero  a  value were associated with the maximum  σ t  and minimum  M 0  values, while the solutions at the upper-bound  M 0  value corresponded to minimum  σ t  and maximum  a .",
+        "The non-unique solutions for the four alloys, using a pressure-dependent yield model, are shown in Fig.  7 , with corresponding stress–strain curves shown in Fig.  8 ; similar trends were observed when using the pressure-independent model. Much smaller differences are observed between the flow stresses of the non-unique Al6061 and Ti-6Al-4V solutions, alloys with low strain hardening, compared to those of the non-unique SS316 and Inconel 625 solutions, alloys with high strain hardening. Because  a  controls the strain hardening decay rate, the overall flow behavior of non-unique solutions is less sensitive to  a  in low-hardening materials. Fig. 7 Set of non-unique solutions to the indentation plastometry problem for the four alloys using a pressure-dependent yield model, showing  (a) σ t  and  (b) M 0 , normalized by the experimental value (given in Table  2 ), as a function of  a . Increased work-hardening behavior leads to a greater relative change in  σ t  and  M 0  for a given change in  a , causing larger differences in flow stresses among non-unique solutions as illustrated in Fig.  8",
+        "Fig. 8 Predicted stress-strain curves at two points in the mapped non-unique solution  subspaces for ( a ) SS316, ( b ) Inconel 625, ( c ) Al6061, and ( d ) Ti-6Al-4V, using a pressure-dependent yield criterion. The non-unique solutions of SS316 and Inconel 625 show large  variation in flow behavior due to high work-hardening capacity, while those of Al6061 and Ti 6Al-4V show low variation due to low work-hardening capacity"
+      ]
+    },
+    {
+      "heading": "Unique Solution by Multiple Separate Indentations",
+      "paragraphs": [
+        "Searches through 3D parameter space were unable to identify a clear intersection between the non-unique solution subspaces corresponding to indentations to differing depths and with differing indenter radii. This is shown for SS316 indentations in Fig.  9 , in which any differences in material response are obscured by experimental noise. Similarly, non-unique solutions were not distinguishable by simulated Vickers indentation into virgin material as shown in Fig.  10 . Fig. 9 Predicted ( a )  σ t  and ( b )  M 0  for SS316 as a function of  a  for three separate indentations to differing d/r ratios, assuming pressure-independent J2 plasticity. There is no clear value of  a  at which solutions intersect; instead, differences between the solutions are dominated by experimental noise. The same trend was observed in the remaining three investigated alloys Fig. 10 Residual profiles along the diagonals of FEA 1 kgf Vickers indents for non-unique solutions of ( a ) SS16, ( b ) Inconel 625, ( c ) Al6061 and ( d ) Ti-6Al-4V, using a pressure-dependent yield model. The near-identical nature of the profiles demonstrates that non-unique solutions cannot be distinguished using Vickers indents in virgin material",
+        "Meng et al.’s [ 16 ] case study of a pair of non-unique solutions using multiple spherical indentations suggests that the distinguishability of residual indentation profiles increases as the d/r ratio is increased from the value at which the solutions were obtained. This is likely due to increased work-hardening with deeper penetration of a spherical indenter [ 2 ].",
+        "Practical limitations prevent the experimental investigation of d/r ratios differing significantly from the range of ~ 0.1 to 0.18 in the present study. Therefore, a pure FEA approach was used to investigate the non-unique solutions of the four present alloys found using an indenter of radius 1.006 mm and a d/r ratio of ~ 0.18.",
+        "The superimposed residual profiles of non-unique solutions resulting from simulated spherical indentation at a d/r ratio of 0.4 are shown in Fig.  11 . As in Meng et al.’s study, the increased penetration ratio increases distinguishability. There is increased distinguishability in the materials with high strain-hardening capacity (SS316, Inconel 625) due to the greater differences in flow behavior of non-unique solutions, as discussed in Sect. \" Mapped Non-unique Solutions \". Fig. 11 FEA residual profiles for the non-unique solutions of ( a ) SS316, ( b ) Inconel 625, ( c ) Al6061 and ( d ) Ti-6Al-4V after spherical indentation at a d/r ratio of 0.4, using a pressure-dependent yield model"
+      ]
+    },
+    {
+      "heading": "Unique Solution by Microhardness Measurements After Spherical Indentation",
+      "paragraphs": [
+        "An increase in  a  across the non-unique solution subspace was associated with an increase in simulated Vickers microhardness after spherical indentation. Little difference was observed between the microhardness values predicted by the pressure-dependent and pressure-independent models. Although change in hardness as a function of  a  before spherical indentation was negligible, SS316 and Inconel 625 demonstrated pronounced differences in simulated microhardness after spherical indentation across their solution subspaces as shown in Fig.  12 , such that the use of hardness indents after spherical indentation was a viable method to determine a unique three-parameter solution. In contrast, due to reduced flow stress variation of non-unique solutions caused by low work-hardening capacity, the simulated microhardness values of Al6061 and Ti-6Al-4V vary little across the full domain of the solution subspace, such that a unique solution cannot be determined with sufficient resolution. Fig. 12 Simulated 1 kgf Vickers microhardness values measured 0.8 mm from the spherical indent as a function of  a  for the non-unique solutions using a pressure-dependent yield model, normalized by the corresponding experimental value (given in Table  4 ) for the four alloys. The points at which simulated and experimental values match are marked, with error bars representing the coefficient of variation of experimental measurements",
+        "The distinguishability of non-unique solutions in SS316 and Inconel 625 and the indistinguishability of non-unique solutions in Al6061 and Ti-6Al-4V are also illustrated in the simulated residual profiles of the Vickers indents shown in Fig.  13 . The mean diagonal length of the larger indent depicted in Fig.  13  exceeds that of the smaller by 8% and 10.8% in comparison to an experimental coefficient of variation of 1.0% and 1.3% in SS316 and Inconel 625, respectively. In contrast, the simulated diagonal lengths corresponding to non-unique solutions are effectively identical for Al6061 and Ti-6Al-4V Fig. 13 Comparisons between simulated 1 kgf Vickers indent profiles, plotted along the radially-oriented diagonal, at two points on the solutions spaces of ( a ) SS316, ( b ) Inconel 625, ( c ) Al6061, and ( d ) Ti-6Al-4V, using a pressure-dependent yield model. SS316 and Inconel 625 solutions are highly hardness-distinguishable due to high work-hardening capacity, while Ti-6Al-4V and Al6061 solutions are not due to low work-hardening capacity",
+        "Therefore, we propose to interpret indentation profilometry data by mapping the 1D non-unique solution space and using microhardness indents after spherical indentation to identify a single best-fit solution. If, due to low hardening behavior, non-unique solutions are microhardness-indistinguishable, we propose instead to use a two-parameter hardening model as uncertainty due to non-uniqueness will be reduced.",
+        "To determine an appropriate form of two-parameter hardening model to model flow behavior, Hollomon and linear hardening two-parameter models were compared against the benchmark three-parameter Voce model at a fixed yield strength. At discrete grid points in the ( M 0 ,  a ) plane in transformed Voce space, the minimum MAPE achievable by the two-parameter models in approximating the Voce curve was computed, as shown in Fig.  14 . Fig. 14 Minimum achievable MAPE (evaluated up to a plastic strain of 20%) of a two-parameter ( a ) Hollomon and ( b ) linear hardening approximation of a benchmark three-parameter Voce true stress–strain curve, plotted as a function of  a  and  M 0  at fixed  σ t  (700 MPa) and fixed  E  (193 GPa). Voce curves with high  a , or low  a  and low  M 0  are accurately approximated in (a), and those with low  M 0  and low  a  are accurately approximated in (b). (a) is better suited than (b) for modeling low-hardening materials as MAPE continuously decreases as the strain-hardening behavior of the Voce curve decreases. Conclusions were insensitive to the choice of Young’s modulus, yield strength, and strain domain.",
+        "Regions in transformed Voce space with high  a , or low  a  and low  M 0  were accurately approximated by the Hollomon equation, while regions with low  M 0  or low  a  were accurately approximated by a linear hardening equation. In contrast to the linear hardening model, across the entire transformed Voce space the quality of the Hollomon approximation continuously improves as  M 0  decreases and  a  increases, i.e., as strain hardening decreases. These conclusions were insensitive to yield strength, Young’s modulus and the maximum strain to which the stress–strain curves were compared. Thus, the Hollomon model is the more suitable for assessing indentation plastometry data of low-hardening materials. Nelder-Mead optimization was used to fit Hollomon parameters ( σ y ,  n ) to the residual indentation profiles of all four validation alloys, serving as a comparison for unique three-parameter Voce solutions for SS316 and Inconel 625."
+      ]
+    },
+    {
+      "heading": "Comparison of Indentation Plastometry with Uniaxial Tension",
+      "paragraphs": [
+        "Flow behavior for SS316 and Inconel 625 predicted by indentation plastometry, supplemented with Vickers microhardness indents to obtain unique three-parameter solutions, aligns well with experimental UT data as shown in Fig.  15 . Yield strength is accurately predicted while strain hardening at finite strains is overpredicted, with fitted constitutive parameters and prediction errors given in Table  5 . The overprediction is likely due to the known decreased sensitivity of indentation response to flow properties at higher strains [ 37 ], which informs the limitation of the prediction-experiment comparison to a maximum true strain of 20% in the present study. Little difference is observed between predictions using pressure-dependent and pressure-independent models due to low ( 1 G dG dp \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\frac{1}{G}\\frac{dG}{dp}$$\\end{document} ) values for SS316 and Inconel 625, but the pressure-dependent model predictions for yield strength have a lower error. Fig. 15 Predicted stress–strain curves for  (a)  SS316 and  (b)  Inconel 625 using the three-parameter Voce model obtained by the addition of microhardness measurements after spherical indentation. As shown by the similarity of the Jung and J2 curves, flow stresses in these two alloys are not greatly affected by hydrostatic indentation pressures Table 5 Predicted Voce hardening parameters for high-work hardening SS316 and Inconel 625, determined by FEA simulations of a spherical indent followed by microhardness measurements, with MAPE evaluated against the UT stress–strain curve up to a true strain of 20%. Predicted UTS was computed from fitted  σ t , M 0  and  a  values. Corresponding Drucker-Prager  β  values are given for Jung model calculations Alloy σ t  (MPa) M 0  (MPa) a UTS (MPa) β  (degrees) MAPE (%) SS316 (J2) 320 3944 6.0 646 0.0 12.5 Inconel 625 (J2) 433 5915 6.0 932 0.0 10.1 SS316 (Jung) 312 3621 5.0 647 0.68 9.3 Inconel 625 (Jung) 410 6297 6.8 907 0.81 8.5",
+        "As a unique three-parameter Voce solution cannot be obtained for Al6061 and Ti-6Al-4V, their bounded solutions at the minimum and maximum  a  values may be compared to the UT data as shown for a pressure-dependent model in Fig.  16 , with corresponding parameters and errors given in Table  6 . Because  σ t  decreases and  M 0  increases as  a  increases, the parameters of the bounded solutions enclose the experimentally fitted values, allowing non-uniqueness uncertainty to be finitely quantified and demonstrating the reduction in such uncertainty due to low work-hardening capacity. Fig. 16 Bounded three-parameter Voce solutions for ( a ) Al6061 and  (b)  Ti-6Al-4V, using a pressure-dependent yield model, found by fixing either  a  to equal near-zero or  M 0  to equal the Young’s modulus, with constitutive parameters given in Table  6 . Predicted parameters thus have finite uncertainty due to non-uniqueness, and their bounds enclose the parameters fitted to UT data. As Ti-6Al-4V has lower work-hardening capacity than Al6061 relative to its yield strength, the flow stress differences between the bounded solutions of Ti-6Al-4V are correspondingly lower than those of Al6061. Table 6 Bounded non-unique Voce model solutions for low-work hardening Al6061 and Ti-6Al-4V using a pressure-dependent yield model, found by fixing one hardening parameter at its model constraint bound and numerically searching over the remaining two hardening parameters. Predicted UTS was computed from fitted  σ t ,  M 0  and  a  values. Corresponding Drucker-Prager  β  values are given for Jung model calculations. MAPE was evaluated against the entire domain of the UT stress–strain curve Alloy σ t  (MPa) M 0  (MPa) a UTS (MPa) β  (degrees) MAPE (%) Al6061 ( a  near zero) 301 345 10 –5 302 2.08 3.0 Ti-6Al-4V ( a  near zero) 1080 558 10 –5 - 1.71 2.9 Al6061 ( M 0  =  E ) 114 69000\n 258 371 0.78 16.7 Ti-6Al-4V ( M 0  =  E ) 822 114000 313 1156 1.29 6.6",
+        "Stress–strain curves for all four alloys predicted using the Hollomon equation are shown in Fig.  17 . In line with the observation of high non-uniqueness uncertainty in SS316 and Inconel 625 solutions and low uncertainty in Al601 and Ti-6Al-4V solutions, the Hollomon model poorly predicts SS316 and Inconel 625 constitutive behavior, while modeling Al6061 and Ti-6Al-4V well when paired with a pressure-dependent yield model as shown in Table  7 . The greater error of the PLX-Benchtop in predicting the properties of SS316 and Inconel 625 compared to those of Al6061 and Ti-6Al-4V, shown in Table  8 , likely has a similar cause: a fit to a residual profile and maximum loading force achieved using a three-parameter Voce hardening model is equivalent to one achieved using an arbitrarily chosen two-parameter hardening model, such that error depends significantly on the material’s work hardening behavior. Fig. 17 Predicted stress–strain curves for ( a ) SS316, ( b ) Inconel 625, ( c ) Al6061, and ( d ) Ti-6Al-4V using the two-parameter Hollomon equation. Al6061 and Ti-6Al-4V demonstrate yield sensitivity to hydrostatic pressure, with pressure-dependent model predictions better aligned with UT data, due to the pressure sensitivity of the shear modulus in Al6061 and the high indentation contact pressures of Ti-6Al-4V. Due to reduced variation in flow behavior across non-unique three-parameter Voce solutions resulting from low work-hardening behavior, the prediction of a reduced-order model deviates less from ground truth in Al6061 and Ti-6Al-4V than in SS316 or Inconel 625 Table 7 Predicted two-parameter Hollomon model parameters for the four alloys. Predicted UTS was computed from fitted  σ t  and  n  values. Corresponding Drucker-Prager  β  values are given for Jung model calculations. MAPE was calculated against the UT stress–strain curve, using its entire domain for Al6061 and Ti-6Al-4V and up to a true strain of 20% for SS316 and Inconel 625 Alloy σ t  (MPa) n UTS (MPa) β  (degrees) MAPE (%) SS316 (J2) 254 0.21 585 0.0 14.4 Inconel 625 (J2) 346 0.23 846 0.0 12.2 Al6061 (J2) 318 0.056 346 0.0 11.9 Ti-6Al-4V (J2) 1116 0.042 1138 0.0 8.2 SS316 (Jung) 244 0.21 577 0.53 12.5 Inconel 625 (Jung) 347 0.22 819 0.69 9.5 Al6061 (Jung) 278 0.077 323 1.93 3.9 Ti-6Al-4V (Jung) 1048 0.043 1073 1.65 2.6 Table 8 PLX-Benchtop predicted Voce hardening parameters for the four alloys. Predicted UTS was computed from fitted  σ t ,  M 0  and  a  values. MAPE was calculated against the UT stress–strain curve, using its entire domain for Al6061 and Ti-6Al-4V and up to a true strain of 20% for SS316 and Inconel 625 Alloy σ t  (MPa) M 0  (MPa) a UTS (MPa) MAPE (%) SS316 271 7616 13.7 651 20.7 Inconel 625 362 9739 11.4 925 15.5 Al6061 264 2591 15.2 360 7.3 Ti-6Al-4V 903 6538 15.4 1111 4.0",
+        "Al6061 and Ti-6Al-4V exhibit apparent greater sensitivities to hydrostatic pressure than SS316 and Inconel 625; pressure-independent predictions of  σ t  exceeded those of pressure-dependent predictions respectively by 6.5% and 14.3% in the former two alloys, and by 2.6% and 5.6% respectively in the latter two alloys. Figure  18  shows pressure fields around the indent site at maximum load for all four alloys, demonstrating that a roughly spherical region whose volume greatly exceeds that of the indent itself, referred to as the ‘core’ by Johnson [ 3 ], experiences pressures on the order of 1 GPa in every alloy. Within the lens of the Jung model, the discrepancy between the constitutive predictions of pressure-independent and pressure-dependent models for these two alloys lies in the fact that out of the four alloys, the shear modulus of Al6061 is the most sensitive to pressure, while Ti-6Al-4V experiences the highest pressures in indentation due to its high strength. The high-work hardening behavior of SS316 and Inconel 625 reduces the localization of pressure around the indentation site by enabling a more even distribution of stress throughout the material, as shown in Fig.  18 , thus reducing the extent to which the indentation response is influenced by pressure-induced strengthening. Fig. 18 Hydrostatic pressure fields in the vicinity of the spherical indentation at maximum load for ( a ) SS316, ( b ) Inconel 625, ( c ) Al6061, and ( d ) Ti-6Al-4V. Field values have been linearly rescaled from 0 to 1, with 0 and 1 representing the noted predicted minimum and maximum values, respectively, shown in each plot. All materials show a roughly spherical ‘core’ region surrounding the indentation site with pressures on the order of 1 GPa. Due to high work-hardening behavior, pressure in SS316 and Inconel 625 is more evenly distributed than in Al6061 or Ti-6Al-4V, seen in the larger, less defined core and a more gradual pressure gradient with respect to space in the first two alloys",
+        "As an alternative to using a pressure-dependent plasticity model, the degree of pressure-induced strengthening may be estimated using the mean indentation pressure, defined as the loading force divided by the area of the contact surface projected into a plane normal to the indenter loading direction [ 2 ]. The radius of the projected contact surface at maximum load was extracted from FEA simulations. The projected contact surface radius may be approximated by measurement of the residual profile, although the mean indentation pressure is overestimated (by 5.5%, 1.0%, 17.1% and 9.4% for SS316, Inconel 625, Al6061 and Ti-6Al-4V, respectively) as elastic recovery upon unloading is not accounted for [ 2 ].",
+        "Taking the mean indentation pressure as input, Jung’s model [ 22 ] predicts a pressure-induced yield strength increase of 7.5%, 9.6%, 14.7% and 10.6% for SS316, Inconel 625, Al6061 and Ti-6Al-4V, respectively, compared to the tensile strength measured at ambient pressure. Although these values overpredict the benchmark values obtained by comparing the FEA-derived  σ t  value predicted by pressure-dependent and independent plasticity models, they demonstrate a first-order estimate of the pressure-induced strengthening effect achieved using a simple analytical model."
+      ]
+    },
+    {
+      "heading": "Dimensionless Non-unique Solutions",
+      "paragraphs": [
+        "Well-fit non-unique solutions were found over the range 0 <  a  ≤ 24 for all dimensionless seed materials. Corresponding non-unique solutions were found at the  M 0  =  E  bound for some, but not all seed materials, allowing for change in flow properties to be quantified across the entire solution domain. 2D projections of the non-unique solution paths, giving  σ t /E  as a function of  a , are shown in Fig.  19 . With increased strain-hardening, quantifiable by the  M 0 /σ t  value of the seed material, the rate of change in  σ t /E  as a function of  a  increases, following the trend observed for the experimentally investigated alloys in Sect. \" Mapped Non-unique Solutions \". Fig. 19 Sets of dimensionless non-unique solutions for a spherical indent with a d/r ratio of 0.2, showing  σ t /E  as a function of  a . Sets are labeled according to the  σ t /E  and  M 0 /σ t  values of their seed materials at an  a  value of near-zero: superimposed curves have varying seed  M 0 /σ t  values and share seed  σ t /E  values of  (a)  10 –3 ,  (b)  4.3 × 10 –3 ,  (c)  7.7 × 10 –3 , and  (d)  1.1 × 10 -2 .",
+        "Change in  M 0 /σ t  as a function of  a  and dimensionless constitutive parameters at the  M 0  =  E  bound are shown for these non-unique solutions in Fig.  20  and Table  9 , respectively, given in Appendix  B . The dimensionless non-unique solution sets follow trends observed for the experimentally investigated alloys in Sect. \" Mapped Non-unique Solutions \", regarding  M 0 /σ t  as a function of  a , and in Sect. \" Comparison of Indentation Plastometry with Uniaxial Tension \", regarding bounded solutions. Across the investigated range of dimensionless materials, increased strain-hardening behavior is observed to increase the uncertainty in the prediction of flow behavior from indentation plastometry data, i.e., a residual indentation profile and maximum loading force.",
+        "Indentation plastometry data, corresponding to a unique two-parameter hardening solution, give a scalar constraint of a material’s strain-hardening behavior. Considering this scalar constraint, such uncertainty trends may be explained by the principle that there are fewer ways by which a higher order hardening curve may achieve low strain-hardening behavior, compared to achieving high strain-hardening behavior.",
+        "The indentation response of a material is strongly influenced by the  σ t /E  ratio. From the dimensionless indentation simulations, for example, the residual profiles of perfectly plastic materials with  σ t /E  ratios of 10 –3  and 1.1 × 10 –2  were predicted to have maximum pile-up heights equal to 55% and 14%, respectively, of the indenter penetration depth for a d/r ratio of 0.2.",
+        "However, over the range 0 <  a  ≤ 24, Figs.  19  and  20  suggest that relative change in  σ t /E  and  M 0 /σ t  with  a  is negligibly influenced by the  σ t /E  value of the seed material. An exception is observed in Fig.  19 a, in which the lower seed  σ t /E  value appears to reduce relative change in  σ t / E ; the opposite trend is observed when comparing bounded solutions in Table  9  in Appendix B. However, the difference in overall flow behavior of bounded non-unique solutions is not greatly influenced by the  σ t /E  ratio; further detail is given in Appendix B.",
+        "It may be concluded that for the range of investigated dimensionless materials, the influence of the  σ t /E  ratio on solution uncertainty is secondary compared to that of the strain-hardening behavior, whose effect is consistently clear. The conclusions of the present study regarding non-unique solutions to the indentation plastometry problem are thus likely applicable to a wide range of engineering metals."
+      ]
+    },
+    {
+      "heading": "Conclusions",
+      "paragraphs": [
+        "Indentation, although rapid and non-destructive, creates highly non-homogenous stress and displacement fields that complicate the inverse determination of flow behavior. In the present study, conventionally processed samples of SS316, Inconel 625, Al6061 and Ti-6Al-4V were indented and analyzed using inverse FEA to study two aspects of material indentation response: what features of the indentation response are most uniquely characteristic of the material’s constitutive behavior, and how the high-pressure loading conditions associated with indentation affected flow behavior. The first aspect was studied by experimentally testing two techniques of adding information to existing FD curves and residual profiles to uniquely determine a three-parameter hardening model. The second aspect was studied by comparing pressure-independent and pressure-dependent plasticity models. The following conclusions were reached: An increase in work hardening capacity in the tested material increases the difference in flow behavior among non-unique solutions and vice versa. Microhardness values of non-unique solutions measured in deformed regions caused by macroscopic spherical indentation are distinguishable if work-hardening behavior is sufficiently high. Multiple indents with varying depth or indenter geometry do not distinguish non-unique solutions. Reduced work-hardening behavior increases the accuracy with which flow stress evolution may be represented by the two-parameter Hollomon hardening model. Common engineering metals, represented by Al6061 and Ti-6Al-4V in the present study, may experience a substantial increase in strength due to the high hydrostatic pressures caused by indentation, even if pressure dependency is too low to resolve as a compression-tension yield asymmetry.",
+        "Given these findings, the following procedure is proposed for the quantification of plastic properties using indentation techniques. Indentation should be conducted, measured and simulated according to the ASTM standard for indentation plastometry [ 20 ]. Hardening should be defined by a three-parameter saturation hardening model such as that of Voce. The set of non-unique solutions should be found using inverse numerical methods by fixing one parameter and searching over the other two. Model constraints should be used to bound the solution space, using  a  > 0 and  M 0  ≤  E  in the case of the Voce model.",
+        "Simulated microhardness indents conducted in material deformed by the spherical indentation should be compared to their experimental equivalent to determine a unique solution. If the simulated microhardness values of the non-unique solutions are not distinguishable, a unique solution should be numerically obtained instead with the two-parameter Hollomon law, as justified by known low work-hardening behavior, and with prediction uncertainty established using the bounded three-parameter solutions.",
+        "Pressure dependence of yielding should be accounted for using Jung’s model [ 22 ]. If a numerical simulation of the indentation process using a pressure-dependent plasticity model is not available, an estimate of the yield strength by the method proposed in the present study or by any other method should account for pressure-induced strengthening using the mean indentation pressure."
+      ]
+    }
+  ],
+  "tables": [
+    {
+      "caption": "Elastic properties used in FEA simulations or as input to the Jung model [ 22 ]",
+      "headers": [
+        "Alloy",
+        "E  (GPa)",
+        "ν",
+        "d G d P \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\frac{{\\varvec{d}}{\\varvec{G}}}{{\\varvec{d}}{\\varvec{P}}}$$\\end{document}  from Ref [ 32 ]"
+      ],
+      "rows": [
+        [
+          "SS316",
+          "193",
+          "0.27",
+          "1.71"
+        ],
+        [
+          "Inconel 625",
+          "208",
+          "0.28",
+          "1.66"
+        ],
+        [
+          "Al6061",
+          "69",
+          "0.33",
+          "1.74"
+        ],
+        [
+          "Ti-6Al-4V",
+          "114",
+          "0.34",
+          "0.76"
+        ],
+        [
+          "Grade 1100 Aluminum",
+          "69",
+          "0.33",
+          "1.75"
+        ],
+        [
+          "4130, 4330, and Maraging Steel",
+          "198",
+          "0.29",
+          "1.80"
+        ]
+      ],
+      "header_groups": [],
+      "table_alignment_status": "resolved",
+      "row_provenance": [
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 4
+          }
+        ]
+      ],
+      "tbody_alignment_status": "resolved"
+    },
+    {
+      "caption": "Voce hardening parameters and UTS for the four studied alloys obtained from representative UT curves",
+      "headers": [
+        "Alloy",
+        "σ t  (MPa)",
+        "M 0  (MPa)",
+        "a",
+        "UTS (MPa)"
+      ],
+      "rows": [
+        [
+          "SS316",
+          "312",
+          "2606",
+          "2.9",
+          "630"
+        ],
+        [
+          "Inconel 625",
+          "445",
+          "3760",
+          "2.7",
+          "968"
+        ],
+        [
+          "Al6061",
+          "282",
+          "1237",
+          "13.0",
+          "323"
+        ],
+        [
+          "Ti-6Al-4V",
+          "973",
+          "4271",
+          "18.4",
+          "1044"
+        ]
+      ],
+      "header_groups": [],
+      "table_alignment_status": "resolved",
+      "row_provenance": [
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 5
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 5
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 5
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 5
+          }
+        ]
+      ],
+      "tbody_alignment_status": "resolved"
+    },
+    {
+      "caption": "Yield strength (0.2% offset) values of all uniaxial samples, ratios of mean compressive strength to mean tensile strength, and compressive-tensile strength ratios predicted using the Jung model, taking the tensile strength as input",
+      "headers": [
+        "Alloy",
+        "σ t  (MPa)",
+        "σ c  (MPa)",
+        "σ c σ t \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\frac{{\\sigma}_{c}}{{\\sigma}_{t}}$$\\end{document} , exp.",
+        "σ c σ t \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\frac{{\\sigma}_{c}}{{\\sigma}_{t}}$$\\end{document} , model"
+      ],
+      "rows": [
+        [
+          "SS316",
+          "297, 303, 312, 312, 316, 365",
+          "320, 335, 367",
+          "1.073",
+          "1.008"
+        ],
+        [
+          "Inconel 625",
+          "436, 443, 445, 450, 457, 483",
+          "475",
+          "1.050",
+          "1.011"
+        ],
+        [
+          "Al6061",
+          "280, 282, 284",
+          "293",
+          "1.038",
+          "1.023"
+        ],
+        [
+          "Ti-6Al-4V",
+          "973",
+          "959, 978",
+          "0.995",
+          "1.018"
+        ]
+      ],
+      "header_groups": [],
+      "table_alignment_status": "resolved",
+      "row_provenance": [
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 5
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 5
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 5
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 5
+          }
+        ]
+      ],
+      "tbody_alignment_status": "resolved"
+    },
+    {
+      "caption": "Mean experimental Vickers hardness values (1 kgf) of sample materials before spherical indentation and after spherical indentation, 0.8 mm away from the center of the spherical indent. Standard deviations are given in parentheses",
+      "headers": [
+        "Alloy",
+        "Before spherical indentation (HV)",
+        "After spherical indentation (HV)"
+      ],
+      "rows": [
+        [
+          "SS316",
+          "199 (4)",
+          "183 (4)"
+        ],
+        [
+          "Inconel 625",
+          "247 (5)",
+          "249 (6)"
+        ],
+        [
+          "Al6061",
+          "118 (2)",
+          "117 (4)"
+        ],
+        [
+          "Ti-6Al-4V",
+          "316 (8)",
+          "323 (9)"
+        ]
+      ],
+      "header_groups": [],
+      "table_alignment_status": "resolved",
+      "row_provenance": [
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 3
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 3
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 3
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 3
+          }
+        ]
+      ],
+      "tbody_alignment_status": "resolved"
+    },
+    {
+      "caption": "Predicted Voce hardening parameters for high-work hardening SS316 and Inconel 625, determined by FEA simulations of a spherical indent followed by microhardness measurements, with MAPE evaluated against the UT stress–strain curve up to a true strain of 20%. Predicted UTS was computed from fitted  σ t , M 0  and  a  values. Corresponding Drucker-Prager  β  values are given for Jung model calculations",
+      "headers": [
+        "Alloy",
+        "σ t  (MPa)",
+        "M 0  (MPa)",
+        "a",
+        "UTS (MPa)",
+        "β  (degrees)",
+        "MAPE (%)"
+      ],
+      "rows": [
+        [
+          "SS316 (J2)",
+          "320",
+          "3944",
+          "6.0",
+          "646",
+          "0.0",
+          "12.5"
+        ],
+        [
+          "Inconel 625 (J2)",
+          "433",
+          "5915",
+          "6.0",
+          "932",
+          "0.0",
+          "10.1"
+        ],
+        [
+          "SS316 (Jung)",
+          "312",
+          "3621",
+          "5.0",
+          "647",
+          "0.68",
+          "9.3"
+        ],
+        [
+          "Inconel 625 (Jung)",
+          "410",
+          "6297",
+          "6.8",
+          "907",
+          "0.81",
+          "8.5"
+        ]
+      ],
+      "header_groups": [],
+      "table_alignment_status": "resolved",
+      "row_provenance": [
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 7
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 7
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 7
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 7
+          }
+        ]
+      ],
+      "tbody_alignment_status": "resolved"
+    },
+    {
+      "caption": "Bounded non-unique Voce model solutions for low-work hardening Al6061 and Ti-6Al-4V using a pressure-dependent yield model, found by fixing one hardening parameter at its model constraint bound and numerically searching over the remaining two hardening parameters. Predicted UTS was computed from fitted  σ t ,  M 0  and  a  values. Corresponding Drucker-Prager  β  values are given for Jung model calculations. MAPE was evaluated against the entire domain of the UT stress–strain curve",
+      "headers": [
+        "Alloy",
+        "σ t  (MPa)",
+        "M 0  (MPa)",
+        "a",
+        "UTS (MPa)",
+        "β  (degrees)",
+        "MAPE (%)"
+      ],
+      "rows": [
+        [
+          "Al6061 ( a  near zero)",
+          "301",
+          "345",
+          "10 –5",
+          "302",
+          "2.08",
+          "3.0"
+        ],
+        [
+          "Ti-6Al-4V ( a  near zero)",
+          "1080",
+          "558",
+          "10 –5",
+          "-",
+          "1.71",
+          "2.9"
+        ],
+        [
+          "Al6061 ( M 0  =  E )",
+          "114",
+          "69000",
+          "258",
+          "371",
+          "0.78",
+          "16.7"
+        ],
+        [
+          "Ti-6Al-4V ( M 0  =  E )",
+          "822",
+          "114000",
+          "313",
+          "1156",
+          "1.29",
+          "6.6"
+        ]
+      ],
+      "header_groups": [],
+      "table_alignment_status": "resolved",
+      "row_provenance": [
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 7
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 7
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 7
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 7
+          }
+        ]
+      ],
+      "tbody_alignment_status": "resolved"
+    },
+    {
+      "caption": "Predicted two-parameter Hollomon model parameters for the four alloys. Predicted UTS was computed from fitted  σ t  and  n  values. Corresponding Drucker-Prager  β  values are given for Jung model calculations. MAPE was calculated against the UT stress–strain curve, using its entire domain for Al6061 and Ti-6Al-4V and up to a true strain of 20% for SS316 and Inconel 625",
+      "headers": [
+        "Alloy",
+        "σ t  (MPa)",
+        "n",
+        "UTS (MPa)",
+        "β  (degrees)",
+        "MAPE (%)"
+      ],
+      "rows": [
+        [
+          "SS316 (J2)",
+          "254",
+          "0.21",
+          "585",
+          "0.0",
+          "14.4"
+        ],
+        [
+          "Inconel 625 (J2)",
+          "346",
+          "0.23",
+          "846",
+          "0.0",
+          "12.2"
+        ],
+        [
+          "Al6061 (J2)",
+          "318",
+          "0.056",
+          "346",
+          "0.0",
+          "11.9"
+        ],
+        [
+          "Ti-6Al-4V (J2)",
+          "1116",
+          "0.042",
+          "1138",
+          "0.0",
+          "8.2"
+        ],
+        [
+          "SS316 (Jung)",
+          "244",
+          "0.21",
+          "577",
+          "0.53",
+          "12.5"
+        ],
+        [
+          "Inconel 625 (Jung)",
+          "347",
+          "0.22",
+          "819",
+          "0.69",
+          "9.5"
+        ],
+        [
+          "Al6061 (Jung)",
+          "278",
+          "0.077",
+          "323",
+          "1.93",
+          "3.9"
+        ],
+        [
+          "Ti-6Al-4V (Jung)",
+          "1048",
+          "0.043",
+          "1073",
+          "1.65",
+          "2.6"
+        ]
+      ],
+      "header_groups": [],
+      "table_alignment_status": "resolved",
+      "row_provenance": [
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 6
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 6
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 6
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 6
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 6
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 6
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 6
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 6
+          }
+        ]
+      ],
+      "tbody_alignment_status": "resolved"
+    },
+    {
+      "caption": "PLX-Benchtop predicted Voce hardening parameters for the four alloys. Predicted UTS was computed from fitted  σ t ,  M 0  and  a  values. MAPE was calculated against the UT stress–strain curve, using its entire domain for Al6061 and Ti-6Al-4V and up to a true strain of 20% for SS316 and Inconel 625",
+      "headers": [
+        "Alloy",
+        "σ t  (MPa)",
+        "M 0  (MPa)",
+        "a",
+        "UTS (MPa)",
+        "MAPE (%)"
+      ],
+      "rows": [
+        [
+          "SS316",
+          "271",
+          "7616",
+          "13.7",
+          "651",
+          "20.7"
+        ],
+        [
+          "Inconel 625",
+          "362",
+          "9739",
+          "11.4",
+          "925",
+          "15.5"
+        ],
+        [
+          "Al6061",
+          "264",
+          "2591",
+          "15.2",
+          "360",
+          "7.3"
+        ],
+        [
+          "Ti-6Al-4V",
+          "903",
+          "6538",
+          "15.4",
+          "1111",
+          "4.0"
+        ]
+      ],
+      "header_groups": [],
+      "table_alignment_status": "resolved",
+      "row_provenance": [
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 6
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 6
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 6
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 6
+          }
+        ]
+      ],
+      "tbody_alignment_status": "resolved"
+    },
+    {
+      "caption": "Bounded solutions in 3D dimensionless Voce parameter space for sixteen sets of non-unique solutions, along with the dimensionless 0.2% offset yield strength corresponding to each solution",
+      "headers": [
+        "Non-unique solution set index",
+        "σ t / E",
+        "M 0 / σ t",
+        "σ 0.2 / E",
+        "σ t / E",
+        "a",
+        "σ 0.2 / E"
+      ],
+      "rows": [
+        [
+          "1",
+          "1.10 × 10 –2",
+          "1/3",
+          "1.10 × 10 –2",
+          "7.19 × 10 –3",
+          "193",
+          "1.05 × 10 –2"
+        ],
+        [
+          "2",
+          "",
+          "1",
+          "1.10 × 10 –2",
+          "6.94 × 10 –3",
+          "164",
+          "1.06 × 10 –2"
+        ],
+        [
+          "3",
+          "",
+          "3",
+          "1.11 × 10 –2",
+          "6.18 × 10 –3",
+          "112",
+          "1.09 × 10 –2"
+        ],
+        [
+          "4",
+          "",
+          "9",
+          "1.12 × 10 –2",
+          "5.20 × 10 –3",
+          "52.8",
+          "1.26 × 10 –2"
+        ],
+        [
+          "5",
+          "7.67 × 10 –3",
+          "1/3",
+          "7.67 × 10 –3",
+          "4.96 × 10 –3",
+          "296",
+          "7.44 × 10 –3"
+        ],
+        [
+          "6",
+          "",
+          "1",
+          "7.68 × 10 –3",
+          "4.76 × 10 –3",
+          "291",
+          "7.27 × 10 –3"
+        ],
+        [
+          "7",
+          "",
+          "3",
+          "7.71 × 10 –3",
+          "3.88 × 10 –3",
+          "141",
+          "7.96 × 10 –3"
+        ],
+        [
+          "8",
+          "",
+          "9",
+          "7.81 × 10 –3",
+          "2.88 × 10 –3",
+          "72.8",
+          "9.03 × 10 –3"
+        ],
+        [
+          "9",
+          "4.33 × 10 –3",
+          "1/3",
+          "4.34 × 10 –3",
+          "2.29 × 10 –3",
+          "396",
+          "4.30 × 10 –3"
+        ],
+        [
+          "10",
+          "",
+          "1",
+          "4.34 × 10 –3",
+          "2.09 × 10 –3",
+          "314",
+          "4.47 × 10 –3"
+        ],
+        [
+          "11",
+          "",
+          "3",
+          "4.36 × 10 –3",
+          "1.62 × 10 –3",
+          "221",
+          "4.66 × 10 –3"
+        ],
+        [
+          "12",
+          "",
+          "9",
+          "4.41 × 10 –3",
+          "-",
+          "-",
+          "-"
+        ],
+        [
+          "13",
+          "1.00 × 10 –3",
+          "1/3",
+          "1.00 × 10 –3",
+          "2.74 × 10 –4",
+          "1570",
+          "9.00 × 10 –4"
+        ],
+        [
+          "14",
+          "",
+          "1",
+          "1.00 × 10 –3",
+          "-",
+          "-",
+          "-"
+        ],
+        [
+          "15",
+          "",
+          "3",
+          "1.01 × 10 –3",
+          "-",
+          "-",
+          "-"
+        ],
+        [
+          "16",
+          "",
+          "9",
+          "1.02 × 10 –3",
+          "-",
+          "-",
+          "-"
+        ]
+      ],
+      "header_groups": [
+        {
+          "label": "a  = 10 –5  bounded solution",
+          "start_col": 2,
+          "end_col": 4
+        },
+        {
+          "label": "M 0  =  E  bounded solution",
+          "start_col": 5,
+          "end_col": 7
+        }
+      ],
+      "table_alignment_status": "resolved",
+      "row_provenance": [
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 7
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 7
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 7
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 7
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 7
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 7
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 7
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 7
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 8,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 8,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 8,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 8,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 8,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 8,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 8,
+            "source_col": 7
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 9,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 9,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 9,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 9,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 9,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 9,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 9,
+            "source_col": 7
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 10,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 10,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 10,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 10,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 10,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 10,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 10,
+            "source_col": 7
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 11,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 11,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 11,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 11,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 11,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 11,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 11,
+            "source_col": 7
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 12,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 12,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 12,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 12,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 12,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 12,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 12,
+            "source_col": 7
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 13,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 13,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 13,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 13,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 13,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 13,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 13,
+            "source_col": 7
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 14,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 14,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 14,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 14,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 14,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 14,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 14,
+            "source_col": 7
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 15,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 15,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 15,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 15,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 15,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 15,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 15,
+            "source_col": 7
+          }
+        ]
+      ],
+      "tbody_alignment_status": "resolved"
+    }
+  ]
+}

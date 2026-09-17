@@ -1,0 +1,722 @@
+{
+  "doi": "10.1007/s00170-026-18681-7",
+  "title": "Plasticity Ratio–based post-processing for predicting hot forging die life: Industrial validation for gas-nitrided AISI H13 tools",
+  "abstract": "Abstract The service life of hot forging dies is limited by severe thermomechanical loading that promotes localized plastic deformation, wear, and crack initiation. Conventional numerical assessments are commonly based on equivalent stress fields, which do not explicitly consider the temperature-dependent reduction of tool material strength, often leading to limited correlation between predicted critical regions and actual industrial failure locations. This work proposes a mechanically grounded post-processing methodology based on the Plasticity Ratio, defined as the ratio between effective stress and temperature-dependent yield strength, to evaluate local proximity to plastic yielding. The approach integrates thermomechanical finite element simulations, experimentally measured microhardness profiles, and industrial validation. Applied to gas-nitrided AISI H13 finishing dies, the method incorporates the hardness gradient of the diffusion zone through a resistance increment factor ( \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$k_{\\text {nit}} \\approx 1.23$$\\end{document} ), enabling correction of local mechanical severity without remeshing or constitutive remodeling. The analysis shows that less than 2% of the die surface governs failure initiation. A power-law relationship between loading severity and durability predicted tool life improvement consistent with the experimentally observed 83.6% increase under industrial conditions. The framework provides a computationally efficient strategy for predicting durability gains promoted by surface treatments in forming tools.",
+  "journal": "The International Journal of Advanced Manufacturing Technology",
+  "year": "2026",
+  "sections": [
+    {
+      "heading": "Introduction",
+      "paragraphs": [
+        "Hot forging dies operate under severe thermomechanical conditions characterised by the confluence of high contact pressures, cyclic deformation, and intense thermal gradients, which synergistically induce progressive wear, localised plastic deformation, and surface crack initiation. Tool failure is rarely governed by a single isolated mechanism; rather, it typically arises from the complex interaction among thermal fatigue, tribological wear, and the progressive degradation of the die material’s high-temperature mechanical strength [ 1 ,  2 – 3 ].",
+        "Despite significant advances in the numerical simulation of forging processes, the assessment of loading severity remains predominantly reliant on absolute stress fields — typically evaluated via the von Mises equivalent stress — without explicitly accounting for the temperature-dependent degradation of die yield strength under operating conditions. Numerous investigations have demonstrated, however, that hot-work die steels undergo substantial thermal softening at elevated temperatures. Giskaas et al. [ 4 ] reported pronounced reductions in compressive yield strength for hot forging die steels at typical operational temperatures, while Ding et al. [ 5 ] observed systematic thermal softening in modified H13 steels up to 650  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$^\\circ $$\\end{document} C. Furthermore, Agirre et al. [ 6 ] demonstrated that service-degraded H13 dies exhibit a markedly elevated risk of plastification when temperature-dependent material properties are incorporated into the analysis.",
+        "Concurrently, temperature-dependent cyclic plasticity and thermal softening have been identified as critical drivers of die degradation and thermomechanical fatigue behaviour [ 7 ]. Nonetheless, many industrial forging simulations continue to assess loading severity through conventional equivalent stress analysis or fixed nominal yield-strength values [ 8 ]. As a consequence, numerically identified critical regions frequently diverge from actual failure locations observed in industrial service, underscoring the need for engineering-oriented metrics capable of mapping the local stress state to the instantaneous load-bearing capacity of the material under operating conditions.",
+        "Among the metallurgical strategies employed to enhance hot forging die durability, gas nitriding is widely adopted to increase surface hardness, introduce compressive residual stresses, and improve wear resistance at elevated temperatures [ 9 ,  10 ]. The resulting performance benefit, however, is highly sensitive to the microstructural configuration developed during the thermochemical treatment. Compound layers, while attaining high hardness values, often exhibit limited toughness under cyclic thermomechanical loading; by contrast, the hardened diffusion zone typically provides superior mechanical support through the combined effects of nitrogen solid solution strengthening and fine nitride precipitation [ 2 ,  11 ].",
+        "Although these microstructural phenomena are well documented, the majority of published studies evaluate nitriding performance either through macroscopic experimental tool-life comparisons or via average hardness values, without establishing a direct quantitative correlation between the experimentally determined hardness profile and the numerically predicted local loading state.",
+        "Finite element simulations are extensively employed to investigate the stress and temperature fields within forging tooling, enabling the identification of potentially critical geometric configurations [ 12 ,  13 ]. Analyses based exclusively on absolute equivalent stress levels are, however, inherently limited, given that the local onset of plastic deformation depends simultaneously on the applied stress magnitude and the instantaneous flow stress of the die material — the latter being a strong function of local temperature. Direct interpretation of uncoupled stress fields may therefore yield misleading predictions, either overestimating or underestimating failure-prone zones, and thus compromising the correlation between numerical models and industrial observations.",
+        "From a manufacturing engineering standpoint, this predictive gap becomes particularly pronounced when assessing the efficacy of surface engineering treatments. Accurate estimation of durability increments often requires explicit geometric modelling of the modified surface layer or constitutive redefinition of its gradient properties, entailing considerable computational overhead and increased model complexity.",
+        "A computationally efficient post-processing framework capable of mapping experimentally measured property gradients onto existing finite element meshes — without remeshing or constitutive reformulation — is therefore required.",
+        "In the present work, this objective is addressed through the Plasticity Ratio framework, which combines the local equivalent stress obtained from the thermomechanically coupled finite element simulation with the temperature-dependent yield strength derived from experimentally measured hardness profiles. Defined as the ratio of the local effective stress to the temperature-dependent yield strength, the plasticity ratio provides an engineering-oriented metric for quantifying the local proximity to plastic yielding. By normalising the applied mechanical loading with the instantaneous load-bearing capacity of the die material, this approach identifies regions operating near the onset of plastic deformation irrespective of their absolute stress level, thereby furnishing a more physically meaningful indicator of local mechanical severity.",
+        "Accordingly, the present work proposes a comprehensive evaluation methodology based on mechanical post-processing of finite element simulation results, integrating thermomechanical fields, experimental microhardness profiles, and industrial validation data. The methodology is applied to analyse the effects of gas nitriding on AISI H13 hot forging dies, with the aim of establishing a quantitative link among surface microstructural modifications, local mechanical severity, and die service life. In contrast to conventional approaches, the proposed framework enables estimation of durability gains without requiring explicit remeshing or constitutive remodelling of the nitrided layer, thereby offering a computationally efficient, engineering-oriented alternative for evaluating surface treatments in forming tools."
+      ]
+    },
+    {
+      "heading": "Materials and methods",
+      "paragraphs": []
+    },
+    {
+      "heading": "Materials and tooling",
+      "paragraphs": [
+        "The investigation was carried out under genuine industrial conditions, focusing on the hot forging of a DIN 20MnCr5 steel gear produced on a 6 MN mechanical press. In the as-forged condition, the component has an approximate mass of 0.630 kg, which is reduced to 0.565 kg following final machining. The tooling set consists of upper and lower preform and finishing dies; however, only the finishing dies were employed to assess the effects of gas nitriding treatment. The dies were fabricated from AISI H13 tool steel, a material widely adopted in hot-work applications owing to its high mechanical strength at elevated temperatures, excellent dimensional stability, and adequate toughness. Under operational conditions, these dies typically function within a hardness range of 50–54 HRC."
+      ]
+    },
+    {
+      "heading": "Conventional heat treatment",
+      "paragraphs": [
+        "All dies were initially subjected to conventional heat treatment, comprising quenching followed by triple tempering, with the objective of achieving a homogeneous tempered martensitic microstructure and adequate thermal stability under service conditions. The control-group dies remained exclusively under this condition throughout the study."
+      ]
+    },
+    {
+      "heading": "Gas nitriding of the finishing dies",
+      "paragraphs": [
+        "The experimental-group dies underwent gas nitriding in a controlled atmosphere, employing ammonia as the nitrogen source at temperatures below 550  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$^\\circ $$\\end{document} C, thereby precluding phase transformations in the core material.",
+        "Process parameters were tailored to produce: a thin and continuous compound (white) layer; a diffusion zone exhibiting a smooth hardness gradient; an average effective case depth of approximately 100  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\mu $$\\end{document} m. The treatment was designed to promote mechanical support from the diffusion zone while minimizing surface embrittlement associated with excessively thick compound layers."
+      ]
+    },
+    {
+      "heading": "Microstructural and mechanical characterization of the nitrided layer",
+      "paragraphs": [
+        "The chemical composition of H13 tool steel was verified by optical emission spectrometry in accordance with ASTM E415. Microstructural characterization was conducted by optical microscopy on transverse cross-sections following conventional metallographic preparation and etching with Nital reagent (ASTM E1951), enabling unambiguous identification of the compound layer and diffusion zone.",
+        "Vickers microhardness profiles were established in accordance with ASTM E92, using a 100 gf load applied at successive indentation points from the surface toward the core. The effective nitrided case depth was defined as the depth at which hardness values converged to those of the base material."
+      ]
+    },
+    {
+      "heading": "Industrial trials and tool life criterion",
+      "paragraphs": [
+        "Conventionally heat-treated dies (control group) and gas-nitrided dies (experimental group) were evaluated under identical industrial hot forging conditions, with all process parameters held constant, including billet material, initial billet temperature, lubrication regime, production rate, and press capacity. Figure  1  illustrates the tooling set employed in gear forging. Fig. 1 Industrial forging tooling system: ( a ) dies for billet upsetting; ( b ) set of roughing dies (first stage) and finishing dies (final stage); manufactured gear",
+        "Figure  2  presents a schematic representation of the gear forging sequence, together with approximate mean surface temperatures recorded by an infrared pyrometer. Die performance was monitored throughout production via periodic inspections conducted at regular intervals, with particular attention to cavity surface wear, localized plastic deformation, and deterioration of the dimensional quality of the forged gear. Fig. 2 Hot forging sequence and billet surface thermal history recorded by an industrial pyrometer during the process cycle. The upper panel depicts the successive operations and their relative durations, while the lower panel shows the evolution of surface temperature and the thermal condition at entry into the finishing die",
+        "Die service life was defined according to the industrial end-of-life criterion, whereby retirement was triggered either when surface degradation began to compromise the dimensional conformance of the forged product (Fig.  3 ), or when process interruption was required for scheduled maintenance or unplanned die replacement. Fig. 3 Integrated decision flowchart for end-of-life determination and tool replacement"
+      ]
+    },
+    {
+      "heading": "Finite element simulation",
+      "paragraphs": [
+        "The forging process was modelled using QForm UK, based on a fully coupled three-dimensional thermomechanical finite element formulation. The analysis was focused on the finishing stage, incorporating experimentally measured process parameters.",
+        "The workpiece was represented by a constitutive law dependent on strain ( \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\varepsilon $$\\end{document} ), strain rate ( \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\dot{\\varepsilon }$$\\end{document} ), and temperature ( T ), while the dies were treated as deformable bodies with temperature-dependent thermomechanical properties. Heat transfer coefficients, friction conditions, and thermal boundary conditions were derived from measured industrial data.",
+        "The nitrided layer was not represented explicitly in the finite element model; rather, the simulation was employed to identify regions of elevated thermomechanical severity across the die cavity. Figure  4  illustrates the three-dimensional model adopted in the present study. Fig. 4 Forging system model (left); finishing die model analysed in this study (right)",
+        "Table  1  summarises the principal input data adopted in the numerical model. Table 1 Principal inputs for the hot forging numerical model Category Parameter Value / Setting Method Software QForm UK Formulation Coupled 3D thermomechanical FEM Regime Analysis Transient Mesh Type Tetrahedral Total 148,825 nodes; 661,149 elements Materials Workpiece 20MnCr5 (EN 1.7147) Dies AISI H13 Workpiece model Constitutive law \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\varepsilon $$\\end{document} – \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\dot{\\varepsilon }$$\\end{document} – T  table Thermal range 730–1250  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$^\\circ $$\\end{document} C Die model Tool Deformable (Tool 2 “separate”) H13 properties E ( T ) 160–210 GPa k ( T ) 22–32 W m \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$^{-1}$$\\end{document} K \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$^{-1}$$\\end{document} \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$C_p(T)$$\\end{document} 375–975 J kg \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$^{-1}$$\\end{document} K \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$^{-1}$$\\end{document} \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\rho (T)$$\\end{document} 7459–7716 kg m \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$^{-3}$$\\end{document} Temperatures Workpiece / Dies 950  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$^\\circ $$\\end{document} C / 160  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$^\\circ $$\\end{document} C Heat transfer Billet–Die 500–1000 W m \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$^{-2}$$\\end{document} K \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$^{-1}$$\\end{document} Air / Radiation 10 W m \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$^{-2}$$\\end{document} K \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$^{-1}$$\\end{document} ; \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\epsilon = 0.88$$\\end{document} Friction Coefficients \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\alpha = 0.30$$\\end{document} ; \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$m = 0.15$$\\end{document} Lubricant Graphite + water Press Capacity / Speed 6 MN; 1.6 m s \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$^{-1}$$\\end{document} Hensel–Spittel Equation \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\sigma = 1324 \\exp$$\\end{document} \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$ (-0.00257 T)\\, \\varepsilon ^{-0.1941}$$\\end{document} \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\exp (-0.06521/\\varepsilon )\\,$$\\end{document} \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\dot{\\varepsilon }^{0.1468}$$\\end{document}   Criterion End of life Dimensional loss or maintenance"
+      ]
+    },
+    {
+      "heading": "Plasticity Ratio definition",
+      "paragraphs": [
+        "To quantify the local severity of thermomechanical loading, a Plasticity Ratio ( R ) was defined as the ratio of the local effective stress obtained from the finite element simulation to the temperature-dependent yield strength of the die material: 1 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\begin{aligned} R= \\frac{\\sigma _{\\textrm{eff}}}{\\sigma _y(T)} \\end{aligned}$$\\end{document} where  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\sigma _{\\textrm{eff}}$$\\end{document}  is the local von Mises equivalent stress extracted from the numerical simulation and  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\sigma _y(T)$$\\end{document}  is the yield strength of AISI H13 at the corresponding operating temperature.",
+        "The Plasticity Ratio provides an engineering-oriented severity index representing the proximity of a given die region to the onset of plastic yielding. Values approaching unity indicate loading conditions near the local yielding threshold, whereas lower values correspond to larger safety margins against plastic deformation."
+      ]
+    },
+    {
+      "heading": "Hardness–Strength conversion",
+      "paragraphs": [
+        "The thermomechanically coupled finite element simulation inherently accounts for the temperature dependence of the yield strength of AISI H13 through the temperature-dependent material properties incorporated in the constitutive model. Accordingly, the influence of gas nitriding was introduced into the proposed post-processing framework by locally modifying the yield strength in proportion to the experimentally measured hardness gradient, without altering either the constitutive model or the equivalent stress field obtained from the finite element analysis.",
+        "Invoking the proportionality between Vickers hardness and yield strength established by the empirical relation proposed by Tabor [ 14 ], the local hardness increment was interpreted as a proportional increase in local yielding resistance. The corresponding depth-dependent resistance increment factor was defined as 2 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\begin{aligned} k_{nit}(z) = \\frac{HV(z)}{HV_{base}} \\end{aligned}$$\\end{document} where  HV ( z ) is the experimentally measured hardness at depth  z  from the surface, and  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$HV_{base}$$\\end{document}  is the hardness of the untreated AISI H13 substrate.",
+        "The local yield strength of the nitrided material is therefore expressed as 3 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\begin{aligned} \\sigma _{y,nit}(T,z) = k_{nit}(z)\\,\\sigma _y(T) \\end{aligned}$$\\end{document} where  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\sigma _y(T)$$\\end{document}  is the temperature-dependent yield strength of the untreated AISI H13 steel obtained directly from the thermomechanically coupled finite element simulation. This formulation preserves the original equivalent stress field while locally modifying the yielding resistance in accordance with the experimentally measured hardness profile.",
+        "Given the continuous hardness gradient inherent to the nitrided case, a representative engineering value of the resistance increment factor was additionally defined for the diffusion zone as 4 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\begin{aligned} k_{nit} = \\frac{\\overline{HV}_{dif}}{HV_{base}} \\end{aligned}$$\\end{document} where  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\overline{HV}_{dif}$$\\end{document}  denotes the mean hardness measured over the interval spanning 60 to 100  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\mu $$\\end{document} m below the surface. Throughout this work,  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$k_{nit}(z)$$\\end{document}  denotes the spatially resolved, depth-dependent resistance increment factor, whereas  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$k_{nit}$$\\end{document}  without explicit spatial dependence represents its representative mean value within the diffusion zone.",
+        "The averaging interval of 60–100  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\mu $$\\end{document} m was selected on the grounds that it constitutes the mechanically effective portion of the diffusion case. Although the compound layer attains the highest hardness values, its limited toughness and reduced load-bearing capacity under cyclic thermomechanical loading render it unsuitable as a representative parameter. Consequently, the mean hardness within the diffusion zone provides a more physically meaningful engineering parameter for estimating the effective increase in local mechanical resistance conferred by gas nitriding.",
+        "This representative resistance increment factor was subsequently employed to assess the reduction in the Plasticity Ratio within the identified hotspot regions, whereas the complete depth-resolved hardness profile was used exclusively to validate the numerical implementation of the proposed Lua post-processing routine presented in Fig.  8 . The industrial post-processing methodology thus combines a representative engineering characterisation of diffusion-zone strengthening with a numerically validated hardness-mapping procedure."
+      ]
+    },
+    {
+      "heading": "Correction of the local loading condition",
+      "paragraphs": [
+        "The local resistance increment derived from the experimental hardness profile was incorporated into the post-processing framework by modifying the temperature-dependent yield strength of the die material, while preserving the equivalent stress field obtained from the finite element simulation.",
+        "Combining Eqs.  1  and  3  yields the corrected Plasticity Ratio: 5 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\begin{aligned} R_{corr}(x,y,z) = \\frac{\\sigma _{\\textrm{eff}}(x,y,z)}{\\sigma _{y,\\textrm{nit}}(T,z)} = \\frac{\\sigma _{\\textrm{eff}}(x,y,z)}{k_{nit}(z)\\,\\sigma _y(T)} = \\frac{R(x,y,z)}{k_{nit}(z)} \\end{aligned}$$\\end{document} where  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\sigma _{\\textrm{eff}}(x,y,z)$$\\end{document}  is the von Mises equivalent stress obtained directly from the thermomechanical finite element simulation,  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\sigma _y(T)$$\\end{document}  is the temperature-dependent yield strength of the untreated AISI H13 steel,  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$k_{nit}(z)$$\\end{document}  is the local resistance increment factor determined from the experimentally measured hardness profile, and  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\sigma _{y,\\textrm{nit}}(T,z)$$\\end{document}  is the corrected local yield strength of the nitrided material.",
+        "Equation  5  demonstrates that the proposed post-processing methodology exclusively modifies the local yielding resistance while preserving the equivalent stress field obtained from the finite element simulation. Consequently, the reduction in Plasticity Ratio derives solely from the experimentally determined increase in local material strength conferred by the nitrided diffusion layer. This formulation further enables estimation of the local strength increment without recourse to explicit remeshing or constitutive remodelling of the nitrided case within the finite element model.",
+        "It must be acknowledged that the proposed methodology does not attempt to resolve the stress redistribution effects induced by the nitrided layer through a fully coupled finite element formulation. Rather, the approach is conceived as an engineering-oriented post-processing framework for estimating the relative reduction in thermomechanical severity under equivalent loading conditions."
+      ]
+    },
+    {
+      "heading": "Estimation of tool life improvement",
+      "paragraphs": [
+        "Tool life improvement was estimated from the reduction in the corrected Plasticity Ratio defined in Eq.  5 , by adopting a power-law relationship analogous to strain-life formulations commonly employed for hot-work tool steels subjected to cyclic thermomechanical loading [ 7 ,  15 ,  16 ]: 6 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\begin{aligned} \\frac{N_{nit}}{N_{conv}} = \\left( \\frac{R}{R_{corr}} \\right) ^m = (k_{nit})^m \\end{aligned}$$\\end{document} where  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$N_{conv}$$\\end{document}  denotes the service life of the conventionally heat-treated die,  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$N_{nit}$$\\end{document}  denotes the service life of the gas-nitrided die, and  m  is a damage-sensitivity exponent governing the nonlinear relationship between the Plasticity Ratio and the corresponding durability gain.",
+        "The power-law formulation was adopted on the grounds that degradation mechanisms in hot forging dies are intrinsically nonlinear: marginal reductions in local proximity to yielding may produce disproportionately large gains in service life owing to the cumulative nature of thermomechanical fatigue, wear, and progressive damage accumulation. Within this framework, the exponent  m  represents the sensitivity of die durability to variations in local mechanical severity rather than a fixed material constant.",
+        "The proposed life-gain formulation draws on the nonlinear power-law relationships widely adopted to describe the fatigue behaviour of hot-work tool steels under cyclic thermomechanical loading [ 7 ,  15 ,  16 ]. The principal methodological contribution of the present work, however, resides in the substitution of conventional strain- or stress-based descriptors by the Plasticity Ratio as the governing damage parameter. Rather than calibrating a single value of  m , the proposed methodology evaluates the sensitivity of the predicted durability gain over a representative range of damage-sensitivity exponents, thereby furnishing an engineering-oriented assessment of the influence of gas nitriding on die service life."
+      ]
+    },
+    {
+      "heading": "Physical interpretation",
+      "paragraphs": [
+        "The proposed methodology rests on the hypothesis that hot forging die degradation is governed by localised cyclic plasticity occurring in regions operating near the temperature-dependent yielding condition. Within this framework, the Plasticity Ratio provides a physically meaningful indicator of local mechanical severity by relating the applied equivalent stress to the instantaneous load-bearing capacity of the die material.",
+        "Within the proposed post-processing framework, gas nitriding increases the effective strength of the diffusion zone while preserving the equivalent stress field obtained from the thermomechanically coupled finite element simulation. Consequently, the reduction in Plasticity Ratio arises exclusively from the experimentally measured increase in local material resistance, rather than from any modification of the applied loading state. This interpretation establishes a direct physical correspondence between the measured hardness gradient and the local reduction in yielding risk within the identified hotspot regions.",
+        "Unlike purely empirical correction factors, the resistance increment factor is obtained directly from independent experimental microhardness measurements and is not calibrated against tool life observations. The proposed post-processing methodology therefore constitutes an engineering-oriented transformation of experimentally measured material properties into a physically interpretable damage parameter, enabling quantitative estimation of the influence of gas nitriding on die durability without recourse to remeshing or constitutive remodelling of the nitrided layer."
+      ]
+    },
+    {
+      "heading": "Results and discussion",
+      "paragraphs": [
+        "Applying the combined heat treatment incorporating gas nitriding to the AISI H13 finishing dies resulted in measurable changes in both surface condition and industrial tool performance.",
+        "Microstructural characterization revealed the formation of a nitrided layer consisting of a thin and continuous compound layer at the surface, associated with a homogeneous diffusion zone in depth (Fig.  5 ). The compound layer thickness was estimated between 10 and 15  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\mu $$\\end{document} m, while the diffusion zone showed an average effective depth on the order of 100  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\mu $$\\end{document} m, consistent with the parameters defined for hot forging applications. Fig. 5 Die microstructure after gas nitriding, highlighting the compound layer and the diffusion zone",
+        "The Vickers microhardness profile (Fig.  8 a) exhibited maximum values near the surface, with a decreasing gradient toward the core. Surface hardness reached approximately 1150 HV (compound layer), decreasing to about 600 HV in the diffusion zone (60–100  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\mu $$\\end{document} m) and stabilizing around 550 HV in the substrate. These results confirm the uniformity of the nitriding process and the formation of a continuous mechanical gradient between the surface and the die core.",
+        "In industrial hot forging trials, the die subjected only to conventional heat treatment exhibited accelerated wear in critical cavity regions, reaching end of life after approximately 700 forged parts.",
+        "Figure  6  presents the correlation among the stress state obtained by numerical simulation, the experimentally observed die degradation after industrial operation, and the critical regions identified through the Plasticity Ratio ( R ) defined in Section  2.7 .",
+        "The von Mises equivalent stress field (Fig.  6 a) highlights regions subjected to high mechanical loading, mainly concentrated at the tooth root of the finishing cavity. Inspection of the die after approximately 700 cycles (Fig.  6 b) reveals localized plastic deformation accompanied by crack initiation precisely in these regions.",
+        "The plasticity ratio field (Fig.  6 c) shows that the  hotspots  defined by the 98th percentile of the  R  distribution coincide spatially with the actual failure areas. While the von Mises field indicates a broad loaded region, normalization by the temperature-dependent yield strength  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\sigma _y(T)$$\\end{document}  restricts the critical zone to areas where the material effectively operates near plastic yielding. Fig. 6 Correlation among stress state, experimental failure, and critical regions: ( a ) von Mises stress; ( b ) localized plastic deformation and crack at the tooth root after 700 cycles; ( c ) Plasticity Ratio field with hotspots ( \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$P_{98}$$\\end{document} )"
+      ]
+    },
+    {
+      "heading": "Localised nature of critical loading",
+      "paragraphs": [
+        "To quantify the statistical significance of the hotspot regions, the complementary cumulative distribution function (CCDF) of the plasticity ratio was evaluated across all surface nodes of the die cavity (Fig.  7 ). Fig. 7 Complementary cumulative distribution function (CCDF) of the Plasticity Ratio. The dashed line indicates the  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$P_{98}$$\\end{document}  threshold used to define the hotspot region",
+        "The CCDF reveals that the overwhelming majority of the die surface operates under comparatively low plasticity ratio values, with only a small fraction of the cavity belonging to the extreme upper tail of the distribution. The hotspot regions therefore represent highly localised thermomechanical conditions rather than a uniformly severe loading state across the die cavity.",
+        "This statistical behaviour provides the physical rationale for the proposed methodology. Because only a limited fraction of the cavity operates near the yielding condition, relatively modest increases in local material strength conferred by gas nitriding can substantially reduce the plasticity ratio within these hotspot regions, thereby exerting a disproportionate influence on overall die service life."
+      ]
+    },
+    {
+      "heading": "Hardness profile and definition of the resistance increment factor",
+      "paragraphs": [
+        "The influence of gas nitriding on local die strength was assessed from Vickers microhardness profiles measured from the surface toward the core. Figure  8  presents the experimental hardness profile together with the numerical verification of the hardness-gradient implementation adopted in the proposed post-processing framework.",
+        "The profiles reveal a hardened surface layer followed by a diffusion zone exhibiting a progressive hardness gradient that decays continuously toward the substrate value. Given that compound layers attain high hardness but limited load-bearing capacity under cyclic thermomechanical loading, the mechanical analysis was restricted to the diffusion zone, where the effective strength increment arises from nitrogen solid solution and fine nitride precipitation.",
+        "The hardness-to-yield-strength conversion was performed using Tabor’s empirical relationship, assuming direct proportionality between Vickers hardness and yield strength. Applying Eq.  4 , the experimentally measured hardness profile was used to determine the average resistance increment factor subsequently employed in the post-processing calculations.",
+        "The experimentally measured hardness profile thus constitutes the physical basis of the proposed post-processing methodology. Prior to applying the methodology to the industrial forging die, the complete depth-dependent hardness profile was used to verify the numerical implementation of the proposed hardness-gradient mapping procedure. Fig. 8 Experimental hardness profile and verification of the hardness-gradient implementation adopted in the proposed post-processing framework. ( a ) Experimental Vickers hardness profile and corresponding local resistance increment factor ( \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$k_{nit}(z)$$\\end{document} ) derived from the hardness measurements. The shaded region indicates the diffusion-zone interval (60–100  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\mu $$\\end{document} m) used to determine the average resistance increment factor. ( b ) Comparison between the experimental hardness profile and the hardness values assigned by the proposed Lua user routine in a simplified flat geometry with refined surface discretization. ( c ) Parity plot comparing experimentally interpolated hardness values with those assigned by the user routine, demonstrating the accuracy of the hardness-to-depth mapping procedure implemented in the proposed post-processing framework",
+        "Figure  8 (a) presents the experimental hardness profile obtained after gas nitriding. The surface compound layer exhibited hardness values above 1150 HV, whereas the diffusion zone displayed a gradual decrease toward the substrate hardness. Within the interval spanning 60 to 100  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\mu $$\\end{document} m below the surface, the mean hardness was approximately 677 HV, yielding an average resistance increment factor of  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$k_{nit}\\approx 1.23$$\\end{document} . This representative value was adopted as an engineering characterisation of the effective mechanical support provided by the diffusion zone and was subsequently employed to correct the Plasticity Ratio at the identified hotspot regions.",
+        "Figure  8 (b) compares the experimentally measured hardness profile with the hardness values assigned by the proposed Lua post-processing routine in a simplified flat geometry with refined surface discretization. The close agreement between the two profiles confirms that the experimentally measured hardness gradient was accurately transferred to the finite element mesh through the proposed distance-based mapping procedure. This verification was conducted independently of the industrial forging simulation, thereby eliminating geometric effects associated with curved surfaces and complex three-dimensional die features.",
+        "The quantitative accuracy of the mapping procedure is further demonstrated by the parity plot presented in Fig.  8 (c). The mean absolute error of 4.7 HV and root mean square error of 11.1 HV confirm that the numerical implementation introduces only negligible deviations relative to the experimental measurements over the investigated hardness range of approximately 550–1150 HV. Accordingly, the local resistance increment factor employed throughout the proposed post-processing framework is derived directly from experimentally measured hardness values, rather than from empirical fitting or numerical calibration. This validation provides confidence that the subsequent plasticity ratio calculations faithfully represent the experimentally measured strengthening conferred by the nitrided diffusion layer."
+      ]
+    },
+    {
+      "heading": "Reduction of the Plasticity Ratio after applying  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$k_{nit}$$\\end{document}",
+      "paragraphs": [
+        "The validated hardness-gradient mapping described in the previous section was subsequently combined with the temperature-dependent yield strength obtained from the finite element simulation to determine the corrected local yield strength within the nitrided diffusion layer. This procedure was implemented through the proposed post-processing routine, which retrieves the nodal equivalent stress and temperature from the finite element solution, assigns the local hardness according to the experimentally measured depth profile, and computes the corresponding corrected Plasticity Ratio for each node.",
+        "Based on the experimentally determined resistance increment factor, the nitriding effect was incorporated by locally increasing the temperature-dependent yield strength of the die material according to Eq.  3 , while preserving the equivalent stress field obtained from the finite element simulation.",
+        "Consequently, the reduction in Plasticity Ratio results directly from the increase in the local load-bearing capacity of the nitrided diffusion zone rather than from any modification of the applied stress field. Therefore, the proposed methodology evaluates the influence of nitriding by modifying the local resistance term, allowing the experimentally measured hardness gradient to be incorporated into the finite element results without requiring a new thermomechanically coupled simulation.",
+        "Using the corrected local yield strength defined by Eq.  3 , the Plasticity Ratio was recalculated according to Eq.  5  while preserving the equivalent stress field obtained from the finite element simulation.",
+        "Figure  9  shows the distribution of the mechanical safety margin (MS = 1 — R) before and after application of the proposed post-processing methodology. Under the conventional condition, a significant fraction of the hotspot nodes exhibits high Plasticity Ratio values, indicating operation closer to the local yielding condition. After applying the resistance increment factor ( \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$R_{corr}=R/k_{nit}$$\\end{document} ), the entire distribution shifts toward lower Plasticity Ratio values, reflecting the increase in local yielding resistance promoted by gas nitriding. Consequently, the hotspot regions operate with a larger mechanical safety margin while preserving the equivalent stress field obtained from the finite element simulation. Fig. 9 Effect of nitriding on the mechanical safety margin in critical regions. Distribution of the safety margin defined as  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$MS = 1 - R$$\\end{document} , where negative values (or  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$R > 1$$\\end{document} ) indicate operation above the local yielding limit. The conventional condition shows a predominance of points in the plastic regime in the distribution tail, whereas applying the resistance increment factor ( \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$k_{nit}$$\\end{document} ) shifts the distribution toward mechanical stability ( \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$MS > 0$$\\end{document} ), indicating reduced loading severity in critical regions"
+      ]
+    },
+    {
+      "heading": "Estimation of tool life improvement",
+      "paragraphs": [
+        "The influence of nitriding on die durability was estimated from the reduction in Plasticity Ratio obtained through the proposed post-processing methodology. Since tool degradation mechanisms are strongly dependent on local loading severity, a power-law relationship between the Plasticity Ratio and service life was adopted as an engineering-oriented approximation.",
+        "To evaluate the robustness of the proposed approach, a sensitivity analysis was performed by varying the damage sensitivity exponent  m . Rather than representing a unique physical parameter,  m  was treated as a phenomenological exponent describing the nonlinear response of tool life to changes in local mechanical severity. Fig. 10 Sensitivity analysis of the predicted tool life improvement as a function of the damage sensitivity exponent  m . The ratio  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$N_{nit}/N_{conv}$$\\end{document}  was estimated assuming a power-law relationship between tool life and the local Plasticity Ratio. The dashed horizontal line indicates the experimentally observed life ratio (1.836), corresponding to an 83.6% increase in the number of forged parts after nitriding. The figure illustrates the influence of the assumed damage sensitivity on the predicted durability gain rather than a direct calibration of the model",
+        "Figure  10  presents the predicted relative life gain as a function of the damage sensitivity exponent  m . As expected from the adopted power-law formulation, the estimated durability gain increases monotonically with increasing values of  m , indicating that more damage-sensitive degradation mechanisms lead to larger benefits from the reduction in Plasticity Ratio produced by nitriding.",
+        "The dashed horizontal line corresponds to the experimentally observed life ratio of 1.836, equivalent to an 83.6% increase in the number of forged parts produced before die replacement. This value is located close to the lower end of the explored sensitivity range and corresponds to an equivalent exponent obtained from the industrial performance data.",
+        "Although the experimental value is slightly lower than the minimum prediction obtained for the investigated range ( \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$m = 3$$\\end{document} –5), the deviation remains limited. This behavior is physically reasonable because the proposed methodology captures the increase in local mechanical resistance associated with the nitrided diffusion zone [ 17 ,  18 ], while additional degradation mechanisms such as progressive wear [ 13 ,  19 ], oxidation, thermomechanical fatigue damage accumulation, local surface deterioration and gradual degradation of the nitrided layer are not explicitly represented. These mechanisms tend to reduce the effective durability gain observed under industrial operating conditions."
+      ]
+    },
+    {
+      "heading": "Discussion",
+      "paragraphs": [
+        "The results indicate that hot forging die life can be interpreted through the local mechanical condition in critical regions, expressed by the plasticity ratio ( R ). The combined analysis of numerical simulation and post-processing based on experimental properties showed that tool degradation is not governed by the average stress level but by the limited fraction of the surface operating close to plastic yielding."
+      ]
+    },
+    {
+      "heading": "Spatial correlation between hotspots and experimental failure",
+      "paragraphs": [
+        "The spatial coincidence between the regions identified as  hotspots  (Fig.  6 c) and the severe wear locations shows that degradation initiation is associated with localized operation near plastic yielding. Unlike approaches based exclusively on stress fields [ 1 ,  2 ], normalization by local material resistance identifies points where yielding becomes imminent. Statistical analysis showed that the critical zone corresponds to less than 2% of the total cavity area, explaining why relatively shallow surface modifications ( \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\sim $$\\end{document} 100  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\mu $$\\end{document} m) can produce significant tool life increases."
+      ]
+    },
+    {
+      "heading": "From local hardness to plasticity ratio reduction",
+      "paragraphs": [
+        "Contrary to literature that often interprets nitriding as a homogeneous hardness increase [ 9 ], this work incorporated the measured hardness profile. The resistance increment factor ( \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$k_{nit}$$\\end{document} ) obtained in the diffusion zone produced an approximate 18% reduction in the average Plasticity Ratio in critical regions. This approach provides a physical basis for the post-processing and avoids purely empirical corrections. Because the resistance increment factor is derived directly from experimentally measured hardness values, no fitting parameter related to tool life was introduced into the proposed methodology."
+      ]
+    },
+    {
+      "heading": "Tool life gain prediction and industrial consistency",
+      "paragraphs": [
+        "The reduction in local mechanical severity was converted into a tool life gain estimate using a power-law relationship between Plasticity Ratio and service life. Rather than assuming a unique value for the damage sensitivity exponent, a sensitivity analysis was conducted to evaluate the influence of different nonlinear responses on the predicted durability gain. This choice is consistent with previous investigations on 1.2344 steel applied to hot forging dies, where fatigue-life parameters and model exponents were shown to vary with the adopted identification method and testing temperature [ 15 ].",
+        "The experimentally observed life ratio of 1.836, corresponding to an 83.6% increase in the number of forged parts, was found to be close to the lower end of the predicted sensitivity range. Although the model slightly overestimates the observed gain for the investigated values of  m , the difference remains limited and the analysis correctly captures the order of magnitude of the durability improvement obtained under industrial conditions.",
+        "This result supports the interpretation that the increase in local strength promoted by the nitrided diffusion zone is a primary contributor to the observed life extension, while additional degradation mechanisms not explicitly included in the model may account for the remaining discrepancy."
+      ]
+    },
+    {
+      "heading": "Physical failure mechanism",
+      "paragraphs": [
+        "The proposed Plasticity Ratio framework indicates that the most critical regions are governed by the combined effect of local effective stress and the temperature-dependent yield strength of the die material. Since the Plasticity Ratio is defined as the ratio between these two quantities, regions exhibiting high Plasticity Ratio values are those operating closer to the local yielding condition.",
+        "The finite element simulation indicates that the highest equivalent stresses occur during the final die-closing stage, when contact pressure reaches its maximum values. Simultaneously, the local temperature rise reduces the yield strength of AISI H13, producing the highest Plasticity Ratio values in the hotspot regions. Consequently, the critical condition is governed by the combined action of increasing equivalent stress and decreasing temperature-dependent yield strength rather than by either quantity alone.",
+        "From this perspective, the dominant failure mechanism can be interpreted as localized cyclic plastic deformation occurring in thermomechanically severe regions, which is consistent with failure mechanisms and fatigue-life approaches commonly reported for hot forging dies subjected to repeated thermal and mechanical loading [ 15 ,  16 ,  20 ]. The nitrided diffusion zone delays this process by increasing the local resistance of the surface layer, thereby reducing the Plasticity Ratio and increasing the mechanical safety margin in the identified hotspots."
+      ]
+    },
+    {
+      "heading": "Role of the compound layer and microstructural implications",
+      "paragraphs": [
+        "In AISI H13 steels, the compound layer ( \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\epsilon $$\\end{document} -Fe \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$_{2-3}$$\\end{document} N and  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\gamma '$$\\end{document} -Fe \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$_4$$\\end{document} N) may favor crack initiation due to reduced toughness under cyclic loading [ 2 ,  10 ,  11 ]. For this reason, only the diffusion zone was considered to provide effective mechanical support, a decision corroborated by the accuracy of the model prediction."
+      ]
+    },
+    {
+      "heading": "Contributions relative to the state of the art",
+      "paragraphs": [
+        "The results demonstrate that: Loading severity is governed by highly localized regions; Tool life gain can be quantitatively predicted from the measured hardness profile; The diffusion zone controls the effective mechanical support; A critical thermal window exists in which the risk of yielding is maximized. The proposed framework enables incorporation of experimentally measured hardness gradients into existing finite element solutions without remeshing or constitutive remodelling."
+      ]
+    },
+    {
+      "heading": "Conclusions",
+      "paragraphs": [
+        "This study proposed a mechanical post-processing methodology for evaluating the influence of gas nitriding on the service life of hot forging dies. The proposed Plasticity Ratio framework identified critical regions whose spatial distribution showed close agreement with the experimentally observed failure locations under industrial operating conditions.",
+        "Incorporation of the experimentally measured hardness profile through the resistance increment factor ( \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$k_{nit}$$\\end{document} ) reduced the Plasticity Ratio within the hotspot regions while preserving the equivalent stress field obtained from the finite element simulation. The predicted tool life improvement showed reasonable agreement with the experimentally observed 83.6% increase in die service life.",
+        "The results indicate that die life extension is governed by highly localised thermomechanical conditions associated with operation near the temperature-dependent yielding threshold. The proposed methodology offers a computationally efficient alternative for estimating the benefits of surface engineering treatments without explicit modelling of the modified layer within finite element simulations employing homogeneous material properties.",
+        "Finally, the proposed framework can be extended to other thermochemical surface treatments provided that the corresponding hardness profiles and temperature-dependent mechanical properties are available."
+      ]
+    }
+  ],
+  "tables": [
+    {
+      "caption": "Principal inputs for the hot forging numerical model",
+      "headers": [
+        "Category",
+        "Parameter",
+        "Value / Setting"
+      ],
+      "rows": [
+        [
+          "Method",
+          "Software",
+          "QForm UK"
+        ],
+        [
+          "",
+          "Formulation",
+          "Coupled 3D thermomechanical FEM"
+        ],
+        [
+          "Regime",
+          "Analysis",
+          "Transient"
+        ],
+        [
+          "Mesh",
+          "Type",
+          "Tetrahedral"
+        ],
+        [
+          "",
+          "Total",
+          "148,825 nodes; 661,149 elements"
+        ],
+        [
+          "Materials",
+          "Workpiece",
+          "20MnCr5 (EN 1.7147)"
+        ],
+        [
+          "",
+          "Dies",
+          "AISI H13"
+        ],
+        [
+          "Workpiece model",
+          "Constitutive law",
+          "\\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\varepsilon $$\\end{document} – \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\dot{\\varepsilon }$$\\end{document} – T  table"
+        ],
+        [
+          "",
+          "Thermal range",
+          "730–1250  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$^\\circ $$\\end{document} C"
+        ],
+        [
+          "Die model",
+          "Tool",
+          "Deformable (Tool 2 “separate”)"
+        ],
+        [
+          "H13 properties",
+          "E ( T )",
+          "160–210 GPa"
+        ],
+        [
+          "",
+          "k ( T )",
+          "22–32 W m \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$^{-1}$$\\end{document} K \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$^{-1}$$\\end{document}"
+        ],
+        [
+          "",
+          "\\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$C_p(T)$$\\end{document}",
+          "375–975 J kg \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$^{-1}$$\\end{document} K \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$^{-1}$$\\end{document}"
+        ],
+        [
+          "",
+          "\\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\rho (T)$$\\end{document}",
+          "7459–7716 kg m \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$^{-3}$$\\end{document}"
+        ],
+        [
+          "Temperatures",
+          "Workpiece / Dies",
+          "950  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$^\\circ $$\\end{document} C / 160  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$^\\circ $$\\end{document} C"
+        ],
+        [
+          "Heat transfer",
+          "Billet–Die",
+          "500–1000 W m \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$^{-2}$$\\end{document} K \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$^{-1}$$\\end{document}"
+        ],
+        [
+          "",
+          "Air / Radiation",
+          "10 W m \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$^{-2}$$\\end{document} K \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$^{-1}$$\\end{document} ; \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\epsilon = 0.88$$\\end{document}"
+        ],
+        [
+          "Friction",
+          "Coefficients",
+          "\\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\alpha = 0.30$$\\end{document} ; \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$m = 0.15$$\\end{document}"
+        ],
+        [
+          "",
+          "Lubricant",
+          "Graphite + water"
+        ],
+        [
+          "Press",
+          "Capacity / Speed",
+          "6 MN; 1.6 m s \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$^{-1}$$\\end{document}"
+        ],
+        [
+          "Hensel–Spittel",
+          "Equation",
+          "\\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\sigma = 1324 \\exp$$\\end{document} \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$ (-0.00257 T)\\, \\varepsilon ^{-0.1941}$$\\end{document} \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\exp (-0.06521/\\varepsilon )\\,$$\\end{document} \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\dot{\\varepsilon }^{0.1468}$$\\end{document}"
+        ],
+        [
+          "Criterion",
+          "End of life",
+          "Dimensional loss or maintenance"
+        ]
+      ],
+      "header_groups": [],
+      "table_alignment_status": "resolved",
+      "row_provenance": [
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 3
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 3
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 3
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 3
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 3
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 3
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 3
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 3
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 8,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 8,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 8,
+            "source_col": 3
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 9,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 9,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 9,
+            "source_col": 3
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 10,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 10,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 10,
+            "source_col": 3
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 11,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 11,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 11,
+            "source_col": 3
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 12,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 12,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 12,
+            "source_col": 3
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 13,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 13,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 13,
+            "source_col": 3
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 14,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 14,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 14,
+            "source_col": 3
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 15,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 15,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 15,
+            "source_col": 3
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 16,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 16,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 16,
+            "source_col": 3
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 17,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 17,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 17,
+            "source_col": 3
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 18,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 18,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 18,
+            "source_col": 3
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 19,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 19,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 19,
+            "source_col": 3
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 20,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 20,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 20,
+            "source_col": 3
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 21,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 21,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 21,
+            "source_col": 3
+          }
+        ]
+      ],
+      "tbody_alignment_status": "resolved"
+    }
+  ]
+}

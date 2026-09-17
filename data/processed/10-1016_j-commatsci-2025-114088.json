@@ -1,0 +1,1661 @@
+{
+  "doi": "10.1016/j.commatsci.2025.114088",
+  "title": "A novel genetic algorithm-based calibration framework for crystal plasticity parameters in DP780 steels using multiscale mechanical testing",
+  "abstract": "This study presents a robust genetic algorithm (GA)-based framework for calibrating crystal plasticity (CP) model parameters in dual-phase (DP) steels using multiscale mechanical testing. To overcome challenges associated with phase-specific parameter identification and temperature dependence, a two-stage calibration strategy is developed. In the first stage, nanoindentation tests at multiple temperatures are employed to determine the CP parameters of ferrite by matching simulated and experimental force–displacement curves. In the second stage, uniaxial tensile data are used to calibrate martensite parameters via representative volume elements (RVEs). The GA efficiently explores the high-dimensional parameter space and ensures fast convergence while maintaining physical consistency. Comparative results show that the GA-calibrated parameters outperform those obtained by conventional trial-and-error methods, with better alignment to experimental data. The proposed framework enables accurate and scalable CP calibration across different temperatures and offers broad applicability to multiscale modeling and alloy design.",
+  "journal": "Computational Materials Science",
+  "year": "2025",
+  "sections": [
+    {
+      "heading": "Introduction",
+      "paragraphs": [
+        "Dual-phase (DP) steel is one of the most widely utilized advanced high-strength steel (AHSS) in the automotive industry due to its extraordinary balance of high strength, good formability, and lightweight  [1] . This unique balance of mechanical properties arises from its distinct microstructure, consisting of a soft ferritic matrix with hard martensitic islands dispersed throughout  [2] . Extensive microscopic and macroscopic studies have been conducted on various DP steels to explore the relationship between their mechanical properties and microstructures, such as those conducted by Liu et al.  [3] , Münstermann et al.  [4,5] , Han et al.  [6] , González-Zapatero et al.  [7] , Costa et al.  [8] , etc.",
+        "These studies employ a wide range of experimental techniques, including macroscopic uniaxial and multiaxial tensile and compression tests, as well as in-situ tensile and bending tests, to characterize mechanical behavior and failure mechanisms. Failure analysis is performed by capturing plastic deformation using scanning electron microscopy (SEM) during in-situ tests, examining post-deformation microstructural changes via SEM and electron backscatter diffraction (EBSD), and employing cross-scale numerical simulations to identify critical stress states.",
+        "To accurately capture the relationships between the microstructures and mechanical properties, multiple material constitutive models have also been developed  [9] . At the atomic scale ( \n                         \n                            0 \n                            . \n                            1 \n                            – \n                            1 \n                            \n                            nm \n                         \n                      ), Density Functional Theory (DFT) provides quantum-mechanical descriptions of atomic and electronic interactions, accurately determining intrinsic material parameters, such as elastic constants, stacking fault energies, and dislocation core structures  [10] . At the nanometer to sub-micron scale ( \n                         \n                            1 \n                            \n                            nm \n                            – \n                            1 \n                            \n                            μ \n                            m \n                         \n                      ), Molecular Dynamics (MD) simulations utilize empirical or ab-initio-derived potentials to explore atomic interactions and mechanisms of deformation, including dislocation nucleation and propagation  [11] . For the sub-micron to micron scale ( \n                         \n                            0 \n                            . \n                            1 \n                            – \n                            10 \n                            \n                            μ \n                            m \n                         \n                      ), Discrete Dislocation Dynamics (DDD) explicitly captures the evolution and interactions of discrete dislocation lines, providing detailed insights into plastic deformation and strain hardening  [12] . At the micron scale ( \n                         \n                            1 \n                            – \n                            10 \n                            \n                            μ \n                            m \n                         \n                      ), Dislocation Density-based constitutive models offer a continuum-based framework that describes plastic deformation through evolving dislocation densities, enabling efficient prediction of material hardening behaviors  [13] . At the polycrystalline grain scale (typically above  \n                         \n                            10 \n                            \n                            μ \n                            m \n                         \n                      ), Crystal Plasticity (CP) models incorporate crystallographic slip systems, grain orientations, and phase interactions explicitly, thus directly bridging the microstructural deformation processes with macroscopic mechanical properties. Among these approaches, CP models stand out due to their unique capability to integrate microscale physical mechanisms and crystallographic anisotropy into larger-scale predictive frameworks, making them particularly suitable for multiscale investigations aimed at linking microstructural attributes directly to engineering-scale mechanical performance  [14] . By linking microstructural deformation mechanisms to macroscopic material behavior, CP models not only enhance the accuracy of macroscopic constitutive models by integrating physically informed parameters and reducing empirical assumptions  [15]  but also serve as a critical approach for investigating fundamental mechanical behavior mechanisms such as fracture  [16] , damage  [17] , creep  [18] , fatigue  [19] , and strain localization  [20] . This is particularly critical for advanced engineering materials, where microstructural features significantly influence mechanical properties such as strength, ductility, and damage. These models enable a deeper understanding of failure mechanisms by simulating dislocation motion, grain boundary interactions, and phase transformations, thereby improving the predictive capability of large-scale mechanical simulations and guiding the design of advanced structural materials.",
+        "The predictive accuracy of crystal plasticity (CP) models hinges on the precise calibration of model parameters — such as the critical resolved shear stress (CRSS), hardening coefficients, and slip system interaction matrices — that govern slip activation, strain hardening, and phase interactions. These parameters establish the link between microscale deformation mechanisms and macroscale mechanical responses. However, direct experimental measurement of these parameters is infeasible, as they are internal variables that do not correspond to any directly observable quantity  [14] . As a result, CP parameter calibration must be formulated as an  inverse problem , typically addressed using  an integrated experimental–numerical approach , in which high-resolution experimental data (e.g., stress–strain curves, full–field strain maps, or local slip activity) is first acquired and then used to iteratively update model parameters until the simulated response matches the experimental observation.",
+        "Furthermore, the constitutive formulations underlying CP models are inherently complex and nonlinear, leading to strong coupling between model parameters  [21] , making parameter calibration of the CP model parameters a particularly challenging task requiring advanced optimization strategies. For DP steels, the CP model parameters calibration is further complicated by the inherent heterogeneity between ferrite and martensite. The softer Ferrite matrix undergoes significant plastic deformation, whereas martensite is harder and primarily elastic at low stress levels  [22] . This difference induces complex phase interactions, including stress redistribution, load transfer, and strain partitioning, which must be accurately captured. Furthermore, differences in experimental scale pose additional challenges. While microscopic mechanical tests such as nanoindentation and micropillar compression provide phase–specific properties, isolating the martensitic phase remains difficult due to its fine scale and surrounding matrix interference.",
+        "To address the challenges in CP model parameter calibration, various integrated experimental–numerical approaches have been developed. Several experimental–numerical studies have aimed to calibrate CP parameters by leveraging micromechanical tests and image-based strain mapping. Tasan et al.  [23]  combined in-situ SEM tensile testing, EBSD, and nanoindentation to investigate phase-specific mechanical responses and local strain partitioning. They employed the spectral CP solver DAMASK to simulate nanoindentation on ferrite grains and used a Nelder–Mead algorithm to inversely calibrate the critical resolved shear stress (CRSS) of ferrite, based on matching load–displacement curves and pile-up morphologies; martensite parameters were estimated by scaling relative to ferrite based on NI-test derived hardness ratios, then refined using macroscopic stress–strain data. Tian et al.  [24]  applied micropillar compression to ferrite and martensite to extract orientation-dependent CRSS values directly from measured yield stresses and Schmid factors, which were then input into the CP model without further optimization. Vermeij et al.  [25]  developed a quasi-2D testing framework using ultrathin tensile specimens with front-rear EBSD and SEM-DIC to achieve full-field strain measurements with minimal subsurface uncertainty; The CP parameters were calibrated inversely by numerical simulations incorporated experimentally measured microstructures and boundary conditions. Hestroffer et al.  [26]  employed SEM-DIC to analyze strain localization in DP steels, comparing simulations based on both columnar and real 3D microstructures using fixed parameter sets. Diehl et al.  [27]  integrated 3D EBSD with CP simulations to study subsurface effects on surface slip behavior, using literature-sourced material parameters.",
+        "While CP parameter calibration has been widely applied at room temperature, extending this process to elevated temperatures is essential for accurately modeling the fracture behavior of DP steels at high temperatures. High temperatures can induce substantial microstructural changes, such as martensite tempering and ferrite softening, which directly influence fracture behavior and deformation mechanisms. Properly capturing these effects in CP models requires dedicated high-temperature calibration, which remains largely underexplored. Incorporating temperature-sensitive CP parameters enhances the model’s predictive capability in hot-forming processes, enabling better assessment of formability, failure, and performance at high temperatures  [28,29] . However, CP parameters identification at elevated temperatures is further complicated due to the potential effect of temperature on the microstructures. This necessitates the use of robust optimization strategies for CP parameter calibration. While Tasan et al. have acknowledged the importance of optimization techniques in the calibration of crystal plasticity (CP) models, most existing studies place little emphasis on the choice and design of the optimization strategy itself. However, in complex material systems such as dual-phase steels, efficient and robust optimization is an essential part of model calibration, not just a computational convenience. Traditionally, researchers have relied on iterative trial-and-error methods, where parameters are manually adjusted to match experimental data. This approach is not only highly time-consuming but also lacks a rigorous evaluation framework, making it impractical for complex models. To improve the reliability and reproducibility of parameter calibration, direct-inverse methods have been introduced, which formulate CP parameter identification as a root-finding or least-squares problem that seeks to minimize the discrepancy between simulated and experimental results analytically or numerically  [30] . However, the strong nonlinearity and coupling of CP parameters, along with the inherent sensitivity to noise, often render these methods ill-posed, leading to unstable or non-physical solutions. With advances in machine learning, neural networks, particularly deep learning models, have been explored for CP parameter identification  [21] . While these models can accelerate parameter estimation once trained, they require extensive datasets, suffer from generalization issues, and lack interpretability. To address these limitations, non-gradient optimization techniques such as Bayesian Optimization (BO), Particle Swarm Optimization (PSO), and Genetic Algorithm (GA) have been employed  [31,32] . Among these, GA, an evolutionary algorithm inspired by natural selection, has proven particularly effective for complex optimization problems through its mechanisms of selection, crossover, and mutation  [33] . GA has great potential for CP model parameter calibration in dual-phase materials due to its superior global search capabilities over BO and PSO. Unlike BO, which struggles with high-dimensional nonlinear spaces, GA efficiently explores complex parameter interactions without requiring smooth response surfaces. Compared to PSO, GA enhances search diversity through crossover and mutation, reducing the risk of premature convergence. Additionally, GA’s high parallelizability makes it more computationally efficient than BO, which is limited by the costly Gaussian Process Regression, and PSO, which requires careful tuning of inertia and learning factors. These advantages establish GA as a robust and scalable approach for CP parameter calibration in DP steels  [34,35] .",
+        "This study introduces a GA-based calibration framework designed to simultaneously optimize CP model parameters for each phase in dual-phase materials, significantly enhancing calibration efficiency. The framework seamlessly integrates with numerical simulation platforms such as ABAQUS and DAMASK, enabling automated and robust parameter optimization. By leveraging GA’s global search capabilities, it efficiently explores the high-dimensional CP parameter space, reducing both computational cost and the time required for parameter tuning. Optimal parameters can be identified within days or even hours — substantially faster than traditional trial-and-error methods — while delivering simulation results that closely align with experimental observations, thereby improving the predictive accuracy of CP models. To demonstrate the improvement in accuracy enabled by the GA framework, its calibrated parameters were compared against those obtained using a conventional trial-and-error(T&E) approach reported in previous work  [36] . Optimal parameters can be identified within days or even hours—substantially faster than traditional trial-and-error methods—while delivering simulation results that closely align with experimental observations, thereby improving the predictive accuracy of CP models."
+      ]
+    },
+    {
+      "heading": "Materials and experiments",
+      "paragraphs": []
+    },
+    {
+      "heading": "Materials",
+      "paragraphs": []
+    },
+    {
+      "heading": "DP780 steel",
+      "paragraphs": [
+        "DP780 steel is a dual-phase steel with body-centered cubic(BCC) ferrite and martensite. In this study, the DP780 steel was hot rolled with the intermediate quenching at  \n                               \n                                  780 \n                                  \n                                  ° \n                                  C \n                               \n                             for 10 min. The phase fractions are 82% martensite and 18% ferrite. The average grain sizes are  \n                               \n                                  7 \n                                  . \n                                  2 \n                                  \n                                  μ \n                                  m \n                               \n                             for martensite and  \n                               \n                                  2 \n                                  . \n                                  0 \n                                  \n                                  μ \n                                  m \n                               \n                             for ferrite, respectively. The chemical compositions are listed in  Table 1 .",
+        "The sample for the NI tests across different temperatures is an sosceles right triangle with two legs of 2 cm and 1.5 mm( Fig. 1 (a)). The sample was at first grinded and polished after being embedded into easy-crack resin and etched with Nital (Nitrate alcohol solution). Then an chosen area of  \n                               \n                                  200 \n                                  \n                                  μ \n                                  m \n                                  × \n                                  200 \n                                  \n                                  μ \n                                  m \n                               \n                             was marked with micro hardness indents using  \n                               \n                                  10 \n                                  \n                                  N \n                               \n                             after final polishing. Before the EBSD test, the sample was polished again with a finest  \n                               \n                                  0 \n                                  . \n                                  04 \n                                  \n                                  μ \n                                  m \n                               \n                             suspension to remove the etched surface. After the EBSD experiment, the sample was repolished to eliminate the carbonized layer, and then lightly etched to reveal the microstructure for nanoindentation analysis."
+      ]
+    },
+    {
+      "heading": "Experimental procedures",
+      "paragraphs": []
+    },
+    {
+      "heading": "Nanoindentation test",
+      "paragraphs": [
+        "For accurate calibration of single ferrite phase, the Nanoindentation(NI) tests were performed to DP780 steel from room temperature to high temperature. The NI tests were carried out with a Hysitron Triboindenter TI-980 instrument equipped with the xSol heating stage and a scanning probe microscopy (SPM). The NI tests tip is a specialized 17 mm rigid Berkovich tip, which is suitable for high-temperature measurements. Measurements were conducted using a specialized 17 mm rigid Berkovich tip, the only tip suitable for high-temperature nanoindentation (NI) tests. To ensure thermal stability, a thermal insulating tube connects the diamond Berkovich tip to a standard one-dimensional nanoscale dynamic mechanical analysis (nanoDMA) transducer, as shown in  Fig. 2 (a). The tip calibration to define the geometry function of the indenter is performed on a reference fused quartz sample using a partial unloading load function( Fig. 1 (b)). The transducer is enclosed within a specially designed cylinder optimized for high-temperature measurements. The heating stage setup, illustrated in  Fig. 2 (b), incorporates two heating rings (top and bottom) to achieve uniform temperature distribution across the sample. A thermocouple positioned nearby enables precise temperature regulation via a proportional–integral–derivative (PID) control system. Additionally, a gas supply system introduces a protective atmosphere of 95%  \n                               \n                                  \n                                     N \n                                  \n                                  \n                                     2 \n                                  \n                               \n                             and 5%  \n                               \n                                  \n                                     H \n                                  \n                                  \n                                     2 \n                                  \n                               \n                            , ensuring a chemically stable environment during heating. During testing, the Berkovich tip is lowered through a small access hole in the heating stage to establish contact with the sample. The Euler angles and sizes of the selected grains are summarized in  Table 2  . The inverse pole figure (IPF) based on the EBSD measurement results is shown in  Fig. 3 ."
+      ]
+    },
+    {
+      "heading": "Uniaxial tension tests",
+      "paragraphs": [
+        "UT tests were conducted to obtain the flow curve of DP780 steel for the consequent calibration of the CP parameters. Standard dog bone(SDB) samples were used to perform tests at room temperature,  \n                               \n                                  100 \n                                  \n                                  ° \n                                  C \n                               \n                            ,  \n                               \n                                  200 \n                                  \n                                  ° \n                                  C \n                               \n                            , and  \n                               \n                                  300 \n                                  \n                                  ° \n                                  C \n                               \n                             with a strain rate of 0.00025 /s. Three parallel tests were conducted at each temperature to ensure accuracy and reduce potential errors. The design of the SDB samples used and fractured samples at different temperatures are presented in  Fig. 4 .",
+        "The mechanical properties are listed in  Table 3  and their temperature dependencies are shown in  Fig. 5 (a). Four parallel tests were performed in the 0°, 45° and 90° directions( Fig. 5 (b)), and the results confirmed that the material exhibits isotropic mechanical behavior. A significant increase in yield stress can be observed from  \n                               \n                                  100 \n                                  \n                                  ° \n                                  C \n                               \n                             to  \n                               \n                                  200 \n                                  \n                                  ° \n                                  C \n                               \n                            , which can be related to the Dynamic Strain Aging (DSA) effect  [37] ."
+      ]
+    },
+    {
+      "heading": "Numerical methods",
+      "paragraphs": []
+    },
+    {
+      "heading": "Crystal plasticity model",
+      "paragraphs": [
+        "The crystal plasticity model implemented in the numerical simulation framework was developed utilizing a phenomenological approach. The basic mathematical formulations in the implemented crystal plasticity model were developed by Rice  [38] , Hutchinson  [39] , and Peirce et al.  [40] . In the phenomenological constitutive model, the parameters to be calibrated include rate sensitivity of slip  \n                            m \n                         , slip hardening parameters  \n                            \n                               \n                                  h \n                               \n                               \n                                  0 \n                               \n                            \n                         ,  \n                            a \n                         , and  \n                            \n                               \n                                  τ \n                               \n                               \n                                  s \n                               \n                            \n                          \n                         [41] . When the elastic deformation of metallic materials is small, the resolved shear stress on the slip system  \n                            α \n                          is usually approximated as  [41] :  \n                            \n                               (1) \n                               \n                                  \n                                     \n                                        \n                                           τ \n                                        \n                                        \n                                           α \n                                        \n                                     \n                                     = \n                                     S \n                                     ⋅ \n                                     \n                                        ( \n                                        \n                                           \n                                              m \n                                           \n                                           \n                                              α \n                                           \n                                        \n                                        ⊗ \n                                        \n                                           \n                                              n \n                                           \n                                           \n                                              α \n                                           \n                                        \n                                        ) \n                                     \n                                  \n                               \n                            \n                         The shear rate is formulated as a function of the critical resolved shear stress  \n                            \n                               \n                                  τ \n                               \n                               \n                                  s \n                               \n                               \n                                  α \n                               \n                            \n                          and resolved shear stress  \n                            \n                               \n                                  τ \n                               \n                               \n                                  α \n                               \n                            \n                         . Based on the kinetic law on the slip systems of a fcc crystal, the shear rate reads  [41] :  \n                            \n                               (2) \n                               \n                                  \n                                     \n                                        \n                                           \n                                              \n                                                 γ \n                                              \n                                              \n                                                 ̇ \n                                              \n                                           \n                                        \n                                        \n                                           α \n                                        \n                                     \n                                     = \n                                     \n                                        \n                                           \n                                              \n                                                 γ \n                                              \n                                              \n                                                 ̇ \n                                              \n                                           \n                                        \n                                        \n                                           0 \n                                        \n                                     \n                                     \n                                        \n                                           \n                                              | \n                                              \n                                                 \n                                                    \n                                                       \n                                                          τ \n                                                       \n                                                       \n                                                          α \n                                                       \n                                                    \n                                                 \n                                                 \n                                                    \n                                                       \n                                                          τ \n                                                       \n                                                       \n                                                          s \n                                                       \n                                                       \n                                                          α \n                                                       \n                                                    \n                                                 \n                                              \n                                              | \n                                           \n                                        \n                                        \n                                           \n                                              \n                                                 1 \n                                              \n                                              \n                                                 m \n                                              \n                                           \n                                        \n                                     \n                                     s \n                                     g \n                                     n \n                                     \n                                        ( \n                                        \n                                           \n                                              τ \n                                           \n                                           \n                                              α \n                                           \n                                        \n                                        ) \n                                     \n                                  \n                               \n                            \n                         where  \n                            \n                               \n                                  \n                                     \n                                        γ \n                                     \n                                     \n                                        ̇ \n                                     \n                                  \n                               \n                               \n                                  α \n                               \n                            \n                          is the shear rate for slip system  \n                            α \n                         ,  \n                            \n                               \n                                  \n                                     \n                                        γ \n                                     \n                                     \n                                        ̇ \n                                     \n                                  \n                               \n                               \n                                  0 \n                               \n                            \n                          and  \n                            m \n                          are material parameters that represent the reference shear rate and the rate sensitivity of slip, respectively. The hardening effect of slip system  \n                            β \n                          on the slip system  \n                            α \n                          is formulated as  [41] :  \n                            \n                               (3) \n                               \n                                  \n                                     \n                                        \n                                           \n                                              \n                                                 τ \n                                              \n                                              \n                                                 ̇ \n                                              \n                                           \n                                        \n                                        \n                                           c \n                                        \n                                        \n                                           α \n                                        \n                                     \n                                     = \n                                     \n                                        \n                                           h \n                                        \n                                        \n                                           α \n                                           β \n                                        \n                                     \n                                     \n                                        | \n                                        \n                                           \n                                              \n                                                 \n                                                    γ \n                                                 \n                                                 \n                                                    ̇ \n                                                 \n                                              \n                                           \n                                           \n                                              β \n                                           \n                                        \n                                        | \n                                     \n                                  \n                               \n                            \n                         in which  \n                            \n                               \n                                  h \n                               \n                               \n                                  α \n                                  β \n                               \n                            \n                          is the hardening matrix  [41] ,  \n                            \n                               (4) \n                               \n                                  \n                                     \n                                        \n                                           h \n                                        \n                                        \n                                           α \n                                           β \n                                        \n                                     \n                                     = \n                                     \n                                        \n                                           q \n                                        \n                                        \n                                           α \n                                           β \n                                        \n                                     \n                                     \n                                        \n                                           \n                                              \n                                                 h \n                                              \n                                              \n                                                 0 \n                                              \n                                           \n                                           \n                                              \n                                                 \n                                                    \n                                                       1 \n                                                       − \n                                                       \n                                                          \n                                                             \n                                                                \n                                                                   τ \n                                                                \n                                                                \n                                                                   c \n                                                                \n                                                                \n                                                                   β \n                                                                \n                                                             \n                                                          \n                                                          \n                                                             \n                                                                \n                                                                   τ \n                                                                \n                                                                \n                                                                   s \n                                                                \n                                                             \n                                                          \n                                                       \n                                                    \n                                                 \n                                              \n                                              \n                                                 a \n                                              \n                                           \n                                        \n                                     \n                                  \n                               \n                            \n                         which empirically models the micromechanical interaction between different slip systems. In summary, the CP parameters for both the ferrite and martensite phases to be calibrated include slip hardening parameters  \n                            \n                               \n                                  τ \n                               \n                               \n                                  0 \n                               \n                            \n                         ,  \n                            \n                               \n                                  τ \n                               \n                               \n                                  s \n                               \n                            \n                         ,  \n                            \n                               \n                                  h \n                               \n                               \n                                  0 \n                               \n                            \n                         , and  \n                            a \n                         ."
+      ]
+    },
+    {
+      "heading": "Nanoindentation simulation",
+      "paragraphs": [
+        "To calibrate the CP model parameters of the ferrite in the DP780 steel, a three-dimensional (3D) NI model with a Berkovich indenter was constructed in ABAQUS, as shown in  Fig. 6 (a) 4-node 3D rigid (R3D4) elements were used for the indenter, while 8-node 3D continuum (C3D8) elements were applied to the grain. The finest meshes, with an element size of 30 nm, were applied to the grain’s critical deformation area (center), while coarser meshes were used elsewhere. To improve convergence, the tip and three edges of the Berkovich indenter were smoothed rather than being as sharp as in reality. To avoid penetration, the finest mesh at the tip of the Berkovich indenter had an element size of 50 nm, slightly larger than the ferrite grain size in the critical deformation area. The force control mode and the loading direction were adopted along the  \n                            z \n                         -direction. The same loading function used in NI tests was applied with a peak force of  \n                            \n                               2 \n                               . \n                               25 \n                               \n                               mN \n                            \n                          as shown in  Fig. 1 (b). The friction between the tip and the grain was neglected during the simulation to achieve better convergence. The same Euler angles and grain size were also used as listed in  Table 2 . The crystal plasticity finite element simulation was done by a user-defined subroutine(UMAT)  [42] . The required parameters of the CP subroutine include elastic constants and CP hardening parameters. The elastic constants were obtained from the work of Adams et al.  [43]  as listed in  Table 4 , while the CP hardening parameters were calibrated using a GA-based calibration scheme. The number of slip systems was set to 24. The strain rate sensitivity,  \n                            m \n                         , was fixed at 20 and not calibrated, as quasi-static loading was employed in the mechanical tests. The reference shear strain rate,  \n                            \n                               \n                                  \n                                     \n                                        γ \n                                     \n                                     \n                                        ̇ \n                                     \n                                  \n                               \n                               \n                                  0 \n                               \n                            \n                         , was set to  \n                            \n                               0 \n                               . \n                               001 \n                               \n                               \n                                  \n                                     s \n                                  \n                                  \n                                     − \n                                     1 \n                                  \n                               \n                            \n                         , following the work of Tasan et al.  [44] . The setup of the NI test simulation is shown in  Fig. 6  (see  Table 4 )."
+      ]
+    },
+    {
+      "heading": "Uniaxial tension simulation",
+      "paragraphs": [
+        "Nanoindentation is not performed on martensite due to its fine size and lamellar structure, which make it difficult to position indents and obtain reliable measurements accurately. Therefore, the calibration of CP parameters for the martensite phase must be done by the numerical inverse method. To reduce the computational cost, uniaxial tension simulation was performed using RVEs, which were generated by the Discrete Representative Volume Element framework, DRAGen  [45] . The RVE contains eight-node solid elements, and reduced integration(C3D8R) was used in the finite element simulation. The edge length of the RVE is  \n                            \n                               25 \n                               \n                               μ \n                               m \n                            \n                          and includes 54 grains, as illustrated in  Fig. 7 . The phase ratio of ferrite and martensite phase are 83.3% and 16.7%, respectively, close to the studied material. The boundary conditions for uniaxial tension in DAMASK are given in Eq.  (5) , where  \n                            \n                               + \n                               Δ \n                            \n                          corresponds to the applied strain rate used in the experiment(0.00025/s).  \n                            \n                               (5) \n                               \n                                  \n                                     \n                                        \n                                           \n                                              \n                                                 F \n                                              \n                                              \n                                                 ̄ \n                                              \n                                           \n                                        \n                                        \n                                           ̇ \n                                        \n                                     \n                                     = \n                                     \n                                        \n                                           \n                                              \n                                                 \n                                                    + \n                                                    Δ \n                                                 \n                                                 \n                                                    0 \n                                                 \n                                                 \n                                                    0 \n                                                 \n                                              \n                                              \n                                                 \n                                                    0 \n                                                 \n                                                 \n                                                    x \n                                                 \n                                                 \n                                                    0 \n                                                 \n                                              \n                                              \n                                                 \n                                                    0 \n                                                 \n                                                 \n                                                    0 \n                                                 \n                                                 \n                                                    x \n                                                 \n                                              \n                                           \n                                        \n                                     \n                                     , \n                                     \n                                     \n                                        \n                                           P \n                                        \n                                        \n                                           ̄ \n                                        \n                                     \n                                     = \n                                     \n                                        \n                                           \n                                              \n                                                 \n                                                    x \n                                                 \n                                                 \n                                                    x \n                                                 \n                                                 \n                                                    x \n                                                 \n                                              \n                                              \n                                                 \n                                                    x \n                                                 \n                                                 \n                                                    0 \n                                                 \n                                                 \n                                                    x \n                                                 \n                                              \n                                              \n                                                 \n                                                    x \n                                                 \n                                                 \n                                                    x \n                                                 \n                                                 \n                                                    0 \n                                                 \n                                              \n                                           \n                                        \n                                     \n                                  \n                               \n                            \n                         Numerical simulations were subsequently conducted using DAMASK, leveraging its efficient spectral method for crystal plasticity modeling  [46] . The elastic constants of the martensite phase at different temperatures were again referred to the literature  [44]  (see  Table 5 ). The simulations utilized an RVE with the calibrated ferrite CP parameters to facilitate the calibration of the martensite phase CP parameters. As depicted in  Fig. 3  and given the isotropic mechanical behavior of the studied DP780 steel, random crystallographic orientations were assigned to the grains within the generated RVE to reflect a texture-free microstructure."
+      ]
+    },
+    {
+      "heading": "2-Stage integrated experimental–numerical calibration framework using genetic algorithm",
+      "paragraphs": [
+        "The calibration of dual-phase material models is an optimization problem in high-dimensional space. The goal is to find the optimal set of input parameters  \n                            \n                               \n                                  X \n                               \n                               \n                                  ∗ \n                               \n                            \n                          that minimizes the deviation between the model’s output  \n                            y \n                          and the experimental observation  \n                            \n                               \n                                  y \n                               \n                               \n                                  ′ \n                               \n                            \n                          \n                         [47] .  \n                            \n                               (6) \n                               \n                                  \n                                     \n                                        y \n                                        = \n                                        f \n                                        \n                                           ( \n                                           X \n                                           ) \n                                        \n                                     \n                                  \n                               \n                               \n                                  \n                                     \n                                        \n                                           \n                                              X \n                                           \n                                           \n                                              ∗ \n                                           \n                                        \n                                        = \n                                        a \n                                        r \n                                        g \n                                        m \n                                        i \n                                        \n                                           \n                                              n \n                                           \n                                           \n                                              X \n                                           \n                                        \n                                        L \n                                        \n                                           ( \n                                           y \n                                           , \n                                           \n                                              \n                                                 y \n                                              \n                                              \n                                                 ′ \n                                              \n                                           \n                                           )",
+        "The GA performs selection, crossover, and mutation operations to evolve the parameter sets over multiple iterations until a stop criterion is achieved, as illustrated in  Fig. 8 . During selection, individuals (parameter sets) from the current generation are chosen based on their fitness. This ensures that better-performing candidates are more likely to pass their characteristics to the next generation. This step mimics natural selection by prioritizing solutions with superior performance. In the crossover phase, selected individuals undergo recombination, where portions of their parameter sets are exchanged to create new offspring. This operation allows the algorithm to explore new regions of the parameter space by combining features from different high-performing individuals, enhancing diversity and improving convergence towards an optimal solution. Finally, mutation introduces controlled random variations into some individuals by altering their parameters slightly. This prevents premature convergence to local optima by maintaining genetic diversity in the population, ensuring that the search space remains well-explored. By iteratively applying these operations over multiple generations, the GA effectively refines the parameter sets, progressively converging towards an optimal solution that best fits the desired objectives  [48] .",
+        "The loss function  \n                            \n                               L \n                               \n                                  ( \n                                  y \n                                  , \n                                  \n                                     \n                                        y \n                                     \n                                     \n                                        ′ \n                                     \n                                  \n                                  ) \n                               \n                            \n                          defined in Eq.  (7)  quantitatively evaluates the agreement between simulation and experimental results during the calibration of crystal plasticity (CP) model parameters. In this context,  \n                            y \n                          and  \n                            \n                               \n                                  y \n                               \n                               \n                                  ′ \n                               \n                            \n                          represent the force (or stress) values from simulation and experiment, respectively, while  \n                            x \n                          denotes the corresponding displacement (or strain) values. The first term in Eq.  (7)  computes the mean absolute error (MAE) between the simulated and experimental force (or stress) values across all sampled data points, ensuring that the calibrated parameters minimize the overall discrepancy between the simulated and experimental mechanical responses. The second term serves as a penalization for non-convergent or prematurely terminated simulations. In some cases, the CP model may fail to reach the target displacement (or strain) due to unsuitable parameter choices, resulting in simulations that stop before achieving the intended loading condition. To address this, the penalty term  \n                            \n                               100 \n                               \n                                  \n                                     \n                                        \n                                           1 \n                                           − \n                                           \n                                              \n                                                 \n                                                    \n                                                       x \n                                                    \n                                                    \n                                                       i \n                                                       , \n                                                       max \n                                                    \n                                                 \n                                              \n                                              \n                                                 \n                                                    \n                                                       x \n                                                    \n                                                    \n                                                       i \n                                                       , \n                                                       max \n                                                    \n                                                    \n                                                       ∗ \n                                                    \n                                                 \n                                              \n                                           \n                                        \n                                     \n                                  \n                                  \n                                     2 \n                                  \n                               \n                            \n                          is introduced, where  \n                            \n                               \n                                  x \n                               \n                               \n                                  i \n                                  , \n                                  max \n                               \n                            \n                          is the maximum displacement (or strain) reached in the simulation, and  \n                            \n                               \n                                  x \n                               \n                               \n                                  i \n                                  , \n                                  max \n                               \n                               \n                                  ∗ \n                               \n                            \n                          is the target maximum value from the experiment. This term strongly penalizes cases where the simulation does not reach the desired loading endpoint, thereby guiding the optimization process toward parameter sets that ensure both accuracy and convergence throughout the entire loading path. In summary, the loss function not only measures the fit between simulation and experiment but also enforces the physical requirement that the simulation must reach the full experimental loading range, thus ensuring the reliability and robustness of the calibrated CP model parameters (see  Fig. 9 ).  \n                            \n                               (7) \n                               \n                                  \n                                     L \n                                     \n                                        ( \n                                        y \n                                        , \n                                        \n                                           \n                                              y \n                                           \n                                           \n                                              ′ \n                                           \n                                        \n                                        ) \n                                     \n                                     = \n                                     \n                                        \n                                           ∑ \n                                        \n                                        \n                                           1 \n                                        \n                                        \n                                           i \n                                        \n                                     \n                                     \n                                        ( \n                                        \n                                           \n                                              1 \n                                           \n                                           \n                                              n \n                                           \n                                        \n                                        \n                                           ( \n                                           \n                                              \n                                                 ∑ \n                                              \n                                              \n                                                 1 \n                                              \n                                              \n                                                 n \n                                              \n                                           \n                                           \n                                              | \n                                              \n                                                 \n                                                    y \n                                                 \n                                                 \n                                                    i \n                                                 \n                                              \n                                              − \n                                              \n                                                 \n                                                    y \n                                                 \n                                                 \n                                                    i \n                                                 \n                                                 \n                                                    ′ \n                                                 \n                                              \n                                              | \n                                           \n                                           ) \n                                        \n                                        + \n                                        100 \n                                        \n                                           \n                                              \n                                                 ( \n                                                 1 \n                                                 − \n                                                 \n                                                    \n                                                       \n                                                          \n                                                             x \n                                                          \n                                                          \n                                                             i \n                                                             , \n                                                             m \n                                                             a \n                                                             x \n                                                          \n                                                       \n                                                    \n                                                    \n                                                       \n                                                          \n                                                             x \n                                                          \n                                                          \n                                                             i \n                                                             , \n                                                             m \n                                                             a \n                                                             x \n                                                          \n                                                          \n                                                             ∗ \n                                                          \n                                                       \n                                                    \n                                                 \n                                                 ) \n                                              \n                                           \n                                           \n                                              2 \n                                           \n                                        \n                                        )",
+        "The calibration of crystal plasticity (CP) parameters for ferrite and martensite phases in DP780 steel is achieved through an integrated experiment — numerical methodology. In this approach, the calibration process is divided into two sequential stages to ensure both accuracy and computational efficiency for each phase. Experimental data from nanoindentation and uniaxial tensile tests are combined with advanced numerical simulations, while a genetic algorithm (GA)-based framework is employed for the numerical optimization of the CP parameters in each stage.",
+        "In the first stage, nanoindentation experiments are performed on the DP780 steel to obtain high-resolution force–displacement curves that primarily reflect the mechanical response of the ferrite phase. These experimental results serve as the target for a series of nanoindentation simulations conducted in ABAQUS, where the ferrite CP parameters are treated as optimization variables. The GA-based calibration framework iteratively updates the ferrite CP parameters, running ABAQUS simulations at each iteration, and evaluates the deviation between the simulated and experimental force–displacement curves using the defined loss function Eq.  (7) . This process continues until the stop criterion is reached, resulting in an optimized set of ferrite CP parameters that show good agreement with the experimental results.",
+        "In the second stage, the optimized ferrite CP parameters obtained from the first stage are fixed and used as known inputs in subsequent simulations. Uniaxial tensile experiments are performed on DP780 steel to provide macroscopic stress–strain data, which are then used as targets for numerical simulations conducted in DAMASK. The use of DAMASK’s spectral solver is particularly advantageous at this stage due to its high computational efficiency for polycrystalline simulations. In this step, the GA-based framework is employed again, but at this stage it optimizes the martensite CP parameters, while the ferrite parameters remain fixed. The optimization iteratively adjusts the martensite parameters to minimize the deviation between the simulated and experimental stress–strain curves. Although the GA framework is, in principle, capable of simultaneously optimizing both ferrite and martensite CP parameters, a serial two-stage approach is adopted in this work. This is primarily due to the significant difference in computational cost between ABAQUS nanoindentation simulations and DAMASK uniaxial tensile simulations. By decoupling the optimization into two sequential stages, the overall computational efficiency is greatly improved, and the calibration process remains robust and tractable. This integrated experiment-numerical, two-stage calibration strategy ensures that the CP parameters for both ferrite and martensite are accurately identified, while making optimal use of experimental data and computational resources. The framework is flexible, scalable, and can be readily extended to other multiphase materials, advanced constitutive models, and experimental technique (see  Fig. 10 ).",
+        "CP simulations are employed to capture the deformation behavior of polycrystalline materials, where individual grains demonstrate anisotropic mechanical responses. Due to the prohibitive computational cost of modeling an entire material microstructure directly, Representative Volume Elements (RVEs) are utilized to offer a statistically representative snapshot of the microstructure while maintaining computational efficiency  [49] . The calibration tool seamlessly integrates with the ABAQUS and DAMASK frameworks through RVEs. The user specifies the CP parameters to be calibrated in the configuration file. The genetic algorithm (GA) for ferrite phase parameter calibration was configured with a maximum of 100 iterations and a population size of 100. A mutation probability of 0.1 maintained diversity, while an elite ratio of 0.05 preserved top solutions. 10% of the best individuals were selected as parents, and the algorithm terminated after two iterations without improvement.",
+        "The genetic optimization framework is developed based on the python module geneticalgorithm2 developed by Demetry Pascal  [50]  as well as other modules including pandas  [51] , scipy  [52] , numpy  [53] . The CP parameters to be calibrated are listed in  Table 6 , and their range is based on the approximate range of previously calibrated parameters from NI tests of ferrite and uniaxial tension test results."
+      ]
+    },
+    {
+      "heading": "Results and discussion",
+      "paragraphs": []
+    },
+    {
+      "heading": "Calibrated CP parameters for ferrite",
+      "paragraphs": [
+        "By iterative refinement of the CP parameters using the GA-based calibration framework, the simulated force–displacement curves at different temperatures exhibit good agreement with the experimental data, as shown in  Fig. 11 . Compared to parameters obtained via the T&E method, the GA-calibrated curves consistently achieve lower deviations from the experimental results. This direct comparison highlights the improved predictive capability of the GA-calibrated parameters. The convergence behavior of the GA optimization is illustrated in  Fig. 12 (a), which presents the best cost values of each generation computed according to Eq.  (7) . The algorithm achieves fast convergence — typically within 4 to 7 generations — due to the carefully selected parameter bounds and the robust search strategy. The best cost values decrease rapidly in early generations and stabilize in later ones, indicating efficient exploration and convergence toward optimal solutions. in which the best cost values are computed using Eq  (7) , and lower cost values indicate a better agreement with the experimental results. Noticeable deviations are observed during the hold period, which may be attributed to a mismatch in the indenter shape between the numerical simulation and the experiment. To improve convergence, a slight modification was made to the indenter shape in the numerical simulation.",
+        "The calibrated CP parameters of the ferrite under different temperatures are listed in  Table 7 . Quantitative evaluation of calibration accuracy was conducted using the root mean square error (RMSE) between the simulated and experimental force–displacement curves, based on 100 uniformly sampled displacement points during the loading stage. As shown in  Table 8 , the RMSE values of the GA-calibrated results range from 36.9  \n                            μ \n                         N to 66.0  \n                            μ \n                         N across all tested temperatures. In contrast, the RMSEs for the T&E method are significantly higher, ranging from 54.5  \n                            μ \n                         N to 89.5  \n                            μ \n                         N. The largest deviation for GA occurs at 300 °C, where the RMSE is 66.0  \n                            μ \n                         N—only 3.0% of the maximum indentation force (2196  \n                            μ \n                         N)—demonstrating the high fidelity of the calibrated parameter set."
+      ]
+    },
+    {
+      "heading": "Calibrated CP parameters for martensite",
+      "paragraphs": [
+        "The calibrated ferrite CP parameters based on NI tests results, were subsequently utilized to calibrate the martensitic CP parameters. This was achieved through inverse optimization using UT result of DP780 steel at multiple temperatures, once again employing the GA-based framework. The simulated stress–strain curves using GA-calibrated martensite parameters also show good agreement with the experimental data, as presented in  Fig. 13 . Compared to the parameters obtained via T&E method (see  Table 9 ), the GA-calibrated curves exhibit noticeably lower deviation from the experimental response across all temperature conditions. This highlights the improved accuracy and temperature sensitivity of the GA-calibrated CP parameters. The convergence process of the GA optimization is illustrated in  Fig. 12 (b), where the best cost values decrease steadily across generations. Due to the well-defined objective function and efficient search strategy, convergence was achieved within 9–12 generations, requiring only a few hours of computation. This behavior is consistent with the convergence characteristics observed during ferrite calibration.",
+        "Quantitative assessment of calibration accuracy was performed by computing the RMSE between the simulated and experimental stress values, based on 50 uniformly sampled strain points. As shown in  Table 10 , the GA method consistently outperforms the T&E approach, achieving RMSE values between 6.6 and 8.0 MPa across all temperatures. The largest RMSE using GA is 8.0 MPa at 100 °C, which remains below 3% of the maximum stress, demonstrating the high fidelity of the calibrated parameter set. In contrast, the T&E-calibrated parameters yield larger RMSEs ranging from 7.8 to 16.5 MPa, with the most significant deviation occurring at room temperature."
+      ]
+    },
+    {
+      "heading": "Discussion",
+      "paragraphs": [
+        "The absolute differences between the CP parameters calibrated using the GA and T&E methods are shown in  Fig. 14 . The parameter  \n                            \n                               \n                                  h \n                               \n                               \n                                  0 \n                               \n                            \n                          is not included, as its value obtained from the T&E method is very high. Together with the comparison in both  Tables 8 and 10 , two key observations emerge from the comparison between the calibrated CP parameters by both GA and T&E methods. First, across all tested temperatures, the GA-calibrated CP parameters consistently yield lower errors in both NI and UT simulations. This superior performance can be attributed to the use of a unified and consistent error quantification (Eq.  (7) ) in GA, which guides the optimization toward globally improved solutions. The optimization strategy of the GA framework ensures that the objective function value — representing the deviation between simulation and experiment — is systematically minimized over generations, whereas T&E calibrations often lack such a consistent metric and rely heavily on subjective judgment or manual curve fitting. Second, while the CP parameters for ferrite obtained from both methods are relatively similar across all temperatures, the discrepancy between GA and T&E parameters is substantially larger in the martensitic phase. This difference can be partially explained by the use of very large  \n                            \n                               \n                                  h \n                               \n                               \n                                  0 \n                               \n                            \n                          values in the T&E method and the relatively low volume fraction of martensite (18%) in DP780 steel. The stress–strain response is therefore more dominated by ferrite, rendering it less sensitive to variations in martensite parameters during manual calibration. Consequently, this finding reinforces the advantage of employing a robust optimization framework — such as the GA approach presented in this study — that leverages consistent error metrics and broad parameter space exploration, thereby ensuring physically meaningful parameters identification for both phases.",
+        "The box plots in  Fig. 15  illustrate the evolution of calibrated ferrite CP parameters across multiple generations during the genetic algorithm (GA) optimization process at room temperature. In several cases, such as  Fig. 15 (d), (g) the parameter distributions become significantly narrower in later generations, with reduced interquartile ranges (IQR) and fewer outliers. This indicates successful convergence, where the GA refines the parameters toward an optimal solution with minimal variation in subsequent generations, signifying stabilization. However, in some cases, such as  Fig. 15 (a), (c), (e) and (f) the CP parameters stabilize too early, converging before the final generation. The GA calibration framework subsequently expands the search space through parameter mutations to avoid premature convergence. Early stabilization increases the risk of being trapped in a local optimum rather than identifying the global optimum. By introducing controlled variations in later generations, the GA preserves search diversity, mitigates stagnation, and enhances the exploration of the parameter space, thereby ensuring a more robust and effective optimization process. Similar phenomena were also observed at all other temperatures ( Figs. A.17 ,  A.18 , and  A.19 ).",
+        "The temperature dependencies of the calibrated CP parameters for both ferrite and martensite are demonstrated in  Fig. 16 . The result clearly shows that nearly across all investigated temperatures, the martensitic phase exhibits higher values of  \n                            \n                               \n                                  h \n                               \n                               \n                                  0 \n                               \n                            \n                         ,  \n                            \n                               \n                                  τ \n                               \n                               \n                                  0 \n                               \n                            \n                         , and  \n                            a \n                          and lower values of  \n                            \n                               \n                                  τ \n                               \n                               \n                                  s \n                               \n                            \n                          compared to the ferritic phase. This combination is consistent with the generally recognized behavior for martensite and ferrite: martensite undergoes stronger strain hardening, while ferrite contributes more significantly to ductility of the DP780 steels.",
+        "Furthermore, a notable correlation between the temperature- dependent trends in CP parameters and macroscopic mechanical behavior was identified. The evolution of  \n                            \n                               \n                                  τ \n                               \n                               \n                                  s \n                               \n                            \n                          of ferrite phase with temperature closely matches the trend of ultimate tensile strength (UTS) in the experimental macroscopic data as shown in  Fig. 5 . Given that phase ratio of ferrite phase is 82% in the studied DP780 steel, this trend supports the interpretation that UTS is largely governed by the saturation of strain hardening for ferrite phase. Moreover, the variation of  \n                            \n                               \n                                  τ \n                               \n                               \n                                  0 \n                               \n                            \n                          in ferrite mirrors the trend observed in yield strength: a slight decrease from room temperature (RT) to  \n                            \n                               100 \n                               \n                                  \n                                     \n                                  \n                                  \n                                     ∘ \n                                  \n                               \n                               C \n                            \n                         , a significant increase at  \n                            \n                               200 \n                               \n                                  \n                                     \n                                  \n                                  \n                                     ∘ \n                                  \n                               \n                               C \n                            \n                         , followed by a decline at  \n                            \n                               300 \n                               \n                                  \n                                     \n                                  \n                                  \n                                     ∘ \n                                  \n                               \n                               C \n                            \n                         . These trends are consistent with experimental observations and suggest that the calibrated  \n                            \n                               \n                                  τ \n                               \n                               \n                                  0 \n                               \n                            \n                         , as a proxy for the initial dislocation resistance, successfully captures the temperature-dependent mechanical behavior for DP780 steel.",
+        "A particularly interesting observation at  \n                            \n                               200 \n                               \n                                  \n                                     \n                                  \n                                  \n                                     ∘ \n                                  \n                               \n                               C \n                            \n                          is the appearance of serrated features in the load–displacement curves from NI test, accompanied by a pronounced increase in macroscopic yield strength. These phenomena are indicative of DSA, suggesting intensified solute-dislocation interactions that temporarily hinder dislocation motion and lead to localized strain bursts. Correspondingly, the calibrated CP parameters show a marked increase in  \n                            \n                               \n                                  τ \n                               \n                               \n                                  0 \n                               \n                            \n                          and  \n                            \n                               \n                                  h \n                               \n                               \n                                  0 \n                               \n                            \n                          for martensite at  \n                            \n                               200 \n                               \n                                  \n                                     \n                                  \n                                  \n                                     ∘ \n                                  \n                               \n                               C \n                            \n                         , along with a pronounced decrease in the hardening exponent  \n                            a \n                         , which is in line with the theoretical understanding of DSA  [37] . This alignment with both micro- and macroscale experimental signatures of DSA provides further validation of the physical fidelity of the calibrated CP parameters."
+      ]
+    },
+    {
+      "heading": "Conclusion",
+      "paragraphs": [
+        "This work develops a robust genetic algorithm (GA)-driven framework for calibrating crystal plasticity (CP) model parameters in DP780 steels, seamlessly integrating multi-scale mechanical testing technique. The proposed methodology effectively addresses the key challenges associated with dual-phase CP parameter calibration, ensuring both accuracy and computational efficiency. The main findings and their broader significance are as follows:",
+        "• \n                            The GA-calibrated CP parameters accurately reflect known phase behaviors, such as the pronounced hardening in martensite and the ductility of ferrite, consistent with metallurgical expectations. \n                         \n                         \n                            • \n                            The temperature-dependent evolution of key CP parameters ( \n                                  \n                                     \n                                        τ \n                                     \n                                     \n                                        s \n                                     \n                                  \n                               ,  \n                                  \n                                     \n                                        τ \n                                     \n                                     \n                                        0 \n                                     \n                                  \n                               ) closely tracks experimental trends in ultimate tensile strength and yield strength. \n                         \n                         \n                            • \n                            The framework robustly identifies parameter anomalies at  \n                                  \n                                     200 \n                                     \n                                     ° \n                                     C \n                                  \n                               , matching signatures of dynamic strain aging (DSA) observed in both nanoindentation and tensile tests, thus validating the physical fidelity of the calibration. \n                         \n                         \n                            • \n                            The GA-based multiscale calibration is efficient, rapid, and capable of exploring a wide parameter space, yielding solutions that are both experimentally consistent and physically interpretable across temperatures and microstructures. \n                         \n                         \n                            • \n                            This approach enables predictive, temperature-sensitive modeling of DP steels, supporting advanced material design, failure analysis, and the development of next-generation high-performance steels.",
+        "In summary, this study not only advances the methodology for CP parameter calibration in complex multiphase alloys, but also provides a scalable tool for integrating experimental data and computational modeling across multiple length scales. Future work will extend this framework to more complex microstructures and incorporate machine learning-based surrogate models to further enhance efficiency and predictive capability."
+      ]
+    },
+    {
+      "heading": "CRediT authorship contribution statement",
+      "paragraphs": [
+        "Linghao Kong:  Writing – original draft.  Boyu Pan:  Writing – review & editing, Investigation.  Manuel Henrich:  Software, Conceptualization.  Sophie Stebner:  Writing – review & editing.  Sebastian Münstermann:  Writing – review & editing."
+      ]
+    },
+    {
+      "heading": "Exploration of martensite parameters by the GA at different temperatures",
+      "paragraphs": [
+        "See  Figs. A.17–A.19 ."
+      ]
+    }
+  ],
+  "tables": [
+    {
+      "caption": "Chemical composition of the investigated DP780 [unit: %].",
+      "headers": [
+        "C",
+        "Si",
+        "Mn",
+        "P",
+        "S",
+        "Cr",
+        "Al",
+        "N",
+        "Fe"
+      ],
+      "rows": [
+        [
+          "0.17",
+          "0.4",
+          "2.05",
+          "0.015",
+          "0.005",
+          "0.2",
+          "0.75",
+          "0.003",
+          "Balance"
+        ]
+      ],
+      "header_groups": [],
+      "table_alignment_status": "resolved",
+      "row_provenance": [
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 7
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 8
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 9
+          }
+        ]
+      ],
+      "tbody_alignment_status": "resolved"
+    },
+    {
+      "caption": "Euler angles and the grain size of the selected grains.",
+      "headers": [
+        "Grain",
+        "Euler angle 1 (°)",
+        "Euler angle 2 (°)",
+        "Euler angle 3 (°)",
+        "Grain size ( \n                               \n                                  μ \n                                  m \n                               \n                            )"
+      ],
+      "rows": [
+        [
+          "RT",
+          "308.0",
+          "91.0",
+          "31.9",
+          "11.43"
+        ],
+        [
+          "100 \n                                  \n                                  ° \n                                  C",
+          "47.3",
+          "51.4",
+          "262.7",
+          "18.84"
+        ],
+        [
+          "200 \n                                  \n                                  ° \n                                  C",
+          "227.5",
+          "113.2",
+          "95.5",
+          "17.15"
+        ],
+        [
+          "300 \n                                  \n                                  ° \n                                  C",
+          "259.9",
+          "98.1",
+          "101.5",
+          "12.9"
+        ]
+      ],
+      "header_groups": [],
+      "table_alignment_status": "resolved",
+      "row_provenance": [
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 5
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 5
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 5
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 5
+          }
+        ]
+      ],
+      "tbody_alignment_status": "resolved"
+    },
+    {
+      "caption": "Mechanical properties of DP780 steel at different temperatures.",
+      "headers": [
+        "Temperature ( \n                               \n                                  ° \n                                  C \n                               \n                            )",
+        "Yield strength  \n                               \n                                  \n                                     R \n                                  \n                                  \n                                     p \n                                     0 \n                                     . \n                                     2 \n                                  \n                               \n                             (MPa)",
+        "Ultimate tensile strength  \n                               \n                                  \n                                     R \n                                  \n                                  \n                                     m \n                                  \n                               \n                             (MPa)"
+      ],
+      "rows": [
+        [
+          "RT",
+          "443",
+          "854"
+        ],
+        [
+          "100",
+          "441",
+          "765"
+        ],
+        [
+          "200",
+          "472",
+          "790"
+        ],
+        [
+          "300",
+          "444",
+          "917"
+        ]
+      ],
+      "header_groups": [],
+      "table_alignment_status": "resolved",
+      "row_provenance": [
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 3
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 3
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 3
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 3
+          }
+        ]
+      ],
+      "tbody_alignment_status": "resolved"
+    },
+    {
+      "caption": "Elastic constants of ferrite phase  [43] .",
+      "headers": [
+        "Temperature ( \n                               \n                                  ° \n                                  C \n                               \n                            )",
+        "C \n                                     \n                                     \n                                        11 \n                                     \n                                  \n                                  \n                                  \n                                     ( \n                                     GPa \n                                     )",
+        "C \n                                     \n                                     \n                                        12 \n                                     \n                                  \n                                  \n                                  \n                                     ( \n                                     GPa \n                                     )",
+        "C \n                                     \n                                     \n                                        44 \n                                     \n                                  \n                                  \n                                  \n                                     ( \n                                     GPa \n                                     )"
+      ],
+      "rows": [
+        [
+          "RT",
+          "230.3",
+          "134.3",
+          "115.9"
+        ],
+        [
+          "100",
+          "226.1",
+          "128.3",
+          "114.2"
+        ],
+        [
+          "200",
+          "220.5",
+          "122.7",
+          "112.1"
+        ],
+        [
+          "300",
+          "213.8",
+          "115.7",
+          "110.1"
+        ]
+      ],
+      "header_groups": [],
+      "table_alignment_status": "resolved",
+      "row_provenance": [
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 4
+          }
+        ]
+      ],
+      "tbody_alignment_status": "resolved"
+    },
+    {
+      "caption": "Elastic constants of martensite  [44] .",
+      "headers": [
+        "Temperature ( \n                               \n                                  ° \n                                  C \n                               \n                            )",
+        "C \n                                     \n                                     \n                                        11 \n                                     \n                                  \n                                  \n                                  \n                                     ( \n                                     GPa \n                                     )",
+        "C \n                                     \n                                     \n                                        12 \n                                     \n                                  \n                                  \n                                  \n                                     ( \n                                     GPa \n                                     )",
+        "C \n                                     \n                                     \n                                        44 \n                                     \n                                  \n                                  \n                                  \n                                     ( \n                                     GPa \n                                     )"
+      ],
+      "rows": [
+        [
+          "RT",
+          "417.4",
+          "242.4",
+          "211.1"
+        ],
+        [
+          "100",
+          "407.4",
+          "230.4",
+          "207.1"
+        ],
+        [
+          "200",
+          "395.4",
+          "218.4",
+          "203.1"
+        ],
+        [
+          "300",
+          "381.4",
+          "205.4",
+          "119.1"
+        ]
+      ],
+      "header_groups": [],
+      "table_alignment_status": "resolved",
+      "row_provenance": [
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 4
+          }
+        ]
+      ],
+      "tbody_alignment_status": "resolved"
+    },
+    {
+      "caption": "Value bounds of CP parameters to be calibrated.",
+      "headers": [
+        "Parameters",
+        "h \n                                     \n                                     \n                                        0 \n                                     \n                                  \n                                  \n                                  \n                                     ( \n                                     GPa \n                                     )",
+        "a",
+        "τ \n                                     \n                                     \n                                        0 \n                                     \n                                  \n                                  \n                                  \n                                     ( \n                                     GPa \n                                     )",
+        "τ \n                                     \n                                     \n                                        s \n                                     \n                                  \n                                  \n                                  \n                                     ( \n                                     GPa \n                                     )"
+      ],
+      "rows": [
+        [
+          "Ferrite",
+          "[1e−3, 4e−3]",
+          "[1, 5]",
+          "[1e−4, 5e−4]",
+          "[1.5e−4, 1e−3]"
+        ],
+        [
+          "Martensite",
+          "[1e−3, 9e−3]",
+          "[1, 20]",
+          "[1e−4, 9e−4]",
+          "[1e−4, 9e−4]"
+        ]
+      ],
+      "header_groups": [],
+      "table_alignment_status": "resolved",
+      "row_provenance": [
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 5
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 5
+          }
+        ]
+      ],
+      "tbody_alignment_status": "resolved"
+    },
+    {
+      "caption": "Comparison of CP parameters for ferrite calibrated by GA and T&E methods.",
+      "headers": [
+        "Temperature ( \n                               \n                                  ° \n                                  C \n                               \n                            )",
+        "Method",
+        "τ \n                                  \n                                  \n                                     0 \n                                  \n                               \n                             (MPa)",
+        "τ \n                                  \n                                  \n                                     s \n                                  \n                               \n                             (MPa)",
+        "a \n                             (–)",
+        "h \n                                  \n                                  \n                                     0 \n                                  \n                               \n                             (MPa)"
+      ],
+      "rows": [
+        [
+          "RT",
+          "GA",
+          "227",
+          "752",
+          "1.79",
+          "2792"
+        ],
+        [
+          "",
+          "T&E",
+          "260",
+          "600",
+          "1.70",
+          "3000"
+        ],
+        [
+          "100",
+          "GA",
+          "226",
+          "659",
+          "2.74",
+          "3949"
+        ],
+        [
+          "",
+          "T&E",
+          "250",
+          "550",
+          "1.80",
+          "2000"
+        ],
+        [
+          "200",
+          "GA",
+          "252",
+          "650",
+          "2.77",
+          "2277"
+        ],
+        [
+          "",
+          "T&E",
+          "254",
+          "573",
+          "1.77",
+          "2450"
+        ],
+        [
+          "300",
+          "GA",
+          "246",
+          "723",
+          "1.99",
+          "3594"
+        ],
+        [
+          "",
+          "T&E",
+          "265",
+          "625",
+          "1.65",
+          "3500"
+        ]
+      ],
+      "header_groups": [],
+      "table_alignment_status": "resolved",
+      "row_provenance": [
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 6
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 6
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 6
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 6
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 6
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 6
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 6
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 6
+          }
+        ]
+      ],
+      "tbody_alignment_status": "resolved"
+    },
+    {
+      "caption": "RMSE of NI simulation at different temperatures.",
+      "headers": [
+        "Temperature ( \n                               \n                                  ° \n                                  C \n                               \n                            )",
+        "RT",
+        "100",
+        "200",
+        "300"
+      ],
+      "rows": [
+        [
+          "RMSE[GA] ( \n                               \n                                  μ \n                                  N \n                               \n                            )",
+          "59.2",
+          "36.9",
+          "42.2",
+          "66.0"
+        ],
+        [
+          "RMSE[T&E] ( \n                               \n                                  μ \n                                  N \n                               \n                            )",
+          "79.2",
+          "54.5",
+          "78.3",
+          "89.5"
+        ]
+      ],
+      "header_groups": [],
+      "table_alignment_status": "resolved",
+      "row_provenance": [
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 5
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 5
+          }
+        ]
+      ],
+      "tbody_alignment_status": "resolved"
+    },
+    {
+      "caption": "Comparison of CP parameters for martensite calibrated by GA and T&E methods.",
+      "headers": [
+        "Temperature ( \n                               \n                                  ° \n                                  C \n                               \n                            )",
+        "Method",
+        "τ \n                                  \n                                  \n                                     0 \n                                  \n                               \n                             (MPa)",
+        "τ \n                                  \n                                  \n                                     s \n                                  \n                               \n                             (MPa)",
+        "a \n                             (–)",
+        "h \n                                  \n                                  \n                                     0 \n                                  \n                               \n                             (MPa)"
+      ],
+      "rows": [
+        [
+          "RT",
+          "GA",
+          "252",
+          "304",
+          "17.0",
+          "3386"
+        ],
+        [
+          "",
+          "T&E",
+          "450",
+          "700",
+          "2.00",
+          "40 000"
+        ],
+        [
+          "100",
+          "GA",
+          "253",
+          "528",
+          "19.3",
+          "4771"
+        ],
+        [
+          "",
+          "T&E",
+          "440",
+          "650",
+          "2.10",
+          "40 000"
+        ],
+        [
+          "200",
+          "GA",
+          "381",
+          "583",
+          "4.64",
+          "7537"
+        ],
+        [
+          "",
+          "T&E",
+          "442",
+          "672",
+          "2.07",
+          "40 000"
+        ],
+        [
+          "300",
+          "GA",
+          "303",
+          "515",
+          "18.1",
+          "3069"
+        ],
+        [
+          "",
+          "T&E",
+          "460",
+          "725",
+          "1.95",
+          "40 000"
+        ]
+      ],
+      "header_groups": [],
+      "table_alignment_status": "resolved",
+      "row_provenance": [
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 6
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 6
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 6
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 6
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 6
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 6
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 6
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 6
+          }
+        ]
+      ],
+      "tbody_alignment_status": "resolved"
+    },
+    {
+      "caption": "RMSE of uniaxial tension simulation at different temperatures.",
+      "headers": [
+        "Temperature ( \n                               \n                                  ° \n                                  C \n                               \n                            )",
+        "RT",
+        "100",
+        "200",
+        "300"
+      ],
+      "rows": [
+        [
+          "RMSE [GA] (MPa)",
+          "7.9",
+          "8.0",
+          "6.8",
+          "6.6"
+        ],
+        [
+          "RMSE[T&E] (MPa)",
+          "16.1",
+          "16.5",
+          "7.8",
+          "10.8"
+        ]
+      ],
+      "header_groups": [],
+      "table_alignment_status": "resolved",
+      "row_provenance": [
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 5
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 5
+          }
+        ]
+      ],
+      "tbody_alignment_status": "resolved"
+    }
+  ]
+}

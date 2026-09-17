@@ -1,0 +1,1091 @@
+{
+  "doi": "10.1007/s00170-026-18661-x",
+  "title": "Physics-driven digital twin based architecture of wire arc additive manufacturing enabled by fast surrogate calculations",
+  "abstract": "Abstract This study presents a physics-driven Digital Twin (DT) architecture for Wire Arc Additive Manufacturing (WAAM) that integrates high-fidelity thermo-mechanical simulations with data-driven surrogate models to support monitoring, prediction, and closed-loop process control capabilities. The proposed multilayer framework defines interactions among physical assets, computational models, intelligent modules, and visualization services through standardized data exchange and scalable workflows. Core components of the DT, including finite-element thermal modelling, neural-network-based surrogate models, middleware integration, and communication mechanisms, are developed and quantitatively validated within the proposed architecture. Validation results obtained using a Ti-6Al-4V WAAM demonstrator show that the surrogate models reproduce the responses of the underlying finite-element models with an accuracy exceeding 95%, while reducing computational time by approximately 85–90%. The results demonstrate the feasibility of integrating physics-based and data-driven models within a unified WAAM-DT framework and establish a foundation for perspective implementation of adaptive closed-loop manufacturing systems.",
+  "journal": "The International Journal of Advanced Manufacturing Technology",
+  "year": "2026",
+  "sections": [
+    {
+      "heading": "Introduction",
+      "paragraphs": [
+        "Additive Manufacturing (AM) and Digital Twin (DT) technologies are central drivers of the Fourth Industrial Revolution, reshaping modern mechanical engineering, aerospace and shipbuilding. Among AM processes, Wire Arc Additive Manufacturing (WAAM), which builds metal components through arc-based wire deposition, has gained significant industrial traction due to its high deposition rate, scalability, energy efficiency and cost-effectiveness for large and geometrically complex structures. Despite these advantages, WAAM still suffers from process instabilities, strong sensitivity to external parameters and insufficient automation of quality assurance. Variations in heat input, microstructural heterogeneity and the stochastic nature of arc physics introduce uncertainties that reduce reproducibility and structural reliability [ 1 ,  2 – 3 ]. Even minor fluctuations in arc parameters or wire feed can induce local defects, alter microstructure or generate high residual stresses. Recent studies have shown that stable WAAM production requires coordinated control of heat flow, molten metal hydrodynamics and droplet transfer behavior, which demands advanced diagnostic and adaptive control strategies [ 4 ,  5 ].",
+        "To address these challenges, DT concepts, combining multi-sensor monitoring, physics-based modeling and artificial intelligence (AI/ML/DL), have rapidly advanced. DT enables bidirectional, high-frequency data exchange between the physical process and its virtual counterpart, supporting predictive modeling, real-time control and early defect mitigation [ 6 ,  7 – 8 ]. Although DT architectures are well established in many engineering domains, WAAM presents unique requirements, as highlighted in the SWOT analysis (Fig.  1 ). Some new studies have sought to manage the complexity of DT architectures through edge computing, standardized data protocols and more efficient computational pipelines. Kang et al. [ 9 ] demonstrated that integrating DT with edge computing under the ISO 23247 framework accelerates data processing and reduces the load on central computation nodes. Mourtzis et al. [ 5 ] introduced a DT architecture for optimizing AM surface quality in real time, offering a conceptual foundation for potential WAAM adaptation. Xu et al. [ 10 ] developed a DT-based control method for geometric accuracy, providing a mechanism for real-time correction of layer shape deviations. Fig. 1 SWOT-analysis of DT for WAAM",
+        "Other studies have focused on specific DT capabilities. Reisch et al. [ 2 ] and Li et al. [ 11 ] developed DT frameworks for defect detection and monitoring, Mu et al. [ 12 ] employed generative ML models for online deformation prediction in WAAM. Although these works represent important advances, they typically address single aspects, such as flaw detection, geometric deviations, or thermomechanical behavior, rather than a fully integrated WAAM-DT architecture. A more holistic perspective was proposed by Mathews et al. [ 13 ], who experimentally demonstrated the link between thermal cycles and residual stress formation in Ti-6Al-4 V WAAM, underscoring the need for thermomechanical validation in DT ecosystems. González et al. [ 14 ] further showed that cyber-physical integration improves energy efficiency and reduces defect formation in WAAM.",
+        "At the conceptual level, the increasing role of surrogate models has gained particular relevance. Chakraborty et al. [ 15 ] and Lwele & Shenfield [ 16 ] highlighted that surrogate-based acceleration is essential for DT computation in large AM systems. Hybrid approaches that couple physics-based models with ML approximators, as developed by Desai et al. [ 17 ] and Sun & Shi [ 18 ], provided the balance between predictive accuracy and computational speed. Surrogate strategies introduced by Tahkola et al. [ 19 ] and Alizadeh et al. [ 20 ] demonstrated the feasibility of accurately predicting multiphysics WAAM responses with limited training data. Karkaria et al. [ 3 ] showed that physically informed neural networks can perform robust DT predictions under partial or noisy sensor information. Across WAAM and wire‑arc DED, physics‑informed neural networks (PINN) and related PIML architectures provide a concrete route to unifying physical constraints (PDEs, boundary conditions, material laws) with ML‑based prediction. As Le-Duc et al. [ 21 ] show, PINNs yield fast surrogates for thermal fields, bead geometry, and distortion with reduced data needs, better long‑horizon stability, and improved interpretability compared with black‑box ML, while greatly reducing computational cost relative to high‑fidelity FEM.",
+        "Additional advancements have broadened the scope of DT integration in AM. Ben Amor et al. [ 1 ] emphasized the need for interface standardization, IoT integration and cybersecurity in AM-DT platforms. Mahdi et al. [ 22 ] proposed a WAAM-specific DT architecture with expanded middleware capabilities. Liu et al. [ 4 ] developed a visualization-centric DT for multilayer WAAM structures. Despite these developments, the central barrier to industrial deployment of physics-based DTs remains the computational cost of high-fidelity models, which constrains real-time implementation.",
+        "The reviewed studies collectively demonstrate that important progress has been achieved in applying DT concepts to AM and WAAM. However, existing approaches typically address individual functionalities, such as defect detection, geometric correction, deformation prediction, or process monitoring, rather than providing an integrated framework that combines sensing, physics-based modelling, computational acceleration, and decision-support mechanisms within a unified DT environment. Furthermore, the computational cost associated with high-fidelity thermo-mechanical simulations remains a major obstacle to the practical deployment of physics-driven DTs in industrial WAAM applications.",
+        "Motivated by these limitations, the objective of this study is to develop a physics-driven WAAM-DT architecture that integrates sensor information, thermo-mechanical finite-element simulations, and fast surrogate models into a unified cyber-physical framework capable of supporting monitoring, prediction, and perspective adaptive process control. To achieve this objective, the following research tasks were addressed: (i) formulation of the DT architecture covering hardware, middleware, and software layers; (ii) development and automation of thermo-mechanical finite-element models; (iii) creation of neural-network surrogate models for accelerated prediction of WAAM responses; (iv) development of decision-support mechanisms for process adaptation; and (v) verification and partial validation of the DT components using a Ti-6Al-4V WAAM demonstrator.",
+        "The novelty of this work lies in the development of a comprehensive physics-driven WAAM-DT architecture that integrates automated thermo-mechanical modelling, neural-network surrogate calculations, multi-layer communication mechanisms, and intelligent decision-support services within a unified framework. Unlike existing studies focusing on isolated DT functionalities, the proposed approach establishes the architectural and computational foundations necessary for future realization of adaptive closed-loop WAAM systems.",
+        "This paper is structured as follows. As Sect.  1  provides a critical review of existing DT approaches for AM and WAAM, establishing the research gap and objectives, Sect.  2  presents the methodological foundation of the proposed DT architecture, including hardware, middleware and surrogate-enhanced software, layers. Section  3  demonstrates the implementation of key architectural components, followed by Sect.  4 , which discusses limitations and future research directions. This structure enables a clear description of each DT subsystem to its function within the broader WAAM cyber-physical ecosystem, from sensing and multiphysics modeling to predictive decision-making."
+      ]
+    },
+    {
+      "heading": "Methods, materials and technology",
+      "paragraphs": []
+    },
+    {
+      "heading": "Framework requirements for DT-based WAAM architecture",
+      "paragraphs": [
+        "The WAAM framework built around the DT paradigm was designed to ensure seamless interaction among the physical system, middleware infrastructure and high-level decision-making modules. In contrast to conventional monitoring approaches, the proposed DT architecture establishes a cyber-physical environment designed to support real-time monitoring, prediction and perspective adaptive control through the integration of sensor data, physics-based simulations and machine-learning surrogate models. Thus, the hardware layer provides multi-scale sensing, deterministic actuation control and cross-domain synchronization. Its sensor architecture captures process data across fast (arc electrical signals, millisecond range), medium (thermal fields and melt-pool geometry, tens of milliseconds to seconds) and slow (accumulated distortions, residual stress development and microstructural state evolution associated with layer completion, seconds to minutes and more) temporal domains, ensuring secure, coherent and high-fidelity data acquisition. The middleware layer functions as the integration basis, enabling aggregation and buffering of high-frequency data streams, enabling propagation and management of measurement and model uncertainties through dedicated synchronization and calibration modules and ensuring cybersecurity, interoperability and scalability within industrial digital infrastructures. The software layer enables hybrid modeling that combines finite element analysis with fast surrogate computations to balance predictive accuracy and real-time computational efficiency. It incorporates model lifecycle management, physics-based evaluation modules and decision-support tools intended to assist thermal stability management, geometric correction and mitigation of residual stresses, geometric correction and mitigation of residual stresses. Interlayer communication provides bidirectional data flow, temporal alignment across domains and the use of standardized semantic models consistent with Asset Administration Shell and OPC UA information-model concepts for representing thermomechanical process states. Within the context of the proposed WAAM-DT, standardized semantic models are understood as machine-interpretable descriptions defining the meaning, attributes and relationships of entities involved in the cyber-physical system. Their primary purpose is to ensure that heterogeneous data originating from sensing devices, middleware services and computational modules are interpreted consistently throughout the DT lifecycle, in accordance with the interoperability principles adopted in ISO 23247 and RAMI 4.0 frameworks.",
+        "In the present architecture, semantic models were implemented through unified data structures describing process states, sensor metadata and simulation outputs. Typical semantic entities included deposition layer identifier, torch position and orientation, arc current and voltage, melt-pool dimensions, interlayer temperature, residual stress metrics and geometric deviation indicators. By assigning standardized descriptors to these variables, measurements obtained from the physical asset and predictions generated by surrogate modules could be integrated into a common representation of the WAAM process state. For example, the process-state object corresponding to a given deposition layer combines measured arc signals, thermographic observations and numerically predicted quantities, enabling direct comparison between physical observations and digital estimates. Such semantic consistency facilitates data exchange between Unity 3D visualization services, middleware components and computational modules, while supporting future migration toward ontology-driven implementations.",
+        "Together, these components form a DT-based WAAM framework capable of integrated data processing and predictive decision support, while providing the architectural foundation for perspective adaptive control of deposition processes, thereby enhancing structural integrity and enabling scalable deployment in industrial environments. The overall architecture is presented in Fig.  2 . According to ISO 23247 principles, the proposed architecture integrates the physical entity, digital representation, analytical services, decision-support functions and human interaction within a unified information framework, thereby establishing the foundations for a data-anchored WAAM-DT. The proposed architecture establishes a bidirectional dataflow between the physical and digital domains. Process measurements acquired from the physical asset are transferred through the monitoring and middleware layers, where uncertainty quantification, synchronization and cybersecurity procedures ensure reliable data integration. The validated information is stored within the DT knowledge base and utilized by physics-based FEM models and MLP surrogate models to generate predictive indicators of thermal, mechanical and geometric states. These outputs support the decision-making module, which evaluates the current process state against predefined criteria and determines corrective actions transmitted to the control system. In parallel, dedicated pathways provide emergency intervention, continuous model improvement and human supervision. Detailed description of the dataflow is given in Table  1 . Fig. 2 Architecture of DT-based WAAM scheme, where dataflow pathways 1–17 are given in Table  1 Table 1 Dataflow pathways within WAAM-DT architecture No Source Destination Dataflow function 1 Control system Physical asset Actuation commands and process set-points 2 Physical asset Sensor and monitoring system Process-state measurements 3 Physical asset Operator UI Process status and production information Operator UI Physical asset Manual interventions 4 Sensor and monitoring system Uncertainty quantification engine Preprocessed measurements and confidence indicators 5 Uncertainty quantification engine Cross-domain supervision and synchronization Synchronized state estimates with uncertainties 6 Cross-domain synchronization and supervision Cybersecurity module Authenticated supervisory transactions 7 Cybersecurity module Data buffering and storage Secure data archival 8 Cybersecurity module Knowledge Base Authorized knowledge access 9 Cybersecurity module Security engineer UI Security alerts and audit reports Security engineer UI Cybersecurity module Security policies and configurations 10 Cybersecurity module Emergency actions module Cybersecurity-triggered emergency actions 11 Decision Making Module Control System Adaptive control actions 12 Emergency Actions Module Control System Fail-safe commands 13 Modeler UI FEM Simulation Simulation setup and calibration 14 FEM Simulation Knowledge Base Physics-based simulation outputs 15 Knowledge Base Fast Prediction MLP Module Training and validation data Fast Prediction MLP Module Knowledge Base Surrogate predictions and updates 16 Knowledge Base Decision Making Module Predictive indicators and optimization knowledge 17 Fast Prediction MLP Module Decision Making Module Surrogate-based predictive decision support"
+      ]
+    },
+    {
+      "heading": "Physical asset and hardware",
+      "paragraphs": []
+    },
+    {
+      "heading": "System setup and technical background",
+      "paragraphs": [
+        "AM platform developed in this work centers on AUBO-i7H collaborative robot integrated with an NBC-400RP Plus MIG welding power source (Fig.  3 ), providing a flexible and high-precision robotic configuration suitable for WAAM. The 6-DOF robot enables accurate path tracking during the deposition of complex geometries, while its open communication interfaces support seamless integration of external monitoring, control subsystems and DT modules. Arc voltage and current waveforms were acquired using a WSCADA data acquisition system equipped with Xinghui Electronics LHB-300A/Y4 and LHB-T1 sensors operating at a high sampling frequency of 1500 Hz. These measurements supplied essential information on energy input, arc stability, short-circuit behavior and process irregularities during deposition. Initial signal conditioning and preprocessing were conducted in the DAQami software environment, and synchronization with lower-frequency sensing modalities through timestamp-based data alignment of these data streams in the DT-based modeling and control framework. Fig. 3 AUBO-i7H collaborative robot integrated with NBC-400RP Plus MIG welder"
+      ]
+    },
+    {
+      "heading": "Sensors and system for collecting condition parameters",
+      "paragraphs": [
+        "Process monitoring was carried out using a hybrid sensor network that integrated multi-point infrared sensors, thermocouples and strain gauges, enabling simultaneous acquisition of temperature fields and deformation responses throughout the build. This combination provided complementary thermal–mechanical data essential for synchronization and calibration of DT models. Melt-pool behavior and droplet transfer dynamics were recorded using a TARDIS IGNIS MP200 high-speed industrial camera operating at up to 1500 fps in the near-infrared range. The acquired imagery captured transient melt-pool geometry, free-surface oscillations and metal transfer modes. Feature extraction and melt-pool characterization were performed using a combination of wavelet-based image decomposition enabling deployment of DL-assisted pattern recognition. Geometric distortions and layer-wise dimensional accuracy were evaluated using a Shine 3D EinScan Pro2S structured-light scanner. Point clouds were processed in Geomagic Wrap, providing noise filtering, mesh reconstruction and surface approximation, enabling precise comparison of the as-built geometry with design CAD models."
+      ]
+    },
+    {
+      "heading": "Information analysis and middleware",
+      "paragraphs": []
+    },
+    {
+      "heading": "Data integration and uncertainty management",
+      "paragraphs": [
+        "The WAAM process produces a heterogeneous set of data streams, including high-frequency process signals (current, voltage, torch position and orientation), thermal responses and layer-by-layer geometric measurements. These data differ substantially in sampling rate, noise characteristics and encoding formats, making their integration and synchronization across multiple temporal domains a nontrivial task. To address this challenge, a message-based middleware architecture was implemented using cross-platform industrial communication standards such as OPC UA, which provide reliable, secure and scalable data exchange between distributed sensing units, edge-level services and cloud-based DT modules, as previously demonstrated by Shin [ 23 ] and Hildebrandt et al. [ 24 ]. Temporal coherence between the physical and digital domains was achieved using a hierarchical synchronization strategy combining high-precision timestamping with state-estimation techniques. Fast process variables, including arc electrical signals, were synchronized at the millisecond scale, thermal and geometric measurements were aligned through window-based aggregation, whereas slowly evolving variables such as residual stress development and microstructural state descriptors were updated at layer-completion events. This approach preserved the characteristic dynamics of each process domain while maintaining a unified representation of the DT state. In particular, Kalman-filter–based fusion approaches, similar to those reported by Tan et al. [ 25 ], were employed to align asynchronous sensor streams and generate a consistent, denoised representation of the process state. In the proposed framework, Kalman filtering primarily addressed measurement uncertainty associated with sensor noise, whereas model-form uncertainties arising from simplifications of the numerical models were handled separately through calibration and validation procedures.",
+        "Uncertainties in WAAM arose from sensor imperfections, stochastic arc behavior, material heterogeneity, environmental variations and the inherent simplifications of DT models. In this work, uncertainty was categorized into model parameter uncertainty (MPU), input uncertainty (IU) and model uncertainty (MU). MPU stemmed from incomplete or variable knowledge of material properties and thermal–mechanical process parameters and was mitigated through calibration and parameter optimization. IU reflected fluctuations in operational conditions (such as wire feed rate, shielding gas flow, ambient temperature) and was reduced through improved process control strategies, consistent with Yang et al. [ 26 ]. MU originated from assumptions and idealizations introduced in the numerical representation of WAAM phenomena and was managed through verification, calibration and comparison against experimental observations."
+      ]
+    },
+    {
+      "heading": "Data storage and cyber security",
+      "paragraphs": [
+        "The implementation of the WAAM-DT required the processing of large volumes of heterogeneous data originating from distributed sensing systems and high-fidelity numerical simulations. To support this workflow, efficient data storage architecture was developed to ensure scalability, low-latency access compatible with the decision horizons required by DT services. A hybrid storage strategy (conceptually similar to that proposed by  Wang  [ 27 ]) was adopted, combining edge-level buffering for rapid execution of supervisory DT services and perspective feedback-control functions with cloud-based distributed databases used for historical data accumulation, advanced analytics and surrogate model training.",
+        "Cybersecurity represented a critical component of the DT ecosystem, as the WAAM architecture relied on continuous bidirectional communication between physical assets and digital services, consistent with the cyber-physical integration principles of Industry 4.0 outlined by Corallo et al. [ 28 ]. Consistent with IEC 62443 recommendations, the system incorporated a security framework that employed end-to-end encryption, certificate-based device authentication and role-based access control to prevent unauthorized access, tampering, or disruption of DT operations.",
+        "Data integration, secure storage and protected communication within the middleware provided the basis for stable interaction between physical and virtual domains of WAAM. Reliable information processing, uncertainty management and compliance with cybersecurity practices ensured stable interaction between physical and virtual domains. These principles provided the groundwork for the development, integration and validation of the physics-based modeling components described in Sect.  2.4 ."
+      ]
+    },
+    {
+      "heading": "Digital representation of physical asset and software",
+      "paragraphs": [
+        "The digital representation of the physical asset within the proposed WAAM-DT architecture extends far beyond geometric reconstruction, incorporating thermomechanical states, microstructural evolution and residual stress fields that ultimately define the performance of the manufactured component. The architecture is designed to enable synchronization of these virtual representations through the fusion of multiscale sensor information and predictive computational models, thereby supporting high-fidelity reproduction of the physical process. The software layer provides the computational basis for this capability, integrating finite element (FE) models grounded in fundamental physical laws with ML-based surrogate models that enable fast prediction. A schematic illustrating the structure of the digital representation of the physical asset is shown in Fig.  4 . Fig. 4 Scheme of digital representation of the physical asset",
+        "The relationships among process entities, sensor streams, simulation objects and control variables were organized using standardized semantic concepts consistent with OPC UA information models and Asset Administration Shell principles, ensuring interoperability among heterogeneous DT components."
+      ]
+    },
+    {
+      "heading": "Physical model and its numerical representation",
+      "paragraphs": [
+        "The WAAM process involves complex multi-physics phenomena that must be accurately represented within the DT framework to enable reliable prediction and support adaptive control. The primary physical aspects include the transfer of heat from the heating source (electric arc) to the substrate and deposited layers, solidification and phase transformations during cooling and the development of residual stresses and strains. Thermal modeling is fundamentally important, as the WAAM process is dominated by transient heat conduction with localized heat input from the electric arc. The governing equation of transient heat conduction was expressed as: 1 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$c\\rho \\left(x,y,z,T\\right)\\cdot \\frac{\\partial T\\left(x,y,z\\right)}{\\partial \\tau }=\\nabla \\left[\\lambda \\left(x,y,z,T\\right)\\cdot \\nabla T\\left(x,y,z\\right)\\right]$$\\end{document} where  T  is temperature for Cartesian coordinates ( x ,  y ,  z ),  ρ, c ,  λ  are the temperature-dependent material density, specific heat capacity, thermal conductivity, respectively,  Q  is the heat energy input, approximated using Goldak’s double-ellipsoidal model. The geometric parameters of the Goldak heat source, together with the process efficiency factor, should be calibrated by matching numerically predicted fusion-zone dimensions with experimentally observed bead geometry obtained from metallographic cross-sections.",
+        "Heat dissipation through the surface occurs according to the Newton-Richmann and Stefan-Boltzmann laws and was described by the corresponding surface heat fluxes. Thus, the boundary conditions for the problem (1) were the following: 2 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$-\\lambda\\left(T\\right)\\cdot\\frac{\\partial T}{\\partial\\boldsymbol n}=\\alpha_T\\cdot\\left(T-T_0\\right)+\\varepsilon\\cdot\\sigma_{SB}\\cdot\\left(T^4-T_0^4\\right)$$\\end{document} where  n  is the normal to the surface , α T  is the heat transfer coefficient,  ε  is the emissivity the surface,  σ SB  is the Stefan-Boltzmann constant.",
+        "Temperature evolution during deposition and cooling dictates microstructural transformations. Predictive models incorporated the Johnson–Mehl–Avrami–Kolmogorov kinetics to estimate phase fractions such as martensite, ferrite, or α′ in titanium alloys.",
+        "Mechanical modeling couples the thermal field to the stress–strain response, using elasto-plastic constitutive laws with temperature-dependent properties. The increment of the strain tensor components can be represented as the following superposition, as proposed by Makhnenko et al. [ 29 ]: 3 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$d{\\varepsilon}_{ij}=d{\\varepsilon}_{ij}^{e}+d{\\varepsilon}_{ij}^{p}+{\\delta}_{ij}\\cdot d{\\varepsilon}_{T}$$\\end{document} where  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$d{\\varepsilon}_{ij}^{e}$$\\end{document} ,  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$d{\\varepsilon}_{ij}^{p}$$\\end{document} ,  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${\\delta}_{ij}\\cdot d{\\varepsilon}_{T}$$\\end{document}  are the components of the strain tensor increment due to elastic deformation mechanism, plastic deformations and the kinetics of temperature field, respectively,  i ,  j  =  x ,  y ,  z, δ ij  is Kronecker symbol.",
+        "Tensors of mechanical stresses  σ ij  and elastic strains  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$d{\\varepsilon}_{ij}^{e}$$\\end{document}  are related to each other by the generalized Hooke's law, i.e. 4 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${\\varepsilon}_{ij}^{e}=\\frac{{\\sigma}_{ij}-{\\delta}_{ij}\\cdot \\sigma }{2\\cdot G}+{\\delta}_{ij}\\cdot (K\\cdot \\sigma +\\varphi )$$\\end{document} where  K  = (1–2  ν )/ E  is the modulus of dilatation,  G  = 0.5 E /(1 +  ν ) is the shear modulus,  E  is Young modulus,  ν  is Poisson’s ratio,  σ  = ( σ xx  +  σ yy  +  σ zz )/3 is the mean value of stresses  σ ij .",
+        "The increment of instantaneous plasticity strains from the stressed state were calculated using the linear dependence of the scalar function Λ and the deviatoric component of the stress tensor, namely 5 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$d{\\varepsilon}_{ij}^{p}=d\\Lambda \\cdot ({\\sigma}_{ij}-{\\delta}_{ij}\\cdot \\sigma )$$\\end{document}",
+        "The specific value of the function Λ depends on the stress state in the considered area of the structure, as well as on the shape of the yield surface of the material Ф, which is characterized by the stress  σ s 6 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\begin{array}{c}d\\Lambda =0,\\hspace{0.33em}if\\hspace{0.33em}{\\sigma}_{i}<{\\sigma}_{s},\\\\ d\\Lambda>0,\\hspace{0.33em}if\\hspace{0.33em}{\\sigma}_{i}={\\sigma}_{s},\\\\ {\\text{state}}\\;\\hspace{0.33em}{\\sigma}_{i}>{\\sigma}_{s}\\hspace{0.33em}{\\text{is}}\\;{\\text{inadmissible}}.\\end{array}$$\\end{document}",
+        "Based on the above, the increments of the strain tensor were represented as a superposition of the increments of the corresponding components: 7 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\begin{aligned} \\Delta {\\varepsilon}_{ij}=\\Psi \\cdot \\left({\\sigma}_{ij}-{\\delta}_{ij}\\cdot \\sigma \\right)+{\\delta}_{ij}\\cdot \\left(K\\cdot \\sigma +\\Delta {\\varepsilon}_{T}\\right)\\\\-\\frac{1}{2\\cdot G}\\cdot {\\left({\\sigma}_{ij}-{\\delta}_{ij}\\cdot \\sigma \\right)}^{*}-{\\left(K\\cdot \\sigma \\right)}^{*}, \\end{aligned}$$\\end{document} where symbol \"*\" refers to the variable of the previous tracing step, 8 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\begin{array}{l}\\Psi =\\frac{1}{2\\cdot G},\\\\ if\\hspace{0.33em}{\\sigma}_{i}<{\\sigma}_{s}={\\sigma}_{T},\\\\ \\Psi>\\frac{1}{2\\cdot G},\\hspace{0.33em}if\\hspace{0.33em}{\\sigma}_{i}={\\sigma}_{s},\\\\ {\\text{state}}\\;{\\sigma}_{i}>{\\sigma}_{s}\\hspace{0.33em}{\\text{is}}\\;{\\text{inadmissible}}.\\end{array}$$\\end{document}",
+        "The determination of the function Ψ was carried out by iteration at each step of the numerical tracing within the boundary value problem of non-stationary thermoplasticity, which allowed solving the nonlinearity in the plastic flow of the material."
+      ]
+    },
+    {
+      "heading": "Finite element and neural network solutions",
+      "paragraphs": [
+        "Finite Element Method (FEM) remains the dominant approach for solving coupled thermo-mechanical problems. To enable practical implementation and computationally efficient interaction within the DT architecture, surrogate models, namely, reduced-order models and neural network approximators were integrated to replicate FEM accuracy with significantly lower computational time. In this work, the FE problem was formulated and solved using the ‘Weld Predictions’ software package. Thus, the components of the stress tensor were governed by the equilibrium equations for internal FEs and satisfy the prescribed boundary conditions on the surface ones. Correspondingly, the components of the nodal displacement increment vector Δ U i  = (Δ U ,Δ V ,Δ W ) were constrained by the associated displacement boundary conditions. The solution of the resulting system of linear algebraic equations for the nodal displacement increments at each integration step and iteration over Ψ was obtained by enforcing the principle of minimum potential energy, such that the functional  E I  is minimized, i.e. 9 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\frac{\\partial {E}_{I}}{\\partial \\Delta {U}_{m,n,r}}=0,\\frac{\\partial {E}_{I}}{\\partial \\Delta {V}_{m,n,r}}=0,\\frac{\\partial {E}_{I}}{\\partial \\Delta {W}_{m,n,r}}=0$$\\end{document} where  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${E}_{I}=-\\frac{1}{2}\\sum_{V}({\\sigma}_{ij}+{J}_{ij})\\Delta {\\varepsilon}_{ij}{V}_{m,n,r}+\\sum_{{S}_{F}}{F}_{i}\\Delta {U}_{i}\\Delta {S}_{F}^{m,n,r}$$\\end{document} ,  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\sum_{V}$$\\end{document}  and  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\sum_{{S}_{F}}$$\\end{document}  are sum operators on internal and surface FEs, respectively,  F i . are the components of the external force vector.",
+        "The efficiency of solving the system’s matrix of linear algebraic equations ultimately determines the overall computational time. To address this bottleneck, a hybrid parallel computation strategy was implemented, employing a block-structured matrix representation together with an LU-factorization scheme. This approach, as demonstrated by Velikoivanenko et al. [ 30 ], significantly accelerates the numerical solution process.",
+        "One of the key challenges in advancing physics-driven DT implementations for WAAM is achieving predictive simulation capabilities with sufficiently high computational efficiency to support decision-making within second-scale supervisory horizons relevant to DT operation. Full-scale FEM of WAAM processes according to (1)-(9), while accurate, is computationally expensive. To overcome these limitations, a fast simulation module based on a Multilayer Perceptron (MLP) neural network was developed, enabling rapid approximation of the thermo-mechanical response at the element level across the evolving structure. The proposed surrogate modeling approach was grounded in a data-driven strategy, where the MLP was trained on a numerically generated dataset derived from high-fidelity FEM simulations. The dataset consists of simulation resulted from a series of WAAM process scenarios, systematically varying critical technological (heat input, geometry of specimen, environmental conditions) and material parameters (physic-mechanical properties of material) to capture the domain of interest. The parameter space was sampled using a Latin Hypercube Sampling strategy to ensure representative coverage of the multidimensional process domain. The target outputs for the neural network corresponded to local thermal and mechanical states predicted for each FE within the deposited structure, including peak temperature, residual stress and distortion metrics. The training dataset comprised multiple WAAM configurations to ensure generalization across different geometries and boundary conditions.",
+        "The adopted MLP architecture consisted of an input layer with the number of neurons corresponding to the process and material parameters, two hidden layers with activation functions of the type, most efficient for certain technology, material and product configuration and an output layer predicting the thermo-mechanical state vector for the considered FE. The network was optimized using backpropagation and a mean-squared-error loss function  L s : 10 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${L}_{S}=\\frac{1}{N}\\cdot \\sum_{i=1}^{N}{\\left({y}_{i}-{\\widetilde{y}}_{i}\\right)}^{2}$$\\end{document} where  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${y}_{i}$$\\end{document}  and  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${\\widetilde{y}}_{i}$$\\end{document}  denote FEM and MLP predictions, respectively.",
+        "The training process utilized a dataset containing approximately 10 3 –10 4  FEM-derived instances corresponding to distinct combinations of process parameters and FE states, with data normalization applied to ensure convergence."
+      ]
+    },
+    {
+      "heading": "Decision-support logic within the WAAM digital twin",
+      "paragraphs": [
+        "The efficiency of DT-based WAAM largely depends on its capability to support timely decision-making for maintaining process stability, structural integrity and geometric accuracy. Within the proposed architecture, decision-support functions are formulated based on continuously updated process information and predictive computational models. Some parameters cannot be predicted with absolute precision, leading to deviations between simulated and actual physical processes. These include material property inhomogeneity, fluctuations in arc heat source stability, variations in heat dissipation, hydrostatic instability and gas dynamics above the molten pool. The proposed DT architecture enables adaptive adjustment of process parameters through feedback obtained from in-situ measurements, allowing decision-support modules to account for the actual state of the build and maintain key physical processes within allowable design limits.",
+        "Decision-making criteria in this context were formulated as multi-domain objectives incorporating thermal, mechanical and geometric constraints. Among these, thermal criteria are the most critical for real-time optimization, as heat input can be adjusted dynamically during the process. Several temperature-related parameters define the thermal state of the evolving structure: The maximum molten metal tempe rature ( T max ) governs fluidity and heat dissipation through radiation. To prevent overheating, the optimization must ensure that  T max  <  T max 0 , where  T max 0  is the material-specific threshold slightly above the liquidus temperature. The interlayer temperature  ( T IL ) must remain within a prescribed range to avoid excessive heat accumulation that could induce distortion, residual stresses and grain coarsening. Conversely, insufficient heating increases the risk of lack of fusion and crack initiation. Inter-pass delay (Δτ) represents one of the principal supervisory control variables, particularly for interrupted deposition sequences, as it regulates natural cooling between layers. However, depending on process constraints and production objectives, alternative strategies involving coordinated adjustment of travel speed and heat-source power may also be selected by the supervisory optimization layer. For example, for structures of axial or radial symmetry (e.g., cylinders, spheres), where layers are uninterrupted,  T IL  can also be controlled by synchronizing travel speed and heat source power to maintain constant specific energy input. Edge heating effects  represent the phenomena, when at the start of each layer, insufficient heating may cause poor fusion, while at the end heat reflection can lead to overheating and excessive melt pool fluidity. These effects are mitigated by modulating heat input over specific distances at the beginning ( d start ) and end ( d end ) of each layer. Corresponding power variations between  q max  and  q min  allow for controlled thermal gradients, reducing the likelihood of edge defects. Within the proposed DT architecture, the values of  d start  and  d end  are determined using the predicted local thermal history and accumulated bulk temperature of the evolving component, enabling adaptive compensation as build height increases. The cooling rate  (d T /d t ) is a parameter, influencing microstructural evolution and, consequently, the final mechanical properties. Although dependent on the overall thermal field and environmental conditions, it serves as a key optimization criterion within critical phase transformation ranges (e.g., 850–550 °C for steels). Generally, slower cooling promotes equilibrium microstructures, reducing metastable phases. However, for materials such as titanium alloys, excessively slow cooling can induce coarse-grained structures. Therefore, material-specific optimal cooling rates must be established and maintained.",
+        "Another class of decision-making criteria was associated with the positioning of the heat source, which must account for both the prescribed deposition trajectory and the evolving distortion state of the part during WAAM. In this context, the primary control parameters included the spatial coordinates of the torch relative to the nominal toolpath, as well as the deviation of the actual product geometry from the design envelope and tolerance allowances.",
+        "The analysis of structural deformation and its compliance with geometric tolerances was performed based on the results of a 3D scan of the object, as effective approach for AM, also used by Rausch et al. [ 31 ], Chen et al. [ 32 ]. The proposed methodology enabled high-precision verification of geometric deviations in products manufactured via the WAAM process, relative to their reference 3D CAD models. The software implementation was based on the comparison of two representations of the same geometry: the original CAD model and a point cloud acquired from the physical object. The solution was structured as a sequential pipeline, namely, from meticulous data preparation to the computation of signed deviations, followed by visualization and quantitative interpretation.",
+        "In the preparation stage, source data were imported, a CAD model (e.g., STEP or IGES) and a corresponding scan point cloud. The raw scan was preprocessed via noise filtering, outlier removal, point-density equalization and optional smoothing to improve data quality and computational efficiency. To align representations, the point cloud was registered to the CAD coordinate system using a point-to-plane iterative closest-point (ICP) refinement, with the CAD model fixed; the resulting rigid transformation and convergence criteria were stored to ensure reproducibility.",
+        "Following registration, the CAD geometry was discretized via controlled polygonal tessellation, converting continuous NURBS or spline surfaces into triangular or quadrilateral meshes (Fig.  5 ). This uniform reference mesh facilitated consistent calculation of normal distances between mesh elements and nearby cloud points and served as a stable “reference carrier” for accurate, reproducible deviation analysis across the product surface. Fig. 5 Discretization of a continuous surface of a CAD model controlled by polygonal tessellation",
+        "Deviation analysis was performed through local comparisons between the scan and reference mesh. For each cloud point, the nearest mesh fragment was identified and the normal distance to its tangent plane was computed (Fig.  6 ). Positive deviations indicated material excess, while negative values denoted under-deposition. Reliability checks based on normal consistency and local point density excluded uncertain estimates from statistical summaries and visualization. Fig. 6 Selecting a fragment of the reference grid for a set of points from the cloud, calculating distances to the tangent plane of the fragment along its normal and aggregating the points for statistical evaluation",
+        "Results were visualized as color-coded deviation maps on the reference mesh (Fig.  6 ), with a symmetrical scale around zero, where ‘warm’ colors mark material excess and ‘cool’ colors indicate deficiency, allowing both intuitive and quantitative assessment. This pipeline, integrating scan preprocessing, registration, tessellation, directional deviation computation and visualization, provides a reproducible and scalable framework for verifying geometric conformity of WAAM parts to their CAD models, accounting for measurement characteristics and surface waviness.",
+        "Specific parameters were grouped according to their dominant actuation bandwidth: (i) fast controls (arc power and wire-feed modulation) influencing melt-pool dynamics at millisecond-to-subsecond scales; (ii) medium controls (torch motion rate, micro-path adjustments and local orientation) operating at tens of milliseconds to seconds; and (iii) slow controls (inter-pass dwell time, global path replanning and preheating strategies) acting over seconds to minutes. Each group was governed by an independent controller optimizing objectives associated with its primary physical domain. A supervisory optimization layer coordinated these controllers through hierarchical multi-objective decision-making, prioritizing hard constraints related to safety and process stability while minimizing weighted deviations from geometric, thermal and productivity objectives. To coordinate the interaction between controllers operating at different bandwidths, the supervisory layer was formulated as a constrained multi-objective optimization problem. The overall objective function was expressed as 11 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$J={w}_{T}{J}_{T}+{w}_{G}{J}_{G}+{w}_{M}{J}_{M}$$\\end{document} where  J T ,  J G ,  J M  are the thermal, geometric, and mechanical objective functions, respectively,  w T ,  w G ,  w M  are application-dependent weighting coefficients reflecting their relative importance.",
+        "The thermal objective  J T  is associated with melt-pool stability and heat accumulation control and includes criteria related to maintaining the maximum temperature and interlayer temperature within prescribed limits. The geometric objective  J G  minimizes deviations between the manufactured component and the nominal CAD model based on in-situ measurements and geometric reconstruction. The mechanical objective  J M  is aimed at reducing residual stresses, distortions and the risk of crack initiation arising from unfavorable thermal histories.",
+        "Because violations of thermal stability may lead to immediate process failure, fast-loop thermal criteria were treated as hard constraints defining the feasible operating region. Within this admissible domain, medium- and slow-bandwidth objectives associated with geometric accuracy and structural integrity were optimized. Consequently, local corrective actions ensuring melt-pool stability always take precedence over longer-term objectives, while the supervisory optimizer continuously seeks a compromise solution that minimizes the overall performance index without violating safety limits.",
+        "For each control parameter  p  a local objective  J p  and constraint set  C p  should be defined. The local optimization problem solved at time  t  is: 12 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\underset{p\\left(t\\right)}{\\text{m}\\text{i}\\text{n}}\\left[{J}_{p}\\left(t,p\\right)\\right]s.t.{p}_{min}\\le p(t)\\le {p}_{max}, {C}^{p}(t)$$\\end{document} where  p min  and  p min  determine the allowable numerically assessed horizon of parameter  p  values and  C p  includes actuator limits and safety thresholds. The numerical values of decision thresholds and weighting coefficients are material- and application-dependent and should be established during process qualification and technology optimization."
+      ]
+    },
+    {
+      "heading": "Cyber-physical feedback loop for WAAM",
+      "paragraphs": [
+        "The proposed bidirectional cyber-physical feedback framework for WAAM establishes the mechanisms required to integrate the hardware, middleware and software layers into a synchronized interaction between the deposition process and its DT. Sensor data collected during fabrication were streamed into the DT environment to update the process-state representation and to evaluate deviations from target thermal, mechanical and geometric states established through simulations, calibration procedures and experimentally defined acceptance criteria. Based on this comparison, the software layer computed optimized corrective actions and transmited them through the middleware to the hardware actuators, while a dedicated safety module was designed to provide immediate shutdown capability when abnormal conditions were detected. Through the integration of sensing, predictive computation and actuation pathways, the proposed DT architecture enables decision-support and adaptive control functionalities intended to maintain melt-pool stability, interlayer bonding quality and controlled microstructural development during complex multilayer builds. Consistent with ISO 23247 principles, the feedback framework supports the transformation of physical observations into digital insights and actionable recommendations, thereby closing the information loop between the physical asset and its digital representation."
+      ]
+    },
+    {
+      "heading": "Results and discussion",
+      "paragraphs": [
+        "Present study focuses on the architectural and methodological aspects of the proposed WAAM-DT, rather than on its full closed-loop implementation. Emphasis is placed on the development and evaluation of key components that enable DT functionality, including physics-based modeling, surrogate modeling, middleware-facilitated data integration and quantitative performance assessment. The partial implementation presented here validates critical technological elements, such as finite element modeling, surrogate modeling and middleware-based data integration and quantitatively assesses their performance. These results demonstrate the feasibility of the architecture and establish a foundation for future full-scale deployment and validation on a robotic WAAM platform and establish the basis for higher levels of DT maturity involving integrated cyber-physical validation."
+      ]
+    },
+    {
+      "heading": "Validation of physics-based and surrogate components of the WAAM-DT",
+      "paragraphs": [
+        "To validate the functionality and demonstrate the applicability of individual modules within the proposed DT architecture, a practical case study was conducted involving the layer-by-layer deposition of a compact T-shaped Ti-6Al-4V specimen fabricated by WAAM, which represents a representative benchmark for the optimization of layer-by-layer WAAM deposition strategies. The recommended process parameters are as follows: the grafting material is a titanium rod with a diameter of 1.6 mm, the heat source power is 4.5 kW, the consumable material feed rate is 14 mm/s, the motion rate is 14 mm/s. To determine the influence of the geometric features of the product. More detailed description of input data, results of heat source calibration provided in the work of Milenin et al. [ 33 ]. The thermal fields indicate the progressive accumulation of heat during the initial deposition stages, followed by the establishment of a quasi-stationary thermal regime after approximately the fourth deposited layer (Fig.  7 ). This behavior results from the balance between the heat introduced during deposition and heat dissipated through conduction into the substrate and radiation/convection from the exposed surfaces. Once this equilibrium is reached, subsequent layers experience similar thermal histories. The optimization objectives for this process included: maintaining thermal stability throughout the build height, analyzing residual stress and strain distributions to ensure compliance with design requirements and minimizing geometric distortion. Fig. 7 Temperature distribution at layer-by-layer deposition of a compact T-shaped specimen: ( a ) at 5-th layer; ( b ) at 25-th layer",
+        "Analysis of the residual stress distribution across the sample cross-section revealed characteristic zones of elevated tensile stress near the interlayer boundaries, as well as localized compressive regions arising from uneven cooling (Fig.  8 ). The calculated stress fields show strong agreement with the results reported by Zhou et al. [ 34 ] and Mathews et al. [ 35 ], supporting the appropriateness of the adopted physical assumptions and boundary conditions incorporated in the model. Fig. 8 Distribution of residual stresses in the cross-section of a T-profile product",
+        "While the influence of individual process parameters on residual stress profiles is relatively minor, these factors can be accounted for when defining post-deposition treatments or specifying maximum allowable temperatures for each pass. Residual geometric deformations, such as bending induced by non-uniform shrinkage, remain difficult to control due to the complex interaction between thermal gradients and restraint conditions. However, these deformations can be mitigated through strategic design adjustments, such as optimizing the geometric proportions of the part, in combination with controlled interpass temperature management and, if necessary, post-process correction techniques (Fig.  9 ). These observations are further consistent with previously reported analyses by Makhnenko et al. [ 36 ]. Fig. 9 Residual bending of the 70 mm length T-profile specimen ( a ) and dependence of the residual bending of the T-profile structural element on its length after removal of the clampings ( b )",
+        "To identify an optimal configuration and evaluate the performance of the fast prediction module, MLP-based model was evaluated for predicting the residual stress state of WAAM-built structures after the deposition of the first layer. The reference dataset for training and validation was generated using a series of high-fidelity FE simulations. The parameter combinations were generated using a Latin Hypercube Sampling strategy to ensure representative coverage of the multidimensional process domain. The synthesized dataset consisted of nodal and elemental responses extracted from FE models, including temperature, stress and strain components, which exhibit varying magnitudes and signs. To maintain numerical stability during training and improve convergence, all features were normalized to the range [0,1]. The primary input features for the network included: input energy, material yield stress, initial plate thickness, heat source motion rate. The first deposited layer was selected as a benchmark case because it provides a well-defined thermo-mechanical state while retaining the dominant process sensitivities required for surrogate development. The outputs corresponded to predicted thermal and mechanical states (temperature, stress and strain tensors) for each FE of the deposited structure. The dataset was partitioned into training (70%), validation (15%) and testing (15%) subsets The MLP architecture comprised a fully connected network with an input layer, two hidden layers and an output regression layer. To determine the optimal activation function and data normalization scheme, four activation functions were evaluated: Exponential Linear Unit (ELU), Softsign, hyperbolic tangent (Tanh) and Sigmoid. As shown in Fig.  10 , Tanh demonstrated better accuracy and stability compared to other candidates. The network was trained using a stochastic gradient descent optimizer with an initial learning rate of 0.1, minimizing the mean squared error loss. Each hidden layer contained 50 neurons and convergence was achieved after approximately 20000 epochs. The resulting model achieved a coefficient of determination  R 2  > 0.95 across outputs on test set, indicating good predictive accuracy. Fig. 10 Comparison of the results of the FEM of the residual stress state in the plate after surfacing the first layer (left side) with prediction based on the MLP-module with different activation functions (right side): ( a ) Exponential Linear Unit (ELU), ( b ) Softsign, ( c ) hyperbolic tangent (Tanh), ( d ) Sigmoid"
+      ]
+    },
+    {
+      "heading": "Computational efficiency and predictive accuracy",
+      "paragraphs": [
+        "To assess the efficiency of the proposed hybrid architecture, a series of computational experiments was conducted to compare physically based FEM modeling with surrogate modeling using MLP neural network. The results demonstrate that the surrogate model reduces computation time by 85–90% on average while maintaining high predictive accuracy. The average relative deviation of temperature peaks was below 3% and ultimate stress differed by approximately 5% compared to reference FEM results. This indicates that the MLP model reliably reproduces key physical characteristics of the process while providing approximately three orders of magnitude reduction in prediction time for the considered case.",
+        "Resource analysis showed that full FEM simulation of a single Ti-6Al-4V deposition layer on a standard workstation required approximately 2 h of processor time, whereas the trained MLP network reduced this to approximately 6–8 s without significant loss of predictive accuracy. The reported execution time included auxiliary computational overhead associated with data transfer, storage operations and visualization procedures, thereby reflecting practical deployment conditions rather than isolated inference performance. Therefore, the hybrid FEM–MLP approach achieves an important balance between computational efficiency and accuracy, which is critical for near-real-time decision-support and supervisory optimization within the proposed DT architecture. These results confirm that the developed architecture enables practical integration of physics-based and ML components, combining the predictive fidelity of deterministic models with the adaptability of neural networks. Consequently, the proposed approach provides the computational basis for intelligent WAAM process monitoring, prediction and decision-support functionalities. Although the surrogate model exhibited strong predictive capability within the trained domain, systematic assessment of its extrapolation performance beyond the calibration space remains necessary for establishing the operational limits and transferability of the proposed DT framework.",
+        "To evaluate the efficiency of hybrid parallel algorithms in FE simulations, a series of benchmark studies was conducted focusing on the coupled evolution of the temperature field and the corresponding stress–strain state. The performance assessment was based on execution time, with acceleration defined as the ratio between the runtime of a given parallel computation and that of a reference single-core CPU execution. Comparisons were performed across various hardware configurations, incorporating different numbers of CPUs and GPUs. Figure  11  presents the acceleration factors obtained on the SKIT-4 high-performance computing cluster, where multiple parallelization strategies and node architectures were systematically investigated. The results demonstrate substantial performance gains (with acceleration factors reaching values of up to 70) for the FE solution of the nonstationary thermoplasticity problem. Although the DT implementation primarily relies on surrogate calculations during operation, HPC-based FEM simulations remain essential for offline model generation, calibration and periodic updating of surrogate models. Fig. 11 The influence of computing architectures on acceleration (relation of the calculation time to one CPU calculation without parallelization) [ 30 ]"
+      ]
+    },
+    {
+      "heading": "Decision-support scenarios within the proposed WAAM-DT architecture",
+      "paragraphs": [
+        "The following examples illustrate how the proposed DT architecture can utilize thermomechanical predictions and process-state information to generate decision-support recommendations under representative WAAM conditions. In the case of WAAM of titanium alloys and specifically the T-shaped Ti-6Al-4V specimen, the formulation of decision-making criteria requires quantitative thresholds that reflect the interplay between thermal, mechanical and geometric domains. Experimental and numerical evidence indicate that for Ti-6Al-4V the overheating over liquidus temperature up to 100 °C (means 1760 °C) allows formation of defect-free structure, while overheating above 2000 °C induces excessive vaporization and instability of the arc–pool interaction. Therefore, maintaining  T max  within this range serves as a hard safety constraint for the DT-controlled process. Optimal  T IL  values for titanium alloys are typically in the range of 200–350 °C considered most favorable to ensure adequate fusion while preventing grain coarsening.  T IL  can be controlled both through the adjustment of inter-pass delay and through dynamic modulation of torch travel speed and power.",
+        "Edge heating effects are particularly pronounced in complex geometries where heat reflection and accumulation occur at layer ends. Controlled modulation of arc power within 5–10 mm before the start and end of each layer, with amplitude variations of ± 10–20% of the nominal power, minimizes underheating and overheating. Similarly, the cooling rate (d T /d t ) influences the final microstructure. For Ti-6Al-4V, maintaining a cooling rate between 5–25 °C/s prevents coarse α-grain growth or martensitic α`-phase formation. Geometric constraints impose additional criteria that states that the out-of-plane deflection of the T-shelf must not exceed 0.5 mm and overall geometric deviation from the CAD model must remain within ± 0.5 mm to satisfy typical tolerance requirements. Achieving these conditions requires continuous adjustment of torch positioning accuracy ± 0.1–0.2 mm and, when necessary, global path re-planning to compensate for thermal distortion.",
+        "Finally, the supervisory optimizer integrates these criteria across time scales. Within the proposed architecture, fast control loops (millisecond–subsecond) are intended to govern melt-pool stability through arc-power and wire-feed modulation. Medium-bandwidth loops (tens of milliseconds to seconds) are designed to refine trajectory and orientation to ensure layer continuity, while slow loops (seconds to tens of seconds) are intended to regulate inter-pass cooling and global geometry. This hierarchical framework provides the mechanism through which the DT can reconcile cross-domain trade-offs while enforcing material-specific constraints. These data are summarized in Table  2 . Table 2 Decision-making criteria and characteristic parameter values for DT-assisted WAAM of a T-shaped Ti-6Al-4V specimen Domain Parameter Control variable Typical range/value Time scale Optimization objective/constraint Thermal Maximum molten pool temperature ( T max ) Arc power ( q ), wire feed rate 1900–2000 °C (liquidus ≈ 1660 °C,  T max 0  ≈ 2000 °C) Fast (ms-s) Maintain  T max  <  T max 0  to prevent overheating, ensure fluidity without excessive radiation loss Interlayer temperature ( T IL ) Inter-pass delay (Δτ); torch travel speed; power modulation 200–450 °C (optimum ≈ 300 °C for Ti-6Al-4 V) Slow–Medium (s-tens of s) Avoid excessive heat accumulation (> 450 °C); ensure good fusion (> 200 °C); balance grain growth vs. cracking risk Edge heating (start/end of bead) Arc power ramping ( q max  →  q min ), modulation over  d start ,  d end d start ,  d end  ≈ 5–10 mm; power modulation ± 10–20% of nominal Medium (tens of ms–s) Prevent underheating at start and overheating at bead ends; reduce porosity and lack of penetration defects Cooling rate (d T /d t ) Arc power; plasma gas flow rate; auxiliary cooling 5–25 °C/s (target range for Ti-6Al-4 V to avoid coarse α grains or martensitic α`-phase formation) Medium (s) Maintain controlled cooling: avoid < 5 °C/s (coarse grains) or > 100 °C/s (martensitic microstructures) Geometric Torch positioning accuracy Torch spatial coordinates ( x , y , z ); local orientation  ± 0.1–0.2 mm (with vision-based correction) Fast–Medium (ms–s) Maintain alignment with CAD toolpath; compensate for thermal distortion Product geometry deviation Global toolpath re-planning; deposition sequence adjustment Allowable deviation ≤ 0.5 mm from CAD model Slow (s–tens of s) Ensure dimensional tolerance for T-specimen geometry (shelf thickness, stem height) Distortion and residual deformation Torch trajectory planning; clamping/boundary conditions Out-of-plane deflection < 0.5 mm for T-shelf Slow (s–tens of s) Ensure dimensional stability and assembly compatibility Supervisory Cross-domain trade-offs Hierarchical optimizer integrating thermal, mechanical, geometric controllers Safety limits: 1760 <  T max 0  < 2000 °C;  T IL  ≈ 200–350 °C; Δ geometry  ≤ 0.5 mm Hybrid (multi-scale) Resolve conflicts between thermal stability, mechanical stress relief and geometric accuracy",
+        "The analysis of technological parameters governing thermomechanical behavior during layer formation enabled the identification of quantitative links between process modes and the resulting thermal, mechanical and geometric responses. The parameters with the strongest influence were shown to control energy balance, temperature fields and residual stress evolution. Inter-pass delay, in particular, regulates cooling intensity and stress relaxation. Pauses of 1–6 s stabilize the moving temperature field in the heating source region, partially relieve thermal stresses and lower crack susceptibility, whereas excessive cooling increases interlayer temperature differentials and compromises fusion quality that corresponds to the results of Ahmad et al. [ 37 ]. As an illustrative case, the temperature field stabilization during successive layer deposition due to heat dissipation after each layer was examined.",
+        "As shown in Fig.  12 , the computed dependence of inter-pass delay on layer number indicates that a quasi-stationary thermal regime is established after approximately four deposited layers. This behavior results from the gradual increase in thermal mass and heat accumulation within the structure until a balance is reached between heat input during deposition and heat dissipation through conduction, convection and radiation. Beyond this point, successive layers experience similar thermal histories, leading to nearly constant inter-pass cooling requirements and more stable melting-solidification conditions. The presented examples illustrate the operation of the decision-support logic embedded within WAAM-DT architecture. Although the complete autonomous closed-loop implementation was beyond the scope of the present study, the obtained results demonstrate the feasibility of generating physically informed recommendations for process adaptation based on continuously updated digital representations.  Fig. 12 Dependence of the delay time between the deposition of the T-profile product layers ( a ) and the corresponding dependence of the penetration depth in the central and end sections ( b )"
+      ]
+    },
+    {
+      "heading": "Limitations and development perspectives",
+      "paragraphs": [
+        "The present work corresponds to an intermediate DT maturity stage characterized by validated digital representations, surrogate-enhanced prediction and decision-support capabilities, while fully autonomous closed-loop implementation remains a subsequent development objective. Although the presented study successfully demonstrates the feasibility of physics-driven WAAM-DT architecture, several limitations and directions for future development remain to be addressed. They are as follows:",
+        "1. The accuracy of surrogate predictions decreases when extrapolated beyond the trained process window or applied to new materials and geometries. Further research is required to develop adaptive or transfer-learning-based surrogate models capable of maintaining predictive accuracy under broader manufacturing conditions. Particular emphasis should be placed on progressively incorporating data acquired during actual WAAM operation to complement simulation-generated datasets and improve surrogate robustness under industrial conditions.",
+        "2. The proposed DT architecture has been partially validated using a limited set of experimental data for Ti-6Al-4V alloy under laboratory conditions. However, large-scale industrial validation, including different materials, complex multi-layer geometries and varying environmental conditions, is necessary to generalize the architecture. Full real-time bidirectional coupling remains constrained by sensor latency and middleware communication performance.",
+        "3. Although uncertainty management is introduced conceptually, full probabilistic treatment of input and model uncertainties is not yet implemented. Future development will involve Bayesian frameworks for dynamic uncertainty propagation and confidence-based decision-making. The inclusion of explainable AI components would increase the interpretability and reliability of automated control actions.",
+        "4. To further enhance efficiency, the proposed DT should be integrated with broader production management systems, cloud platforms and Industry 4.0/5.0 frameworks. Future directions include the development of standardized data exchange interfaces, the reinforcement of cybersecurity measures and the implementation of ontology-driven data models to ensure interoperability across diverse WAAM platforms and production ecosystems.",
+        "5. This implementation primarily addresses process efficiency and the structural integrity of the produced components, without accounting for sustainable production aspects. Future studies should incorporate indicators such as energy efficiency, material utilization and carbon footprint. Such an approach would enable evaluation of how optimization of the WAAM process through DT can contribute to reducing environmental impact and promoting closed-loop raw material processing."
+      ]
+    },
+    {
+      "heading": "Conclusions",
+      "paragraphs": [
+        "Within the framework of this study, a physically based DT for layer-by-layer WAAM was developed and partially validated. This DT integrates models across multiple levels, ranging from thermomechanical simulations and surrogate prediction to decision-support functionalities intended for adaptive process optimization. The research addressed the scientific objectives outlined in the introduction and confirmed the achievement of the primary goal, namely, the establishment of a WAAM-DT architecture capable of supporting intelligent decision-making and process optimization. The following scientific and applied research tasks were accomplished: A modular DT framework for WAAM technology was formulated, incorporating multi-domain sensor subsystems, middleware with event-oriented data-exchange and a hybrid modeling layer that combines physics-based and data-driven approaches. The framework enables scalable data management, time synchronization between physical and digital components and compliance with industrial cybersecurity standards. This framework enables synchronized interaction between physical and digital representations and supports decision-making based on continuously updated process information. A finite-element thermomechanical model was developed to analyze non-stationary heat transfer, as well as the formation of residual stresses and strains during multilayer surfacing. Implemented in  Weld Predictions  solver, the model demonstrated substantial reductions in computation time through hybrid parallelization while maintaining high predictive accuracy supporting surrogate development and DT updating. MLP surrogate model was constructed using an extensive dataset generated from thousands of WAAM process simulations. The model enabled rapid prediction of interlayer temperature, cooling rate and geometric indicators relevant for optimization of complex WAAM processes. The neural network achieved a coefficient of determination  R 2  > 0.95 and reliably reproduced local thermomechanical responses at a fraction of the computational cost of full FEM analysis while reducing prediction time from approximately 2 h to 6–8 s. A decision-support framework was formulated based on thermal, mechanical and geometric criteria for Ti-6Al-4 V alloy, incorporating hierarchical feedback concepts (fast, medium and slow timescales) applicable to arc power, wire-feed modulation and inter-pass scheduling. This structure provides the basis for maintaining stable melting conditions, controlled heat distribution and improved geometric consistency. Validation performed on a T-shaped Ti-6Al-4V demonstrator confirmed the reliability of individual DT modules, particularly with respect to temperature prediction and geometric assessment. The obtained results demonstrated stable thermomechanical trends and reproducible surrogate predictions consistent with the intended decision-support functionality of the proposed architecture.",
+        "In summary, this study establishes the scientific and methodological foundation for WAAM-DT integrating multiphysics modeling, surrogate prediction and multi-domain sensing within unified cyber-physical architecture. The developed framework provides the basis for progressive realization of adaptive and self-correcting functionalities as DT maturity advances. It therefore represents an important step toward next-generation intelligent manufacturing systems aimed at improving the quality, efficiency and reliability of additive manufacturing technologies."
+      ]
+    }
+  ],
+  "tables": [
+    {
+      "caption": "Dataflow pathways within WAAM-DT architecture",
+      "headers": [
+        "No",
+        "Source",
+        "Destination",
+        "Dataflow function"
+      ],
+      "rows": [
+        [
+          "1",
+          "Control system",
+          "Physical asset",
+          "Actuation commands and process set-points"
+        ],
+        [
+          "2",
+          "Physical asset",
+          "Sensor and monitoring system",
+          "Process-state measurements"
+        ],
+        [
+          "3",
+          "Physical asset",
+          "Operator UI",
+          "Process status and production information"
+        ],
+        [
+          "",
+          "Operator UI",
+          "Physical asset",
+          "Manual interventions"
+        ],
+        [
+          "4",
+          "Sensor and monitoring system",
+          "Uncertainty quantification engine",
+          "Preprocessed measurements and confidence indicators"
+        ],
+        [
+          "5",
+          "Uncertainty quantification engine",
+          "Cross-domain supervision and synchronization",
+          "Synchronized state estimates with uncertainties"
+        ],
+        [
+          "6",
+          "Cross-domain synchronization and supervision",
+          "Cybersecurity module",
+          "Authenticated supervisory transactions"
+        ],
+        [
+          "7",
+          "Cybersecurity module",
+          "Data buffering and storage",
+          "Secure data archival"
+        ],
+        [
+          "8",
+          "Cybersecurity module",
+          "Knowledge Base",
+          "Authorized knowledge access"
+        ],
+        [
+          "9",
+          "Cybersecurity module",
+          "Security engineer UI",
+          "Security alerts and audit reports"
+        ],
+        [
+          "",
+          "Security engineer UI",
+          "Cybersecurity module",
+          "Security policies and configurations"
+        ],
+        [
+          "10",
+          "Cybersecurity module",
+          "Emergency actions module",
+          "Cybersecurity-triggered emergency actions"
+        ],
+        [
+          "11",
+          "Decision Making Module",
+          "Control System",
+          "Adaptive control actions"
+        ],
+        [
+          "12",
+          "Emergency Actions Module",
+          "Control System",
+          "Fail-safe commands"
+        ],
+        [
+          "13",
+          "Modeler UI",
+          "FEM Simulation",
+          "Simulation setup and calibration"
+        ],
+        [
+          "14",
+          "FEM Simulation",
+          "Knowledge Base",
+          "Physics-based simulation outputs"
+        ],
+        [
+          "15",
+          "Knowledge Base",
+          "Fast Prediction MLP Module",
+          "Training and validation data"
+        ],
+        [
+          "",
+          "Fast Prediction MLP Module",
+          "Knowledge Base",
+          "Surrogate predictions and updates"
+        ],
+        [
+          "16",
+          "Knowledge Base",
+          "Decision Making Module",
+          "Predictive indicators and optimization knowledge"
+        ],
+        [
+          "17",
+          "Fast Prediction MLP Module",
+          "Decision Making Module",
+          "Surrogate-based predictive decision support"
+        ]
+      ],
+      "header_groups": [],
+      "table_alignment_status": "resolved",
+      "row_provenance": [
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 8,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 8,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 8,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 8,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 9,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 9,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 9,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 9,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 10,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 10,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 10,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 10,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 11,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 11,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 11,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 11,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 12,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 12,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 12,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 12,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 13,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 13,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 13,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 13,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 14,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 14,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 14,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 14,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 15,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 15,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 15,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 15,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 16,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 16,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 16,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 16,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 17,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 17,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 17,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 17,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 18,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 18,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 18,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 18,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 19,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 19,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 19,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 19,
+            "source_col": 4
+          }
+        ]
+      ],
+      "tbody_alignment_status": "resolved"
+    },
+    {
+      "caption": "Decision-making criteria and characteristic parameter values for DT-assisted WAAM of a T-shaped Ti-6Al-4V specimen",
+      "headers": [
+        "Domain",
+        "Parameter",
+        "Control variable",
+        "Typical range/value",
+        "Time scale",
+        "Optimization objective/constraint"
+      ],
+      "rows": [
+        [
+          "Thermal",
+          "Maximum molten pool temperature ( T max )",
+          "Arc power ( q ), wire feed rate",
+          "1900–2000 °C (liquidus ≈ 1660 °C,  T max 0  ≈ 2000 °C)",
+          "Fast (ms-s)",
+          "Maintain  T max  <  T max 0  to prevent overheating, ensure fluidity without excessive radiation loss"
+        ],
+        [
+          "",
+          "Interlayer temperature ( T IL )",
+          "Inter-pass delay (Δτ); torch travel speed; power modulation",
+          "200–450 °C (optimum ≈ 300 °C for Ti-6Al-4 V)",
+          "Slow–Medium (s-tens of s)",
+          "Avoid excessive heat accumulation (> 450 °C); ensure good fusion (> 200 °C); balance grain growth vs. cracking risk"
+        ],
+        [
+          "",
+          "Edge heating (start/end of bead)",
+          "Arc power ramping ( q max  →  q min ), modulation over  d start ,  d end",
+          "d start ,  d end  ≈ 5–10 mm; power modulation ± 10–20% of nominal",
+          "Medium (tens of ms–s)",
+          "Prevent underheating at start and overheating at bead ends; reduce porosity and lack of penetration defects"
+        ],
+        [
+          "",
+          "Cooling rate (d T /d t )",
+          "Arc power; plasma gas flow rate; auxiliary cooling",
+          "5–25 °C/s (target range for Ti-6Al-4 V to avoid coarse α grains or martensitic α`-phase formation)",
+          "Medium (s)",
+          "Maintain controlled cooling: avoid < 5 °C/s (coarse grains) or > 100 °C/s (martensitic microstructures)"
+        ],
+        [
+          "Geometric",
+          "Torch positioning accuracy",
+          "Torch spatial coordinates ( x , y , z ); local orientation",
+          "± 0.1–0.2 mm (with vision-based correction)",
+          "Fast–Medium (ms–s)",
+          "Maintain alignment with CAD toolpath; compensate for thermal distortion"
+        ],
+        [
+          "",
+          "Product geometry deviation",
+          "Global toolpath re-planning; deposition sequence adjustment",
+          "Allowable deviation ≤ 0.5 mm from CAD model",
+          "Slow (s–tens of s)",
+          "Ensure dimensional tolerance for T-specimen geometry (shelf thickness, stem height)"
+        ],
+        [
+          "",
+          "Distortion and residual deformation",
+          "Torch trajectory planning; clamping/boundary conditions",
+          "Out-of-plane deflection < 0.5 mm for T-shelf",
+          "Slow (s–tens of s)",
+          "Ensure dimensional stability and assembly compatibility"
+        ],
+        [
+          "Supervisory",
+          "Cross-domain trade-offs",
+          "Hierarchical optimizer integrating thermal, mechanical, geometric controllers",
+          "Safety limits: 1760 <  T max 0  < 2000 °C;  T IL  ≈ 200–350 °C; Δ geometry  ≤ 0.5 mm",
+          "Hybrid (multi-scale)",
+          "Resolve conflicts between thermal stability, mechanical stress relief and geometric accuracy"
+        ]
+      ],
+      "header_groups": [],
+      "table_alignment_status": "resolved",
+      "row_provenance": [
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 6
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 6
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 6
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 6
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 6
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 6
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 6
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 6
+          }
+        ]
+      ],
+      "tbody_alignment_status": "resolved"
+    }
+  ]
+}

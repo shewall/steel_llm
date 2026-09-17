@@ -1,0 +1,1215 @@
+{
+  "doi": "10.1007/s40192-026-00462-5",
+  "title": "Implementation of Deep Learning-Based Segmentation for Quantitative Microstructure Analysis and 3D Reconstruction in Aluminum Alloys",
+  "abstract": "Abstract Manual quantitative analysis of large microstructural datasets is a challenging process. To address this, we present a novel pipeline for automated microstructure segmentation and 3D reconstruction in aluminum alloys, combining Mask R-CNN with a custom reconstruction algorithm. Datasets generated from light optical microscopy (LOM), computed tomography (CT) and phase field simulations (PFS) were used to train and evaluate the Mask R-CNN deep learning model. The alloys investigated include AlSi6Cu4Fe1, AlSi6Cu4Fe2 and AlCu10. The microstructures in sections comprise needle-like intermetallic precipitates and irregularly shaped precipitates in the former two alloys, and columnar dendrites formed during directional solidification in the latter. A 3D reconstruction algorithm was developed to generate three-dimensional representations from CT slices of individual dendrites and full monolithic structures of interconnected precipitates based on the Mask R-CNN detections. This reconstruction algorithm was validated using a 3D dataset from phase-field simulations to ensure accuracy and reliability. The deep learning model consistently achieved high detection accuracy across LOM and CT datasets for all investigated microstructural objects, reaching average accuracy of 73%, average precision of 82%, average recall of 79%, and average F1 score of 79%. Additionally, the model demonstrates the ability to distinguish specific geometries that traditional contrast- or color-based techniques cannot reliably differentiate. Furthermore, the 3D reconstruction method enhances the deep learning model capabilities by enabling three-dimensional visualization as well as qualitative and quantitative analyses of the detected objects. An example of quantitative analysis presented in this study includes the calculation of growth misorientation of the reconstructed directionally solidified dendrites.",
+  "journal": "Integrating Materials and Manufacturing Innovation",
+  "year": "2026",
+  "sections": [
+    {
+      "heading": "Introduction",
+      "paragraphs": [
+        "Machine learning (ML) methods have been extensively applied across a wide range of scientific disciplines, including astrophysics, archaeology, chemistry, and powder metallurgy [ 1 ,  2 ,  3 ,  4 ,  5 – 6 ]. In the field of materials science, ML has gained significant popularity, particularly in image analysis, classification, and segmentation tasks [ 5 ,  7 ,  8 ,  9 ,  10 ,  11 ,  12 ,  13 ,  14 ,  15 – 16 ]. Additionally, ML has been used in predicting material properties, aiding in the design and development of metallic alloys with tailored mechanical properties [ 17 ,  18 ]. The application of ML in image analysis spans various imaging techniques, facilitating tasks, such as microstructure characterization [ 1 ,  8 ,  15 ], grain size measurement [ 10 ,  12 ,  19 ], material deformation [ 20 ], porosity assessment [ 21 ] and more. These imaging techniques include computed tomography [ 21 ,  22 ,  23 ,  24 – 25 ], light optical microscopy [ 13 ,  20 ,  25 ,  26 ], scanning electron microscopy [ 1 ,  5 ,  6 ,  8 ,  9 ,  13 ,  14 ] and transmission electron microscopy [ 4 ,  11 ,  16 ,  27 ]. One of the primary advantages of employing ML for data analysis is the potential for automation, which enhances reproducibility and minimizes human subjectivity. Manual analysis of images can be time-consuming, labor-intensive, and thus impractical for large datasets, whereas traditional contrast or color-based detection methods prove ineffective due to significant variations in brightness and contrast across images, therefore producing inconsistent results without constant adjustments. In contrast, deep learning techniques exhibit morphology-driven selectivity based on the training database, allowing them to pick out selectively microstructural features, a capability that traditional contrast- or color-based methods lack. Consequently, utilizing ML methods can significantly accelerate the extraction of quantitative information from complex and large datasets by automating the process, therefore, allowing the generation of data for further quantitative analyses or other applications such as, use as input in numerical models or simulations as seen for example in [ 16 ,  26 ]. For instance, our study demonstrates the use of ML to perform three-dimensional (3D) reconstruction of microstructural objects from two-dimensional (2D) images. However, ML methods present their own challenges and may introduce different types of errors. The issues discussed in [ 15 ] can be broadly categorized into input data limitations and detection artifacts. Input data may suffer from high brightness or insufficient contrast, while, detection results can exhibit systematic artifacts, including inaccurate masks, such as rounding of object corners, overlapping masks, and generally bad detections. Furthermore, systematic false negatives (missed objects) may bias statistical analyses toward more frequently detected features.",
+        "This study presents an integrated approach combining artificial intelligence (AI) with three-dimensional reconstruction techniques. We developed and implemented an AI pipeline capable of automated detection of microstructural objects from both LOM and CT images of metallic aluminum-based alloy samples. The detection algorithm was specifically designed to handle the diverse characteristics of microstructural objects, accounting for variations in shape, color, and contrast that arise from different imaging techniques. The study was conducted using two distinct material systems: two Al–Si–Cu–Fe alloys with different iron content examined through both LOM and CT imaging, and an Al–Cu alloy analyzed exclusively via CT. Training datasets were generated by cropping representative objects and creating synthetic LOM and CT images, with the AlCu CT slice training methodology detailed in [ 24 ]. Manual pixel-wise segmentation, while precise, becomes impractical for large-scale analysis due to the substantial time investment required for processing the volume of data necessary for robust model training. The approach of using synthetic training dataset enables automated dataset generation and has been shown to effectively address the challenge of insufficient experimental data [ 24 ,  28 ]. The examination of two distinct alloys enabled rigorous validation of our methodology across different microstructural configurations and imaging conditions. Additionally, we present a reconstruction model that utilizes AI-generated detections as input to create comprehensive three-dimensional representations of microstructural domains. To ensure the robustness and accuracy of the three-dimensional reconstruction algorithm, we validated it using a 3D dataset from PFS. This simulation provided a controlled dataset that allowed systematic evaluation of the performance of our reconstruction approach.",
+        "This paper is organized as follows: “ Experimental Setup and Sample Analysis ” section details the experimental procedures and imaging protocols employed for both LOM and CT analyses. “ Methods ” section comprehensively describes our approach to training dataset generation for both imaging techniques, including the development and implementation of our three-dimensional reconstruction algorithm. In “ Results and Discussion ” section, we present and discuss the results obtained from our AI-based detection and reconstruction framework. Finally, “ Conclusions ” section summarizes our principal findings, discusses their implications for microstructural analysis, and suggests potential directions for future research in this domain."
+      ]
+    },
+    {
+      "heading": "Experimental Setup and Sample Analysis",
+      "paragraphs": []
+    },
+    {
+      "heading": "MICAST Samples: LOM Images",
+      "paragraphs": [
+        "Rods of two quaternary aluminum-based alloys with varied iron content were solidified under microgravity conditions on board the International Space Station in the National Aeronautics and Space Administration’s (NASA) Materials Science Laboratory (MSL) equipped with a furnace of the European Space Agency (ESA) under two conditions: (i) under imposed convection induced using a rotating magnetic field—samples denoted as RMF, and (ii) under purely diffusive conditions without convention—samples denoted as µg [ 29 ]. The alloy compositions are: Al-6 wt% Si-4 wt% Cu-1 wt% Fe (rod “MICAST 3#3” or “M3#3”) and Al-6 wt% Si-4 wt% Cu-2 wt% Fe (rod “MICAST 3#5” or “M3#5”). The rods had length of 276 mm and a diameter of 7.9 mm and were processed in a Bridgman-type furnace insert SQF (Solidification and Quenching Furnace; mobile furnace) in the framework of the ESA project MICAST (Microstructure formation in casting of technical alloys under diffusive and magnetically controlled convective conditions). The procedure aims to identify the effect of RMF on the solidification structure, compared to purely diffusive conditions. Two processing zones were created for each rod: one where the rotating magnetic field was enabled and induced convective conditions during solidification and the second zone for which solidification occurred under diffusive conditions. Two radial cross sections were cut from the rods and were metallographically prepared. An overview of the delivered samples can be seen in Table  1 . Individual LOM images (Axio Imager.A2m, Carl Zeiss Microscopy) were merged to create mosaic images of a region comprising the whole diameter of the cylinder (Fig.  1 ). Table 1 Overview of the analyzed MICAST samples. Two cross sections were extracted from each of the two solidification zones and rods Rod MICAST3#3 MICAST3#5 Zone µg RMF µg RMF Cross section Q 1 Q 2 Q 1 Q 2 Q 1 Q 2 Q 1 Q 2 LOM X X X X CT X X X X X X X X Fig. 1 LOM mosaic image of sample MICAST3#3 RMF Q1. The insert shows the three precipitate phases, orange box highlights the Al 2 Cu, green the silicon and red the  β -Al 9 Fe 2 Si 2 . The blue boxes indicate subdomains, which were used for inference",
+        "The LOM images of the samples demonstrate a microstructure consisting of the dendritic Al solid solution matrix and three different precipitate phases. These three phases can be distinguished from each other by their characteristic shape, contrast and color. The dendritic Al matrix, considered as the background, has a light gray-white color. Small dark spots consist of SiO 2  particles and are introduced during the metallographic preparation and are not part of the solidified phases. AlFeSi phases in the two samples M3#3 and M3#5 have a characteristic elongated needle-like shape in the 2D sections and a light gray to dark gray color. Specifically and according to [ 25 ], in sample M3#3, phase  β -Al 9 Fe 2 Si 2  precipitates after the dendritic Al matrix, whereas for the M3#5 sample the solidification of the dendritic Al matrix is preceded by  α -Al 8 Fe 2 Si. Eutectic silicon (Si) has an irregular faceted shape and a very dark gray to black color. Finally, the Al 2 Cu phase can be distinguished by its light red color in some of the images. Its hue and saturation strongly depend on the sample preparation and microscopy procedures and vary from image to image. Its shape is irregular, ranging from round globules to small, elongated colonies. This phase can often be observed attached to Al–Fe–Si needles or to eutectic Si."
+      ]
+    },
+    {
+      "heading": "MICAST Samples: CT Slices",
+      "paragraphs": [
+        "CT scans were also performed externally by our project partners on two different regions of the cylindrical samples from which slices in the longitudinal direction were exported. The produced scans show the whole cylinder inscribed in a square background (Fig.  2 ). The two different regions of the cylinder, which were examined, are denoted as  Q 1 and  Q 2 for both LOM and CT cases (Table  1 ). The CT slices have a dark black background while the elongated needle-like structures corresponding to the AlFeSi phase and in some cases Al 2 Cu precipitates growing attached to the needles are seen as gray to bright white objects. The number of CT slices varies between the samples, ranging from 600 to 1100 slices, with a longitudinal distance of 4 µm between the slices. Fig. 2 a  CT image of sample MICAST3#5 RMF Q1;  b  and  c  the image section (4.38 mm × 4.38 mm) used as input image for the Mask R-CNN model, after pre-processing to enhance the microstructure and reduce the noise level"
+      ]
+    },
+    {
+      "heading": "Al-10wt%Cu: CT Slices",
+      "paragraphs": [
+        "A polycrystalline Al–Cu alloy containing 10 wt-% Cu was directionally solidified under a constant thermal gradient of about 10 K/mm, as reported in [ 24 ]. The process involved an initial rapid solidification at 10 mm/min over 50 mm, followed by a reduction in pulling speed to 2 mm/min for 20 mm, and concluded with a rapid quench at 180 mm/min to preserve the microstructure. X‑ray computed tomography of the 2 mm/min region revealed a network of strongly interconnected columnar dendrites, attributed to the interdependent solidification of the macroscopic grains with different grain growth directions, and some pores seen as black spots. The distance between the CT slices was 4.5 µm. To accurately segment these closely packed dendrites a Mask R‑CNN model was successfully trained using phase-field modeling to generate synthetic training datasets. We highlight, that the 2D PFS consist of equiaxed dendrites without any growth orientation relation between them, while some of the experimental dendrites form a grain with similar growth direction. The cylindrical CT scan was cropped into rectangular sections as illustrated in Fig.  3  to create images for subsequent object detection. We applied the trained model from [ 24 ] to analyze 990 CT slices generating segmentation masks for each detected dendritic grain. Fig. 3 a  CT image section of sample Al10wt%Cu with marked;  b  the image section (5.47 mm × 5.47 mm) used as input image for the Mask R-CNN model and the 3D reconstruction. Black spots in the sample indicate pores"
+      ]
+    },
+    {
+      "heading": "Methods",
+      "paragraphs": []
+    },
+    {
+      "heading": "Generation of Machine Learning Training Datasets",
+      "paragraphs": [
+        "The selected framework for instance segmentation was Mask R-CNN, which is capable of accurately localizing and classifying individual objects within complex images [ 30 ]. Mask R-CNN comprises a region proposal network (RPN) which proposes object bounding boxes and a region-based Convolutional Neural Network (R-CNN) which refines and produces the final segmentations. The Mask R-CNN model, with a ResNet-50 backbone and the MMDetection library framework [ 31 ] were implemented in Python and PyTorch and the training was conducted on a workstation equipped with four NVDIA RTX A5000 (24 GB VRAM) GPUs, out of which one was dedicated for this application. The presented model is the first step in the chain of in-depth automated microstructure segmentation. The object detection is based solely on geometrical characteristics and has received no information about the physics of solidification and microstructure formation, as is presented in [ 26 ].",
+        "For the AlSiCuFe alloys, four distinct cases were chosen to train the model, each focusing on different microstructural objects or imaging technique. The dendritic aluminum matrix served as the background phase in the analysis. The following target phases were selected in this study: Silicon particles of the eutectic Si (LOM) AlFeSi needle-like structures (LOM) Both silicon particles of the eutectic Si and AlFeSi (LOM) AlFeSi needle-like structures (CT)",
+        "The Al 2 Cu phase was excluded from the training dataset due to its significant morphological and textural variability across different regions of the images and among various samples. This variability posed challenges for consistent object extraction and reliable model training. One synthetic training dataset was generated using the available LOM images and another one using the CT images. A synthetic dataset is defined as one that is computationally generated to simulate experimental data, as opposed to experimental datasets, which are derived from real-world observations or measurements. The advantage of using synthetic datasets over manually annotated experimental datasets is that manual annotation of objects is time consuming, labor intensive and sensitive to human errors, either by overlooking objects or due to the difficulty in creating a subjective truth for which pixels values constitute parts of an object. Additionally, synthetic datasets can be created even if only limited experimental data are available.",
+        "The first step of the synthetic dataset generation was creating background images with color characteristics matching those of the experimental data. For LOM images, backgrounds were generated with a color scale similar to the dendritic aluminum matrix, while CT slices utilized black backgrounds to simulate the typical imaging conditions. To enhance dataset diversity and improve model robustness, two augmentation techniques were applied: Random noise was selectively added to some background images to simulate variations in illumination, imaging conditions, the silicon particles embedded into the samples during the metallographic preparation, or the noise seen in the CT scans. Cropped background regions from LOM mosaic images and CT scans were overlaid onto the respective synthetic backgrounds to create realistic variations.",
+        "The second step was to construct training objects through a systematic cropping and augmentation process. From the LOM images, approximately 100 representative objects were cropped from each phase, while from the CT images, about 50 elongated needle-like objects were extracted and subsequently overlaid onto background images. A custom Python script implemented an augmentation pipeline that: randomly selected background images from the prepared collection, and placed randomly selected cropped objects, augmented through random rotations (0–360°) and different stretching factors.",
+        "The annotations of the overlaid objects were created automatically during the generation of the dataset, by detecting the pixels corresponding to each placed object and generating the respective mask. The annotations were stored in COCO format JavaScript Object Notation (JSON) files, containing the necessary information (corresponding training image, object category, polygon coordinates and bounding box) [ 32 ]. For all the three LOM models, the exact same training and validation dataset was used to ensure that any performance differences were not due to the different dataset, an example image can be seen in Fig.  4 . The difference between the three datasets was the information stored in each respective JSON file. For single-class LOM training, only the target phase masks were stored; non-target objects were treated as background and served as cross-phase contamination. In contrast, the multiclass model’s JSON files contained masks for all phases. This distinction is visualized in Fig.  4 : (4b) AlFeSi needles only, (4c) eutectic silicon only, and (4a) both phases marked simultaneously. Fig. 4 Example of an artificially generated training image, with overlaid the masks used to train the model aiming to detect  a  both phases,  b  the AlFeSi, and  c  eutectic silicon;  d  shows the training image without the masks",
+        "The augmentation strategy differed between image types:",
+        "For CT images needle overlap was permitted to accurately represent the complex needle network structures observed in experimental data, whereas, for LOM images, overlap was restricted (Fig.  4 ), therefore the number of overlaid objects varied across the training images, between 100 and 120. Overlap is defined as the presence of any shared pixels between the masks of different objects, ranging from minimal intersection (barely any common area) to complete occlusion (where one object is fully obstructed by another). Overlap was not permitted for the LOM images because shared pixels between masks of different phases reduce the accuracy of the trained model, particularly given the distinct visual differences between these phases. The training hyperparameters are detailed in Table  2 . Table 2 Hyperparameters for the Mask R-CNN model implemented with OpenMMlab Parameter Single class model Multiclass model CT scans (MICAST) Training images 5000 5000 5000 Validation images 500 500 500 Objects per image 100–120 100–120 80 Number of training epochs 30 40 30 Initial learning rate 0.0001/0.001 0.0001 0.01 Optimiser Stochastic Gradient Descent (SGD) Learning rate scheduler Cosine decay (linear warmup) Cosine decay (step warmup) Momentum 0.9 0.95 0.9 Weight decay 0.001 0.005 0.0001 Number of classes 1 2 1 Proposals before non-maximum suppression 2000 2000 5000 Proposals after non-maximum suppression 1000 1000 1000 Score threshold 0.2 for training, varied for inference 0.2 for training, varied for inference 0.005 for training, varied for inference Intersection over union (IoU) threshold 0.5 for training, varied for inference 0.5 for training, varied for inference 0.6 for training, varied for inference Mask binary threshold 0.5 for training, varied for inference 0.5 for training, varied for inference 0.05 for training, varied for inference",
+        "For the AlCu alloy, the training data generation and more details are given in [ 24 ]."
+      ]
+    },
+    {
+      "heading": "Inference and Evaluation of Detections",
+      "paragraphs": [
+        "The LOM mosaic images were divided into seven 1000 × 1500 pixels (1.05 mm × 1.59 mm) sub-images, as shown in Fig.  1  indicated by the blue boxes. All sub-images were used for inference using the three trained models. In this study, only the middle image of each dataset is presented. The CT scans between the eight different datasets exhibited different dimensions, therefore a common image size of 800 × 800 pixels was selected. All scans from all eight CT datasets were used for inference but only the four corresponding to the LOM images are shown in this study. Each inference process generates CSV files containing the contours of each identified object, enabling further analysis as required, such as 3D reconstruction shown below, or positional and geometrical analysis of the intermetallic phases as has been demonstrated in [ 25 ].",
+        "The raw inference results include false detections or overlapping contours, thus, before further analyzing and using of the results the data must be cleaned: Firstly, by imposing a minimum size threshold. Secondly, removing duplicate detections by retaining only the largest (highest-area) object in cases of overlap.",
+        "A more thorough approach was used for the 3D reconstruction and is described in “3D reconstruction of CT slices” section. The complete pipeline starting from the generation of the synthetic dataset, training of the model and finally performing inference on unseen data is summarized in Fig.  5  as a flow diagram. Fig. 5 Flow diagram of the training pipeline, starting from the preparation of the synthetic dataset"
+      ]
+    },
+    {
+      "heading": "Phase-Field Model for Artificial Dendrite Generation",
+      "paragraphs": [
+        "A phase field simulation was performed to produce a validation dataset for the grouping and 3D reconstruction algorithms. The phase-field framework [ 33 ,  34 ] provides a robust approach to investigate the kinetics of phase transformations in heterogeneous systems. Instead of explicitly tracking sharp boundaries, it represents interfaces as smooth, continuous fields that vary across a diffuse region. This concept has proven particularly efficient for modeling dendritic solidification phenomena, which are typical during alloy solidification or crystal growth processes. In this study, the multiphase-field model implemented in the MICRESS software package [ 35 ,  36 ] was used to simulated dendritic morphologies.",
+        "Each phase  α \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\alpha $$\\end{document}  is described by a corresponding order parameter  ϕ α x → , t \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${\\phi }_{\\alpha }\\left(\\overrightarrow{x}, t\\right)$$\\end{document}  that evolves in space  x → \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\overrightarrow{x}$$\\end{document}  and time  t \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$t$$\\end{document} . The subscript  β \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\beta $$\\end{document}  denotes the parameters for the second phase or grain. The evolution of these fields in MICRESS is governed by the following general equation: 1 ϕ α ˙ = ∑ β M α β n → σ α β ∗ n → K α β + π η ϕ α ϕ β Δ G α β c i , T \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\dot{{\\phi }_{\\alpha }}=\\sum_{\\beta }{\\rm M}_{\\alpha \\beta }\\left(\\overrightarrow{n}\\right)\\left({\\sigma }_{\\alpha \\beta }^{*}\\left(\\overrightarrow{n}\\right){\\rm K}_{\\alpha \\beta }+\\frac{\\pi }{\\eta }\\sqrt{{\\phi }_{\\alpha }{\\phi }_{\\beta }}\\Delta {G}_{\\alpha \\beta }\\left({c}^{\\text{i}},T\\right)\\right)$$\\end{document} 2 K α β = ϕ β ∇ 2 ϕ α - ϕ α ∇ 2 ϕ β + π / η 2 ϕ α - ϕ β \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${K}_{\\alpha \\beta }={\\phi }_{\\beta }{\\nabla }^{2}{\\phi }_{\\alpha }-{\\phi }_{\\alpha }{\\nabla }^{2}{\\phi }_{\\beta }+{\\left(\\pi /\\eta \\right)}^{2}\\left({\\phi }_{\\alpha }-{\\phi }_{\\beta }\\right)$$\\end{document} 3 Δ G α β = Δ S α β Δ T - ∑ i = 1 n - 1 m α β i Δ c α i \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${\\Delta G}_{\\alpha \\beta }={\\Delta S}_{\\alpha \\beta }\\left[\\Delta {\\rm T}-\\sum_{\\text{i}=1}^{n-1}{m}_{\\alpha \\beta }^{\\text{i}}\\Delta {c}_{\\alpha }^{\\text{i}}\\right]$$\\end{document}",
+        "In Eq.  1 , the interfacial mobility  M α β \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${M}_{\\alpha \\beta }$$\\end{document}  depends on the interface orientation given by the normal vector  n → \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\overrightarrow{n}$$\\end{document} , while  σ α β ∗ \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${\\sigma }_{\\alpha \\beta }^{*}$$\\end{document}  denotes the surface stiffness that accounts for anisotropy effects.  K α β \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${\\rm K}_{\\alpha \\beta }$$\\end{document}  represents the local curvature of the interface, and  η \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\eta $$\\end{document}  defines the interface thickness. The interface motion is governed by two major contributions: the capillarity term  σ α β ∗ K α β \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${\\sigma }_{\\alpha \\beta }^{*}{\\rm K}_{\\alpha \\beta }$$\\end{document}  and the thermodynamic driving force  Δ G α β \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${\\Delta G}_{\\alpha \\beta }$$\\end{document} . The latter depends on Temperature  T \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$T$$\\end{document}  and on the local composition vector  c i = c 1 , ⋯ , c n \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${c}^{i}=\\left({c}_{1},\\dots ,{c}_{\\text{n}}\\right)$$\\end{document} , where  n  is the number of different elements, which couples the phase-field evolution to the diffusion field through the mass conversation equation: 4 c i ˙ = ∇ ∑ α = 1 N ϕ α D α ij ∇ c α j with c i = ∑ α = 1 N ϕ α c α i \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\dot{{c}^{i}}=\\nabla \\sum_{\\alpha =1}^{N}{\\phi }_{\\alpha }{D}_{\\alpha }^{ij}\\nabla {c}_{\\alpha }^{j} {\\text{with }c}^{i}=\\sum_{\\alpha =1}^{\\text{N}}{\\phi }_{\\alpha }{c}_{\\alpha }^{\\text{i}}$$\\end{document}",
+        "Here,  D α ij \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${D}_{\\alpha }^{\\text{ij}}$$\\end{document}  denotes the multicomponent diffusion tensor of phase  α \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\alpha $$\\end{document} ,  N  denotes the number of different phases. Both  D α ij \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${D}_{\\alpha }^{\\text{ij}}$$\\end{document}  and the thermodynamic potential difference  Δ G α β \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${\\Delta G}_{\\alpha \\beta }$$\\end{document}  are evaluated for the local temperature and composition. Considering only the interaction between liquid and solid phases in a binary alloy, Eq.  3  can be simplified to: 5 Δ G ls = σ ls Γ ls T f - m l c l - c 0 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${\\Delta G}_{\\text{ls}}=\\frac{{\\sigma }_{\\text{ls}}}{{\\Gamma }_{\\text{ls}}}\\left[{T}_{\\text{f}}-{m}_{\\text{l}}\\left({c}_{\\text{l}}-{c}_{0}\\right)\\right]$$\\end{document} and the solute diffusion equation (Eq.  4 ) becomes: 6 c ˙ = ∇ ϕ l D l c l + ϕ s D s c s with c s = k ∙ c l \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\dot{c}=\\nabla \\left[{\\phi }_{l}{D}_{l}{c}_{l}+{\\phi }_{s}{D}_{s}{c}_{s}\\right]\\text{ with }{c}_{s}=k\\bullet {c}_{l}$$\\end{document}",
+        "The physical parameters used in the simulations-namely the nominal concentration  c 0 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${c}_{0}$$\\end{document} , melting temperature  T f \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${T}_{\\text{f}}$$\\end{document} , liquidus slope  m l \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${m}_{\\text{l}}$$\\end{document} , diffusion coefficients  D l \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${D}_{\\text{l}}$$\\end{document}  and  D s \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${D}_{\\text{s}}$$\\end{document} , Gibbs–Thomson coefficient  Γ sl \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${\\Gamma }_{\\text{sl}}$$\\end{document} , interfacial energy  σ sl \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${\\sigma }_{\\text{sl}}$$\\end{document} , partition coefficient  k \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$k$$\\end{document} , and interfacial energy anisotropy  ε sl \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${\\varepsilon }_{\\text{sl}}$$\\end{document} . The computational domain is discretized using a uniform grid with a spacing of 0.5 µm. The interface width in the phase-field model is set to 2 µm."
+      ]
+    },
+    {
+      "heading": "3D Reconstruction",
+      "paragraphs": [
+        "The 3D reconstruction algorithm uses as input the contours of objects from multiple 2D slices as input. As these objects span multiple slices in a 3D domain, they need to be grouped together in 3D based on various requirements and grouping criteria, which are presented below. This grouping is essential for accurately reconstructing the 3D microstructure from 2D data. In this study, contours derived from PFS (for validation) and Mask R-CNN detections from two different experimental CT datasets are reconstructed in 3D and presented, providing a comprehensive analysis of the method’s effectiveness.",
+        "In this study, we present two different reconstruction methodologies. The first reconstruction method processes each 2D contour individually, aiming to identify the correspondence of 2D contours in subsequent slices. This process is repeated for all 2D contours at every slice, ultimately producing multiple distinct 3D objects. This method is particularly useful for identifying and analyzing different objects based on their geometry. In contrast, the second method does not distinguish between individual 2D contours and treats them as part of a single connected object spanning the entire 2D domain. In this case, only one 3D object is created, which is useful for analyzing the overall structure and connectivity of the microstructure."
+      ]
+    },
+    {
+      "heading": "3D Reconstruction of a Multi-grain Phase-Field Domain",
+      "paragraphs": [
+        "For the development, testing, optimization and validation of the 3D reconstruction algorithm the result of a three-dimensional PFS was used. The phase-field output is practically noiseless, and each grain is numbered and exported individually. This allows an easier validation with the results of the custom developed reconstruction algorithm, without the need of pre-processing experimental data, which would introduce additional challenges. The PF model of the solidification of an Al–Ge alloy, and the selected domain comprises an almost fully solidified region, with the coexistence of liquid and solid phases, the latter in the form of multiple coarsened dendritic grains. We use this example, because the different grains are clearly distinguished and less interconnected as in the case of Fig.  3 b. The first step was to divide the domain in the  x -,  y - and  z -directions in several slices based on the resolution of the PFS. This process is analogous to the process of the generation of 2D slices from CT scans. The contours of the grains are then detected by using the findContours function from the OpenCV library [ 37 ]. For the CT images results, this step is analogous to the object detection by the AI model. Each 2D grain contour receives a unique identifier at this point. The identifiers correspond to each 2D contour at each slice and are independent of the identifiers provided by the phase-field results, which correspond to the 3D grains. The contours are grouped and stored with their unique identifier for each slice and then exported for the next steps. A comparison between the use of phase-field and the image segmentation using ML approaches can be seen in Table  3 . Table 3 Comparison between the two followed approaches Phase-field simulation process Analogous experimental process Simulation of solidification Solidification under various conditions Segment the 3D domain in 2D slices 2D slices from 3D CT scans Contour detection using OpenCV Mask R-CNN object detection"
+      ]
+    },
+    {
+      "heading": "Grouping of Grains",
+      "paragraphs": [
+        "Given the contours of the objects in 2D, the next step involves deleting any false or duplicate detections, as well as filtering out detections below a minimum area threshold. The phase-field results inherently do not contain noise or faulty detections; therefore, the minimum area threshold was selected to disregard smaller grain parts and grains at their initial state for validation and demonstration of this possibility. In case the minimum area threshold was set to 0, all detected contours would be included in the grouping process. This process is performed for all slices.",
+        "The remaining grains at the first slice (slice 0) are considered unique and independent from each other and receive a grain ID, which will later denote their children grains along the  z -axis (or other slicing direction). To distinguish each 3D object based on the evolution of grains across slices, the following cases are identified: (i) continuation of grain from slice  n  to slice  n  + 1, (ii) coalescence of multiple grains at slice  n – 1 to form one grain at slice  n , (iii) a grain at slice  n−  1 splits and forms multiple grains at slice  n , (iv) formation of a new grain and (v) disappearance of a grain. Figure  6  illustrates the evolution of grains across two different sets of slices (1 to 3 and 164 to 166). The masks are taken from the phase-field results, while the boundaries correspond to the contour detection using OpenCV. The assigned grain ID is displayed in the center of a few highlighted contours. The effect of the minimum size threshold can be observed in slices 1–3 at Fig.  6 . For instance, the green and yellow colored grains at slice 1 and the colored grain at the lower right corner at slice 2 have not been assigned a grain ID, as indicated by the absence of a colored boundary. Fig. 6 Example slices of the grouping and 3D reconstruction processes of the phase-field simulation",
+        "In more detail:",
+        "Case 1: Continuation",
+        "A 2D contour at slice n corresponds to a 2D contour at slice  n  + 1. The contour at slice  n  + 1 inherits the grain ID of the contour at slice n. For instance, grains 1 and 3 in Fig.  6  illustrate how the main grains identified in slice 1 extend through slice 2 and into slice 3.",
+        "Case 2: Grain Coalescence",
+        "Multiple 2D contours at slice n-1 coalesce to form a single contour at slice n. Coalescence occurs when the 2D projection of the 3D grain corresponds to multiple 2D objects, indicating that these objects are parts of the same 3D grain. This could be the case for side branches, secondary or higher order arms or just shape variation, which results in projection of multiple distinct objects in 2D. Therefore, the grain IDs of these distinct objects must be identical to maintain consistency in grain identification. The 2D contour at slice  n  inherits the grain ID of the contour with the highest overlap from slice  n−  1, and the IDs of the other contours at slice  n−  1 are updated to match this ID. This process is performed recursively for contours at slices  n−  2,  n−  3, and so on. For instance, in Fig.  6 , the grains merge into grain 3 at slices 2–3.",
+        "Case 3: Grain Splitting",
+        "A single 2D contour at slice n splits to multiple contours at slice  n  + 1. This case is analogous to coalescence when the direction of examining the slices is reversed. The children grains at slice  n  + 1 inherit the same ID as the parent grain at slice n. In Fig.  6 , between slices 164 and 166, multiple instances of grains splitting can be observed.",
+        "Case 4: Formation of a New Grain",
+        "When a contour at slice n does not overlap with any other contour at slice  n−  1, and no other condition has been met, it is classified as a new grain and is assigned a new grain ID. An example of this case is grain 14 at slice 3.",
+        "The metrics used to identify each case are: (i) IoU, (ii) overlap ratio of the area of the contour at slice  n  over the contour at slice  n−  1 and (iii) overlap ratio of the area of the contour at slice  n−  1 over the contour at slice  n . It has to be noted that the IoU is independent of the order of slices, i.e.  IoU | n , n - 1 = IoU | n - 1 , n \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${\\text{IoU}|}_{\\text{n},\\text{n}-1}={\\text{IoU}|}_{\\text{n}-1,\\text{n}}$$\\end{document} . IoU = area of Intersection area of Union \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\text{IoU}= \\frac{\\text{area of Intersection}}{\\text{area of Union}}$$\\end{document} Overlap | n , n - 1 = area of Intersection area of object at n - 1 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${\\text{Overlap}|}_{\\text{n},\\text{ n}-1}=\\frac{\\text{area of Intersection }}{\\text{area of object at }n-1}$$\\end{document} Overlap | n - 1 , n = area of Intersection area of object at n \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${\\text{Overlap}|}_{\\text{n}-1,\\text{ n}}=\\frac{\\text{area of Intersection }}{\\text{area of object at }n}$$\\end{document}",
+        "It can be observed that the IoU metric alone is insufficient to distinguish different cases of grain evolution across slices. For example, grain 1 in Fig.  6  illustrates this for slices  n  = 2 and  n –1 = 1. At slice  n−  1, two red grains appear to be separate, but at slice  n  they merge into a single red grain. To determine whether the two grains at slice  n –1 are indeed predecessors of the grain at slice  n , both the IoU and the two overlap measures must be considered. The area of the red grain at slice  n  is approximately the double of each smaller grain at slice  n –1. Consequently, the IoU is ~ 0.5, as is Overlap| n –1,  n  (the intersection area divided by the larger grain’s area). However, Overlap| n ,  n –1 is ~ 1, since the intersection area nearly covers the entirety of the smaller grain. Because all objects at slice  n  = 2 are compared with those at slice  n –1, the larger grain at slice  n  is correctly identified as the continuation of both smaller grains. More extreme cases occur when a new small grain first appears and is absorbed into a larger grain, such as between slices 2 and 3. Here, the IoU between grains of very different sizes can fall significantly below the selected threshold, leading to missed detections. This limitation arises because IoU does not account for absorption or splitting events, which are common in grain evolution. In contrast, Overlap| n ,  n –1 is high when a small grain is absorbed by a larger one, while Overlap| n –1,  n  is high when a grain splits in multiple grains. Together, these complementary metrics capture events that IoU alone may overlook. Finally, the contours and their respective grain IDs are stored and used to generate the 3D reconstruction. A summary of all considered cases is provided in Table  4 . Table 4 Overview of the cases occurring during grouping Case IoU Overlap  n / n− 1 Overlap  n− 1/ n Continuation High High High Coalescence Low, high High–with multiple Low Split Low, high Low High–with multiple New Low Low Low",
+        "The threshold values selected for the overlap and the IoU metrics for detections at different slices influence significantly the outcome of the reconstruction; high values can on one side more accurately distinguish neighboring dendrites and allow a more accurate definition of a dendrite in 3D, on the other side, size variations or drifting of the dendrite between slices can lead to inaccurately marking the dendrite as non-existing or newly created. Low IoU and overlapping thresholds can lead to inaccurately marked neighboring detections as part of the dendrite under examination but are more lenient in size and positional deviations of the grains at consecutive slices. The domain we examine consists of 1000 slices, each with around 300 detections, which means that there could hardly be a universal value capturing each individual case correctly."
+      ]
+    },
+    {
+      "heading": "3D Reconstruction of CT Slices",
+      "paragraphs": []
+    },
+    {
+      "heading": "Grouping of Mask R-CNN Detections",
+      "paragraphs": [
+        "As mentioned before, the 3D reconstruction of phase-field grains is relatively straightforward, as there are no irregularities in the contour detection. In contrast contour detection using ML is often riddled with false positives, false negatives, random noise, and issues from reduced quality or resolution of experimental data. To address these challenges, additional conditions are necessary to reliably reconstruct contours defined by ML methods. In cases such as that of the Al-10 wt% Cu alloy, defining dendrite boundaries is not always straightforward due to the complex and packed nature of the microstructure. In some instances, inconsistencies in boundary definition may falsely trigger conditions such as contour coalescence, splitting, or even the apparent formation of new grains, where artifacts are incorrectly identified as dendrites. Such cases can lead to false-negative or false-positive detections and can be mitigated by optimizing the grouping methodology, as well as through the following approaches:"
+      ]
+    },
+    {
+      "heading": "False Positive (FP): Incorrect Detections",
+      "paragraphs": [
+        "FP occurs when the inference process generates masks that do not correspond to actual target objects. To distinguish FP from true detections, we examine consistency across slices: A grain detection at slice  n  is classified as a FP if it lacks a corresponding detection with sufficient overlap (IoU) at slice  n  + 1. Such detections are omitted from the 3D reconstruction to avoid propagating errors."
+      ]
+    },
+    {
+      "heading": "False Negative (FN): Missed Detections",
+      "paragraphs": [
+        "FN arises when target objects are not identified during inference, resulting in missing grains at certain slices. A 2D contour appearing as a new grain at slice n, (i.e., there is no contour with significant IoU or overlap at slice  n -1), may actually be a continuation of a 2D contour at slices  n−  2 or earlier. To systematically address this issue, a parameter corresponding to the maximum number of slices, denoted as “n_max_depth,” was defined. This parameter determines how many previous slices should be examined for high IoU overlapping detections, before a grain is considered new. In more detail, if a contour at slice n has no overlap with any contours at slice  n−  1, the slices  n−  2 to  n -max_depth are examined before classifying it as a new grain. If a corresponding contour is found, it is copied to all slices where it is missing, ranging from slice  n -max_depth to  n−  1. If no corresponding contour is found and the false positive detection condition is not satisfied, then the contour is considered to be a new grain and it kept for 3D reconstruction. These two approaches ensure that both false positives and false negatives are effectively addressed. The grouping process can be summarized in the form of the flow diagram presented in Fig.  7 . Fig. 7 Flow diagram of the grouping procedure in 2D for each detected contour",
+        "To enhance the speed of the grouping process, the 2D domain is divided into cells. Each 2D contour is being compared with the contours at the immediate neighboring cells meaning the center, top, bottom, left, right and diagonal cells. The position of the contours is determined by approximating each shape as a polygon using the Shapely Python library and calculating its geometric centroid through the same library. The cell size has to be selected to be larger than the average size of the contours, to ensure that each contour is being compared with all contours at its local environment. This process was exclusively used for the Al-10wt%Cu sample CT slices due to the large domain size and the high number of objects. This was not necessary for the AlFeSi alloy CT images or the phase-field domain, as in the former case the needle-like objects were not grouped, and in the latter case the domain had a small size and low computational demands. Figure  8 (a) shows an example CT slice of the Al10wt%Cu alloy (b) the detected dendrites overlaid over the CT image. The neighboring cells of the yellow cell are marked in green color (c). Fig. 8 Dendrite detection and grouping in a CT slice of sample Al10wt%Cu.  a  Original CT slices used for dendrite detection.  b  Detections generated by Mask R-CNN overlaid on the CT slice.  c  Grid-based grouping: the red grid shows the cells, with the target cell highlighted in yellow and its nearest neighbors marked in green"
+      ]
+    },
+    {
+      "heading": "Results and Discussion",
+      "paragraphs": []
+    },
+    {
+      "heading": "Object Detection Using Mask R-CNN",
+      "paragraphs": []
+    },
+    {
+      "heading": "LOM Images",
+      "paragraphs": [
+        "Figure  9  illustrates the detections resulting from the Mask R-CNN model for the four selected cases, providing a visual representation of the model’s performance in identifying and segmenting the precipitates. Only the central region of each mosaic LOM image is displayed. The green mask corresponds to the Si part of the Si eutectic and the red mask to the AlFeSi precipitates. Fig. 9 Detection masks of the middle image for the three trained models. Green marks the eutectic Si and red the AlFeSi phase",
+        "The applied metrics to evaluate the models performances are listed and defined in Table  5  and are calculated using the number of detections for each case: True Positive (TP), True Negative (TN), False Positive (FP) and False Negative (FN) [ 38 ]. In more detail: Table 5 Definitions of the evaluation metrics for the detections Accuracy Precision Recall F 1 The ratio of correct detections over all the data The ratio of correct detections over the total amount of detections. The closer it is to 1, the fewer false positives have been detected The ratio of detections over the total amount of ground truth objects. The closer this value is to 1, the fewer false negatives have been missed Overall performance and evaluation of the effectiveness of the model TP + TN TP + FP + TN + FN \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\frac{\\text{TP}+\\text{TN}}{\\text{TP}+\\text{FP}+\\text{TN}+\\text{FN}}$$\\end{document} TP TP + FP \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\frac{\\text{TP}}{\\text{TP}+\\text{FP}}$$\\end{document} TP TP + FN \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\frac{\\text{TP}}{\\text{TP}+\\text{FN}}$$\\end{document} 2 ∙ Precision ∙ Recall Precision + Recall \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$2\\bullet \\left(\\frac{\\text{Precision}\\bullet \\text{Recall}}{\\text{Precision}+\\text{Recall}}\\right)$$\\end{document}",
+        "The evaluation of model predictions was performed through manual inspection by a human observer. A detection was classified as a true positive (TP) if the predicted segmentation mask covered the majority (i.e., > 50% of the area) of the target object, whereas detections covering less than this threshold were labeled as false negatives (FN). For the eutectic Si phase, however, the inherent limitations of LOM often did not allow clear distinction between intermetallic phases and embedded Si-particles during metallographic preparation. Consequently, detections encompassing these ambiguous objects were still graded as TP, while undetected Si-particles within eutectic areas were not counted as FN due to their indeterminable visibility. False positives (FP) comprised instances where the model incorrectly identified either the dendritic Al-matrix background or non-target phases as the phase of interest. For the multiclass model true negatives (TN) were defined as cases where objects belonging to other phases were correctly excluded during the detection of the primary target phase, whereas for the single class models, the TN value was 0.",
+        "Figure  10  shows the comparison of the performance of the three models in detecting the AlFeSi and eutectic Si phases. The multiclass model achieved the highest accuracy for the AlFeSi phase (89%), whereas its performance on the eutectic Si phase was lower (74%). The disparity of the performance difference between eutectic Si and AlFeSi may stem from morphological differences: the elongated, fine-scale AlFeSi particles are more prone to partial detections, leading to their classification as false negatives (FN). In contrast, the eutectic Si phase’s finer structure likely facilitates its segmentation. Additionally, the multiclass model matched or surpassed the specialized models in most cases, suggesting that joint training across phases improves generalization without sacrificing phase-specific accuracy. Overall, all three models demonstrated good performance. Fig. 10 Evaluation of the performance metrics for the four examined LOM images, distinguishing between two object types: eutectic Si and AlFeSi precipitates and for the three different models"
+      ]
+    },
+    {
+      "heading": "CT Slices: Case of Al–Fe–Si",
+      "paragraphs": [
+        "The detection results for the four CT datasets corresponding to similar regions as the LOM mosaic images are presented in Fig.  11 . Due to the training focus on elongated, needle-like AlFeSi structures, the model exhibits a bias toward these morphologies, resulting in the omission of smaller, granular objects (e.g., roundish Al 2 Cu precipitates or fragmented AlFeSi particles). This selectivity arises from the prioritization during training, where mostly needle-like features were included in the annotated dataset. This selectivity highlights a key advantage of AI-based methods over traditional contrast- or color-based detection techniques: the ability to learn and prioritize specific morphological features. Fig. 11 Detection masks of the middle slice of four out of the eight CT datasets corresponding to the presented LOM dataset",
+        "For these four slices, the area fraction of the detections was calculated and is presented in Table  6 . Note that this analysis is limited to the shown slices and is therefore not representative of the entire volume. Table 6 Area fraction of the intermetallic phases for the four regions corresponding to the presented LOM images M3#3 µg  Q 1 M3#3 RMF  Q 1 M3#5 µg  Q 2 M3#5 RMF  Q 1 Area fraction % 6.67 8.25 9.39 7.62"
+      ]
+    },
+    {
+      "heading": "Influence of Image Quality on the Segmentation Results",
+      "paragraphs": [
+        "As can be seen in the example images of Fig.  2 , Fig.  9  and Fig.  11  the brightness, contrast, color saturation and noise level greatly vary from image to image. This poses an additional challenge to detect the intrinsic microstructure variations caused by the different experimental set ups. The CT images were batch-processed in ImageJ [ 39 ] to improve contrast, reduce noise and standardize their appearance while preserving object resolution. The processing pipeline included: Firstly the “Subtract Background” function, with rolling radii of 4 and 10 pixels. Next, an “Unsharp Mask” filter with radius of 2 pixels and mask weight of 0.20 was used to sharpen edges and reduce noise. Finally, the contrast was enhanced using the “Enhance Contrast” tool, with saturation set to 0.65. For each image, the parameters of these functions were individually fine-tuned to ensure consistent results across the dataset. After processing, all images were cropped to a uniform size of 800 × 800 pixels. This process was not feasible in the LOM images, as the AlFeSi phase would start resembling the Al 2 Cu phase or the eutectic Si phase. Additionally, transforming the LOM images into black and white images would cause unnecessary loss of pixel information, therefore training and inference was performed on the original RGB images in the as-delivered format. Even though the models were trained with a combination of objects received from all images, the detections were sufficiently generalized with high accuracy and precision.",
+        "The masks produced by the AI model were additionally compared to contrast-based detections as can be seen in Fig.  12 . In ImageJ, pixel thresholding is used to distinguish objects of interest from the background by defining a range of intensity values. Pixels within this range are marked as foreground (“particles”), while those outside are considered background. The thresholded image is then converted to a binary format. Following thresholding, the “Analyze Particles” tool is used to detect all foreground regions, with optional filtering based on size (minimum and maximum area) to exclude noise or irrelevant detections. All four parameters (dark and light threshold pixel values, as well as minimum and maximum size) must be carefully selected. Expanding the brightness range increases the number of detected objects but also introduces more noise. While setting a minimum detection size can reduce random noise, it may also exclude fragmented parts of actual objects, since contrast-based detections are not always continuous. This can degrade the quality of the resulting masks by omitting valid object fragments. Additionally, random noise is not consistent across boundaries, further complicating segmentation. On the other hand, the Mask R-CNN detections produce continuous masks covering the majority of the area of the needle-like objects, however, smaller and not elongated objects are not consistently detected. This can be attributed to the training dataset, which primarily included long, elongated objects. Detection performance is more consistent across varying brightness and contrast levels between slices, offering an additional advantage over manual or threshold-based methods. Fig. 12 Comparison between contrast- and AI-based detections. The yellow masks are produced by selecting suitable pixel brightness levels (threshold values), whereas the red masks are produced by the Mask R-CNN model. The images on the right are magnifications of the framed insert"
+      ]
+    },
+    {
+      "heading": "3D Reconstruction",
+      "paragraphs": []
+    },
+    {
+      "heading": "3D Reconstruction of Individual Grains: Phase-Field Simulation",
+      "paragraphs": [
+        "Figure  13  presents side by side the comparison of the source phase-field domain and the 3D reconstructed grains in the domain, including some selected grains from each case. This comparison provides a clear qualitative example of the model’s performance in reconstructing individual objects in three dimensions. All visualizations in this study were generated using ParaView software [ 40 ]. Fig. 13 a  Selected grains present in the phase-field simulation and  b  the reconstructed ones using our algorithm. The grain numbers correspond to the values from the phase field model",
+        "A further confirmation that the grouping and reconstruction approaches produce consistent and robust results was achieved by segmenting the domain in all  x -,  y - and  z -directions and by performing the complete process for all three cases (Fig.  14 ). All three cases produced the 15 grains present in the PFS. Additionally, the volume and surface area of the reconstructed grains were calculated and compared with the respective values from the original grains from PFS. The comparison is shown in Fig.  15 . The small differences can be attributed to inaccuracies in the contour definition at the initial step (pixel-wise representation by the findContours function from the OpenCV library) and due to the minimum size threshold as described in 3.4.1. Fig. 14 The phase field domain was divided in  x -,  y - and  z -directions and the grouping and 3D-reconstruction process were performed for all cases Fig. 15 Comparison of the surface area and volume between the original PFS and the reconstructed grains"
+      ]
+    },
+    {
+      "heading": "3D Reconstruction of Individual Dendrites: CT Scans of Al-10wt%Cu",
+      "paragraphs": [
+        "The second CT dataset originates from a directionally solidified sample of an Al-10wt%Cu alloy. Further details about this dataset and the AI segmentation process can be found in [ 24 ]. The alloy exhibits a polycrystalline dendritic microstructure, significantly different from all other cases presented so far. The columnar dendrites are tightly packed, with their boundaries and some intradendritic regions typically appearing as bright lines due to material segregation. The sections are taken perpendicular to the temperature gradient/main growth direction. The separation of the individual dendrites in this example has proven to be a challenging process, often inconsistent. Across different 2D slices, the same dendrite may be misidentified, overlap with adjacent dendrites, or they may be incorrectly classified as separate entities, even when sharing the same origin and growth orientation. These inconsistencies in boundary detection complicate the correlation of dendrites between consecutive slices, directly impacting the accuracy of 3D reconstruction. Additionally, segmentation errors and misgrouping can lead to discontinuous dendrite IDs, with some IDs occasionally missing entirely across slices. To mitigate these issues, a two-step verification process is employed: first, inconsistencies are addressed during the initial grouping stage. Second, each dendrite ID is re-evaluated during 3D reconstruction to ensure continuity along the  z -axis. When discontinuities are detected, missing data are interpolated by duplicating 2D dendrite information from the nearest available slice, preserving structural coherence in the final reconstruction. Figure  16  illustrates typical inconsistencies in Mask R-CNN detections between slices 3 and 9. In the first slice, the blue detection inconsistently aligns with the dendrite boundaries and has an overlap (purple contour), while in the subsequent slice, the blue contour aligns more accurately and no overlapping detection was created. Additionally, the red-highlighted dendrite appears as a single detection in the second slice but is split into two (red and yellow) in the first slice, whereas the black detection remains consistent across both slices. The absence of the green detection in slice 9 is due to the exclusion of objects intersecting the image boundary. This variability in boundary placement highlights the broader challenge of defining dendrite boundaries, as manual segmentation attempts also face subjectivity and inconsistencies, as has been discussed in [ 24 ]. Moreover, all dendrites located within a 20-pixel margin from the image boundaries were excluded from analysis to avoid edge artifacts and ensure only fully captured objects were considered. Fig. 16 Example of inconsistencies in raw Mask R-CNN detections between two nearby slices (slice 3 and slice 9)",
+        "Figure  17  shows the entire reconstructed volume of almost 1000 slices. The color scale is based on the ID that is given to each 3D reconstructed object. Analysis of all dendrites across all slices after the grouping process shows remarkably high continuation rates: 91.6% for dendrites present in at least 10 slices, 94% for those present in at least 50 slices, and 96.2% for dendrites extending through 100 or more slices. These values are particularly noteworthy given the challenge of tracking hundreds of dendrites across 990 slices. The continuation rates can be affected by changing the minimum allowed size threshold and grouping parameters such as IoU and overlap threshold values. Higher IoU thresholds and overlap ratios increase the likelihood of premature dendrite termination and the definition of new dendrites, whereas looser threshold values allow the continuation of dendrites with larger size or positional variation, but risk incorrectly grouping neighboring dendrites. Fig. 17 3D reconstruction of the Al10wt%Cu dendrites. The dendrites can be isolated and analyzed further",
+        "The right side of Fig.  17  shows two dendrites isolated from the selected 3D reconstructed domain. As these dendrites solidify directionally, they tend to align roughly with the temperature gradient, which corresponds to the  z -direction. The misorientation against the  z -direction was quantified by calculating the angular movement of the centroid of each dendrite. The analysis specifically focused on dendrites that were present in the domain for at least 10 slices, corresponding to 45 µm, ensuring a statistically relevant dataset for accurate angle calculation. The results of this analysis are shown in Fig.  18 a in the form of a histogram. Figure  18 b shows the 3D domain, in this case the color of each dendrite corresponds to its calculated misorientation angle. This analysis represents a good example of how post-processing of 3D reconstructed objects, in this case dendrites, helps to identify process-structure relationships. Moreover, additional information could be obtained by grouping dendrites with largely similar tilting angles together to a dendritic grain and follow its evolution in the course of solidification. By such an approach, grain selection processes could be visualized in detail, which is however, out of the scope of this article. Fig. 18 a  Histogram showing the growth angle to the  z -axis for the dendrites existing in at least 10 slices.  b  The dendrites with adjusted color scale corresponding to the misorientation angle",
+        "To validate the calculations, the entire process was repeated for 150 slices within a smaller 500 × 500-pixel region using two approaches: (i) the original dataset, and (ii) the Mask R-CNN detections rotated 180° around the  z -axis relative to their initial orientation, followed by grouping and 3D reconstruction. Figure  19  presents histograms of the angular distribution around the  z -axis for both cases, with insets showing the corresponding 2D domains (highlighting the dendrites later used for 3D reconstruction). In both scenarios, the angular distributions were nearly identical, exhibiting only minor deviations. The grouping and 3D reconstruction steps yielded the same number of final dendrites, and the growth misorientation values were highly similar. The only notable difference was a bin switch in the histogram for four dendrites, reflecting the variation between the two histograms. Fig. 19 Histograms showing the growth angle to the z-axis for a domain of 150 slices and 500 × 500 pixels,  a  shows the original domain and  b  shows the results from the same domain, which was rotated before the grouping and reconstruction process"
+      ]
+    },
+    {
+      "heading": "3D Reconstruction of a Monolithic Object: CT Scans of the Al–Fe–Si Alloy",
+      "paragraphs": [
+        "All eight generated datasets from the two regions of each of the four samples (Table  1 ) were used for 3D reconstruction. The primary challenge in this case was that the objects to be reconstructed are thin, needle-like, and overlapping structures, which makes correlation with previous slices very challenging or even impossible due to their complex and intertwined nature. Therefore, these objects are treated as a single network spanning the entire 2D domain, simplifying the reconstruction process while maintaining the integrity of the overall structure. In Fig.  20 , the first 100 slices of the reconstruction of the four samples corresponding to the LOM images are presented. As it was expected, the needles in the 2D sections correspond to plate-like structures in 3D. For the four cases the volume fraction of the plates was calculated and can be seen in Table  7 . The 3D volume fractions are generally similar to the 2D area fractions observed in individual slices, although a direct one-to-one correspondence is not expected, as the area fractions are calculated from a single slice and the precipitate distribution can vary throughout the full 3D volume. Fig. 20 3D reconstruction of the AlFeSi needle-like structures in 2D—plates in 3D. The difference in the total volume of the intermetallics between the different samples is clearly visible Table 7 Volume fraction of the intermetallic phases for the four regions corresponding to the presented LOM images M3#3 µg  Q 1 M3#3 RMF  Q 1 M3#5 µg  Q 2 M3#5 RMF  Q 1 Volume fraction % 3.70 5.70 13.00 4.83"
+      ]
+    },
+    {
+      "heading": "Conclusions",
+      "paragraphs": [
+        "This study has demonstrated the capabilities of Mask R-CNN combined with a three-dimensional reconstruction algorithm for analyzing complex microstructures in two very different types of aluminum alloys. Our approach successfully integrated deep learning-based instance segmentation with geometric analysis to achieve precise contour detection and 3D reconstruction from both LOM and CT images. The model demonstrated exceptional performance across all trained phases and models, achieving peak metrics of 89% accuracy (multiclass model, AlFeSi phase), 97% precision (eutectic Si, single-class model), 95% recall (multiclass model, AlFeSi), and 90%  F 1 score (multiclass model, eutectic Si). The custom-developed reconstruction algorithm, validated by PFS, has shown high proficiency in handling challenging microstructural objects including thin, needle-like overlapping structures and polycrystalline dendritic formations. The implementation of our grouping methodology enabled tracking of grain evolution across multiple slices and effectively addressed challenges such as false positives and false negatives in ML-based detections. Notably, the model’s morphology-driven selectivity, in our case prioritizing elongated AlFeSi structures over granular precipitates in the CT images, highlights a key strength of AI-based methods: the ability to distinguish specific geometries that traditional contrast- or color-based techniques cannot reliably distinguish. However, this selectivity also highlights the importance of balanced training datasets. This research advances the application of deep learning in materials science automated microstructure analysis. The proposed pipeline is designed to be adaptable to high-resolution imaging through flexible inference strategies, ensuring broad applicability across diverse materials and imaging techniques.",
+        "Future work will focus on further optimizing the entire pipeline, starting from synthetic training datasets and hyperparameter tuning to inference efficiency and image pre-processing. The developed model could also be extended to study various microstructures exhibiting complex three-dimensional objects. The dendrite segmentation relies solely on analysis according to the specified grouping criteria, without considering the actual interactions between dendrites and their side branching. Neither the Mask R-CNN model used for the image segmentation, nor the grouping algorithm can physically distinguish when the growth of a specific dendrite has stopped and has been replaced by a different dendrite, thus it might treat the latter as a continuation of the former. Understanding these limitations allows for a more accurate evaluation of the results and helps in leveraging the benefits of image analysis more effectively.",
+        "Overall, our comprehensive process enables quantitative microstructural analysis, such as volume phase fraction, grain size statistics, misorientation calculation, permeability analyses, and will further support data-driven alloy design.",
+        "We highlight that the described methods provide new avenues to study not only a large variety of microstructures from different imaging sources, but also allow for new physical insights into the microstructure formation and selection process across 3D samples."
+      ]
+    }
+  ],
+  "tables": [
+    {
+      "caption": "Overview of the analyzed MICAST samples. Two cross sections were extracted from each of the two solidification zones and rods",
+      "headers": [],
+      "rows": [
+        [
+          "Cross section",
+          "Q 1",
+          "Q 2",
+          "Q 1",
+          "Q 2",
+          "Q 1",
+          "Q 2",
+          "Q 1",
+          "Q 2"
+        ],
+        [
+          "LOM",
+          "X",
+          "",
+          "X",
+          "",
+          "",
+          "X",
+          "X",
+          ""
+        ],
+        [
+          "CT",
+          "X",
+          "X",
+          "X",
+          "X",
+          "X",
+          "X",
+          "X",
+          "X"
+        ]
+      ],
+      "header_groups": [
+        {
+          "label": "MICAST3#3",
+          "start_col": 2,
+          "end_col": 5
+        },
+        {
+          "label": "MICAST3#5",
+          "start_col": 6,
+          "end_col": 9
+        },
+        {
+          "label": "µg",
+          "start_col": 2,
+          "end_col": 3
+        },
+        {
+          "label": "RMF",
+          "start_col": 4,
+          "end_col": 5
+        },
+        {
+          "label": "µg",
+          "start_col": 6,
+          "end_col": 7
+        },
+        {
+          "label": "RMF",
+          "start_col": 8,
+          "end_col": 9
+        }
+      ],
+      "table_alignment_status": "unresolved",
+      "row_provenance": [
+        [
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          },
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          },
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          },
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          },
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          },
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          },
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          },
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          },
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          },
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          },
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          },
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          },
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          },
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          },
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          },
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          },
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          },
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          },
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          },
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          },
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          },
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          },
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          },
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          },
+          {
+            "source": "explicit",
+            "source_row_index": null,
+            "source_col": null
+          }
+        ]
+      ],
+      "tbody_alignment_status": "no_headers_to_target"
+    },
+    {
+      "caption": "Hyperparameters for the Mask R-CNN model implemented with OpenMMlab",
+      "headers": [
+        "Parameter",
+        "Single class model",
+        "Multiclass model",
+        "CT scans (MICAST)"
+      ],
+      "rows": [
+        [
+          "Training images",
+          "5000",
+          "5000",
+          "5000"
+        ],
+        [
+          "Validation images",
+          "500",
+          "500",
+          "500"
+        ],
+        [
+          "Objects per image",
+          "100–120",
+          "100–120",
+          "80"
+        ],
+        [
+          "Number of training epochs",
+          "30",
+          "40",
+          "30"
+        ],
+        [
+          "Initial learning rate",
+          "0.0001/0.001",
+          "0.0001",
+          "0.01"
+        ],
+        [
+          "Optimiser",
+          "Stochastic Gradient Descent (SGD)",
+          null,
+          null
+        ],
+        [
+          "Learning rate scheduler",
+          "Cosine decay (linear warmup)",
+          null,
+          "Cosine decay (step warmup)"
+        ],
+        [
+          "Momentum",
+          "0.9",
+          "0.95",
+          "0.9"
+        ],
+        [
+          "Weight decay",
+          "0.001",
+          "0.005",
+          "0.0001"
+        ],
+        [
+          "Number of classes",
+          "1",
+          "2",
+          "1"
+        ],
+        [
+          "Proposals before non-maximum suppression",
+          "2000",
+          "2000",
+          "5000"
+        ],
+        [
+          "Proposals after non-maximum suppression",
+          "1000",
+          "1000",
+          "1000"
+        ],
+        [
+          "Score threshold",
+          "0.2 for training, varied for inference",
+          "0.2 for training, varied for inference",
+          "0.005 for training, varied for inference"
+        ],
+        [
+          "Intersection over union (IoU) threshold",
+          "0.5 for training, varied for inference",
+          "0.5 for training, varied for inference",
+          "0.6 for training, varied for inference"
+        ],
+        [
+          "Mask binary threshold",
+          "0.5 for training, varied for inference",
+          "0.5 for training, varied for inference",
+          "0.05 for training, varied for inference"
+        ]
+      ],
+      "header_groups": [],
+      "table_alignment_status": "resolved",
+      "row_provenance": [
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 2
+          },
+          {
+            "source": "spanned_empty",
+            "source_row_index": 5,
+            "source_col": 2
+          },
+          {
+            "source": "spanned_empty",
+            "source_row_index": 5,
+            "source_col": 2
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 2
+          },
+          {
+            "source": "spanned_empty",
+            "source_row_index": 6,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 8,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 8,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 8,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 8,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 9,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 9,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 9,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 9,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 10,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 10,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 10,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 10,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 11,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 11,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 11,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 11,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 12,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 12,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 12,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 12,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 13,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 13,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 13,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 13,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 14,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 14,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 14,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 14,
+            "source_col": 4
+          }
+        ]
+      ],
+      "tbody_alignment_status": "resolved"
+    },
+    {
+      "caption": "Comparison between the two followed approaches",
+      "headers": [
+        "Phase-field simulation process",
+        "Analogous experimental process"
+      ],
+      "rows": [
+        [
+          "Simulation of solidification",
+          "Solidification under various conditions"
+        ],
+        [
+          "Segment the 3D domain in 2D slices",
+          "2D slices from 3D CT scans"
+        ],
+        [
+          "Contour detection using OpenCV",
+          "Mask R-CNN object detection"
+        ]
+      ],
+      "header_groups": [],
+      "table_alignment_status": "resolved",
+      "row_provenance": [
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 2
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 2
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 2
+          }
+        ]
+      ],
+      "tbody_alignment_status": "resolved"
+    },
+    {
+      "caption": "Overview of the cases occurring during grouping",
+      "headers": [
+        "Case",
+        "IoU",
+        "Overlap  n / n− 1",
+        "Overlap  n− 1/ n"
+      ],
+      "rows": [
+        [
+          "Continuation",
+          "High",
+          "High",
+          "High"
+        ],
+        [
+          "Coalescence",
+          "Low, high",
+          "High–with multiple",
+          "Low"
+        ],
+        [
+          "Split",
+          "Low, high",
+          "Low",
+          "High–with multiple"
+        ],
+        [
+          "New",
+          "Low",
+          "Low",
+          "Low"
+        ]
+      ],
+      "header_groups": [],
+      "table_alignment_status": "resolved",
+      "row_provenance": [
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 4
+          }
+        ]
+      ],
+      "tbody_alignment_status": "resolved"
+    },
+    {
+      "caption": "Definitions of the evaluation metrics for the detections",
+      "headers": [
+        "Accuracy",
+        "Precision",
+        "Recall",
+        "F 1"
+      ],
+      "rows": [
+        [
+          "The ratio of correct detections over all the data",
+          "The ratio of correct detections over the total amount of detections. The closer it is to 1, the fewer false positives have been detected",
+          "The ratio of detections over the total amount of ground truth objects. The closer this value is to 1, the fewer false negatives have been missed",
+          "Overall performance and evaluation of the effectiveness of the model"
+        ],
+        [
+          "TP + TN TP + FP + TN + FN \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\frac{\\text{TP}+\\text{TN}}{\\text{TP}+\\text{FP}+\\text{TN}+\\text{FN}}$$\\end{document}",
+          "TP TP + FP \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\frac{\\text{TP}}{\\text{TP}+\\text{FP}}$$\\end{document}",
+          "TP TP + FN \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\frac{\\text{TP}}{\\text{TP}+\\text{FN}}$$\\end{document}",
+          "2 ∙ Precision ∙ Recall Precision + Recall \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$2\\bullet \\left(\\frac{\\text{Precision}\\bullet \\text{Recall}}{\\text{Precision}+\\text{Recall}}\\right)$$\\end{document}"
+        ]
+      ],
+      "header_groups": [],
+      "table_alignment_status": "resolved",
+      "row_provenance": [
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 4
+          }
+        ]
+      ],
+      "tbody_alignment_status": "resolved"
+    },
+    {
+      "caption": "Area fraction of the intermetallic phases for the four regions corresponding to the presented LOM images",
+      "headers": [
+        "",
+        "M3#3 µg  Q 1",
+        "M3#3 RMF  Q 1",
+        "M3#5 µg  Q 2",
+        "M3#5 RMF  Q 1"
+      ],
+      "rows": [
+        [
+          "Area fraction %",
+          "6.67",
+          "8.25",
+          "9.39",
+          "7.62"
+        ]
+      ],
+      "header_groups": [],
+      "table_alignment_status": "resolved",
+      "row_provenance": [
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 5
+          }
+        ]
+      ],
+      "tbody_alignment_status": "resolved"
+    },
+    {
+      "caption": "Volume fraction of the intermetallic phases for the four regions corresponding to the presented LOM images",
+      "headers": [
+        "",
+        "M3#3 µg  Q 1",
+        "M3#3 RMF  Q 1",
+        "M3#5 µg  Q 2",
+        "M3#5 RMF  Q 1"
+      ],
+      "rows": [
+        [
+          "Volume fraction %",
+          "3.70",
+          "5.70",
+          "13.00",
+          "4.83"
+        ]
+      ],
+      "header_groups": [],
+      "table_alignment_status": "resolved",
+      "row_provenance": [
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 5
+          }
+        ]
+      ],
+      "tbody_alignment_status": "resolved"
+    }
+  ]
+}

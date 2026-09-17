@@ -1,0 +1,3237 @@
+{
+  "doi": "10.1007/s40534-026-00443-6",
+  "title": "Experimental and numerical analysis of wheel–rail tribology under dry and contaminated conditions with oil, oil–water emulsion, and leaf debris",
+  "abstract": "Abstract The wear of wheels and rails has a significant impact on the dynamic performance and safety of railway systems. Reliable prediction models are essential for effective maintenance planning. This study examines the effect of surface contamination on the friction and wear behaviour of commonly used wheel and rail steels. Twin-disc rolling–sliding experiments were performed to assess the effects of creep ratio, contact pressure, and tangential speed on friction coefficient and wear. Samples were cut from the rail head and locomotive wheel tyre, in the form of rollers and shoes. Various creep ratios were obtained from roller-on-roller tests on rollers with different diameters. To obtain pure sliding, the tests were conducted on a rotating roller with a stationary shoe. Under dry roller–roller conditions, the friction coefficient stabilizes within the range  μ  ≈ 0.168–0.236, with typical values of approximately 0.19–0.20 at 10% slip and 120 N. In contrast, water–leaf contamination results in a substantial reduction in adhesion, yielding  μ  ≈ 0.05 and significant fluctuations attributed to intermittent third-body entrainment. Oil lubrication further reduces the friction coefficient to  μ  ≈ 0.029, while oil–water emulsion conditions produce similarly low values of  μ  ≈ 0.03, indicating a transition to mixed or hydrodynamic lubrication. The lowest friction level is recorded under pure rolling, where  µ  ≈ 0.0187. For roller–shoe contact under pure sliding conditions, the friction coefficient remains relatively high ( μ  ≈ 0.19–0.20), accompanied by severe wear. Wear volumes were calculated using a modified Archard model with weighting factors and compared to results from finite element analysis (FEA). The FEA model provided reliable wear predictions and reduced reliance on costly experimental testing. The strong agreement between FEA predictions and experimental data supports the use of this approach for consistent wear prediction and improved railway maintenance strategies.",
+  "journal": "Railway Engineering Science",
+  "year": "2026",
+  "sections": [
+    {
+      "heading": "Introduction",
+      "paragraphs": [
+        "Wheel and rail wear is widely recognized as a critical challenge within the railway industry, as it can substantially influence the dynamic performance of rolling stock and, under certain conditions, lead to derailment [ 1 ,  2 – 3 ]. The frictional interaction at the wheel–rail interface significantly affects safety, wear rates, noise emissions, and fuel consumption, making it a pivotal area of investigation [ 4 ,  5 – 6 ]. The wheel–rail interaction involves combined rolling and sliding, leading to partial slip (creepage) even under nominal straight-track operation. In straight-track conditions, where lateral forces are minimal, the wheel–rail contact zones are typically concentrated near the central regions of both the wheel tread and rail head. However, during curved path negotiation, the leading axle’s outer wheel of a bogie tends to experience greater lateral displacement towards the flange compared to the outer wheel on the trailing axle [ 7 ,  8 ,  9 ,  10 – 11 ].",
+        "It is well established that stick-slip or sliding contact engenders more pronounced wear compared to pure rolling. Mechanical phenomena jointly produce frictional forces opposing motion at the interface. These phenomena involve elastic and plastic deformations, material fracturing, adhesion, energy exchange, and material transfer, collectively influencing the extent of wear [ 12 ].",
+        "Markov [ 13 ] highlighted that Archard defined the global friction coefficient as  1 F = F 0 + N · f , \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$ F = F_{0}  + N \\cdot f, $$\\end{document} where  F  is the global friction force,  F 0  is the adhesion friction force,  N  is the normal contact force, and  f  is the friction coefficient. It should be noted that the friction coefficient defined in Eq. (1) represents a global experimental parameter consistent with Coulomb’s friction law, whereas Archard’s wear model is introduced separately to describe material removal and does not imply a modification of the Coulomb friction framework. In our experiment, we measured a global friction force, that is the F value. Accordingly, a global coefficient, denoted as μ, was derived. This forms the basis of most tribological testing machine designs, such as the Amsler machine (two-disc system) and the pin-on-disc machine, neither of which is capable of separating the measured contributions of adhesion and friction. Importantly, the Archard wear law is applicable to all types of contact, and it was employed in this study as one of the key parameters for the quantitative evaluation of wear in the tested samples under various conditions (dry, water, oil–water emulsion, oil, and leaf contamination).",
+        "Insufficient friction at the wheel–rail interface may lead to reduced and inconsistent adhesion, posing significant risks during rolling stock operations. Inadequate adhesion during braking or initial movement from a standstill can exacerbate the wear of both wheels and rails. Third-body media such as lubricants, oxides, and debris significantly modify adhesion and wear by altering interfacial shear conditions. Contaminants from additives, wear debris, sand, dust, foliage, and friction modifiers can induce substantial variability in the friction coefficient, affecting both rail and wheel wear and influencing the kinematic parameters of the rolling stock [ 14 ,  15 ,  16 ,  17 ,  18 ,  19 ,  20 ,  21 ,  22 ,  23 – 24 ]. Wheel–rail wear is governed by interacting traffic, contact geometry, material, third body, and environmental factors, whose combined effects are difficult to isolate under in-service conditions. For instance, intentional lubrication of wheel flanges on curved segments mitigates wear, whereas friction modifiers increase adhesion and the contact elements’ resultant wear.",
+        "Controlling the extensive array of variables influencing wheel–rail contact under in-service conditions is inherently challenging, and monitoring and statistically analysing all these factors can be economically prohibitive. Although laboratory-based research allows targeted manipulation of a particular variable, the number of parameters that can be simultaneously replicated is constrained, potentially introducing uncertainties in transferring these findings to real-world scenarios. This uncertainty is especially pronounced when utilizing conventional laboratory methods for wear investigations—such as roller–roller, roller–shoe, and bearing–shaft testing—where discrepancies can be significant [ 25 ,  26 ,  27 ,  28 ,  29 ,  30 ,  31 ,  32 – 33 ].",
+        "Regarding the lubricated and contaminated wheel and rail contact, there are several studies reported in the literature. Khalladi and Elleuch [ 34 ] investigated the tribological behaviour of wheel–rail contact under various contaminants (sand, phosphate, sulphur, and cement) at constant sliding velocity and Hertzian pressure, using a pin-on-disc machine. They concluded that the highest adhesion was achieved with sand, whereas the lowest traction was observed under clean, lubricated conditions. However, the study has clear limitations, as it considered only a single set of parameters (sliding speed and load). Popovici [ 35 ] highlighted the hazards associated with slippery tracks in railway transportation during autumn, with the Dutch main operator (NS) reporting frequent delays. Two tribometers mounted on the rail vehicle bogie were employed, alongside laboratory tests performed on a two-disc machine and a pin-on-disc device. The results suggest that low wheel–rail traction occurs on slippery tracks, a phenomenon more likely to arise during warm autumn days. Yang et al. [ 36 ] developed a three-dimensional wheel–rail adhesion model under wet conditions, showing that at the moment of braking, the adhesion coefficient drops to a lower level—below 0.06—particularly at higher speeds (200, 300, and 400 km/h). Wu et al. [ 37 ] investigated wheel–rail dynamics under low-adhesion conditions and reported that both the adhesion coefficient and creepage force decline sharply within the low-adhesion zone (LAZ), which is formed by water and oil contamination on the rail surface. Their findings indicate that severe wear is likely to occur in the LAZ when the friction coefficient approaches 0.14. Arias-Cuevas and Li [ 38 ] demonstrated that LAZ originates from contamination of the wheel–rail interface by water, oil, and leaves debris. While dry leaf layers predominantly affect traction, wet layers can significantly degrade both braking and traction performance. The study recommends targeted track sanding, which can enhance recovery from LAZ effects by a factor of seven. Omasta et al. [ 39 ] investigated, using a new twin-disc machine, the effect of sanding on adhesion coefficient values under dry, wet, grease-contaminated, and leaf-contaminated conditions at various slip ratios, using a constant load of 3.2 kN. Their results demonstrated the effectiveness of sanding in improving adhesion. Using the HAROLD full-scale wheel/rail test rig, Lewis et al. [ 40 ] reported a significant decay in the adhesion coefficient under various applied loads when a leaf layer was present at the wheel–rail interface, particularly during braking. Similar results were reported by Chen et al. [ 41 ], who examined leaves from five different tree species. The study focused exclusively on this aspect and was conducted using a single applied load of 240 N. Wang et al. [ 42 ] investigated the adhesion behaviour of the wheel–rail interface under oil, water, and sanding conditions using a JD-1 simulation facility comprising a small wheel roller and a large rail roller. They found that adhesion diminishes significantly under oil contamination and is lowest when oil and water are combined; sanding improves adhesion—particularly in wet conditions—but can cause surface damage, while increased axle loads enhance adhesion in the presence of sand.",
+        "While sanding effectively mitigates LAZ effect, current literature lacks comprehensive monitoring of adhesion and wear at the wheel–rail interface under varying loads, speeds, and lubrication conditions (dry, water, oil, leaves). Additionally, finite element analysis (FEA) modelling of wear under these conditions remains limited, a gap this study aims to address.",
+        "The present study examines the wear and frictional characteristics of materials employed in rails and locomotive tyres by conducting laboratory tests on samples extracted from these components. Measurements were carried out using an AMSLER tribometer with first-class roller–roller and third-class roller–shoe couplings under diverse operating conditions, including dry, mixed, and contaminated states. In addition, this research aims to develop a numerical model via FEA, thereby providing a comprehensive framework for understanding and predicting wheel–rail wear behaviour."
+      ]
+    },
+    {
+      "heading": "Materials, equipment, and testing procedure",
+      "paragraphs": []
+    },
+    {
+      "heading": "Materials and equipment",
+      "paragraphs": [
+        "Before testing, samples extracted from locomotive wheel tyres and railway tracks underwent tensile testing following ISO 6892-1 [ 43 ], EN 13674 [ 44 ], and UIC 810-1 [ 45 ]. Additional chemical and microstructural evaluations followed the guidelines outlined in EN 13674 [ 44 ].",
+        "A comparative assessment of the tested wheel and rail steel properties against standard values is presented in Tables  1  and  2 , where Rm is the ultimate tensile strength, representing the maximum stress a material can withstand under uniaxial tension before fracture; Pmax and Smax denote the maximum allowable limits of phosphorus and sulphur content in the material, respectively; and A5 is the percentage elongation after fracture measured on a proportional test piece (as defined in ISO 6892-1). Other physical and mechanical and tribological properties of wheel (wheel-lab) and rail (rail-lab) steels, determined from laboratory tests, are specified in Table  3 . Table 1 Comparative elemental analysis and mechanical properties of standard wheel steel R260 and our laboratory-tested wheel steel (wheel-lab), according to EN 13674-1 standard Wheel steel C (%) Si (%) Mn (%) Cr (%) Al (%) Rm (MPa) A5 (%) R260 0.60–0.82 0.13–0.60 0.65-1.25 0.15 0.004 ≥880 10 Wheel-lab 0.734 0.348 1.06 0.186 0.0235 959 15.5 Table 2 Comparative elemental analysis and mechanical properties of standard rail steels 900A and 900B, along with our laboratory-tested wheel steel (rail-lab), according to UIC 810-1 standard Rail steel C (%) Si (%) Mn (%) Pmax (%) Smax (%) Rm (MPa) A5 (%) 900A 0.60–0.80 0.1–0.5 0.80–1.30 0.04 0.04 880 (Min.) 10.0 900B 0.55–0.75 0.1–0.5 1.30–1.70 0.04 0.04 880–1030 10.0 Rail-lab 0.721 0.37 0.995 0.0246 0.0296 1081 13.5 Table 3 Other physical and mechanical properties of the tested samples Properties Wheel-lab Rail-lab Density (kg/m 3 ) 7845.1 7873.6 Young’s modulus  E  (MPa) 208,300 196,000 Poisson’s ratio 0.319 0.304 Tensile yield strength  R p0.2  (MPa) 558 624 Hardness HRC 32 40.5",
+        "These results indicate the superior strength and hardness of the rail steel, explaining its higher resistance to wear under wheel–rail contact conditions. The differences in the mechanical properties of different steels, as revealed in this experiment, between the rail and the wheel tread material are a consequence of various manufacturing technologies. The hardness of the material used for the wheel tread is lower by approximately 20% compared to that used for the rail, indicating that the wheel tread material undergoes more significant deformation during service.",
+        "Accurate spectral analyses of the chemical compositions for each category of samples revealed that the chemical composition is consistent, with very similar compositions for both categories of materials. Manganese, an important element for maintaining wear resistance, is at a concentration of around 1%, with a slightly higher percentage in the wheel samples. Carbon is found in both materials at concentrations of up to 0.74%.",
+        "Upon analysing the structures obtained from scanning electron microscopy images of both material categories at different magnifications and in various regions, a homogeneous structure with isolated carbides in the central zone was observed for both material categories (Fig.  1 ). The microstructure is predominantly pearlitic, showing the characteristic lamellar pattern of ferrite and cementite, typical of rail steels. The fine spacing between lamellae suggests rapid cooling during processing, contributing to high strength and wear resistance. Minor regions of lighter contrast likely represent proeutectoid ferrite. Bright spots within the matrix may indicate cementite particles or non-metallic inclusions such as oxides or sulphides, with a uniform distribution suggesting good metallurgical quality. Some darker, curved features could be grain boundaries or deformation lines from mechanical loading or sample preparation. Overall, the fully pearlitic and defect-free structure reflects a high-quality steel with appropriate heat treatment, consistent with standards like EN 13674-1. Fig. 1 Scanning electron microscopy (SEM) micrographs of the tested materials:  a  rail steel and  b  wheel tread steel, acquired at 5000× magnification, showing a predominantly pearlitic microstructure with fine lamellar spacing.",
+        "Samples for this investigation were extracted from the rail head of a UIC60 rail segment and from a locomotive wheel tyre. The procedures for sampling and preparing the rollers are illustrated in Fig.  2 . The test rollers (Fig.  3 a and c for the rail samples and Fig.  3 b and d for the wheel tyre samples) were fabricated from steel sections corresponding to these two components (Fig.  2 b) following the desired configuration. Fig. 2 Sampling procedure for tribological test specimens:  a  extraction of samples from the rail head and  b  extraction of samples from the locomotive wheel tyre, indicating the material regions used for specimen fabrication Fig. 3 Test specimen configurations used in the AMSLER tribometer (unit: mm):  a  rail roller and  b  wheel tyre roller in roller–roller (Class I) contact;  c  rail shoe and  d  wheel tyre roller in roller–shoe (Class III) contact",
+        "Two testing configurations were considered (Fig.  4 ): (a) rotating Roller 2 on rotating Roller 1 and (b) fixed Shoe 2 on rotating Roller 1. In the first case, the specific slip  ξ \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$ \\xi  $$\\end{document}  between the rollers (roller–roller configuration) was calculated using Eq. ( 2 ), which accounts for the peripheral velocities of the discs as a function of the diameters of Roller 1 and Roller 2,  D 1  and  D 2 , respectively. This configuration is illustrated in Fig.  4 , which provides the kinematic diagram of the AMSLER machine. In the second case, representing pure slip in the roller–brake shoe configuration, the slip condition was achieved by disengaging the gears Z8-Z9 and the corresponding shoe (Fig.  3 c), labelled as component 2 in Fig.  4 . 2 ξ = 2 × 1 - 0.906 D 2 / D 1 1 + 0.906 D 2 / D 1 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$ \\xi  = 2 \\times \\frac{{1 - 0.906D_{2} /D_{1} }}{{1 + 0.906D_{2} /D_{1} }} $$\\end{document}",
+        "Twelve pairs of cylindrical rollers were manufactured for the roller-to-roller coupling, extracted from rail head and locomotive wheel tyre, and additionally, two pairs of rollers were produced for the roller-to-shoe-type coupling from rail head and locomotive wheel tyre, resulting in a total of 14 pairs of samples tested to measure the coefficient of friction (CoF) and wear.",
+        "The rollers subjected to testing, with the main dimensions specified in Fig.  3 , were manufactured with an outer diameter that varies depending on the desired specific slip. The rolling surfaces had a roughness in the circumferential and transversal directions of  R a,circ  = 0.018 ± 0.004 μm and  R a,trans  = 0.27 ± 0.08 μm, respectively. Fig. 4 Kinematic diagram of the AMSLER tribometer, illustrating power transmission from the electric motor (EM), the gear trains for roller–roller operation, and the disengagement mechanism that enables pure sliding conditions in the roller–shoe configuration.  n em  is the speed of the electromotor and  n 1  is the speed of the Roller 1, in rpm",
+        "The experimental investigation aimed to study the friction in point contact and curved surface contact, corresponding to Class I and Class III couplings, respectively, using the AMSLER tribometer with roller–roller and roller–brake shoe specimens, as shown in Fig.  5 a and b. Class I refers to a theoretical point contact, Class II corresponds to a theoretical line contact, and Class III represents conforming surface contact, such as that between a brake shoe and a roller. Fig. 5 Experimental configurations for friction measurement:  a  Class I roller–roller coupling under rolling–sliding conditions;  b  Class III roller–shoe coupling under pure sliding conditions. Note:  n 1  and  n 2  denote the speed of Roller 1 and Roller 2, respectively;  Q  is the applied load;  b  is the width of the rollers; and  F f  is the friction force between the rollers or between the roller and shoe",
+        "The kinematic scheme of the AMSLER tribometer is presented in Fig.  4 . The rotational motion from the electric motor (EM) is transmitted to the two rollers, to Roller 1 through the kinematic chains Z1-Z2, Z3-Z4, Z5-Z6, and to Roller 2 through the kinematic chains Z1-Z2, Z2-Z7, Z8-Z9. The two specimens rotate in opposite directions, with a pure rolling motion or rolling with slip (0%–30% slip) occurring at their contact, depending on the diameters of the rollers. A specific slip of 10% is obtained when the  D 2 D 1 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$  \\frac{{D}_2}  {{D}_1}  $$\\end{document}   ratio equals to 1.0, while pure rolling is obtained when the  D 2 D 1 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$  \\frac{{D}_2}  {{D}_1}  $$\\end{document}  ratio equals to 1.104.",
+        "To determine the friction in Class III couplings, a shoe is mounted instead of Roller 2 (Fig.  5 b), and wheel Z9 is disengaged from gearing with wheel Z8 (Fig.  4 ), so that the Roller 2’s rotation speed ( n 2 ) becomes zero.",
+        "The coefficient of friction is calculated using the following equation [ 33 ]: 3 μ = F f F n = 2 M f Q · D 1 , \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$ \\mu  = \\frac{{F_{{\\text{f}}} }}{{F_{{\\text{n}}} }} = \\frac{{2M_{{\\text{f}}} }}{{Q \\cdot D_{1} }}, $$\\end{document} where  F n  is the normal force acting on the roller, in N;  F f  is the frictional force generated at the contact, in N;  M f  is the measured friction moment, in N·m;  Q  is the normal load, in N; and  D 1  is the diameter of Roller 1, in m.",
+        "After calibration, the signal displayed on the control screen corresponds directly to the friction moment on Roller 1. The data recorded on the P3 strain indicator and recorder [ 46 ] is transmitted to the computer as a series of friction moment values collected at one-second intervals; these data are then stored and processed."
+      ]
+    },
+    {
+      "heading": "Testing procedure",
+      "paragraphs": [
+        "The friction and wear behaviour of materials used in wheel–rail contact was analysed using the AMSLER tribometer to assess their tribological properties, and a detailed description of the AMSLER machine is presented in [ 33 ]. Before conducting measurements, the machine was installed in a temperature- and humidity-controlled room with maintained at approximately 20 ℃ with low relative humidity. The strain gauge bridge [ 47 ,  48 ] was connected to the strain indicator and recorder, and the data acquisition system was zeroed with the machine unloaded and running at the at the test speed. The roller running surfaces were cleaned with fine-grit abrasive paper and degreased with acetone. The micro-topography of the test surfaces was analysed in the circumferential and transverse directions using a Taylor Hobson roughness tester [ 49 ]. The lubricating bath was prepared for mixed or contaminated regimes.",
+        "Figure  6  displays several images showing the configuration of the tested samples. Fig. 6 Representative worn roller specimens after tribological testing:  a  top view and  b  front view, illustrating material loss, surface damage, and contact track development following rolling–sliding experiments",
+        "After the measurements were completed, the rollers were dismantled, cleaned using compressed air and acetone, and weighed. The outer and inner diameters of the rollers were then measured. Subsequently, the pressure and tension in the contact area, caused by changes in the roller diameters, were calculated and compared with pretest values. Wear was determined for both rollers, the acquired data were processed, and the friction torque and friction coefficient were calculated [ 33 ]. Environmental parameters—including humidity and temperature—along with the rotation speed of the rollers were measured periodically throughout the experiment. The test parameters for friction and wear tests are presented in Table  4 , while the results are included in Table  5 ; corresponding diagrams and graphs are generated based on these results. The maximum contact stress, maximum pressure, and roller behaviour were calculated using the finite element method (FEM), and their variation during testing was estimated. Table 4 Running parameters for the friction and wear test, at a constant running speed of 100 rpm and testing time  t  = 3600 s, for pairs of samples obtained from rail and tyre Test Contact type F  (N) Operating mode Contact ξ P Hmax  (MPa) σ v-Mmax  (MPa) I Rail roller/tyre roller 120 Water with leaves 1127 692 0.1 II Rail roller/tyre roller 120 Oil 1127 692 0.1 III Rail roller/tyre roller 120 Water with oil 1127 692 0.1 IV Rail roller/tyre roller 120 Dry 1127 692 0.1 V Rail roller/tyre roller 40 Dry 785 476.7 0.1 VI Rail roller/tyre roller 60 Dry 920 557.03 0.1 VII Rail roller/tyre roller 80 Dry 994 603.42 0.1 VIII Rail roller/tyre roller 100 Dry 1060 660.48 0.1 IX Rail roller/tyre roller 120 Dry 1127 688.71 0.0 X Rail shoe/tyre roller 100 Dry 0.86 0.5658 1.0 XI Rail shoe/tyre roller 120 Dry 0.86 0.5645 1.0 XII Rail roller/tyre roller 120 Dry 1110 651.88 0.05 XIII Rail roller/tyre roller 120 Dry 1096 664.21 0.2 XIV Rail roller/tyre roller 120 Dry 1094 671.35 0.3 P Hmax  represents the theoretical Hertzian pressure, while  σ v-Mmax  denotes the real equivalent von Mises stress computed using the FEA model Table 5 Experimental average results obtained for tests of 3600 s Test Sampling Wear (µg) Friction coefficient  μ Friction torque  M  (N·mm) Maximum temperature  T max  (°C) I Rail roller 1.1 0.053 183.79 21 Tyre roller 1.2 II Rail roller 1.5 0.029 101.04 21 Tyre roller 2.1 III Rail roller 2.8 0.031 107.55 21 Tyre roller 1 IV Rail roller 12.5 0.192 666.65 26 Tyre roller 29.1 V Rail roller 2 0.199 230.36 22 Tyre roller 6.3 VI Rail roller 6.2 0.194 336.04 22 Tyre roller 10.6 VII Rail roller 8.9 0.190 439.87 22 Tyre roller 10.3 VIII Rail roller 10 0.168 487.04 21 Tyre roller 12 IX Rail roller 0.8 0.0187 54.239 41 Tyre roller 1.1 X Rail shoe 702.1 0.201 580.89 40 Tyre roller 830.7 XI Rail shoe 940.1 0.191 664.24 35 Tyre roller 1146.8 XII Rail roller 7 0.236 821.09 23 Tyre roller 19.5 XIII Rail roller 21.5 0.219 760.48 23 Tyre roller 33 XIV Rail roller 38 0.169 586.87 23 Tyre roller 75.3",
+        "For Tests X and XI, conducted under pure sliding conditions, wear was modelled using FEA, and the results were compared with measured values to assess accuracy."
+      ]
+    },
+    {
+      "heading": "Results and discussion",
+      "paragraphs": []
+    },
+    {
+      "heading": "Determination of the friction torque and friction coefficient in contaminated lubricating regime",
+      "paragraphs": [
+        "To evaluate the influence of various contaminants on the friction coefficient, an oil bath containing different substances—water with leaves, an oil–water emulsion, and pure oil—was utilized; the results obtained were compared against those of the dry regime. During the water and leaf contamination tests, the lower rotating disc of the two-disc machine (Fig.  4 ) was immersed in a shallow open reservoir containing approximately 200 mL of water and about 10 g of chopped leaves (with characteristic dimensions ≤ 5 mm × 5 mm), corresponding to a leaf-to-water mass ratio of roughly 5%. As the lower disc rotated, the water–leaf mixture was entrained into a vortex and continuously transported into the contact interface between the two discs, ensuring sustained contamination throughout the test. The oil–water emulsion tests used the same nominal 5% contaminant ratio.",
+        "In this setup, Roller 1 and Roller 2 had equal diameters, resulting in a specific slip of 10% and a constant load of 120 N applied at a constant motor speed of 100 rpm. Table  4  lists the experimental input data, and Table  5  presents the resulting values. The corresponding individual plots of friction torque evolution versus time are shown in Fig.  17  in Appendix. Figure  7  presents an overlay of the friction coefficient curves under each contamination condition, highlighting that the presence of a water–oil emulsion or oil spots on the rail can reduce the traction coefficient by up to eight times compared to dry conditions. A detailed analysis of these findings reveals that the highest average friction coefficient was observed in Test IV (dry friction), with the friction coefficient stabilizing at approximately 0.2 after 40 min of continuous testing. Notably, Test I (contact contaminated with water and leaves) exhibited significant fluctuations in both friction moment and friction coefficient. The periodic ingress of leaf fragments contributed to tangential forces that were two to four times greater than those associated with smaller debris or pure water contamination, along with increased noise and vibration. However, the presence of rainwater and leaves caused a significant reduction in the friction coefficient, decreasing it to around 0.05. The maximum value of the measured friction moment under these conditions was approximately two times larger than the average value (Fig.  17 ). Fig. 7 Evolution of friction torque as a function of time under dry conditions and contaminated lubrication regimes (water with leaf debris, oil, and oil–water emulsion) for roller–roller contact at 10% slip under 120 N normal load",
+        "The temperature was measured using a non-contact laser device (Raynger MX4). The recorded temperature values showed minimal variation, as the load, speed, and testing time were limited, and effective convective heat exchange with the environment was maintained.",
+        "Eadie et al. [ 14 ] proposed solutions to mitigate the effects of wheel and rail corrugations by investigating the role of the “third body” in contact mechanics. They also identified several potential contaminants at the wheel–rail interface, including iron oxides (hematite and magnetite), silica from sand, hydrocarbons from oil or grease lubricants that migrate to the rail surface, rain-induced wash-off, and brake shoe debris. Notably, even under high positive friction (HPF) conditions, their experimental pin-on-disc tests yielded coefficients of friction in the range of 0.1–0.3, which aligns with our results under dry conditions (see Tables  4  and  5 ). The rationale for comparing our results with those of Eadie et al. [ 14 ] lies in the fact that, in any loaded dry contact involving rolling and sliding or pure sliding motion, oxidation inevitably occurs. The resulting adhesion and abrasion wear particles can act as a third body within the contact, softening the material, promoting localized micro-rolling motion, and thereby reducing the friction coefficient.",
+        "The wear behaviour observed across Tests I–XIV indicates a clear transition between distinct wear regimes governed by the frictional and kinematic conditions. Can [ 21 ] reported a friction coefficient in the range of 0.03–0.06 for a leaf slurry at 50% slip. In comparison, for a 10% slip and a wet leaf slurry, we obtained a traction coefficient of 0.053 (see Table  5 ). Olofsson and Sundvall [ 22 ] reported that the coefficient of friction exhibits a reduction with increasing relative humidity and is further reduced when leaves are present at the contact interface. Specifically, the use of an elm leaf as a lubricant reduced the coefficient of friction to one-fourth of its value under dry conditions. An even greater reduction was observed when a commercial rail lubricant was applied. Similarly, in our study, a 3.63-fold decrease in the coefficient of friction was observed for water with leaf slurry lubrication (Test I) compared to dry lubrication (Test IV) at a creepage of 10%. Beagley [ 23 ] found that hydrodynamic lubrication can develop at the wheel–rail interface when substantial viscous contamination is present—such as a mixture of water, oil, leaves, dust, and solid wear particles—resulting in a significantly reduced coefficient of adhesion.",
+        "Under contaminated lubrication (Tests I–III), wear remains limited despite prolonged testing, indicating that the contact is partially separated by boundary or thin fluid films. In this regime, mechanically or chemically formed third-body layers act as a protective tribofilm that reduces direct metal–metal interaction and suppress severe plastic deformation, consistent with observations for leaf residues and lubricant-derived films in wheel–rail contacts [ 21 ,  25 ]. As the contact transitions to dry rolling–sliding conditions (Tests IV–IX), wear increases moderately even though the global friction coefficient stabilizes or decreases below  ξ ≈0.05. This decoupling between friction level and wear rate suggests that wear is increasingly controlled by local subsurface deformation and debris generation rather than macroscopic adhesion alone. Similar behaviour has been reported for rolling–sliding contacts, where subsurface fatigue accumulation contributes to progressive material removal despite stable friction conditions [ 24 ]. Severe wear is observed only when creepage approaches unity (Tests X–XI), corresponding to pure sliding conditions. In this regime, the absence of rolling motion leads to continuous shearing of surface junctions, promoting adhesive tearing. The sharp increase in wear, together with the close agreement between experimental measurements and numerical predictions, confirms that Archard-type formulations remain appropriate for describing material removal dominated by sliding mechanisms, in line with previous findings reported in the literature [ 26 ,  29 ].",
+        "For full-film lubrication, Popovici [ 35 ] presented traction curves with coefficients of friction (CoF) ranging from 0.05 to 0.08 at speeds of 4–8 m/s. In actual dry wheel–rail contact, measurements using an in situ tribometer showed a CoF of approximately 0.3. On greased tracks, the CoF dropped quickly from 0.3 to 0.1 within a few metres. After applying high-friction modifiers (HFMs), the CoF increased to values between 0.3 and 0.4. Based on measurements taken during real train operation, the study classified friction levels as high when CoF > 0.15, medium between 0.07 and 0.15, and low when CoF < 0.07. The Dutch railway operator (NSR) adopts a mean CoF value of 0.15 for timetable planning. Arias-Cuevas and Li [ 38 ] observed adhesion coefficients in wheel–rail contacts contaminated by leaves ranging from 0.02 to 0.19, depending on the distance and number of contact laps. Additionally, near-zero traction was occasionally recorded under wet conditions, with rail sanding identified as an effective mitigation strategy. For oil contamination, Wang et al. [ 42 ] observed adhesion coefficients ranging from 0.01 to 0.06, influenced by both speed and axle load. Specifically, adhesion diminishes with increasing speed due to higher creepage, while an increase in axle load causes a slight rise in adhesion. For oil–water contamination, they reported low-adhesion values between 0.02 and 0.03, which align closely with the results of our study.",
+        "The very low coefficients of friction measured under water–leaf, water–oil, and oil contamination indicate a rapid transition from boundary lubrication to mixed or hydrodynamic regimes, consistent with autumn contamination mechanisms in which organic residues alter surface topography and introduce chemically active lubricating components [ 21 ]. Under these conditions, transient third-body layers intermittently form and collapse, leading to cyclic entrainment and expulsion of debris or fluid films. This behaviour manifests as fluctuations in friction torque observed in Tests I–III (Fig.  7 ) and is consistent with instability mechanisms associated with third-body compaction and removal under low-adhesion rolling–sliding contact [ 14 ,  22 ,  23 ,  42 ].",
+        "The proximity of the measured friction values under combined oil–water contamination to the lower bounds reported in the literature [ 42 ] highlights the inherently unpredictable nature of multiphase lubrication regimes. Such sensitivity implies that even small contaminant quantities can have disproportionate effects on adhesion, with direct consequences for operational safety. These findings support the use of mitigation strategies such as adaptive traction control, rail sanding, and friction modifiers [ 19 ,  20 ,  42 ]. Furthermore, maintaining friction above the medium-adhesion threshold ( μ ≈0.15 [ 35 ]) may require active control of third-body lubrication or real-time traction estimation approaches incorporating creepage-dependent identification techniques, as proposed by Ronasi et al. [ 27 ]."
+      ]
+    },
+    {
+      "heading": "Results on friction moment and friction coefficient variation versus load",
+      "paragraphs": [
+        "Two rollers of identical diameters were employed to evaluate the friction torque evolution with applied load at a specified slip of 10%. The friction torque was measured under varying loads on the rollers, beginning at a minimum of 40 N and increasing in increments of 20 N to a maximum of 120 N. The input data for the experiment are detailed in Table  4 , with the resulting values presented in Table  5  and depicted in Fig.  18  in Appendix 1. Based on these data, a graph was constructed to underline the variation of the friction torque as a function of the normal contact load,  Q  (see Fig.  8 ). As can be observed, the friction torque increased with the applied contact load for dry conditions, according to the dry friction law. Fig. 8 Friction torque versus time for dry roller–roller contact under different applied normal loads (40–120 N) at a constant rotational speed and 10% specific slip"
+      ]
+    },
+    {
+      "heading": "Friction torque and friction coefficient versus specific slip",
+      "paragraphs": [
+        "To investigate the variation of the friction moment and coefficient of friction with specific slip, a set of rollers was employed to produce distinct slip values of 0%, 5%, 10%, 20%, and 30%.",
+        "In this configuration, Roller 2 remained unchanged, while Roller 1—with various diameters—was successively replaced after each measurement, with the load held constant; the specific slip changed due to the change in diameter of Roller 1. The resulting graphs are shown in Appendix (Figs. 17 d,  18 e,  19 b, and  20 ), illustrating the variation of the friction coefficient as a function of specific slip (Figs.  9  and  10 ). Fig. 9 Variation of the coefficient of friction as a function of specific slip (creepage) under dry roller–roller contact conditions, showing the traction peak and saturation behaviour Fig. 10 Time evolution of friction torque for different specific slip ( ξ ) values under dry roller–roller contact, illustrating increased fluctuations at high creepage and under pure sliding conditions",
+        "The friction coefficient increases sharply when transitioning from pure rolling ( ξ  = 0) to small creepage values, reaching a maximum of approximately  μ ≈0.23–0.24 at  ξ ≈0.05. This peak corresponds to the transition from predominantly adhesive rolling to mixed rolling–sliding conditions, where an increasing portion of the contact patch enters micro-slip and the tangential shear stress approaches its limiting value. As creepage increases further, the friction coefficient gradually diminishes and stabilizes. The position of the traction peak around  ξ ≈0.05 suggests that adhesive junction growth between surface asperities is dominant at small creepage. With further slip, however, junction rupture and debris formation dominate, promoting a transition towards mixed rolling–sliding. Comparable traction peak shifts with increasing slip and pressure have been reported in FASTSIM-based simulations and twin-disc experiments [ 15 ,  19 ]. The saturation creepage—defined as the point beyond which additional creepage does not significantly increase the transmitted adhesion—can therefore be identified at approximately  ξ  ≈ 0.3, where  μ  has fallen to about 0.17 and remains nearly constant within the measurement uncertainty. Although the nominal creepage reaches  ξ  = 1.0, corresponding to pure sliding, the measured friction coefficient at  ξ  = 1.0 ( μ  ≈ 0.19) lies within the plateau region, indicating that adhesion does not continue to increase beyond saturation. The slight fluctuations observed at high creepage are attributed to sliding-induced wear particle formation and intermittent third-body effects rather than a continued rise in adhesion.",
+        "Although creepage is the primary control parameter for the transition from adhesion to sliding, the results suggest that contact pressure modifies the location and magnitude of the traction peak. Under higher loads, adhesive junction growth between asperities stabilizes shear transfer at lower creepage values. The shift of saturation creepage towards  ξ ≈0.3 under dry conditions supports the hypothesis that maximum adhesion occurs when subsurface stresses remain below the critical value for microcrack initiation. The stress gradients calculated using FEA (Fig.  14 ) show that the peak von Mises stress is concentrated immediately below the surface; such stress localization is a known precursor to rolling contact fatigue in rails [ 18 ].",
+        "Rovira et al. [ 15 ] observed that the traction coefficient reaches a maximum at approximately 2% longitudinal creep when a variable friction coefficient—dependent on creepage—is considered. They also reported traction coefficients from the literature for different contaminants: approximately 0.01–0.02 for wet leaves, 0.04 for dry leaf debris, and 0.06–0.08 for oil. For both dry and wet contact conditions, the maximum traction coefficient consistently occurred at around 2% longitudinal creep. In pure rolling, the traction coefficient was approximately 0.07 for dry contact and 0.05 for wet contact.",
+        "Additionally, under wet conditions, wear was found to be minimal, whereas in dry conditions, it increased sharply with longitudinal creepage. Wu et al. [ 37 ], using numerical simulations based on Kalker’s modified theory, obtained a traction coefficient versus creepage curve with a shape consistent with our findings. They emphasized that the position of the maximum traction point is influenced by train speed. The traction coefficient values they calculated for water- and oil-lubricated wheel–rail contacts are comparable to those obtained in our study and similarly depend on train speed. Under water-contaminated conditions and during instantaneous braking (i.e. high creepage), Yang et al. [ 36 ] observed that the coefficient of adhesion drops drastically to below 0.06. In our tests conducted at a 10% sliding-to-rolling ratio, similar values were obtained: 0.053 for water with leaves, 0.029 for oil, and 0.031 for an oil–water emulsion.",
+        "The most pronounced fluctuations in friction moment and friction coefficient occurred at 100% slip ( ξ =1). The highest temperature recorded during testing was 37.5 °C, which did not substantially affect the outcomes. Notably, the greatest noise and wear levels were observed during these tests, likely due to the formation of wear particles. These particles temporarily acted as a lubricant, reducing tangential forces and the friction coefficient over short intervals. A maximum friction coefficient (about 0.24) was obtained for a specific slip of 0.05, while a minimum friction coefficient around 0.019 was obtained for pure rolling conditions ( ξ =0). It can be noted that the traction (friction) coefficient between the rail and wheels can be optimized through careful design to achieve the ideal specific slip. It can be concluded that the coefficient of friction varies with specific slip, being minimal for the case when the value  ξ =0% (pure rolling) and reaching maximum values in the range of  ξ =5% to  ξ =10%.",
+        "Arias-Cuevas et al. [ 19 ] found that the application of only a few drops of water at the wheel–rail contact significantly reduces the adhesion coefficient. For a slip rate of 0.5%, they reported adhesion coefficients in the range of 0.2 to 0.3. The shape of the traction curve they obtained follows a similar trend to that observed in the present study (Fig.  9 ), reaching its maximum value at approximately 2% slip. As demonstrated in our results, the traction coefficient is strongly influenced by the applied load. Reported values in the literature vary depending on both the load magnitude and the use of friction modifiers—such as sand—which further impact adhesion behaviour."
+      ]
+    },
+    {
+      "heading": "Determination of the wear rate in the roller–shoe coupling in dry mode",
+      "paragraphs": [
+        "To examine the variation of the friction coefficient for Class III coupling, a traditional arrangement was employed, comprising a roller (Roller 1) machined from the wheel tyre and a rail shoe sample (Roller 2) obtained from the rail. As shown in Fig.  5 , Roller 1 was rotating, while the cylindrical Roller 2 was replaced with the rail shoe (Fig.  5 b) and disengaged from its gear connection, thereby remaining stationary. The friction coefficient was measured under different normal loads with varying diameters of the cylindrical roller.",
+        "Concerning wear behaviour, the specialized literature [ 50 ,  51 ,  52 ,  53 – 54 ] frequently defines wear rate as the ratio of volume loss to the pure sliding distance times the applied load on the contact, according to Archard’s law (Eq. ( 4 )): 4 K = Δ V F · L , \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$K = \\frac{{\\Delta V}}{{F \\cdot L}},$$\\end{document} where  K  is the wear rate, in mm 3 /(N·m); ∆ V  is the volume loss, in mm 3 ;  F  is the applied load, in N; and  L  is the pure sliding distance, in mm. Based on the results shown in Table  5  and Fig.  11 , the wear observed in both wheel and rail samples was significantly higher under pure sliding conditions compared to roller–roller tests, particularly for the roller–shoe coupling (Test X and Test XI). Fig. 11 Measured wear of rail and wheel specimens for Tests I–XIV under different lubrication regimes, contact loads, and slip conditions, including both roller–roller and roller–shoe configurations",
+        "The wear rate for Class III couplings (pure slip and significant measured wear), Tests X and XI, are calculated as in Eqs. ( 5 ) and ( 6 ), respectively. 5 K X = Δ V X F X · L X = Δ V r + Δ V W F · L = Δ U r Δ U r ρ r ρ r + Δ U w Δ U w ρ w ρ w F · π · d · N cl = 0.7021 / 0.0078736 + 0.8307 / 0.007845 98.1 × 3.1415 × 44.27 × 10 - 3 × 6 × 10 3 = 2.38 × 10 - 3 , \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$ K_{{\\text{X}}}  = \\frac{{\\Delta V_{{\\text{X}}} }}{{F_{{\\text{X}}}  \\cdot L_{{\\text{X}}} }}~ = \\frac{{\\Delta V_{{\\text{r}}}  + \\Delta V_{{\\text{W}}} }}{{F \\cdot L}} = \\frac{{{{\\Delta U_{{\\text{r}}} } \\mathord{\\left/ {\\vphantom {{\\Delta U_{{\\text{r}}} } {\\rho _{{\\text{r}}} }}} \\right. \\!\\!} {\\rho _{{\\text{r}}} }} + {{\\Delta U_{{\\text{w}}} } \\mathord{\\left/ {\\vphantom {{\\Delta U_{{\\text{w}}} } {\\rho _{{\\text{w}}} }}} \\right.\\!\\!} {\\rho _{{\\text{w}}} }}}}{{F \\cdot \\uppi  \\cdot d \\cdot N_{{{\\text{cl}}}} }} = \\frac{{0.7021/0.0078736 + 0.8307/0.007845}}{{98.1 \\times 3.1415 \\times 44.27 \\times 10^{{ - 3}}  \\times 6 \\times 10^{3} }} = 2.38 \\times 10^{{ - 3}} , $$\\end{document} 6 K XI = Δ V XI F XI · L XI = Δ V r + Δ V w F · L = Δ U r Δ U r ρ r ρ r + Δ U w Δ U w ρ w ρ w F · π · d · N c = 0.9401 / 0.0078736 + 1.1468 / 0.007845 117.72 × 3.1415 × 52 × 10 - 3 × 6 × 10 3 = 2.3 × 10 - 3 , \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$  K_{{{\\text{XI}}}}  = \\frac{{\\Delta V_{{{\\text{XI}}}} }}{{F_{{{\\text{XI}}}}  \\cdot L_{{{\\text{XI}}}} }} = \\frac{{\\Delta V_{{\\text{r}}}  + \\Delta V_{{\\text{w}}} }}{{F \\cdot L}} = \\frac{{{{\\Delta U_{{\\text{r}}} } \\mathord{\\left/ {\\vphantom {{\\Delta U_{{\\text{r}}} } {\\rho _{{\\text{r}}} }}} \\right.\\!\\!} {\\rho _{{\\text{r}}} }} + {{\\Delta U_{{\\text{w}}} } \\mathord{\\left/ {\\vphantom {{\\Delta U_{{\\text{w}}} } {\\rho _{{\\text{w}}} }}} \\right.\\!\\!} {\\rho _{{\\text{w}}} }}}}{{F \\cdot \\uppi  \\cdot d \\cdot N_{c} }} = \\frac{{0.9401/0.0078736 + 1.1468/0.007845}}{{117.72 \\times 3.1415 \\times 52 \\times 10^{{ - 3}}  \\times 6 \\times 10^{3} }} = 2.3 \\times 10^{{ - 3}} ,  $$\\end{document} where  d  is diameter of the roller, in mm;  N c  is the number of cycles;  ρ r  and  ρ w  are density of rail and wheel tyre materials, respectively, in g/mm 3 , determined by the ultrasonic evaluation; and ∆ U r  and ∆ U w  are the weighted wear of rail and wheel tyre materials, in g."
+      ]
+    },
+    {
+      "heading": "Determination of the wear rate in the roller–roller tests",
+      "paragraphs": [
+        "As the wear of roller and shoe contacts was very high, Fig.  12  presents results excluding Tests X and XI. The influence of increasing load on wear can be observed by comparing the results of Test IV to Test VIII, carried out in dry conditions at the same creepage of 0.1 and a constant speed of 100 rpm. Test IV, with an applied load of 120 N, resulted in the highest wear of the samples, with wear increasing as the applied load increased from 40 N to 100 N from Test V to Test VIII. Fig. 12 Wear measurements for roller–roller tests (Tests I–IX and XII–XIV), excluding pure sliding roller–shoe tests, showing the influence of load and specific slip under dry and contaminated conditions",
+        "For all dry roller–roller tests, the wear of the samples obtained from the wheel tyre was higher than that of the samples obtained from the rail. Several studies have shown that wet leaf contamination introduces transient third-body layers that significantly disrupt wheel–rail adhesion. Ishizaka et al. [ 55 ] reviewed bonding and low-adhesion mechanisms associated with leaf layers and moisture at the interface, highlighting how water–leaf mixtures reduce friction and increase variability in traction behaviour. Experimental work by Guidoum et al. [ 56 ] further quantified how leaf moisture influences adhesion losses, with results supporting non-uniform friction due to intermittent leaf ingress. Kumar et al. [ 57 ] found similar nonlinear reductions in adhesion with leaf volume that saturate beyond certain contamination levels. Additional surveys on wheel–rail friction and low-adhesion problems also document the influence of wet leaves as a key factor in autumn leaf-related slip conditions [ 58 ].",
+        "The presence of the oil, rainwater, and oil–water emulsion on the rail leads to similar quantitative wear, but the emulsion is more dangerous, as it results in higher wear for the rail sample than for the wheel tyre sample; the oil adheres better, forming a protective layer on the wheel sample, while also diminishing the traction efficiency.",
+        "In dry regime with constant load and speed, the influence of increasing creepage from pure rolling (Test IX, with  ξ =0) to a creepage of  ξ =0.3 is emphasized by the results of Test XII ( ξ =0.05), Test IV ( ξ =0.1), Test XIII ( ξ =0.2), and Test XIV ( ξ =0.3). From Fig.  12 , it can be observed that pure rolling produces the least wear but unsatisfactory traction (Fig.  9 ), and that wear increases as the creepage increases, with wear of the wheel samples being higher than that of the rail samples."
+      ]
+    },
+    {
+      "heading": "Statistical analysis of the experimental results",
+      "paragraphs": [
+        "Table  6  presents the statistical results of all tests, each of which was replicated three times. The signal-to-noise ratio (SNR) indicates the quality of data acquisition, which is considered good if SNR > 1. The standard deviation provides insight into the variability of the tests. It can be observed that liquid lubrication regimes (oil and emulsion, Tests II and III) result in smaller fluctuations in the data. Increasing the specific slip (creepage) leads to higher standard deviation values. Kurtosis values indicate the presence of outliers in the data distribution, while skewness indicates whether the data in the histogram are left-tailed (negative values) or right-tailed (positive values). Table 6 Statistical results Test Rotational speed (rpm) Load (N) Friction torque (N·mm) Friction coefficient  μ Standard deviation (± %) Kurtosis Skewness SNR I 100 120 183.78 0.0529 5.02 5.21 −1.17 9.95 II 100 120 101.03 0.0290 1.83 5.59 1.49 27.26 III 100 120 107.54 0.0309 1.83 2.84 0.51 27.20 IV 100 120 666.65 0.1919 4.26 3.72 −0.86 11.73 V 100 40 230.35 0.1989 5.09 9.49 −1.95 9.82 VI 100 60 336.04 0.1935 5.42 31.62 −4.94 9.22 VII 100 80 439.86 0.1899 4.74 13.29 −2.53 10.54 VIII 100 100 487.04 0.1682 3.52 3.26 −0.98 14.23 IX 100 120 54.23 0.0187 6.68 11.50 −2.88 7.47 X 100 100 580.88 0.2007 8.95 10.51 −2.72 5.59 XI 100 120 660.35 0.1911 8.15 7.86 −2.05 6.13 XII 100 120 818.62 0.2321 8.41 11.11 −2.77 5.94 XIII 100 120 756.23 0.2211 6.96 13.29 −2.76 7.18 XIV 100 120 587.07 0.1691 7.65 18.52 −3.97 6.54"
+      ]
+    },
+    {
+      "heading": "Finite element modelling of roller–roller and roller–shoe contact",
+      "paragraphs": [
+        "In this study, the loads applied to the rollers were selected to replicate the contact pressures characteristic of freight car and locomotive wheel–rail interfaces. A standard four-axle freight car can exhibit a curb weight ranging from 20 to 38.5 tons, with a payload capacity of 16 to 73 tons or more, thus reaching a total weight of 55 to 93 tons or higher. Locomotives can weigh anywhere from 80 to 120 tons or more, leading to contact pressures approaching or exceeding 1 GPa. Both classical Hertzian contact theory and FEA were employed to calculate and monitor these pressures prior to and throughout testing. The pressures for each test scenario were computed, including any variations arising from roller wear.",
+        "Initially, the Hertzian contact was modelled using the FEM for both point contact and line contact under a set of applied forces, and the outcomes were compared against classical Hertz calculations. The relative error between the theoretical and FEA-derived values for contact area, maximum principal normal stress, peak pressure, and maximum shear stress remained below 3%. As a result, these validated contact parameters were subsequently utilized to model the roller–roller and roller–shoe interactions under all experimental conditions investigated in this study."
+      ]
+    },
+    {
+      "heading": "Finite element modelling of Hertzian contact for the case of roller–roller and roller–shoe contact",
+      "paragraphs": [
+        "Three-dimensional finite element analyses were conducted to investigate the stress and pressure distributions within Class I (roller–roller) and Class III (roller–shoe) friction couplings. The calculations were performed in Ansys Mechanical under static-structural conditions, following the procedure outlined below [ 54 ]:",
+        "Model creation and material properties : The three-dimensional geometry of both coupling types was generated in a CAD environment and imported into the finite element software. The elastic properties of the rail and wheel materials, previously characterized, were applied to the model. Contact parameters : The contact interactions were defined using the augmented Lagrange formulation to calculate contact pressure and the contact location. In this symmetric approach, nodes on both contact surfaces share the pressure load, allowing the rail roller to penetrate the tyre roller surface appropriately Mesh generation : The three-dimensional roller–roller and roller–shoe models were discretized using quadratic solid elements. To resolve steep stress gradients at the interface, a locally refined mesh was applied in the contact region, while coarser elements were used elsewhere. Surface-to-surface contact was modelled using paired contact and target elements assigned to the roller components. The final meshes contained approximately 37,000 nodes and 7500 elements per configuration, with higher-resolution elements in the roller–shoe and roller–roller contact zones to ensure accurate computation of contact stresses and inter-action forces. Boundary and loading conditions : The three-dimensional roller–roller and roller–shoe models were discretized using quadratic solid elements. A force determined from relevant operational data was applied to the rail roller, while the tyre roller was constrained. Due to the frictional nature of the contact, small structural deformations introduced nonlinearity into the problem. Convergence was achieved by incrementally increasing the applied load, with two to three iterations typically required at each load step. Upon completion, the results were processed, interpreted, and compiled for comparison."
+      ]
+    },
+    {
+      "heading": "Results for Class I (roller–roller) coupling",
+      "paragraphs": [
+        "The results of the ANSYS analysis for roller–roller contact are presented below, covering global deformations, contact area deformation, shear stresses, equivalent von Mises stresses, and contact pressure (see Fig.  13 ): Global deformations : The maximum total deformation reached approximately 0.0038 mm on the rail roller. Contact area deformation : A gradient of deformations was evident in the vicinity of the contact. Shear stresses:  Peak shear stress was approximately 349.94 MPa at a depth of 0.107 mm in the rail roller and about 345.6 MPa for the tyre roller at the same depth. Equivalent (von Mises) stresses : Maximum values of roughly 691.99 MPa (rail roller) and 685.37 MPa (tyre roller) were identified at the same depth, both surpassing the yield strength of the materials and indicating localized plasticity. Contact pressure : The highest contact pressure recorded was approximately 1127.3 MPa, centrally within the contact ellipse. Fig. 13. FEA-generated results for Class I roller–roller contact:  a  total deformation;  b  localized deformation in the contact zone;  c  shear stress distribution;  d  equivalent von Mises stress distribution at the contact interface",
+        "Additional tests further demonstrated that, due to progressive wear, the Class I friction coupling evolved into a Class II coupling in some scenarios (Tests IV, VI-VIII, XII-XIV). In these cases, the maximum pressure decreased from its initial level, and the shear and von Mises stress dropped below the yield limit as testing progressed. Consequently, the material response transitioned from localized plasticity to elastic behaviour, with the depth of the maximum stress shifting closer to the contact surface."
+      ]
+    },
+    {
+      "heading": "Results for the Class III coupler (roller–shoe) coupling",
+      "paragraphs": [
+        "In the global model, the maximum total deformation amounts to approximately 1.349 × 10 –4  mm on the tyre roller, with the deformation gradient primarily localized around the roller–shoe contact region. The shear stress distribution reaches its highest value of about 0.33 MPa on the roller–rail interface, specifically at the roller–shoe contact surface near the curvature extremities of the shoe. The equivalent (von Mises) stress also attains its maximum (approximately 0.86 MPa) on the roller–rail contact surface, coinciding with the location of the peak contact pressure.",
+        "The pressure gradient exhibits a maximum value of 0.566 MPa, concentrated in the central zone of the contact region. The maximum contact pressures and maximum equivalent stresses obtained for additional tests are provided in Table  4 . Subsequent to wear, the values for these parameters exhibit only minor changes for both Tests X and XI.",
+        "The results of the ANSYS analysis of roller–shoe contact are presented in Fig.  14 . Fig. 14 FEA-generated results for Class III roller–shoe contact:  a  total deformation;  b  deformation in the contact region;  c  shear stress distribution;  d  equivalent von Mises stress distribution at the contact interface"
+      ]
+    },
+    {
+      "heading": "Finite element modelling of wear",
+      "paragraphs": [
+        "The advantage of FEA is the ability to predict wear as a function of changing surface geometry as the material is removed from the 3D elements in contact. To model this phenomenon, it is necessary to create an iterative process to progressively remove material during the solution, to determine the parameters that affect the material removal rate from the element, and to correctly determine the material removed for each series of analyses). In this subsection, wear is modelled for the Class III roller–shoe coupling, using the wear rate determined with the AMSLER tribometer for a series of finite element analyses; in this way, the evolution of the contacting surfaces and the final predicted wear are estimated.",
+        "Wear modelling for Class III (roller–shoe) friction couplings was performed for Tests X and XI (pure sliding couplings) using FEA and Archard’s wear model (Fig.  15 ). The agreement between simulated and measured wear volumes for Tests X and XI supports the applicability of Archard-based modelling to severe sliding regimes. Recent results reported in [ 59 ] indicate that wheel–rail wear cannot always be adequately characterized by a single global wear parameter, particularly when contact conditions vary along the wheel profile or when rolling–sliding regimes dominate. That study showed that indicators based solely on tangential energy dissipation may correlate with local wear depth but may not fully capture overall material removal when contact area and load distribution evolve. This observation is consistent with the present findings, where comparable friction levels can lead to different wear responses depending on creepage, contact pressure, and debris formation. It therefore supports the combined use of experimentally measured wear volumes and FEA–based stress analysis adopted in this work. However, deviations at lower slip may arise due to debris accumulation and transient lubrication mechanisms not captured by the model assumptions. The Archard wear model assumes that the volumetric material loss rate due to wear is proportional to the contact pressure and the relative sliding velocity at the contact interface. The wear is modelled according to Fig.  15  and can be described using Eq. ( 7 ) [ 54 ]: 7 Δ V = k H · P m · v rel n , \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$ \\Delta V = \\frac{k}{H} \\cdot P^{m}  \\cdot v_{\\text{rel}}^{n} , $$\\end{document} \nwhere  k  is the wear rate coefficient, ∆ V  is the volume loss,  H  is the hardness,  L  is the sliding distance,  P  is the contact pressure,  v rel  is the relative velocity,  m  is the pressure exponent, and  n  is the sliding velocity exponent. Fig. 15 Finite element discretization of the roller–shoe contact used for Archard-based wear modelling, showing contact elements on the roller (red) and shoe (blue) surfaces [ 54 ]",
+        "The Archard wear model assumes that wear increases proportionally with the normal contact force and the sliding distance. In 3D simulations, it is generally implemented at specific contact points and continuously updated throughout the simulation process.",
+        "Three-dimensional finite element analyses were conducted to investigate the roller–shoe coupling under static and transient structural conditions. The main steps of the analysis procedure are summarized as follows: Model creation and material properties:  A three-dimensional roller–shoe coupling model was generated in a CAD programme and then imported into the finite element analysis software. The previously characterized elastic properties of the rail and wheel materials were applied to the model. Contact parameters : A friction coefficient of 0.2 was specified for the contact interactions, employing the augmented Lagrange formulation to calculate contact pressure and the precise location of the contact point. Under this symmetric contact approach, pressure is computed at nodes on both contact surfaces, allowing the rail roller surface to penetrate the tyre roller surface appropriately. Archard’s wear parameters were also introduced to enable element removal for modelling material loss, with a geometric modification setting of “Add Offset, No ramping.” Mesh generation : The three-dimensional model was discretized into solid elements featuring 12–20 nodes for regions of lower interest and highly refined mesh elements for the contact region. The contact surface was represented by specialized contact and target elements for the rail roller and tyre roller, respectively. This mesh arrangement resulted in approximately 37,000 nodes and 7500 elements for each test series. Boundary and loading conditions : A force was applied to the rail roller, while a rotational moment with an angular velocity of 10.472 rad/s was imposed on the tyre roller. Given the presence of frictional contact and rotating components, the structure experienced small deformations, leading to a nonlinear problem that necessitates incremental load application to achieve convergence. Analysis configurations : Each load step typically required 4–6 iterations to attain convergence. The solution proceeded incrementally, with each 10° of rotation requiring 4–6 convergence iterations. Modelling a total of 3600° required extended computation times, so an extrapolation and approximation scheme was employed. Each analysis included 3600° of rotation, and the results were extrapolated for the subsequent 1000 cycles. Ultimately, six analyses were performed for each test, amounting to 12 total analyses that covered 12,000 roller rotations. After each analysis, the model was updated in the CAD software, and the procedure was repeated. This iterative process provided the final values for rail roller wear depth and the reduced outer diameter of the tyre roller."
+      ]
+    },
+    {
+      "heading": "Processing the results for the Class III coupling (roller–shoe) in the transient structural regime",
+      "paragraphs": [
+        "For Test X (Fig.  16 ), the analysis indicates that the maximum total deformation occurs in the tyre roller, with a recorded velocity of 231.84 mm/s in the contact area and a pronounced velocity gradient throughout the global model. Examination of the total shear stress distribution reveals a peak of approximately 0.46 MPa on the roller–rail surface near the roller–shoe contact. In comparison, the equivalent (von Mises) stress reaches about 0.81 MPa at a similar depth. Both stress values exceed the yield strength of the materials, placing them in the plastic region of their respective stress–strain curves. The highest contact pressure, measured at 1.1 MPa, arises near the boundary of the curved section of the rail roller adjacent to the tyre roller’s contact zone. Fig. 16 Finite element wear modelling results for Test X (roller–shoe pure sliding contact):  a  global deformation field;  b  sliding velocity distribution;  c  shear stress distribution;  d  equivalent von Mises stress distribution after progressive material removal",
+        "For Test XI, the corresponding three-dimensional model exhibits similar outcomes, displaying only minor differences (on the order of 6%) in maximum contact pressure, equivalent stress, shear stress, and pressure gradients. The most notable contrast is the sliding speed of approximately 272.29 mm/s. Across six sequential analyses for each test, notable shifts occur in the magnitude and location of peak pressure, equivalent stress (von Mises), and shear stress. At the same time, variations in the velocity gradient remain minimal because of the progressive reduction in the tyre roller diameter.",
+        "The element removal procedure used in the finite element analysis, combined with an extrapolation scheme for Tests X and XI, suggests minor geometric modifications. The tyre roller undergoes an outer diameter reduction of approximately 100 µm and 117 µm, respectively. The rail roller (shoe) experiences material losses of about 394 µm and 455 µm in thickness at the contact surface. During the initial and fourth series of analyses, more pronounced material cutting is observed near the curved edges of the roller (brake shoe). In conclusion, the rail roller (shoe) exhibits a volume reduction of 115.93 and 158.80 mm 3  for Tests X and XI, respectively, values approximately 30% and 33% greater than the experimentally measured values. Similarly, the tyre roller undergoes a volumetric reduction of 142.95 and 195.27 mm 3 , which exceeds the measured experimental outcomes by about 35% and 34.5%. These differences are expected, as the FEA model cannot account for induced lubricating effects of possible oxide products that appear during experimental testing. Generally, increasing the creep ratio lowers the specific wear rate for both the rail and wheel.",
+        "Although good agreement between experimentally measured and numerically predicted wear was obtained for the roller–shoe configuration, some uncertainty remains due to physical mechanisms not explicitly represented in the finite element model. In particular, the compaction and removal cycles of third-body layers [ 14 ,  21 ], the entrainment of wear debris leading to evolving surface topography and asperity geometry [ 38 ], and pressure fluctuations induced by multiphase fluid contamination [ 42 ] may locally alter contact conditions. Because Archard’s formulation assumes a direct proportionality between wear, contact pressure, and sliding distance, deviations are expected when lubricants or contaminants modify near-surface hardness or promote oxidation-induced softening, as reported in fatigue-related wear studies [ 18 ,  33 ]. Consequently, future improvements in FEA-based wear prediction should consider the introduction of pressure- and slip-dependent wear coefficients linked to the evolution of tribofilm thickness or debris compaction state."
+      ]
+    },
+    {
+      "heading": "Conclusions",
+      "paragraphs": [
+        "This study investigated the effects of various running conditions on the friction and wear behaviour of rail and wheel steel materials using twin-disc rolling-sliding experiments conducted on an AMSLER machine. A finite element analysis (FEA) model was developed to simulate the testing conditions, with wear rate predictions based on Archard’s wear model. In contrast to previous studies that typically investigate wheel–rail friction or wear under isolated operating conditions, the present work provides a systematic experimental and numerical analysis across rolling–sliding and pure sliding regimes under both dry and contaminated conditions. Particular attention was given to the influence of multiphase contamination on friction stability, wear evolution, and third-body dynamics. By combining controlled experimental measurements with FEA-based stress analysis, this study enabled interpretation of wear behaviour in terms of contact pressure distribution and subsurface stress localization, rather than relying solely on global friction or wear indicators. This approach allowed identification of wear regime transitions and model limitations that are not explicitly addressed in earlier investigations, thereby extending current understanding of wheel–rail tribological behaviour.",
+        "The measurement results indicated that the AMSLER tribometer is a reliable tool for simulating the wheel–rail environment in the laboratory setting. This makes it an essential resource for assessing wear patterns and determining friction coefficients for existing and future railway track and wheel materials. Additionally, the developed numerical model highlighted the potential of these experiments in predicting the wear and degradation of components in contact with the wheel–rail interface.",
+        "In all tests, except those conducted under pure rolling conditions, the wheel exhibited significantly higher wear than the rail. However, under pure rolling conditions, the material loss due to wear was similar for both the rail and the wheel. The experimental results proved that increased contact pressure resulted in a higher wear volume, with the most significant wear observed at the highest contact pressure. Significant differences were observed in the second series of tests, particularly in cases where the contact was contaminated with rainwater and leaves, oil, or rainwater–oil emulsion. The friction coefficient for dry contact was several orders of magnitude higher than for oil-contaminated contact and twice as high as for contact contaminated with water and leaves. The presence of specific slip at the contact interface had a significant impact on the tangential force, but this factor could be optimized for optimal wheel–rail traction and minimum wear by proper design and laboratory tests. Severe wear was observed in tests with pure sliding conditions (Tests X and XI), similar to sudden and strong braking scenarios.",
+        "A finite element model was developed to estimate wear, utilizing data obtained from the tribological tests. The FEA results were validated against experimental findings. Wear modelling using FEA requires an extrapolation scheme based on experimental parameters measured during testing. The predicted values obtained through this approach showed trends consistent with the experimental results, indicating that the proposed method is reliable for effective wheel and rail design. The model offers qualitative agreement and is useful for preliminary design and analysis, but further refinement and calibration would be needed for high-precision quantitative predictions."
+      ]
+    }
+  ],
+  "tables": [
+    {
+      "caption": "Comparative elemental analysis and mechanical properties of standard wheel steel R260 and our laboratory-tested wheel steel (wheel-lab), according to EN 13674-1 standard",
+      "headers": [
+        "Wheel steel",
+        "C (%)",
+        "Si (%)",
+        "Mn (%)",
+        "Cr (%)",
+        "Al (%)",
+        "Rm (MPa)",
+        "A5 (%)"
+      ],
+      "rows": [
+        [
+          "R260",
+          "0.60–0.82",
+          "0.13–0.60",
+          "0.65-1.25",
+          "0.15",
+          "0.004",
+          "≥880",
+          "10"
+        ],
+        [
+          "Wheel-lab",
+          "0.734",
+          "0.348",
+          "1.06",
+          "0.186",
+          "0.0235",
+          "959",
+          "15.5"
+        ]
+      ],
+      "header_groups": [],
+      "table_alignment_status": "resolved",
+      "row_provenance": [
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 7
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 8
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 7
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 8
+          }
+        ]
+      ],
+      "tbody_alignment_status": "resolved"
+    },
+    {
+      "caption": "Comparative elemental analysis and mechanical properties of standard rail steels 900A and 900B, along with our laboratory-tested wheel steel (rail-lab), according to UIC 810-1 standard",
+      "headers": [
+        "Rail steel",
+        "C (%)",
+        "Si (%)",
+        "Mn (%)",
+        "Pmax (%)",
+        "Smax (%)",
+        "Rm (MPa)",
+        "A5 (%)"
+      ],
+      "rows": [
+        [
+          "900A",
+          "0.60–0.80",
+          "0.1–0.5",
+          "0.80–1.30",
+          "0.04",
+          "0.04",
+          "880 (Min.)",
+          "10.0"
+        ],
+        [
+          "900B",
+          "0.55–0.75",
+          "0.1–0.5",
+          "1.30–1.70",
+          "0.04",
+          "0.04",
+          "880–1030",
+          "10.0"
+        ],
+        [
+          "Rail-lab",
+          "0.721",
+          "0.37",
+          "0.995",
+          "0.0246",
+          "0.0296",
+          "1081",
+          "13.5"
+        ]
+      ],
+      "header_groups": [],
+      "table_alignment_status": "resolved",
+      "row_provenance": [
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 7
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 8
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 7
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 8
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 7
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 8
+          }
+        ]
+      ],
+      "tbody_alignment_status": "resolved"
+    },
+    {
+      "caption": "Other physical and mechanical properties of the tested samples",
+      "headers": [
+        "Properties",
+        "Wheel-lab",
+        "Rail-lab"
+      ],
+      "rows": [
+        [
+          "Density (kg/m 3 )",
+          "7845.1",
+          "7873.6"
+        ],
+        [
+          "Young’s modulus  E  (MPa)",
+          "208,300",
+          "196,000"
+        ],
+        [
+          "Poisson’s ratio",
+          "0.319",
+          "0.304"
+        ],
+        [
+          "Tensile yield strength  R p0.2  (MPa)",
+          "558",
+          "624"
+        ],
+        [
+          "Hardness HRC",
+          "32",
+          "40.5"
+        ]
+      ],
+      "header_groups": [],
+      "table_alignment_status": "resolved",
+      "row_provenance": [
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 3
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 3
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 3
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 3
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 3
+          }
+        ]
+      ],
+      "tbody_alignment_status": "resolved"
+    },
+    {
+      "caption": "Running parameters for the friction and wear test, at a constant running speed of 100 rpm and testing time  t  = 3600 s, for pairs of samples obtained from rail and tyre",
+      "headers": [
+        "Test",
+        "Contact type",
+        "F  (N)",
+        "Operating mode",
+        "P Hmax  (MPa)",
+        "σ v-Mmax  (MPa)",
+        "ξ"
+      ],
+      "rows": [
+        [
+          "I",
+          "Rail roller/tyre roller",
+          "120",
+          "Water with leaves",
+          "1127",
+          "692",
+          "0.1"
+        ],
+        [
+          "II",
+          "Rail roller/tyre roller",
+          "120",
+          "Oil",
+          "1127",
+          "692",
+          "0.1"
+        ],
+        [
+          "III",
+          "Rail roller/tyre roller",
+          "120",
+          "Water with oil",
+          "1127",
+          "692",
+          "0.1"
+        ],
+        [
+          "IV",
+          "Rail roller/tyre roller",
+          "120",
+          "Dry",
+          "1127",
+          "692",
+          "0.1"
+        ],
+        [
+          "V",
+          "Rail roller/tyre roller",
+          "40",
+          "Dry",
+          "785",
+          "476.7",
+          "0.1"
+        ],
+        [
+          "VI",
+          "Rail roller/tyre roller",
+          "60",
+          "Dry",
+          "920",
+          "557.03",
+          "0.1"
+        ],
+        [
+          "VII",
+          "Rail roller/tyre roller",
+          "80",
+          "Dry",
+          "994",
+          "603.42",
+          "0.1"
+        ],
+        [
+          "VIII",
+          "Rail roller/tyre roller",
+          "100",
+          "Dry",
+          "1060",
+          "660.48",
+          "0.1"
+        ],
+        [
+          "IX",
+          "Rail roller/tyre roller",
+          "120",
+          "Dry",
+          "1127",
+          "688.71",
+          "0.0"
+        ],
+        [
+          "X",
+          "Rail shoe/tyre roller",
+          "100",
+          "Dry",
+          "0.86",
+          "0.5658",
+          "1.0"
+        ],
+        [
+          "XI",
+          "Rail shoe/tyre roller",
+          "120",
+          "Dry",
+          "0.86",
+          "0.5645",
+          "1.0"
+        ],
+        [
+          "XII",
+          "Rail roller/tyre roller",
+          "120",
+          "Dry",
+          "1110",
+          "651.88",
+          "0.05"
+        ],
+        [
+          "XIII",
+          "Rail roller/tyre roller",
+          "120",
+          "Dry",
+          "1096",
+          "664.21",
+          "0.2"
+        ],
+        [
+          "XIV",
+          "Rail roller/tyre roller",
+          "120",
+          "Dry",
+          "1094",
+          "671.35",
+          "0.3"
+        ]
+      ],
+      "header_groups": [
+        {
+          "label": "Contact",
+          "start_col": 5,
+          "end_col": 6
+        }
+      ],
+      "table_alignment_status": "resolved",
+      "row_provenance": [
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 7
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 7
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 7
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 7
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 7
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 7
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 7
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 7
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 8,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 8,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 8,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 8,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 8,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 8,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 8,
+            "source_col": 7
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 9,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 9,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 9,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 9,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 9,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 9,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 9,
+            "source_col": 7
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 10,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 10,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 10,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 10,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 10,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 10,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 10,
+            "source_col": 7
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 11,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 11,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 11,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 11,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 11,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 11,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 11,
+            "source_col": 7
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 12,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 12,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 12,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 12,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 12,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 12,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 12,
+            "source_col": 7
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 13,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 13,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 13,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 13,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 13,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 13,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 13,
+            "source_col": 7
+          }
+        ]
+      ],
+      "tbody_alignment_status": "resolved"
+    },
+    {
+      "caption": "Experimental average results obtained for tests of 3600 s",
+      "headers": [
+        "Test",
+        "Sampling",
+        "Wear (µg)",
+        "Friction coefficient  μ",
+        "Friction torque  M  (N·mm)",
+        "Maximum temperature  T max  (°C)"
+      ],
+      "rows": [
+        [
+          "I",
+          "Rail roller",
+          "1.1",
+          "0.053",
+          "183.79",
+          "21"
+        ],
+        [
+          "I",
+          "Tyre roller",
+          "1.2",
+          "0.053",
+          "183.79",
+          "21"
+        ],
+        [
+          "II",
+          "Rail roller",
+          "1.5",
+          "0.029",
+          "101.04",
+          "21"
+        ],
+        [
+          "II",
+          "Tyre roller",
+          "2.1",
+          "0.029",
+          "101.04",
+          "21"
+        ],
+        [
+          "III",
+          "Rail roller",
+          "2.8",
+          "0.031",
+          "107.55",
+          "21"
+        ],
+        [
+          "III",
+          "Tyre roller",
+          "1",
+          "0.031",
+          "107.55",
+          "21"
+        ],
+        [
+          "IV",
+          "Rail roller",
+          "12.5",
+          "0.192",
+          "666.65",
+          "26"
+        ],
+        [
+          "IV",
+          "Tyre roller",
+          "29.1",
+          "0.192",
+          "666.65",
+          "26"
+        ],
+        [
+          "V",
+          "Rail roller",
+          "2",
+          "0.199",
+          "230.36",
+          "22"
+        ],
+        [
+          "V",
+          "Tyre roller",
+          "6.3",
+          "0.199",
+          "230.36",
+          "22"
+        ],
+        [
+          "VI",
+          "Rail roller",
+          "6.2",
+          "0.194",
+          "336.04",
+          "22"
+        ],
+        [
+          "VI",
+          "Tyre roller",
+          "10.6",
+          "0.194",
+          "336.04",
+          "22"
+        ],
+        [
+          "VII",
+          "Rail roller",
+          "8.9",
+          "0.190",
+          "439.87",
+          "22"
+        ],
+        [
+          "VII",
+          "Tyre roller",
+          "10.3",
+          "0.190",
+          "439.87",
+          "22"
+        ],
+        [
+          "VIII",
+          "Rail roller",
+          "10",
+          "0.168",
+          "487.04",
+          "21"
+        ],
+        [
+          "VIII",
+          "Tyre roller",
+          "12",
+          "0.168",
+          "487.04",
+          "21"
+        ],
+        [
+          "IX",
+          "Rail roller",
+          "0.8",
+          "0.0187",
+          "54.239",
+          "41"
+        ],
+        [
+          "IX",
+          "Tyre roller",
+          "1.1",
+          "0.0187",
+          "54.239",
+          "41"
+        ],
+        [
+          "X",
+          "Rail shoe",
+          "702.1",
+          "0.201",
+          "580.89",
+          "40"
+        ],
+        [
+          "X",
+          "Tyre roller",
+          "830.7",
+          "0.201",
+          "580.89",
+          "40"
+        ],
+        [
+          "XI",
+          "Rail shoe",
+          "940.1",
+          "0.191",
+          "664.24",
+          "35"
+        ],
+        [
+          "XI",
+          "Tyre roller",
+          "1146.8",
+          "0.191",
+          "664.24",
+          "35"
+        ],
+        [
+          "XII",
+          "Rail roller",
+          "7",
+          "0.236",
+          "821.09",
+          "23"
+        ],
+        [
+          "XII",
+          "Tyre roller",
+          "19.5",
+          "0.236",
+          "821.09",
+          "23"
+        ],
+        [
+          "XIII",
+          "Rail roller",
+          "21.5",
+          "0.219",
+          "760.48",
+          "23"
+        ],
+        [
+          "XIII",
+          "Tyre roller",
+          "33",
+          "0.219",
+          "760.48",
+          "23"
+        ],
+        [
+          "XIV",
+          "Rail roller",
+          "38",
+          "0.169",
+          "586.87",
+          "23"
+        ],
+        [
+          "XIV",
+          "Tyre roller",
+          "75.3",
+          "0.169",
+          "586.87",
+          "23"
+        ]
+      ],
+      "header_groups": [],
+      "table_alignment_status": "resolved",
+      "row_provenance": [
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 6
+          }
+        ],
+        [
+          {
+            "source": "carried",
+            "source_row_index": 0,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 3
+          },
+          {
+            "source": "carried",
+            "source_row_index": 0,
+            "source_col": 4
+          },
+          {
+            "source": "carried",
+            "source_row_index": 0,
+            "source_col": 5
+          },
+          {
+            "source": "carried",
+            "source_row_index": 0,
+            "source_col": 6
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 6
+          }
+        ],
+        [
+          {
+            "source": "carried",
+            "source_row_index": 2,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 3
+          },
+          {
+            "source": "carried",
+            "source_row_index": 2,
+            "source_col": 4
+          },
+          {
+            "source": "carried",
+            "source_row_index": 2,
+            "source_col": 5
+          },
+          {
+            "source": "carried",
+            "source_row_index": 2,
+            "source_col": 6
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 6
+          }
+        ],
+        [
+          {
+            "source": "carried",
+            "source_row_index": 4,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 3
+          },
+          {
+            "source": "carried",
+            "source_row_index": 4,
+            "source_col": 4
+          },
+          {
+            "source": "carried",
+            "source_row_index": 4,
+            "source_col": 5
+          },
+          {
+            "source": "carried",
+            "source_row_index": 4,
+            "source_col": 6
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 6
+          }
+        ],
+        [
+          {
+            "source": "carried",
+            "source_row_index": 6,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 3
+          },
+          {
+            "source": "carried",
+            "source_row_index": 6,
+            "source_col": 4
+          },
+          {
+            "source": "carried",
+            "source_row_index": 6,
+            "source_col": 5
+          },
+          {
+            "source": "carried",
+            "source_row_index": 6,
+            "source_col": 6
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 8,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 8,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 8,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 8,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 8,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 8,
+            "source_col": 6
+          }
+        ],
+        [
+          {
+            "source": "carried",
+            "source_row_index": 8,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 9,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 9,
+            "source_col": 3
+          },
+          {
+            "source": "carried",
+            "source_row_index": 8,
+            "source_col": 4
+          },
+          {
+            "source": "carried",
+            "source_row_index": 8,
+            "source_col": 5
+          },
+          {
+            "source": "carried",
+            "source_row_index": 8,
+            "source_col": 6
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 10,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 10,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 10,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 10,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 10,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 10,
+            "source_col": 6
+          }
+        ],
+        [
+          {
+            "source": "carried",
+            "source_row_index": 10,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 11,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 11,
+            "source_col": 3
+          },
+          {
+            "source": "carried",
+            "source_row_index": 10,
+            "source_col": 4
+          },
+          {
+            "source": "carried",
+            "source_row_index": 10,
+            "source_col": 5
+          },
+          {
+            "source": "carried",
+            "source_row_index": 10,
+            "source_col": 6
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 12,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 12,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 12,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 12,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 12,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 12,
+            "source_col": 6
+          }
+        ],
+        [
+          {
+            "source": "carried",
+            "source_row_index": 12,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 13,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 13,
+            "source_col": 3
+          },
+          {
+            "source": "carried",
+            "source_row_index": 12,
+            "source_col": 4
+          },
+          {
+            "source": "carried",
+            "source_row_index": 12,
+            "source_col": 5
+          },
+          {
+            "source": "carried",
+            "source_row_index": 12,
+            "source_col": 6
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 14,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 14,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 14,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 14,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 14,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 14,
+            "source_col": 6
+          }
+        ],
+        [
+          {
+            "source": "carried",
+            "source_row_index": 14,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 15,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 15,
+            "source_col": 3
+          },
+          {
+            "source": "carried",
+            "source_row_index": 14,
+            "source_col": 4
+          },
+          {
+            "source": "carried",
+            "source_row_index": 14,
+            "source_col": 5
+          },
+          {
+            "source": "carried",
+            "source_row_index": 14,
+            "source_col": 6
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 16,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 16,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 16,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 16,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 16,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 16,
+            "source_col": 6
+          }
+        ],
+        [
+          {
+            "source": "carried",
+            "source_row_index": 16,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 17,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 17,
+            "source_col": 3
+          },
+          {
+            "source": "carried",
+            "source_row_index": 16,
+            "source_col": 4
+          },
+          {
+            "source": "carried",
+            "source_row_index": 16,
+            "source_col": 5
+          },
+          {
+            "source": "carried",
+            "source_row_index": 16,
+            "source_col": 6
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 18,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 18,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 18,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 18,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 18,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 18,
+            "source_col": 6
+          }
+        ],
+        [
+          {
+            "source": "carried",
+            "source_row_index": 18,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 19,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 19,
+            "source_col": 3
+          },
+          {
+            "source": "carried",
+            "source_row_index": 18,
+            "source_col": 4
+          },
+          {
+            "source": "carried",
+            "source_row_index": 18,
+            "source_col": 5
+          },
+          {
+            "source": "carried",
+            "source_row_index": 18,
+            "source_col": 6
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 20,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 20,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 20,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 20,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 20,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 20,
+            "source_col": 6
+          }
+        ],
+        [
+          {
+            "source": "carried",
+            "source_row_index": 20,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 21,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 21,
+            "source_col": 3
+          },
+          {
+            "source": "carried",
+            "source_row_index": 20,
+            "source_col": 4
+          },
+          {
+            "source": "carried",
+            "source_row_index": 20,
+            "source_col": 5
+          },
+          {
+            "source": "carried",
+            "source_row_index": 20,
+            "source_col": 6
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 22,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 22,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 22,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 22,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 22,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 22,
+            "source_col": 6
+          }
+        ],
+        [
+          {
+            "source": "carried",
+            "source_row_index": 22,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 23,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 23,
+            "source_col": 3
+          },
+          {
+            "source": "carried",
+            "source_row_index": 22,
+            "source_col": 4
+          },
+          {
+            "source": "carried",
+            "source_row_index": 22,
+            "source_col": 5
+          },
+          {
+            "source": "carried",
+            "source_row_index": 22,
+            "source_col": 6
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 24,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 24,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 24,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 24,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 24,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 24,
+            "source_col": 6
+          }
+        ],
+        [
+          {
+            "source": "carried",
+            "source_row_index": 24,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 25,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 25,
+            "source_col": 3
+          },
+          {
+            "source": "carried",
+            "source_row_index": 24,
+            "source_col": 4
+          },
+          {
+            "source": "carried",
+            "source_row_index": 24,
+            "source_col": 5
+          },
+          {
+            "source": "carried",
+            "source_row_index": 24,
+            "source_col": 6
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 26,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 26,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 26,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 26,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 26,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 26,
+            "source_col": 6
+          }
+        ],
+        [
+          {
+            "source": "carried",
+            "source_row_index": 26,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 27,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 27,
+            "source_col": 3
+          },
+          {
+            "source": "carried",
+            "source_row_index": 26,
+            "source_col": 4
+          },
+          {
+            "source": "carried",
+            "source_row_index": 26,
+            "source_col": 5
+          },
+          {
+            "source": "carried",
+            "source_row_index": 26,
+            "source_col": 6
+          }
+        ]
+      ],
+      "tbody_alignment_status": "resolved"
+    },
+    {
+      "caption": "Statistical results",
+      "headers": [
+        "Test",
+        "Rotational speed (rpm)",
+        "Load (N)",
+        "Friction torque (N·mm)",
+        "Friction coefficient  μ",
+        "Standard deviation (± %)",
+        "Kurtosis",
+        "Skewness",
+        "SNR"
+      ],
+      "rows": [
+        [
+          "I",
+          "100",
+          "120",
+          "183.78",
+          "0.0529",
+          "5.02",
+          "5.21",
+          "−1.17",
+          "9.95"
+        ],
+        [
+          "II",
+          "100",
+          "120",
+          "101.03",
+          "0.0290",
+          "1.83",
+          "5.59",
+          "1.49",
+          "27.26"
+        ],
+        [
+          "III",
+          "100",
+          "120",
+          "107.54",
+          "0.0309",
+          "1.83",
+          "2.84",
+          "0.51",
+          "27.20"
+        ],
+        [
+          "IV",
+          "100",
+          "120",
+          "666.65",
+          "0.1919",
+          "4.26",
+          "3.72",
+          "−0.86",
+          "11.73"
+        ],
+        [
+          "V",
+          "100",
+          "40",
+          "230.35",
+          "0.1989",
+          "5.09",
+          "9.49",
+          "−1.95",
+          "9.82"
+        ],
+        [
+          "VI",
+          "100",
+          "60",
+          "336.04",
+          "0.1935",
+          "5.42",
+          "31.62",
+          "−4.94",
+          "9.22"
+        ],
+        [
+          "VII",
+          "100",
+          "80",
+          "439.86",
+          "0.1899",
+          "4.74",
+          "13.29",
+          "−2.53",
+          "10.54"
+        ],
+        [
+          "VIII",
+          "100",
+          "100",
+          "487.04",
+          "0.1682",
+          "3.52",
+          "3.26",
+          "−0.98",
+          "14.23"
+        ],
+        [
+          "IX",
+          "100",
+          "120",
+          "54.23",
+          "0.0187",
+          "6.68",
+          "11.50",
+          "−2.88",
+          "7.47"
+        ],
+        [
+          "X",
+          "100",
+          "100",
+          "580.88",
+          "0.2007",
+          "8.95",
+          "10.51",
+          "−2.72",
+          "5.59"
+        ],
+        [
+          "XI",
+          "100",
+          "120",
+          "660.35",
+          "0.1911",
+          "8.15",
+          "7.86",
+          "−2.05",
+          "6.13"
+        ],
+        [
+          "XII",
+          "100",
+          "120",
+          "818.62",
+          "0.2321",
+          "8.41",
+          "11.11",
+          "−2.77",
+          "5.94"
+        ],
+        [
+          "XIII",
+          "100",
+          "120",
+          "756.23",
+          "0.2211",
+          "6.96",
+          "13.29",
+          "−2.76",
+          "7.18"
+        ],
+        [
+          "XIV",
+          "100",
+          "120",
+          "587.07",
+          "0.1691",
+          "7.65",
+          "18.52",
+          "−3.97",
+          "6.54"
+        ]
+      ],
+      "header_groups": [],
+      "table_alignment_status": "resolved",
+      "row_provenance": [
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 7
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 8
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 9
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 7
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 8
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 9
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 7
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 8
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 9
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 7
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 8
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 9
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 7
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 8
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 9
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 7
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 8
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 9
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 7
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 8
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 9
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 7
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 8
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 9
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 8,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 8,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 8,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 8,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 8,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 8,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 8,
+            "source_col": 7
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 8,
+            "source_col": 8
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 8,
+            "source_col": 9
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 9,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 9,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 9,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 9,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 9,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 9,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 9,
+            "source_col": 7
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 9,
+            "source_col": 8
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 9,
+            "source_col": 9
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 10,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 10,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 10,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 10,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 10,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 10,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 10,
+            "source_col": 7
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 10,
+            "source_col": 8
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 10,
+            "source_col": 9
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 11,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 11,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 11,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 11,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 11,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 11,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 11,
+            "source_col": 7
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 11,
+            "source_col": 8
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 11,
+            "source_col": 9
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 12,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 12,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 12,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 12,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 12,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 12,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 12,
+            "source_col": 7
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 12,
+            "source_col": 8
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 12,
+            "source_col": 9
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 13,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 13,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 13,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 13,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 13,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 13,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 13,
+            "source_col": 7
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 13,
+            "source_col": 8
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 13,
+            "source_col": 9
+          }
+        ]
+      ],
+      "tbody_alignment_status": "resolved"
+    }
+  ]
+}

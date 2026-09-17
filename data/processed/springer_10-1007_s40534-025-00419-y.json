@@ -1,0 +1,1609 @@
+{
+  "doi": "10.1007/s40534-025-00419-y",
+  "title": "Multiscale investigation on fatigue crack growth and remaining useful life of bogie frame materials under service-induced damage",
+  "abstract": "Abstract To investigate the evolution of fatigue crack growth (FCG) resistance in bogie frame materials after long-term service in high-speed trains, this study systematically evaluates the fatigue fracture behavior of key structural regions before and after aging, using full-scale frame fatigue tests, multiaxial FCG experiments, and numerical simulations. A finite element model was established based on strain measurements from full-scale fatigue tests to determine the equivalent crack loading. FCG experiments were then conducted on the as-welded (AW) and base metal (BM) regions before and after service, and digital image correlation was applied to obtain surface displacement fields for calculating the stress intensity factors. The results indicate that service significantly reduces the crack growth resistance of the frame materials, with a maximum remaining useful life reduction of 70.54% in the AW region and 22.31% in the BM region. Correspondingly, the strain response at the crack tip increases significantly after service, reaching more than twice the original value in the AW region and 1.44 times in the BM region, indicating a reduction in crack growth resistance. Microscopic fracture surface analysis reveals that post-service materials exhibit more secondary cracks, unstable crack paths, and blurred fatigue striations, confirming the detrimental effect of service-induced damage on fatigue performance.",
+  "journal": "Railway Engineering Science",
+  "year": "2026",
+  "sections": [
+    {
+      "heading": "Introduction",
+      "paragraphs": [
+        "The bogie frame is a critical load-bearing welded structure in high-speed trains and serves as a key mounting platform for various components, functioning throughout its service life to connect the car body to the wheel–rail system [ 1 ,  2 – 3 ]. During operation, the bogie frame is subjected to complex dynamic loads resulting from wheel–rail interactions and body-induced forces, in addition to extra loads imposed by traction and braking systems [ 4 ,  5 – 6 ]. The nonlinear coupling of these multi-source stochastic loads significantly increases the complexity of the bogie frame’s service environment. To ensure safe operation over a design life of 30 years, the bogie frame is typically engineered based on infinite life design principles, with the Goodman diagram adopted as the fatigue strength criterion [ 7 ]. However, as service time increases, the risk of fatigue failure gradually escalates [ 8 ,  9 ,  10 – 11 ]. In particular, under complex and harsh service loading [ 12 ,  13 ], irreversible degradation of material properties accelerates damage accumulation, thereby significantly shortening the vehicle’s actual service life and posing potential risks to railway safety.",
+        "It is well known that the strength of materials continuously declines with increasing loading cycles under cyclic loading conditions [ 14 ]. This phenomenon is primarily attributed to the accumulation of fatigue damage, which causes the progressive growth of microscopic defects within the material, resulting in mechanical degradation typically characterized by residual strength. Numerous studies investigated the fatigue degradation mechanisms of materials based on the cumulative damage criterion proposed by Miner [ 15 ]. For instance, Shintaku et al. [ 16 ] and Zhao et al. [ 17 ] extended the original model by incorporating the effects of cohesive cracking and load interactions on fatigue damage, and validated their improved models. Fu et al. [ 18 ] proposed a fatigue damage model based on continuum damage mechanics, integrating a tensor formulation of anisotropic fatigue properties and the nonlinear effects of mean stress. Additionally, to investigate the residual strength evolution in different materials, Mao et al. [ 19 ] studied the mechanical response of high-performance Q690 steel through tensile and pre-fatigue tests, finding that while the elastic modulus decreased with damage accumulation, the yield strength paradoxically increased. In contrast, Zhang et al. [ 20 ,  21 ] reported a declining trend in the yield strength of high-performance Q690 steel under pre-fatigue loading, with a maximum reduction of up to 11.1%. To explain such discrepancies, numerous studies suggest that loading conditions and material type are the primary factors influencing residual strength [ 22 ,  23 ,  24 – 25 ]. Moreover, Cockings et al. [ 26 ] found that medium strain amplitude loading could enhance both the yield and ultimate strengths of high-strength steel through hardening effects, whereas prolonged fatigue loading durations or high strain amplitudes may induce cyclic softening, thereby reducing material performance. Tang et al. [ 27 ,  28 ] further examined the influence of fatigue damage on the residual mechanical properties of materials and proposed an improved hysteresis constitutive model, revealing that pre-fatigue loading led to a comprehensive reduction in the yield stress, ultimate stress, and ductility of Q345 steel. Lei et al. [ 29 ] developed a numerical model to simulate strength degradation in titanium alloy riveted joints and elucidated the mechanism by which delamination characteristics, in conjunction with fatigue cracks, contribute to joint strength reduction. Chen et al. [ 30 ] employed digital image correlation (DIC) techniques in pre-fatigue and tensile tests on aluminum–lithium alloy plates with holes, analyzing the effect of pre-fatigue loading cycles on residual strength. Regarding composites and impact loading, Damghani et al. [ 31 ], Quinn et al. [ 32 ], and Wan et al. [ 33 ], respectively, investigated the effects of impact on the residual strength of composite materials and circular hollow steel columns. Xiao et al. [ 34 ] studied the impact of fatigue pre-damage on the residual tensile performance of steel fiber-reinforced polymer composite rods and proposed a model to predict residual tensile strength based on cumulative damage. To further explore the influence of microstructure on fatigue sensitivity, Mahani et al. [ 35 ] investigated hard alloys using indentation techniques [ 36 ,  37 ] in combination with optical and electron microscopy, revealing that microstructural features exert opposing effects on residual fatigue strength and fatigue life.",
+        "In summary, existing research has primarily focused on the impact of damage accumulation induced by cyclic loading on the fatigue life and mechanical degradation of materials. For base materials and welded joints containing initial microscopic defects, studies have mainly concentrated on the intrinsic fatigue resistance of the material itself. For instance, Zhang et al. [ 10 ] and Wang et al. [ 38 ], respectively, proposed a rate-dependent cohesive zone model for fatigue crack growth (FCG) and a peridynamics-based simulation model for corrosion-assisted FCG, offering more accurate characterizations of crack growth behavior. Zhang et al. [ 39 ] and Wang et al. [ 40 ] systematically investigated the FCG characteristics of base metals and welds in U71MnG rail steel [ 41 ,  42 ], EA4T axle steel [ 43 ,  44 ], and S355J2W weathering steel [ 3 ,  45 ] under both uniaxial and multiaxial loading using DIC, thereby providing a crucial theoretical basis for the remaining useful life assessment of railway vehicles. However, despite extensive analysis of FCG behavior across various materials, the degradation mechanisms underlying the decline in FCG resistance under cyclic loading remain insufficiently explored.",
+        "To gain deeper insights into the FCG resistance and remaining useful life evolution of bogie frames under long-term cyclic loading, with the aim of supporting life extension strategies and fatigue performance assessments in the later stages of service, this study conducted a series of experimental and numerical investigations. First, full-scale fatigue tests were carried out on bogie frames using a mechanical test rig. Strain gauges were installed to measure stress distributions at critical locations, which were then used to calibrate a finite element model, ensuring that the loading conditions applied to crack growth specimens accurately reflected in-service conditions. Subsequently, aged compact tension shear (CTS) specimens were extracted from the weld and base metal regions of bogie frames that had undergone a full service cycle (10 7  loading cycles). Comparative FCG tests under both uniaxial and multiaxial loading were performed using these aged specimens and their unaged counterparts. During the experiments, DIC was employed to measure the surface stress fields around the cracks, enabling the identification of the crack growth driving parameter. A microscopic analysis of the fatigue fracture surfaces of as-welded (AW) and base metal (BM) specimens before and after service was also conducted. The findings of this study offer a theoretical basis for predicting the remaining useful life and evaluating the remaining FCG resistance of bogie frames, providing significant engineering value for life extension design and safe operation of high-speed train bogie structures."
+      ]
+    },
+    {
+      "heading": "Fatigue testing of the full-scale bogie frame",
+      "paragraphs": []
+    },
+    {
+      "heading": "Bogie frame fatigue test",
+      "paragraphs": [
+        "To obtain the actual stress distribution in aged bogie frame materials and at critical weld locations after service, fatigue tests were conducted on a full-scale bogie frame mechanical test rig in accordance with the BS EN 13749-2021 standard [ 46 ], as illustrated in Fig.  1 . Fig. 1 Full-scale bogie frame fatigue testing system:  a  mechanical fatigue test rig;  b  loading setup on the test rig;  c  servo-hydraulic excitation control system",
+        "As shown in Fig.  2 , four critical weld seams on the upper cover plate near the primary suspension spring were selected as measurement regions. Since this area involves the joining of steel plates with varying thicknesses, metal active gas (MAG) welding was used for the splicing. Strain gauges were installed on each weld seam to measure the actual stress values in these regions during the fatigue tests. The measured data were compared with finite element simulation results to validate the accuracy of the finite element model. Fig. 2 Key weld seams and strain gauge placement locations on the bogie frame",
+        "Prior to the fatigue crack growth test on the CTS specimens, a full-scale fatigue test was conducted on a newly manufactured bogie frame. According to the BS EN 13749-2021 standard [ 46 ], the total number of load cycles applied during the full-scale fatigue test was 10 7 , conducted in three stages. The first stage involved 6 × 10 6  load cycles, while the second and third stages each consisted of 2 × 10 6  cycles. The test procedure and stage divisions are illustrated in Fig.  3 . Fig. 3 Stage-wise vertical and lateral loading conditions in the fatigue test ( F s ,  F qs , and  F d  represent the static, quasi-static, and dynamic components, respectively)"
+      ]
+    },
+    {
+      "heading": "Determination of applied conditions",
+      "paragraphs": [
+        "In accordance with the fatigue testing requirements of the BS EN 13749–2021 standard [ 46 ] for bogie frames, a combination of simulated operating conditions, comprising 46 distinct service load cases, was developed in this study. During this phase, fatigue tests were conducted by applying loads to the traction rod seats (2, longitudinal), motor suspension brackets (2, vertical, longitudinal, and lateral directions), gearbox suspension brackets (2, vertical), and brake mounts (4, radial and tangential directions at the brake contact points). All loads were applied simultaneously with phase combinations corresponding to the most unfavorable conditions. The loading was applied according to the load history curves illustrated in Fig.  4 . In the figure,  F z 1d  and  F z 2d  represent the vertical dynamic loads on side beams 1 and 2;  F z 1qs  and  F z 2qs  denote the vertical quasi-static loads;  F z 1  and  F z 2  indicate the static loads; while  F y d  and  F y qs  correspond to the lateral dynamic and quasi-static loads, respectively. Fig. 4 Schematic diagram of the load history curves for the bogie frame"
+      ]
+    },
+    {
+      "heading": "FCGR experiments considering material degradation",
+      "paragraphs": []
+    },
+    {
+      "heading": "Materials and specimen design",
+      "paragraphs": [
+        "S355J2W steel was selected as the test material in this study, including both aged materials obtained from the aforementioned full-scale bogie frame fatigue tests and new materials in the form of welds and base metal. The new steel plates used were identical to the bogie frame materials in terms of chemical composition, thickness, and welding technique. The chemical composition and basic mechanical properties are presented in Table  1  and Table  2 , respectively. Specimens were extracted from key weld locations (see Fig.  2 ) using flame cutting. During the cutting process, sufficient distance was maintained between the specimen and the cutting zone to avoid the influence of heat input on internal residual stresses. In this study, the notch direction of the AW specimens was aligned parallel to the weld seam and located at its center, while BM specimens were extracted from regions unaffected by welding or flame cutting, as shown in Fig.  5 a. Table 1 Chemical composition of S355 steel by mass (%) Material C Si Mn P S Cr Ni Cu Fe S355 0.18 0.03 1.47 0.015 0.011 0.03 0.02 0.04 Rest Table 2 Mechanical properties of the as-welded (AW) and base metal (BM) specimens of S355J2W steel Material type E  (GPa) σ s  (MPa) σ b  (MPa) ε f  (%) υ BM 204 407 526 30 0.3 AW 196 476 567 28 0.3 Fig. 5 CTS specimen cutting location in the bogie frame, and dimensions of the fixture and specimen:  a  cutting location of the CTS specimen;  b  dimensions of the CTS fixture;  c  dimensions of the CTS specimens",
+        "As there is currently no standardized method for mixed-mode I + II FCG testing, CTS specimens—which are widely used in mixed-mode FCG studies [ 47 ,  48 – 49 ]—were adopted in this work. The specimens were manufactured using electrical discharge wire cutting with a wire diameter of 0.25 mm. The detailed dimensions are shown in Fig.  5 b. To clearly observe FCG behavior and accurately capture surface displacement fields, one side of the specimen was finely polished using silicon carbide abrasive paper, while the other side was sprayed with a randomly distributed speckle pattern. To achieve different loading mode combinations in a planar specimen using a uniaxial testing machine, the Richard loading fixture [ 50 ] was employed, as illustrated in Fig.  5 c. By selecting different loading holes on the fixture, the ratio between mode I and mode II loads could be controlled, allowing for various mixed-mode loading configurations.",
+        "Figure  6  presents the inverse pole figure (IPF) maps and corresponding microstructural features of the BM and AW regions. EBSD analysis reveals that the grain orientation in the base metal is uniformly distributed, with a maximum pole density of 2.22 occurring along the < 101 > orientation. In contrast, the weld sample exhibits a higher maximum pole density of 2.55, indicating a more pronounced grain selective orientation, which is likely associated with recrystallization induced by the welding thermal cycle. Compared with the base metal, the weld region shows a higher degree of orientation clustering, which may lead to more pronounced anisotropic mechanical behavior. In terms of microstructure, the BM region mainly consists of ferrite (F) and a small amount of pearlite (P), with clearly defined and uniformly distributed grain boundaries. The AW region, however, shows a more complex microstructure with multiple phases, including granular bainite (GB), proeutectoid ferrite (PFF), acicular ferrite (AF), and a small fraction of pearlite (P). These differences in grain structure and microstructural morphology reflect the significant influence of the welding thermal process on material evolution, providing a microstructural basis for the observed differences in fatigue performance between the two regions. Fig. 6 IPF maps and microstructures of the BM and AW regions:  a ,  b  IPF maps of BM and AW regions, respectively;  c ,  d  microstructures of BM and AW regions, respectively"
+      ]
+    },
+    {
+      "heading": "FCGR experiments",
+      "paragraphs": [
+        "Fatigue crack growth rate (FCGR) tests were conducted on both aged and unaged S355J2W welds and base metal using an Instron ElectroPuls E10000 testing machine. Prior to the main test, a 2 mm long pre-crack was introduced under reduced loading conditions to minimize the influence of plasticity at the crack tip on subsequent measurements. All FCGR tests were conducted at room temperature, with a loading frequency of 20 Hz and a stress ratio of 0.1. To investigate the effect of loading direction on crack growth behavior, loading angles of 0°, 30°, 45°, and 60° were selected, as illustrated in Fig.  7 b–e. To ensure the accuracy and repeatability of the experimental results, two parallel tests were conducted for each loading angle. Additionally, the fractured CTS specimens and speckle patterns used for DIC analysis of the unaged weld and base metal are shown in Fig.  5 a. The FCGR testing procedure for the aged weld and base metal followed the same protocol as described in the authors’ previous studies [ 3 ,  45 ]. Fig. 7 Experimental setup and CTS fixture orientations under different loading angles:  a  test apparatus and fractured specimens;  b – e  CTS fixture positions at loading angles of 0°, 30°, 45°, and 60°, respectively",
+        "Throughout the FCG process, a CCD camera was used to capture a series of images within a single fatigue cycle, which were subsequently used to calculate the stress intensity factor (SIF) at the crack tip. The image at the load valley was selected as the reference, and the image at the load peak was used to compute the corresponding SIF range. Image processing was performed using the Revealer-pmlabDIC-3D software, with a subset size of 39 pixels and a grid spacing of 7 pixels to ensure high-resolution displacement field measurements. Crack tip stress fields were analyzed using the multi-point over-deterministic method proposed by Sanford and Dally [ 51 ], which has been widely used in photoelasticity and DIC-based analysis and is well-suited for characterizing crack tip fields. The overall layout of the experimental setup is shown in Fig.  7 a."
+      ]
+    },
+    {
+      "heading": "Determination of equivalent fatigue load",
+      "paragraphs": [
+        "To ensure that the FCGR test closely replicates real service conditions and provides effective guidance for remaining useful life evaluation in service, the applied loading should reflect actual operational conditions as closely as possible. However, in the full-scale bogie frame fatigue test, strain gauges only measure stress at single points. Using this single-point stress directly as the nominal stress at the notch section of the CTS specimen may result in deviations from actual service conditions.",
+        "To mitigate this deviation, a finite element model of the bogie frame was developed and subjected to simulated service loads. The simulation results were then compared with strain gauge measurements to verify the model’s accuracy. Figure  8  shows the stress contour plots corresponding to the minimum and maximum stress states under simulated service conditions. The results indicate that the computed stress at strain gauge location A2 (39.42 MPa in load case 19 and 4.08 MPa in load case 14) closely matches the experimental data, confirming the validity of the simulation model. Fig. 8 Stress contour plots under simulated service conditions (unit: MPa):  a  maximum stress: load case 19;   b  minimum stress: load case 14",
+        "With the validated finite element model, the average nodal stress at the CTS specimen notch section was calculated to determine the nominal stress, which was then used to derive the loading force required for the FCGR test. This approach ensures that the test conditions closely reflect actual in-service loading. The final calculated peak fatigue load for the CTS specimen was 3.6 kN, with a stress ratio of 0.1. The procedure for determining the FCGR test load is illustrated in Fig.  9 . Based on the results of the experimentally validated finite element model, a strong consistency was confirmed between the stress state at this location under service loading and the loading conditions applied to the CTS specimen in the FCGR test. Fig. 9 Flowchart for determining the FCGR test load"
+      ]
+    },
+    {
+      "heading": "Fatigue crack length measurement and FCGR calculation",
+      "paragraphs": [
+        "Since the compliance-based COD gauge becomes unsuitable for measuring crack length once crack deflection occurs in CTS specimens, a Nreeohy 2 K industrial digital microscope was employed to observe and record the crack propagation length, as shown in Fig.  10 a. To verify the effectiveness of this method, crack lengths at various positions along the prefabricated fracture surface ( α  = 45°) were examined. The maximum deviation from crack lengths recorded by the high-speed camera during testing was found to be 5.5%, as shown in Fig.  10 b. Fig. 10 Crack length measurement and comparison:  a  schematic of crack length recording;  b  comparison of measured crack lengths",
+        "Crack length was defined by cumulatively summing the incremental crack extension at each stage, as described in Eq. ( 1 ). Furthermore, the FCGR was calculated using the seven-point incremental polynomial method recommended in the ASTM E 647-24 standard, as given in Eqs. ( 2 ) and ( 3 ): 1 a = a 0 + ∑ i = 1 n x i - x i - 1 2 + y i - y i - 1 2 , \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$a = a_{0} + \\sum\\limits_{i = 1}^{n} {\\sqrt {\\left( {x_{i} - x_{i - 1} } \\right)^{2} + \\left( {y_{i} - y_{i - 1} } \\right)^{2} } } ,$$\\end{document} where  a 0  is the initial prefabricated crack length;  x i  and  y i  are the horizontal and vertical crack growth increments at stage  i , respectively. 2 a i = b 0 + b 1 2 N i - N i + 3 - N i - 3 N i + 3 + N i - 3 + b 2 2 N i - N i + 3 - N i - 3 N i + 3 + N i - 3 2 , \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$a_{i} = b_{0} + b_{1} \\left( {\\frac{{2N_{i} - N_{i + 3} - N_{i - 3} }}{{N_{i + 3} + N_{i - 3} }}} \\right) + b_{2} \\left( {\\frac{{2N_{i} - N_{i + 3} - N_{i - 3} }}{{N_{i + 3} + N_{i - 3} }}} \\right)^{2} ,$$\\end{document} 3 ( d a / d N ) i = 2 b 1 ( N i + 3 - N i - 3 ) + 4 b 2 ( 2 N i - N i + 3 - N i - 3 ) N i + 3 + N i - 3 2 , \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$(\\text{d}a/\\text{d}N)_{i} = \\frac{{2b_{1} (N_{i + 3} - N_{{{\\text{i}} - 3}} ) + 4b_{2} (2N_{i} - N_{i + 3} - N_{i - 3} )}}{{\\left( {N_{i + 3} + N_{i - 3} } \\right)^{2} }},$$\\end{document} where  a i  and  N i  are the crack length and number of cycles, respectively, at an arbitrary point;  b 0 ,  b 1 , and  b 2  are fitting parameters obtained by the least-squares method."
+      ]
+    },
+    {
+      "heading": "Results and discussion",
+      "paragraphs": []
+    },
+    {
+      "heading": "Effect of fatigue damage on remaining useful life",
+      "paragraphs": [
+        "FCGR tests were conducted on both pre-service and post-service S355J2W materials under loading angles of 0°, 30°, 45°, and 60°. Table  3  summarizes the residual fatigue life of each specimen. The data show that the residual fatigue life from repeated tests is highly consistent. Therefore, in subsequent analysis, only one representative result was selected for each material type and loading angle. Table 3 Summary of residual fatigue life of test specimens Sample No. Material type Loading angle (°) Remaining useful life (cycles) Sample No. Material type Loading angle (°) Remaining useful life (cycles) # 1 BM (post-service) 0 255,621 # 15 BM (post-service) 45 346,587 # 2 BM (pre-service) 0 263,292 # 16 BM (pre-service) 45 446,114 # 3 BM (pre-service) 0 274,628 # 17 BM (pre-service) 45 485,774 # 4 AW (post-service) 0 280,512 # 18 AW (post-service) 45 412,065 # 5 AW (post-service) 0 281,023 # 19 AW (post-service) 45 414,652 # 6 AW (pre-service) 0 800,261 # 20 AW (pre-service) 45 1,265,842 # 7 AW (pre-service) 0 781,435 # 21 AW (pre-service) 45 1,311,651 # 8 BM (post-service) 30 298,521 # 22 BM (post-service) 60 462,184 # 9 BM (pre-service) 30 315,354 # 23 BM (pre-service) 60 578,271 # 10 BM (pre-service) 30 322,249 # 24 BM (pre-service) 60 653,872 # 11 AW (post-service) 30 320,890 # 25 AW (post-service) 60 505,213 # 12 AW (post-service) 30 322,403 # 26 AW (post-service) 60 516,254 # 13 AW (pre-service) 30 1,040,155 # 27 AW (pre-service) 60 1,472,112 # 14 AW (pre-service) 30 1,089,319 # 28 AW (pre-service) 60 1,465,921",
+        "Figure  11  illustrates the variation in crack length versus number of cycles for both BM and AW specimens before and after service under different loading angles. The results indicate that for a given material type, residual fatigue life increases with the loading angle. Possible explanations for this trend have been discussed in detail in the studies by Zhang et al. [ 3 ] and Kannengießer et al. [ 52 ]. In addition, a comparison between pre-service and post-service BM and AW specimens reveals a general reduction in remaining useful life after service exposure. To quantify the degree of life degradation, a life reduction rate was calculated using the formula shown in Eq. ( 4 ). The results show that service-induced cyclic loading had a relatively minor impact on the FCG resistance of BM specimens, with a maximum life reduction rate of 22.31% observed at a 45° loading angle. In contrast, the cyclic loads experienced during service significantly weakened the crack growth resistance of AW specimens, with a maximum life reduction rate of 70.54% at a 60° loading angle. These findings suggest that accumulated fatigue damage has a much greater impact on AW than on BM. This is mainly attributed to the unavoidable presence of microscopic defects in welds, such as microcracks, inclusions, and porosity [ 11 ,  53 ]. Under cyclic loading, these defects act as stress concentrators and preferential sites for fatigue crack initiation, thereby accelerating damage accumulation and degrading the fatigue performance of welded joints. 4 λ = N Pre-service - N Post-service N Pre-service , \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${\\uplambda } = \\frac{{N_{{\\text{Pre-service}}} - N_{{\\text{Post-service}}} }}{{N_{{\\text{Pre-service}}} }},$$\\end{document} where  λ  is the life reduction rate;  N pre-service N post-service  are the residual fatigue life before and after service, respectively. Fig. 11 a–N  curves of BM and AW specimens before and after service under different loading angles",
+        "Figure  12  shows the variation of the FCGR with crack length for BM and AW specimens before and after service under different loading angles. Compared with Fig.  11 , it can be observed that during the initial stage of crack propagation, the FCGR remains relatively low; however, this stage accounts for a significant portion of the specimen’s overall remaining useful life. Moreover, a comparison of the FCGR results before and after service reveals that specimens subjected to accumulated service damage exhibit significantly higher crack growth rates. This trend indicates that accumulated service-induced damage accelerates the crack propagation process and further degrades the material’s fatigue resistance. Fig. 12 Variation of FCGR for BM and AW specimens before and after service under different loading angles"
+      ]
+    },
+    {
+      "heading": "Determination of crack tip SIFs based on displacement fields",
+      "paragraphs": [
+        "In order to more accurately characterize the SIFs at the crack tip during mixed-mode crack growth, the effects of plasticity-induced fatigue crack closure [ 54 ] and residual stresses [ 41 ,  42 ] were also taken into consideration. The CJP model proposed by Christopher et al. [ 55 ,  56 ] was employed in this study to calculate the SIFs. This model uses displacement fields as input, eliminating the need for detailed analysis of complex crack tip stress states, and has been widely validated and adopted by numerous researchers [ 38 ,  39 ,  40 ,  41 ,  42 ,  43 ,  44 – 45 ,  57 ,  58 ]. Moreover, the multiaxial CJP model proposed by Zhang et al. [ 45 ] has demonstrated strong applicability in welded structures, providing theoretical support for the calculation method adopted in this study.",
+        "Once a series of images at the crack tip is acquired within a single loading cycle via DIC, the displacement field can be further described using the multiaxial CJP model as defined in Eqs. ( 5 ) and ( 6 ) [ 56 ]: 5 2 G u = r 1 2 - A r - 2 B r κ - 2 F cos θ 2 + r 1 2 2 B i κ - 3 B i sin θ 2 + r 1 2 B r + 2 F cos 3 θ 2 - r 1 2 B i sin 3 θ 2 + r 1 2 F × ln r cos 3 θ 2 + 1 - 2 κ cos θ 2 + θ sin 3 θ 2 + 1 + 2 κ sin θ 2 - C 4 r 1 + κ cos θ , \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\begin{aligned} 2Gu & = r^{\\frac{1}{2}} \\left( { - A_{{\\text{r}}} - 2B_{{\\text{r}}} \\kappa - 2F} \\right){\\text{cos}}\\frac{\\theta }{2} + r^{\\frac{1}{2}} \\left( {2B_{i} \\kappa - 3B_{i} } \\right){\\text{sin}}\\frac{\\theta }{2} + r^{\\frac{1}{2}} \\left( {B_{{\\text{r}}} + 2F} \\right){\\text{cos}}\\frac{3\\theta }{2} \\\\ & \\quad - r^{\\frac{1}{2}} B_{i} \\sin \\frac{3\\theta }{2} + r^{\\frac{1}{2}} F \\times\\left[ {\\ln \\left( r \\right)\\left( {\\cos \\frac{3\\theta }{2} + \\left( {1 - 2\\kappa } \\right)\\cos \\frac{\\theta }{2}} \\right) + \\theta \\left( {\\sin \\frac{3\\theta }{2} + \\left( {1 + 2\\kappa } \\right)\\sin \\frac{\\theta }{2}} \\right)} \\right] \\\\ & \\quad - \\frac{C}{4}r\\left( {1 + \\kappa } \\right)\\cos \\theta , \\\\ \\end{aligned}$$\\end{document} 6 2 G ν = r 1 2 - 2 B i κ - 3 B i cos θ 2 + r 1 2 A r - 2 B r κ + 2 F sin θ 2 + r 1 2 B r + 2 F sin 3 θ 2 + r 1 2 B i cos 3 θ 2 + r 1 2 F × ln r sin 3 θ 2 - 1 + 2 κ sin θ 2 - θ cos 3 θ 2 + 1 + 2 κ cos θ 2 + C 4 r 3 - κ sin θ , \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\begin{aligned} 2G\\nu & = r^{\\frac{1}{2}} \\left( { - 2B_{\\text{i}} \\kappa - 3B_{\\text{i}} } \\right){\\text{cos}}\\frac{\\theta }{2} + r^{\\frac{1}{2}} \\left( {A_{{\\text{r}}} - 2B_{{\\text{r}}} \\kappa + 2F} \\right){\\text{sin}}\\frac{\\theta }{2} + r^{\\frac{1}{2}} \\left( {B_{{\\text{r}}} + 2F} \\right){\\text{sin}}\\frac{3\\theta }{2} \\\\ \\, & \\quad + r^{\\frac{1}{2}} B_{\\text{i}} \\cos \\frac{3\\theta }{2} + r^{\\frac{1}{2}} F \\times \\left[ {\\ln \\left( r \\right)\\left( {\\sin \\frac{3\\theta }{2} - \\left( {1 + 2\\kappa } \\right)\\sin \\frac{\\theta }{2}} \\right) - \\theta \\left( {\\cos \\frac{3\\theta }{2} + \\left( {1 + 2\\kappa } \\right)\\cos \\frac{\\theta }{2}} \\right)} \\right] \\\\ \\, & \\quad + \\frac{C}{4}r\\left( {3 - \\kappa } \\right)\\sin \\theta , \\\\ \\end{aligned}$$\\end{document} where  u  and  v  are the horizontal and vertical displacement fields at the crack tip, respectively;  r  and  θ  are the radial and angular coordinates in the polar coordinate system;  A r ,  B r ,  B i ,  C , and  F  are crack tip field parameters;  z  is a complex coordinate, denoted as  z  =  x  + i y , in which  x  and  y  are coordinates within the Cartesian coordinate system;  G  is the shear modulus;  E  is the elastic modulus, and  G  =  E /(2 + 2 υ );  υ  is Poisson’s ratio; under plane stress conditions,  κ  = (3 −  υ )/(1 +   υ ), and under plane strain conditions,  κ  = 3 − 4 υ .",
+        "In the multiaxial CJP model, the region near the crack tip is decomposed into six idealized stress components to describe the crack propagation behavior, as illustrated in Fig.  13 . Accordingly, the stress field at the crack tip can be expressed in the following forms: 7 σ x = - 1 2 A r + 4 B r + 8 F r - 1 2 cos θ 2 - 1 2 B r r - 1 2 cos 5 θ 2 - 1 2 B i r - 1 2 sin 5 θ 2 + 7 sin θ 2 - 1 2 F r - 1 2 ln ( r ) cos 5 θ 2 + 3 cos θ 2 + θ sin 5 θ 2 + 3 sin θ 2 + C + O r 1 2 , \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\begin{aligned} \\sigma_{x} & = - {\\frac{1}{2}}\\left( {A_{{\\text{r}}} + 4B_{{\\text{r}}} + 8F} \\right)r^{{ - {\\frac{1}{2}}}} {\\text{cos}}\\frac{\\theta }{2} - \\frac{1}{2}B_{{\\text{r}}} r^{{ - {\\frac{1}{2}}}} {\\text{cos}}\\frac{5\\theta }{2} - {\\frac{1}{2}}B_{\\text{i}} r^{{ - {\\frac{1}{2}}}} \\left( {{\\text{sin}}\\frac{5\\theta }{2} + 7{\\text{sin}}\\frac{\\theta }{2}} \\right) \\\\ \\, & \\quad - \\frac{1}{2}Fr^{{ - \\frac{1}{2}}} \\left[ {{\\text{ln}}(r)\\left( {{\\text{cos}}\\frac{5\\theta }{2} + 3{\\text{cos}}\\frac{\\theta }{2}} \\right) + \\theta \\left( {{\\text{sin}}\\frac{5\\theta }{2} + 3{\\text{sin}}\\frac{\\theta }{2}} \\right)} \\right] + C + {\\text{O}}\\left( {r^{\\frac{1}{2}} } \\right), \\\\ \\end{aligned}$$\\end{document} 8 σ y = 1 2 A r - 4 B r - 8 F r - 1 2 cos θ 2 + 1 2 B r r - 1 2 cos 5 θ 2 + 1 2 B i r - 1 2 sin θ 2 - sin 5 θ 2 + 1 2 F r - 1 2 ln ( r ) cos 5 θ 2 - 5 cos θ 2 + θ sin 5 θ 2 - 5 sin θ 2 + O r 1 2 , \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\begin{aligned} \\sigma_{y} & = \\frac{1}{2}\\left( {A_{{\\text{r}}} - 4B_{{\\text{r}}} - 8F} \\right)r^{{ - \\frac{1}{2}}} {\\text{cos}}\\frac{\\theta }{2} + \\frac{1}{2}B_{{\\text{r}}} r^{{ - \\frac{1}{2}}} {\\text{cos}}\\frac{5\\theta }{2} + \\frac{1}{2}B_{\\text{i}} r^{{ - \\frac{1}{2}}} \\left( {\\sin \\frac{\\theta }{2} - {\\text{sin}}\\frac{5\\theta }{2}} \\right) \\\\ \\, & \\quad +\\, \\frac{1}{2}Fr^{{ - \\frac{1}{2}}} \\left[ {{\\text{ln}}(r)\\left( {{\\text{cos}}\\frac{5\\theta }{2} - 5{\\text{cos}}\\frac{\\theta }{2}} \\right) + \\theta \\left( {{\\text{sin}}\\frac{5\\theta }{2} - 5{\\text{sin}}\\frac{\\theta }{2}} \\right)} \\right] + {\\text{O}}\\left( {r^{\\frac{1}{2}} } \\right), \\\\ \\end{aligned}$$\\end{document} 9 σ xy = - 1 2 r - 1 2 A r sin θ 2 + B r sin 5 θ 2 + 1 2 B i r - 1 2 3 cos θ 2 + cos 5 θ 2 - F r - 1 2 sin θ ln ( r ) cos 3 θ 2 + θ sin 3 θ 2 + O r 1 2 , \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\begin{aligned} \\sigma_{xy} & = - \\frac{1}{2}r^{{ - \\frac{1}{2}}} \\left( {A_{{\\text{r}}} {\\text{sin}}\\frac{\\theta }{2} + B_{{\\text{r}}} {\\text{sin}}\\frac{5\\theta }{2}} \\right) + \\frac{1}{2}B_{\\text{i}} {r}^{{ - \\frac{1}{2}}} \\left( {3\\cos \\frac{\\theta }{2} + \\cos \\frac{5\\theta }{2}} \\right) \\\\ & \\quad - Fr^{{ - \\frac{1}{2}}} {\\text{sin}}\\theta \\, \\left[ {{\\text{ln}}(r){\\text{cos}}\\frac{3\\theta }{2} + \\theta {\\text{ sin}}\\frac{3\\theta }{2}} \\right] + {\\text{O}}\\left( {r^{\\frac{1}{2}} } \\right), \\\\ \\end{aligned}$$\\end{document} where  σ x ,  σ y , and  σ xy  represent the stress distributions in the horizontal, vertical, and shear directions, respectively, in the Cartesian coordinate system. Fig. 13 Assumed stress components at the elastic–plastic boundary in the multiaxial CJP model",
+        "Based on this framework, four distinct SIFs were defined to further investigate the driving mechanisms of crack propagation and to distinguish the specific contributions of different stress components during the crack growth process. 10 K F = lim r → 0 2 π r σ y + 2 F r - 1 2 ln ( r ) = π 2 ( A r - 3 B r - 8 F ) , \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$K_{{\\text{F}}} = \\mathop {\\lim }\\limits_{r \\to 0} \\left[ {\\sqrt {2{\\uppi }r} \\left( {\\sigma_{y} + 2Fr^{{ - \\frac{1}{2}}} {\\text{ln}}(r)} \\right)} \\right] = \\sqrt {\\frac{{\\uppi }}{2}} (A_{{\\text{r}}} - 3B_{{\\text{r}}} - 8F),$$\\end{document} 11 K R = lim r → 0 2 π r σ x = - 4 π 2 2 B i + π F , \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$K_{{\\text{R}}} = \\mathop {\\lim }\\limits_{r \\to 0} \\left( {\\sqrt {2{\\uppi }r} \\sigma_{x} } \\right) = - 4\\sqrt {\\frac{{\\uppi }}{2}} \\left( {2B_{\\text{i}} + {\\uppi }F} \\right),$$\\end{document} 12 K S = lim r → 0 2 π r σ xy = m π 2 ( A r + B r ) , \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$K_{{\\text{S}}} = \\mathop {\\lim }\\limits_{r \\to 0} \\left( {\\sqrt {2{\\uppi }r} \\sigma_{xy} } \\right) = m \\sqrt {\\frac{{\\uppi }}{2}} (A_{{\\text{r}}} + B_{{\\text{r}}} ),$$\\end{document} 13 K = lim r → 0 2 π r σ xy = 2 2 π B i , \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$K = \\mathop {\\lim }\\limits_{r \\to 0} \\left( {\\sqrt {2{\\uppi }r} \\sigma_{xy} } \\right) = 2\\sqrt {2{\\uppi }} B_{\\text{i}} ,$$\\end{document} where  K F  is the SIF representing the driving force for FCG;  K R  is the SIF associated with the retardation effect of the Poisson-induced stress field;  K S  represents the shear SIF at the elastic–plastic interface; and  K CJP-II  is a mode II SIF introduced to characterize the contribution of sliding-mode loading.",
+        "Based on the equivalent SIF calculation approach proposed in Irwin’s model [ 59 ], Zhang et al. [ 45 ] established its application form within the multiaxial CJP model, as expressed in Eq. ( 14 ). 14 d a d N = C Δ K CJP-eq m = C Δ K F - Δ K R 2 + Δ K CJP-II 2 m = C Δ K CJP-I 2 + φ · Δ K CJP-II 2 m , \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\frac{{{\\text{d}}a}}{{{\\text{d}}N}} = C\\left( {\\Delta K_{{\\text{CJP-eq}}} } \\right)^{m} = C\\left( {\\sqrt {\\left( {\\Delta K_{{\\text{F}}} - \\Delta K_{{\\text{R}}} } \\right)^{2} + \\Delta K_{{\\text{CJP-II}}}^{2} } } \\right)^{m} = C\\left( {\\sqrt {\\Delta K_{{\\text{CJP-I}}}^{{2}} + \\varphi \\cdot \\Delta K_{{\\text{CJP-II}}}^{2} } } \\right)^{m} ,$$\\end{document} where  C  and  m  are material constants determined from FCG experiments; Δ K CJP-I  and Δ K CJP-II  represent the SIF ranges for mode I and mode II cracks, respectively; Δ K CJP-eq  is the equivalent SIF range obtained from the multiaxial CJP model;  φ  is the crack deflection coefficient, which depends on the loading angle:  φ  = 0 when the loading angle is 0°, and  φ  = 1 when the loading angle is nonzero."
+      ]
+    },
+    {
+      "heading": "Comparison of FCG resistance before and after service",
+      "paragraphs": [
+        "Figure  14  presents the distribution of d a /d N –Δ K CJP-eq  data for the materials before and after service, obtained using the multiaxial CJP model. A comparison between Fig.  14 a (pre-service) and Fig.  14 b (post-service) shows that both materials exhibit similar data clustering during the stable crack growth stage. However, the pre-service material data lie closer to the crack growth threshold, indicating a lower crack propagation rate during the initial growth stage. Combined with the trend observed in Fig.  12 —where the initial crack propagation stage accounts for a major portion of the fatigue life—it can be inferred that the pre-service material exhibits longer remaining useful life due to its slower initial crack growth rate, indicating superior FCG resistance. This performance advantage is primarily manifested during the early stage of crack growth. Fig. 14 d a /d N –Δ K CJP-eq  data for materials before and after service based on the multiaxial CJP model:  a  pre-service material;  b  post-service material; and  c  all materials",
+        "Moreover, regardless of service condition, crack deflection significantly enhances crack growth resistance. As the loading angle increases, the deflected crack reapproaches the growth threshold, indicating that crack propagation is effectively suppressed and the material’s resistance is enhanced after deflection. Under identical loading conditions, BM and AW specimens exhibit distinct crack growth behavior. The AW specimens demonstrate higher fatigue resistance, primarily due to grain refinement induced during welding. Although tensile residual stress is also introduced by welding, Zhang et al. [ 45 ] reported that the crack growth resistance associated with grain refinement outweighs the driving force from residual stress, thereby improving the fatigue performance.",
+        "Notably, under the same loading angle, although the residual tensile stress in the post-service AW specimens was partially relieved through plastic cycling, which would theoretically reduce the crack driving force, their remaining useful life still showed a significant decline. This indicates that the accumulated fatigue damage during service plays a dominant role in the crack growth process, significantly reducing the material’s fatigue resistance.",
+        "Figure  15  shows the fitted d a /d N –Δ K CJP-eq  curves obtained using the multiaxial CJP model for different material types and loading angles before and after service. The corresponding fitting parameters are listed in Table  4 , where all coefficients of determination ( R 2 ) exceed 0.85, and all Pearson correlation coefficients are greater than 0.92. These results indicate that d a /d N  and Δ K CJP-eq  exhibit a strong linear correlation and good fitting performance on a log–log scale. The fitting results show that, regardless of service-induced aging, the relationship between FCGR and Δ K CJP-eq  is consistently distributed within a narrow band. In the stable crack growth region, this narrow-band distribution is more concentrated, while in the near-threshold region, a certain degree of scatter is observed. This scatter primarily results from crack path deflection during propagation, which reduces the crack growth rate and introduces mode II stress intensity factors. Fig. 15 d a /d N –Δ K CJP-eq  fitted curves for different material conditions and loading angles before and after service Table 4 Fitting parameters of the d a /d N –Δ K CJP-eq  curves under different material conditions and loading angles Sample No. Fitting curve parameters Sample No. Fitting curve parameters lg  C m R 2 Pearson correlation coefficient lg  C m R 2 Pearson correlation coefficient # 1 −9.0950 2.8350 0.9515 0.9755 # 15 −8.7397 2.6770 0.9329 0.9659 # 2 −7.9190 2.0932 0.9307 0.9647 # 16 −8.3307 2.2575 0.9037 0.9506 # 4 −8.7060 2.5226 0.8542 0.9242 # 18 −10.1784 3.4386 0.8602 0.9275 # 7 −9.0361 2.5948 0.9397 0.9694 # 21 −9.4061 2.8100 0.9626 0.9811 # 8 −8.9797 2.8266 0.9676 0.9837 # 22 −9.4042 3.0762 0.8577 0.9261 # 9 −7.7211 1.97353 0.9327 0.9658 # 23 −9.0727 2.6267 0.9113 0.9546 # 11 −10.4601 3.5348 0.8688 0.9321 # 25 −8.6533 2.5621 0.9060 0.9522 # 14 −9.5269 2.8180 0.9537 0.9766 # 28 −10.9349 3.6200 0.9750 0.9874",
+        "To further understand the influence of fatigue aging on crack deflection and fatigue resistance, Fig.  16  presents a comparative analysis of the fracture morphology (500 ×) at the crack deflection region for materials before and after service. As shown in the figure, under a 60° loading condition, secondary cracks penetrating the full thickness are observed at the deflection zone regardless of the material’s service history. However, in the pre-service materials, although the through-thickness cracks are more prominent and wider, the number of secondary cracks is relatively low, indicating less overall microstructural damage and a more stable crack growth process. In contrast, post-service BM and AW specimens exhibit not only penetrating cracks but also numerous secondary cracks propagating in various directions around the deflection zone. This suggests that accumulated fatigue aging during service significantly exacerbates intergranular stress concentration and microstructural degradation. Fig. 16 Fracture surfaces at the crack deflection region under 60° loading for materials before and after service:  a  crack deflection location;  b  pre-service base metal;  c  post-service base metal;  d  pre-service weld; and  e  post-service weld",
+        "Figure  17  shows the changes in pole figures for the BM and AW materials before and after service. After service, the maximum pole density of the BM and AW increased from 3.90 and 9.45 to 4.12 and 10.95, respectively, indicating more concentrated grain orientation and enhanced crystallographic texture. This change indicates that service loading-induced significant plastic deformation and dislocation accumulation, which intensified local stress concentrations, promoted multi-source crack initiation, and consequently reduced fatigue resistance. Fig. 17 Comparison of pole figures for materials before and after service:  a  pre-service BM;  b  post-service BM;  c  pre-service AW;  d  post-service AW"
+      ]
+    },
+    {
+      "heading": "Macroscopic defect detection and strain response analysis",
+      "paragraphs": [
+        "As the fatigue resistance of the weld region significantly declined after service, quantitative imaging was performed to detect potential fatigue-induced defects using the OMNIX3-PA64-128PR phased array ultrasonic testing system, as shown in Fig.  18 . The probe used was model 7.5L32-A31, and the wedge was model SA31-N55S. The results showed no detectable fatigue-related defects larger than 0.1 mm, indicating that no macroscopic structural damage occurred during service. It can, therefore, be inferred that the degradation in fatigue performance of the weld region is not due to the formation of macroscopic defects, but is more likely associated with microstructural deterioration or localized property degradation. Fig. 18 Defect detection at the AW region after service",
+        "Figure  19  compares the crack tip displacement fields of BM and AW specimens before and after service under a 60° loading angle and a 5 mm crack length within a single fatigue cycle. As shown in Fig.  19 c and d, the displacement fields in the AW region indicate that, under the same load range, the strain response at the crack tip in the aged post-service material increased significantly, exceeding twice that of the pre-service material. In contrast, the effect of service-induced fatigue aging on the crack tip strain field in the BM material was relatively minor, with the strain response increasing to only 1.44 times its original value. Fig. 19 Comparison of crack tip displacement fields for materials before and after service under a 60° loading angle and 5 mm crack length:  a  pre-service BM;  b  post-service BM;  c  pre-service AW;  d  post-service AW",
+        "During the FCG process, irreversible slip and dislocation accumulation occur in the plastic zone at the crack tip under cyclic loading, promoting microvoid coalescence and progressive crack propagation [ 60 ,  61 ]. However, in pre-service materials, the lower strain response results in limited dislocation density and slip activity between grains, thereby reducing the FCGR and extending the remaining useful life. This observation is consistent with the experimental results presented in Figs.  11  and  12 , further confirming the significant influence of service condition on the evolution of fatigue performance."
+      ]
+    },
+    {
+      "heading": "Crack propagation direction",
+      "paragraphs": [
+        "Figure  20  shows the comparison of crack propagation angles under different loading angles for materials before and after service. For each specimen, the crack deflection angle was measured at three different positions along the crack path, and the average value with corresponding error bars was calculated. As shown in Fig.  20 e, the BM specimens exhibit minimal changes in crack deflection angles before and after service, indicating a limited effect of service condition on their crack propagation path. In contrast, the AW specimens show a significant difference in crack deflection angle between pre-service and post-service conditions, with the largest deviation of 16.92% observed at a loading angle of 30°. Furthermore, the difference in crack deflection angle decreases progressively with increasing loading angle. This phenomenon is likely associated with the accumulation of damage near the crack tip during service and the gradual release of residual stress [ 62 ]. According to the stress analysis at the crack tip of the AW specimen shown in Fig.  21 , the residual stress component perpendicular to the crack growth direction is given by  F res cos θ c . As the loading angle increases, the crack deflection angle also increases, which leads to a gradual decrease in the residual stress component  F res cos θ c . This reduction weakens the influence of residual stress on the crack propagation path, thereby explaining the trend that higher loading angles result in smaller deflection angle deviations. Fig. 20 Comparison of crack propagation angles before and after service:  a  pre-service BM;  b  post-service BM;  c  pre-service AW;  d  post-service AW;  e  comparison of crack propagation angles Fig. 21 Schematic diagram of crack tip force on AW specimen"
+      ]
+    },
+    {
+      "heading": "Comparative analysis of fracture surfaces",
+      "paragraphs": [
+        "Figures  22 ,  23  and  24  present the 1000 × magnified fracture surface morphologies of BM and AW regions before and after service, under a 60° loading angle and crack lengths of 3 mm, 6 mm, and 10 mm, respectively. Observation reveals that post-service materials exhibit a significantly higher number of secondary cracks (yellow arrows) even at the early stage of crack growth, with denser and more concentrated distribution compared to pre-service materials. Quasi-cleavage facets (blue arrows) are clearly visible in the pre-service specimens, indicating that locally brittle-dominated crack propagation occurred. As the crack propagates, tear ridges (green dashed lines) gradually appear on the fracture surface, suggesting enhanced interference of local stress fields on the crack path. Moreover, secondary cracks further widen and branch at their tips in some regions during propagation, indicating that service-induced damage promotes irregular, multi-path crack growth. In contrast, the fracture surfaces of pre-service materials appear flatter, with clearly defined fatigue striations, indicating a more stable fracture process and higher fatigue resistance. In the later stage of crack growth, a few dimples (blue circles) are observed in certain areas, and their pitted morphology suggests the presence of localized ductile fracture behavior during final failure. Fig. 22 Fatigue fracture surfaces of materials before and after service under a 60° loading angle and 3 mm crack length:  a  pre-service BM;  b  post-service BM;  c  pre-service AW;  d  post-service AW Fig. 23 Fatigue fracture surfaces of materials before and after service under a 60° loading angle and 6 mm crack length:  a  pre-service BM;  b  post-service BM;  c  pre-service AW;  d  post-service AW Fig. 24 Fatigue fracture surfaces of materials before and after service under a 60° loading angle and 10 mm crack length:  a  pre-service BM;  b  post-service BM;  c  pre-service AW;  d  post-service AW",
+        "In addition to secondary cracks, fatigue striations (light green circles) are another key feature of fatigue fracture surfaces. The fracture surfaces of pre-service BM and AW specimens generally exhibit clear and regularly spaced fatigue striations, indicating stable crack propagation under cyclic loading. However, in post-service specimens, the fatigue striations are noticeably blurred or even interrupted in some areas, reflecting increased interference from microstructural degradation caused by accumulated damage, and a reduced stability in the fatigue crack propagation path. These morphological features confirm that the service process significantly weakens the material’s fatigue performance, with the effect being particularly pronounced in the AW region."
+      ]
+    },
+    {
+      "heading": "Conclusions",
+      "paragraphs": [
+        "In this study, full-scale bogie frame fatigue testing and multiaxial fatigue crack growth (FCG) experiments were conducted. Finite element simulation was employed to determine the effective loading conditions, and DIC technology was used to obtain surface displacement fields for deriving equivalent stress intensity factors. The FCG resistance and remaining useful life evolution of bogie frame materials before and after service were investigated based on crack growth curves and comparative fracture surface analysis. The main findings are as follows: By integrating full-scale bogie frame fatigue testing with numerical simulation, we obtained fatigue crack growth loads that more closely resemble actual service conditions. This ensured the experimental setup was grounded in engineering reality, provided a reliable basis for simulating crack growth under realistic operating scenarios, and improved the accuracy of remaining useful life prediction. The FCG resistance of the frame material decreased significantly after service. The AW region was most affected by cyclic loading, with a maximum reduction in remaining useful life of 70.54%, while the BM region remained relatively stable with a reduction of 22.31%. These findings elucidate the degradation-induced variation in crack growth life and support the development of region-specific strategies for residual life assessment. Under the same loading range, the strain response at the crack tip in post-service materials was significantly enhanced. In the AW region, the response was more than twice that of the new material, and in the BM region, it was 1.44 times higher, indicating a reduced resistance to crack growth due to service-induced degradation. Phased array ultrasonic testing revealed no macroscopic defects in the AW region after service. However, microscopic fracture analysis showed that post-service materials exhibited more secondary cracks at the early stage of crack growth, blurred fatigue striations, and unstable crack paths, particularly in the AW region. These features demonstrate the significant deterioration of microstructure and fatigue performance caused by service-induced damage."
+      ]
+    }
+  ],
+  "tables": [
+    {
+      "caption": "Chemical composition of S355 steel by mass (%)",
+      "headers": [
+        "Material",
+        "C",
+        "Si",
+        "Mn",
+        "P",
+        "S",
+        "Cr",
+        "Ni",
+        "Cu",
+        "Fe"
+      ],
+      "rows": [
+        [
+          "S355",
+          "0.18",
+          "0.03",
+          "1.47",
+          "0.015",
+          "0.011",
+          "0.03",
+          "0.02",
+          "0.04",
+          "Rest"
+        ]
+      ],
+      "header_groups": [],
+      "table_alignment_status": "resolved",
+      "row_provenance": [
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 7
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 8
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 9
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 10
+          }
+        ]
+      ],
+      "tbody_alignment_status": "resolved"
+    },
+    {
+      "caption": "Mechanical properties of the as-welded (AW) and base metal (BM) specimens of S355J2W steel",
+      "headers": [
+        "Material type",
+        "E  (GPa)",
+        "σ s  (MPa)",
+        "σ b  (MPa)",
+        "ε f  (%)",
+        "υ"
+      ],
+      "rows": [
+        [
+          "BM",
+          "204",
+          "407",
+          "526",
+          "30",
+          "0.3"
+        ],
+        [
+          "AW",
+          "196",
+          "476",
+          "567",
+          "28",
+          "0.3"
+        ]
+      ],
+      "header_groups": [],
+      "table_alignment_status": "resolved",
+      "row_provenance": [
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 6
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 6
+          }
+        ]
+      ],
+      "tbody_alignment_status": "resolved"
+    },
+    {
+      "caption": "Summary of residual fatigue life of test specimens",
+      "headers": [
+        "Sample No.",
+        "Material type",
+        "Loading angle (°)",
+        "Remaining useful life (cycles)",
+        "Sample No.",
+        "Material type",
+        "Loading angle (°)",
+        "Remaining useful life (cycles)"
+      ],
+      "rows": [
+        [
+          "# 1",
+          "BM (post-service)",
+          "0",
+          "255,621",
+          "# 15",
+          "BM (post-service)",
+          "45",
+          "346,587"
+        ],
+        [
+          "# 2",
+          "BM (pre-service)",
+          "0",
+          "263,292",
+          "# 16",
+          "BM (pre-service)",
+          "45",
+          "446,114"
+        ],
+        [
+          "# 3",
+          "BM (pre-service)",
+          "0",
+          "274,628",
+          "# 17",
+          "BM (pre-service)",
+          "45",
+          "485,774"
+        ],
+        [
+          "# 4",
+          "AW (post-service)",
+          "0",
+          "280,512",
+          "# 18",
+          "AW (post-service)",
+          "45",
+          "412,065"
+        ],
+        [
+          "# 5",
+          "AW (post-service)",
+          "0",
+          "281,023",
+          "# 19",
+          "AW (post-service)",
+          "45",
+          "414,652"
+        ],
+        [
+          "# 6",
+          "AW (pre-service)",
+          "0",
+          "800,261",
+          "# 20",
+          "AW (pre-service)",
+          "45",
+          "1,265,842"
+        ],
+        [
+          "# 7",
+          "AW (pre-service)",
+          "0",
+          "781,435",
+          "# 21",
+          "AW (pre-service)",
+          "45",
+          "1,311,651"
+        ],
+        [
+          "# 8",
+          "BM (post-service)",
+          "30",
+          "298,521",
+          "# 22",
+          "BM (post-service)",
+          "60",
+          "462,184"
+        ],
+        [
+          "# 9",
+          "BM (pre-service)",
+          "30",
+          "315,354",
+          "# 23",
+          "BM (pre-service)",
+          "60",
+          "578,271"
+        ],
+        [
+          "# 10",
+          "BM (pre-service)",
+          "30",
+          "322,249",
+          "# 24",
+          "BM (pre-service)",
+          "60",
+          "653,872"
+        ],
+        [
+          "# 11",
+          "AW (post-service)",
+          "30",
+          "320,890",
+          "# 25",
+          "AW (post-service)",
+          "60",
+          "505,213"
+        ],
+        [
+          "# 12",
+          "AW (post-service)",
+          "30",
+          "322,403",
+          "# 26",
+          "AW (post-service)",
+          "60",
+          "516,254"
+        ],
+        [
+          "# 13",
+          "AW (pre-service)",
+          "30",
+          "1,040,155",
+          "# 27",
+          "AW (pre-service)",
+          "60",
+          "1,472,112"
+        ],
+        [
+          "# 14",
+          "AW (pre-service)",
+          "30",
+          "1,089,319",
+          "# 28",
+          "AW (pre-service)",
+          "60",
+          "1,465,921"
+        ]
+      ],
+      "header_groups": [],
+      "table_alignment_status": "resolved",
+      "row_provenance": [
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 7
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 8
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 7
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 8
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 7
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 8
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 7
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 8
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 7
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 8
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 7
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 8
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 7
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 8
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 7
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 8
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 8,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 8,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 8,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 8,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 8,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 8,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 8,
+            "source_col": 7
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 8,
+            "source_col": 8
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 9,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 9,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 9,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 9,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 9,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 9,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 9,
+            "source_col": 7
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 9,
+            "source_col": 8
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 10,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 10,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 10,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 10,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 10,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 10,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 10,
+            "source_col": 7
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 10,
+            "source_col": 8
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 11,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 11,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 11,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 11,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 11,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 11,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 11,
+            "source_col": 7
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 11,
+            "source_col": 8
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 12,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 12,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 12,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 12,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 12,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 12,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 12,
+            "source_col": 7
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 12,
+            "source_col": 8
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 13,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 13,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 13,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 13,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 13,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 13,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 13,
+            "source_col": 7
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 13,
+            "source_col": 8
+          }
+        ]
+      ],
+      "tbody_alignment_status": "resolved"
+    },
+    {
+      "caption": "Fitting parameters of the d a /d N –Δ K CJP-eq  curves under different material conditions and loading angles",
+      "headers": [
+        "Sample No.",
+        "lg  C",
+        "m",
+        "R 2",
+        "Pearson correlation coefficient",
+        "Sample No.",
+        "lg  C",
+        "m",
+        "R 2",
+        "Pearson correlation coefficient"
+      ],
+      "rows": [
+        [
+          "# 1",
+          "−9.0950",
+          "2.8350",
+          "0.9515",
+          "0.9755",
+          "# 15",
+          "−8.7397",
+          "2.6770",
+          "0.9329",
+          "0.9659"
+        ],
+        [
+          "# 2",
+          "−7.9190",
+          "2.0932",
+          "0.9307",
+          "0.9647",
+          "# 16",
+          "−8.3307",
+          "2.2575",
+          "0.9037",
+          "0.9506"
+        ],
+        [
+          "# 4",
+          "−8.7060",
+          "2.5226",
+          "0.8542",
+          "0.9242",
+          "# 18",
+          "−10.1784",
+          "3.4386",
+          "0.8602",
+          "0.9275"
+        ],
+        [
+          "# 7",
+          "−9.0361",
+          "2.5948",
+          "0.9397",
+          "0.9694",
+          "# 21",
+          "−9.4061",
+          "2.8100",
+          "0.9626",
+          "0.9811"
+        ],
+        [
+          "# 8",
+          "−8.9797",
+          "2.8266",
+          "0.9676",
+          "0.9837",
+          "# 22",
+          "−9.4042",
+          "3.0762",
+          "0.8577",
+          "0.9261"
+        ],
+        [
+          "# 9",
+          "−7.7211",
+          "1.97353",
+          "0.9327",
+          "0.9658",
+          "# 23",
+          "−9.0727",
+          "2.6267",
+          "0.9113",
+          "0.9546"
+        ],
+        [
+          "# 11",
+          "−10.4601",
+          "3.5348",
+          "0.8688",
+          "0.9321",
+          "# 25",
+          "−8.6533",
+          "2.5621",
+          "0.9060",
+          "0.9522"
+        ],
+        [
+          "# 14",
+          "−9.5269",
+          "2.8180",
+          "0.9537",
+          "0.9766",
+          "# 28",
+          "−10.9349",
+          "3.6200",
+          "0.9750",
+          "0.9874"
+        ]
+      ],
+      "header_groups": [
+        {
+          "label": "Fitting curve parameters",
+          "start_col": 2,
+          "end_col": 5
+        },
+        {
+          "label": "Fitting curve parameters",
+          "start_col": 7,
+          "end_col": 10
+        }
+      ],
+      "table_alignment_status": "resolved",
+      "row_provenance": [
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 7
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 8
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 9
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 10
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 7
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 8
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 9
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 10
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 7
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 8
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 9
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 10
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 7
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 8
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 9
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 10
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 7
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 8
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 9
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 10
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 7
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 8
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 9
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 10
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 7
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 8
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 9
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 10
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 7
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 8
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 9
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 10
+          }
+        ]
+      ],
+      "tbody_alignment_status": "resolved"
+    }
+  ]
+}

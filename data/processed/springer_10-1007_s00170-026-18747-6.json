@@ -1,0 +1,1459 @@
+{
+  "doi": "10.1007/s00170-026-18747-6",
+  "title": "AI-assisted optimization of warm forging using real-time MES sensor data",
+  "abstract": "Abstract The increasing demand for high functionality and dimensional precision in manufacturing has intensified the need for advanced production technologies for corrosion-resistant stainless-steel fasteners. Conventional nut production relies largely on cold forging or machining; however, stainless steels such as SUS304 and SUS316 exhibit low formability at room temperature, resulting in machining-dependent processes with high cost and low material yield. To address these limitations, this study develops an intelligent warm-forging process system capable of producing stainless-steel nuts with improved precision and process stability, based on real-time multi-sensor data and AI modeling. Key process variables—including Material Heating Temperature, Wedge Stroke, Material Feed Length, Die Temperature, Product Temperature, Forming Force, and dimensional responses such as Head Outer Diameter, Body Outer Diameter, Product Height—were continuously collected from an operating production line. Statistical analysis, correlation analysis, causal inference, and machine-learning models were applied to quantify the effects of these variables on dimensional variation and defect rates. The resulting models were integrated into a smart-manufacturing execution system (MES) that supports real-time monitoring, AI-based defect prediction, and parameter guidance. A formal causal analysis using directed acyclic graphs (DAGs) and the DoWhy framework was conducted to distinguish causal from correlational relationships among process variables. Model generalization was assessed through temporally ordered train–test splitting and 5-fold cross-validation, and a systematic error-source analysis was performed to identify unmeasured confounders limiting dimensional prediction performance. The proposed framework demonstrates the feasibility of AI-assisted warm forging, enabling more consistent product quality, reduced deviation, and enhanced process reliability, thereby contributing to the digital transformation of Korea’s core manufacturing sectors.",
+  "journal": "The International Journal of Advanced Manufacturing Technology",
+  "year": "2026",
+  "sections": [
+    {
+      "heading": "Introduction",
+      "paragraphs": [
+        "The increasing demand for high functionality, enhanced durability, and dimensional precision across manufacturing industries has intensified the need for advanced production technologies for precision components. Corrosion-resistant stainless-steel nuts, widely used in automotive, construction, and machinery applications, require manufacturing processes that simultaneously ensure high product quality and efficient productivity. Traditionally, nut manufacturing has relied on cold forging or machining. However, corrosion-resistant stainless steels such as SUS304 and SUS316 exhibit low formability at room temperature, causing manufacturers to depend predominantly on machining processes. This reliance results in high production costs, long processing times, and low material yield.",
+        "To address these industrial challenges, Moornmo Co., Ltd. initiated a research program aimed at developing an intelligent warm-forging process system capable of producing corrosion-resistant stainless-steel nuts with improved economic efficiency and dimensional precision. Warm forging offers a favorable balance between hot and cold forging: it requires less energy than hot forging while enabling simpler forming sequences and higher accuracy than cold forging. Despite these advantages, the widespread industrial adoption of warm forging has been hindered by the complexity of process control—particularly in regulating Material Heating Temperature (MHT) and Die Temperature (DT), optimizing lubrication conditions, securing sufficient die life, and maintaining stable forming loads.",
+        "In precision warm forging, even subtle fluctuations in process parameters—such as MHT, Wedge Stroke (WS), and Material Feed Length (MFL)—can critically influence the resulting product quality. Although previous studies have examined certain process parameters and their qualitative effects on forging outcomes, a systematic and data-driven approach integrating real-time sensing, quantitative analysis, and artificial intelligence (AI) modeling remains insufficiently explored for warm forging of corrosion-resistant components. This limitation restricts the industry’s transition from traditional experience-based operation to predictive and autonomous process control.",
+        "To overcome these limitations, the present research conducted by Moornmo aims to establish a data-centric methodology for understanding and optimizing the warm-forging process of stainless-steel nuts. The specific objectives of this study are to: Quantify the influence of Material Heating Temperature (MHT) in the heating unit on product characteristics and dimensional variation. Analyze the relationship between WS, Forming Force (FF), and resultant product geometry. Evaluate the combined effects of MFL and MHT on dimensional accuracy and product quality. To achieve these objectives, major process parameters were measured in real time and systematically analyzed using statistical and AI-based methods. Correlations and causal relationships between process conditions and quality outcomes were identified, and the derived insights were used to design an AI feedback system capable of adaptively controlling forming conditions to minimize dimensional deviations and reduce defect rates. The broader significance of this research lies in demonstrating the feasibility and industrial applicability of an intelligent warm-forging control system for high-precision stainless-steel components. The proposed approach is expected to enhance product reliability, stabilize process variability, and contribute to establishing a smart-manufacturing-based production framework within the forging industry. Ultimately, this work supports the digital transformation of Korea’s root manufacturing sectors and advances global competitiveness in precision forming technologies."
+      ]
+    },
+    {
+      "heading": "Related works",
+      "paragraphs": [
+        "This section reviews the state of the art along the four axes on which the present study builds: (i) warm forging of stainless steel and its process characteristics, (ii) the influence of individual process variables on dimensional quality, (iii) data-driven and AI-assisted forging optimisation, and (iv) causal inference and explainability for manufacturing process data. Throughout, emphasis is placed on work published in the last five years, and on identifying the specific gap—the fusion of continuous, multi-sensor industrial production data with interpretable and causally-validated modelling for warm forging—that this paper addresses."
+      ]
+    },
+    {
+      "heading": "Warm forging of stainless steel and process characteristics",
+      "paragraphs": [
+        "Warm forging occupies an intermediate position between cold and hot forging and is valued for combining relatively low forming loads with good dimensional precision and reduced work hardening, which makes it attractive for low-formability materials such as austenitic stainless steels [ 1 ]. The central difficulty is that the mechanical response of these steels is strongly coupled to temperature and strain rate. Zheng et al. [ 2 ] characterised the flow behaviour of SUS304 across a wide range of forming temperatures and strain rates, showing that flow stress falls with increasing temperature but exhibits a non-monotonic dependence on strain rate at lower temperatures, driven by deformation-induced martensitic transformation. This temperature and rate sensitivity is precisely what makes material heating temperature (MHT) a first-order process variable, and it explains why nominally small heating fluctuations can produce disproportionate changes in forming load and filling behaviour.",
+        "This temperature and rate dependence is a general feature of austenitic stainless steels: Radionova et al. [ 3 ] characterised the hot-deformation behaviour of AISI 321, showing that flow stress rises with decreasing temperature and increasing strain rate and that a Zener–Hollomon (hyperbolic-sine) constitutive law, together with dynamic recrystallisation, is needed to describe it. Because the underlying constitutive response is thus strongly nonlinear, recent work has increasingly modelled it with data-driven methods. Song [ 4 ] showed that a random-forest model [ 5 ] reproduces the flow stress of 304 stainless steel in the 700–900 °C regime more accurately than a classical Arrhenius-type constitutive equation, and in a companion study [ 6 ] reached the same conclusion for 316L, where neural-network and support-vector-regression models outperformed the Arrhenius formulation. These results are directly relevant to the present work in two ways: they confirm that tree- and kernel-based learners are well suited to the thermo-mechanical response of the SUS304/SUS316 family, and they motivate the choice of Random Forest [ 5 ] as the primary regressor here.",
+        "The consequences of this temperature sensitivity for a real forged part were quantified by Byun et al. [ 7 ], who characterised the flow stress of SUS304 from room temperature to 400 °C and embedded it in a non-isothermal elasto-thermo-viscoplastic finite-element analysis of automatic multi-stage cold forging of an SUS304 ball-stud. By comparing isothermal and non-isothermal analyses they showed that the temperature rise from viscous heating—up to 90% of the deformation energy is dissipated as heat—materially changes the predicted forming load, die stress and die wear, and hence the dimensional accuracy after ejection. This is strong evidence that, even for a nominally “cold” or warm SUS304 forging, the thermal state and the resulting die wear are first-order determinants of dimensional outcome; the present study treats exactly these quantities as partially observed variables and unmeasured confounders. The difficulty of observing that thermal state on a real line was underscored by Hawryluk et al. [ 8 ], who, analysing multi-stage forging of stainless-steel valve and slender bolt-type forgings, found large discrepancies between induction-heater set-points and the actual billet-surface temperatures measured by thermal imaging, with the resulting thermal non-uniformity leading directly to localised defects and premature tool failure. This is precisely the kind of set-point-versus-actual gap that limits how much of the dimensional variance the logged MHT and DT signals can explain in the present dataset.",
+        "A recurring theme is that the thermal state actually governing deformation is difficult to observe. Plogmeyer et al. [ 9 ] embedded thin-film sensors directly in the die during warm forging and showed that transient die-surface temperature gradients at the tool–workpiece interface are far steeper than bulk thermocouple readings indicate. This finding underpins a key assumption of the present study: die temperature (DT) as logged by line sensors is a noisy proxy for the thermally relevant quantity, and this measurement gap must be treated explicitly rather than ignored."
+      ]
+    },
+    {
+      "heading": "Process variables, dimensional accuracy and tool state",
+      "paragraphs": [
+        "A large body of forging research examines how individual process parameters govern die filling and dimensional outcome, most often through finite-element (FE) simulation. Okamoto et al. [ 10 ] proposed an optimisation-support method for cold and warm forging dies of non-axisymmetrical products, demonstrating via FE analysis that die geometry strongly shapes material flow and dimensional accuracy, while Wang et al. [ 11 ] used multi-objective optimisation of radial-forging die surface parameters to improve dimensional uniformity. Both establish die design as a lever for accuracy, but both are evaluated in simulation rather than against production-line measurement.",
+        "At the process-design level, Lee et al. [ 12 ] showed for small automotive solenoid-valve parts that partitioning forming into a well-designed sequence of stages, with preforms tuned to induce uniform plastic deformation, is what secures dimensional accuracy on outer diameter and length—underlining that stroke and feed allocation across stages, not a single lumped parameter, governs the final geometry. Jo et al. [ 13 ] reached a compatible conclusion for a long one-body input shaft, where FEA-guided multi-stage cold forging produced a defect-free part with markedly better strength and material-recovery than machining, again showing that per-stage deformation allocation is decisive. This motivates the present study’s explicit treatment of wedge stroke (WS) and material feed length (MFL) as distinct, separately controllable variables.",
+        "Tool state enters this picture not only through wear but through fatigue. Joun et al. [ 14 ] proposed a general fatigue-limit diagram to predict the high-cycle fatigue life of cold-forging dies, showing that die life is governed by the interaction of mean stress and stress amplitude under the high-yield, low-ductility conditions typical of forging tooling. Because die-life exhaustion progressively alters cavity geometry, it is a further mechanism—beyond abrasive wear—by which unmeasured tool state feeds into dimensional drift, reinforcing the treatment of die condition as a latent confounder in this work.",
+        "Complementing the design-side literature, a series of industrial case studies from Hawryluk and co-workers highlights that realised dimensional accuracy is dominated by the evolving state of the tooling. In a multi-impression hot hydraulic hammer line, they documented that die-cavity wear, material-to-tool adhesion and thermal cycling jointly degrade repeatability over a production run, and that these degradation modes are difficult to separate from batch- or operator-level variation using aggregate logs [ 15 ]. Redesigning die geometry to eliminate a secondary flange-welding operation measurably improved consistency in conveyor-driver forgings [ 16 ], reinforcing that tool design and wear state—rather than nominal parameter settings alone—are frequently the dominant, and largely unmeasured, drivers of dimensional outcome. The systematic review of tool-durability methods by Turek and Cieślik [ 17 ] reaches a compatible conclusion, identifying die wear, thermal fatigue and lubrication breakdown as the primary failure mechanisms affecting dimensional repeatability. These observations directly motivate the present study’s treatment of die wear and lubrication state as explicit unmeasured confounders in the causal analysis of Section  4.7 , and its introduction of a cumulative-production-count proxy for wear (Section  4.6 ).",
+        "On the measurement side, dimensional feedback itself has become denser and more automated. Hawryluk et al. [ 18 ] developed an integrated machine-vision system for shape- and dimensional-accuracy inspection of valve forgings with accuracy sufficient to replace manual coordinate-measuring-machine sampling. Such systems show that high-rate dimensional feedback is now practical, but they have so far been deployed as standalone downstream inspection rather than fused with upstream process data for prediction or causal analysis—exactly the integration pursued here. Taken together, the process-variable literature is characterised by two limitations: variables are usually studied in isolation, and the data typically originate from simulation or laboratory trials rather than continuous production operation."
+      ]
+    },
+    {
+      "heading": "Data-driven and AI-assisted forging optimisation",
+      "paragraphs": [
+        "The digital transformation of metal forming has produced a rapidly growing body of AI-assisted process work, recently surveyed comprehensively by Cao et al. [ 19 ], whose review of artificial intelligence in metal forming maps the field across constitutive modelling, process design, monitoring and control and notes the persistent scarcity of studies grounded in real production data. Two lines of work are especially relevant. Petrik and Bambach [ 20 ] developed DeepForge, combining 1D convolutional networks and gated recurrent units with model predictive control to regulate microstructure in closed-die hot forging; Reinisch et al. [ 21 ] coupled reinforcement learning with fast process models for closed-loop microstructure control in forging and rolling, achieving online adaptation within seconds. Both are important advances in closed-loop AI control, yet both are trained and validated on FE-simulation data and target microstructure rather than the dimensional quality of a production part. Xu et al. [ 22 ] moved closer to the shop floor with an ANN-based decision system for free forging of an engine main shaft that recommended forming parameters reducing dimensional deviation relative to operator baselines; however, the system operated open-loop on a single forging type, without multi-sensor data fusion or any causal validation of its recommendations.",
+        "Data-driven prediction of dimensional outcome has itself been demonstrated: Cai et al. [ 23 ] trained machine-learning models to predict the thinning and thickening of hot-stamped parts under partition temperature control, confirming that learners can map process settings to geometric response—but, like the studies above, they did so on finite-element-generated data rather than production measurements. A cross-cutting limitation, emphasised by the systematic review of Presciuttini et al. [ 24 ], is that ML applications on manufacturing IoT data concentrate on maintenance rather than production, rely predominantly on a narrow set of model families, and rarely address interpretability—leaving the causal linkage between process inputs and quality outputs largely unexplored. Digital-twin visions for forming [ 25 ,  26 ] and the broader case for data-intensive smart manufacturing [ 27 ] share the same unrealised premise: their value depends on continuous, trustworthy, interpretable production data that warm forging lines seldom expose. The result is that AI work specifically targeting warm forging—with its tightly coupled thermo-mechanical behaviour requiring simultaneous monitoring of MHT, DT, wedge stroke (WS), material feed length (MFL) and forming force (FF)—remains sparse, and almost none of it operates on real, large-scale, multi-sensor production data."
+      ]
+    },
+    {
+      "heading": "Causal inference and explainability for process data",
+      "paragraphs": [
+        "The idea that forming quality should be regulated rather than merely inspected has a well-established foundation: the CIRP keynote of Allwood et al. [ 28 ] framed metal forming as a control problem in which product properties degrade from specification because of parameter variation and imperfect process understanding, and argued that closed-loop control is the principled remedy. Realising such control on a warm-forging line, however, requires first identifying which measured variables genuinely drive the controlled outputs—a prerequisite that predictive accuracy alone does not satisfy, since correlations in observational production data are frequently confounded. Two complementary tool families have emerged to close this gap. Post-hoc explainability, and in particular the SHAP framework of Lundberg and Lee [ 29 ], attributes model predictions to individual inputs; comparative studies such as Wang et al. [ 30 ] have since examined when SHAP-based feature ranking is preferable to a model’s built-in importance measures, informing the way SHAP is applied alongside Random Forest here. Senoner et al. [ 31 ] showed in large-scale semiconductor manufacturing that SHAP-based explanations can go beyond interpretation to actively guide process changes that measurably reduce defect rates. Causal inference addresses the complementary question of whether an input is genuinely responsible for an outcome. Yang and Bequette [ 32 ] applied a causal-inference framework to real observational steelmaking data and demonstrated that naively interpreting statistical correlations produced incorrect intervention recommendations, whereas explicit causal modelling correctly identified the parameters warranting control action. General-purpose libraries such as DoWhy [ 33 ] have made the corresponding workflow—graph specification, identification via the backdoor criterion, estimation and refutation—practical for engineering datasets.",
+        "The present study is, to our knowledge, the first to bring these two families together for warm forging: SHAP provides physical interpretability of a Random Forest quality model, while DoWhy-based causal inference tests whether the statistically important variables are also causally responsible for dimensional outcomes. This directly follows the logic of Yang and Bequette [ 32 ] and extends the actionable-XAI use case of Senoner et al. [ 31 ] into the forging domain."
+      ]
+    },
+    {
+      "heading": "Research gap and contribution",
+      "paragraphs": [
+        "Synthesising the above, four gaps persist. First, process variables are predominantly studied in isolation and via simulation, rather than jointly and from production data [ 10 ,  11 ,  13 ]. Second, AI-assisted forging work concentrates on hot or cold forging and on microstructure, with warm-forging dimensional quality on real multi-sensor data largely unaddressed [ 19 ,  20 ,  21 ,  22 – 23 ]. Third, despite growing demand for SUS304/SUS316 precision fasteners, systematic data-driven studies targeting these materials remain limited, and those that exist are predominantly simulation-based [ 2 ,  3 – 4 ,  6 ,  7 ,  12 ]. Fourth, predictive models are rarely paired with interpretability and formal causal validation, so recommended parameter changes cannot be distinguished from confounded correlations [ 24 ,  29 ,  30 ,  31 – 32 ].",
+        "Against this backdrop, the present work contributes a study that (1) collects synchronised multi-sensor data (MHT, DT, WS, MFL, FF and dimensional responses HOD, BOD, PH) directly from a commercial warm-forging line for SUS304 nuts, (2) jointly analyses the relationships among these variables rather than one at a time, (3) predicts both defect rates and dimensional outcomes with ML models whose behaviour is made interpretable via SHAP, and (4) applies formal causal inference to separate causal from correlational effects and to reason explicitly about unmeasured confounders such as die wear and lubrication state. Unlike the simulation-based microstructure-control frameworks of Petrik and Bambach [ 20 ] and Reinisch et al. [ 21 ], and unlike the single-part open-loop decision system of Xu et al. [ 22 ], the framework here operates entirely on real production data and is embedded within a manufacturing-execution-system (MES) platform, simultaneously targeting multiple dimensional outcomes and defect rates within one continuous-monitoring pipeline."
+      ]
+    },
+    {
+      "heading": "Methodology",
+      "paragraphs": []
+    },
+    {
+      "heading": "Definition of variables",
+      "paragraphs": [
+        "In this study, nine core variables were defined in alignment with the industrial process and the user’s engineering practice: Material Heating Temperature (MHT) Wedge Stroke (WS) Material Feed Length (MFL) Die Temperature (DT) Product Temperature (PT) Forming Force (FF) – measured as the maximum normalized acoustic amplitude Head Outer Diameter (HOD) Body Outer Diameter (BOD) Product Height (PH) In addition, Left Head Thickness and Right Head Thickness are treated as dimensional dependent variables but are referred to consistently with these names throughout. Among the independent variables, MHT, WS, and MFL were designated as controllable variables, because they can be directly adjusted at the equipment level. The inner diameter of the nut was initially considered as a candidate dependent variable but was excluded from the final analysis due to inspection infeasibility caused by punch-pin fracture during the experiment. The diagrammatic explanation can be seen in the Fig.  1  In this context, controllable variables refer to forming conditions that can be selected and modified by operators on the production equipment and that ultimately allow inference and control of the defect rate of the finished products. MHT denotes the temperature setpoint in the induction heater for the billet. WS represents the magnitude of wedge displacement applied to the die mechanism. This parameter implicitly determines how tightly the die halves are brought into contact and how local pressure is distributed during forming. MFL is the length of material (in mm) supplied into the forming zone to produce a single nut. The remaining variables were measured as process or quality responses: DT is the die surface temperature measured in  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${}^{\\circ }\\text {C}$$\\end{document}  using temperature sensors. PT is the surface temperature of the formed product, measured in  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${}^{\\circ }\\text {C}$$\\end{document}  at designated points along the line. FF is the effective forming force, monitored indirectly via an acoustic sensor system attached to the forming machine and represented by the maximum normalized acoustic amplitude. HOD is the outer diameter of the nut head region as shown in Fig.  2 , measured in mm. Left Head Thickness and Right Head Thickness are the thicknesses of the left and right sides of the head region, measured in mm. BOD is the outer diameter of the nut body (shank) region as shown in Fig.  2 , measured in mm. PH is the total product length from the top surface of the head to the bottom of the body as shown in Fig.  2 , measured in mm. These definitions are applied consistently throughout the analysis and system implementation. Fig. 1 It shows 6 independent variables and 3 dependent variables. Among the independent variables, MHT, WS and MFL can be manipulated whilst DT, PT and FF cannot be controlled Fig. 2 This illustrates the dimensions of the product, indicating the variable names"
+      ]
+    },
+    {
+      "heading": "Overall analysis framework",
+      "paragraphs": [
+        "The overall procedure used to analyze the collected data consists of two main streams:  A four-step data analysis procedure A three-step causal analysis procedure The four-step data analysis procedure comprises:  Data collection and preprocessing – multi-sensor acquisition, synchronization, and cleaning (Sections  3.3 – 3.4 ). Data visualization – time-series plots and distribution charts to identify trends and anomalies. Correlation analysis – quantification of relationships among process variables (MHT, DT, WS, MFL, FF) and dimensional outcomes (HOD, BOD, PH, head thickness). Machine learning analysis – AI models trained to predict quality metrics from process conditions. The causal analysis procedure is implemented within Moornmo’s MES service and is used to move beyond pure correlation toward causal interpretation of defect mechanisms. It consists of:  Root-cause analysis using a defect detection model SHAP-based local explainability Causal inference using the DoWhy library [ 33 ], including formal DAG specification, identification via the backdoor criterion, and refutation testing (Section  4.7 ) Defective products detected by the vision inspection system have their associated MHT, WS, MFL, DT, PT, FF, HOD, BOD, PH records fed into an integrated defect detection model within MES. Feature importance metrics identify process variables that contribute most strongly to the defect rate. SHAP (SHapley Additive exPlanations) analysis provides local interpretability at the individual-part level, and causal inference verifies whether candidate variables are not only correlated with defects but also have plausible causal effects on defect occurrence.",
+        "This combination of procedures enables data-driven identification of the process conditions most responsible for quality variations and supports the design of intelligent control strategies for defect reduction."
+      ]
+    },
+    {
+      "heading": "Hypothesis formulation",
+      "paragraphs": [
+        "To verify the reliability and internal consistency of the collected data, a set of working hypotheses was established prior to analysis. These hypotheses reflect physically reasonable expectations about how forming conditions affect product dimensions: Hypothesis 1.  As MFL increases, HOD, BOD, head thickness, and PH will increase. Hypothesis 2.  As WS increases, head thickness will decrease, while PH and HOD will increase. Hypothesis 3.  As MHT increases, head thickness and PH will decrease, while HOD will increase. These hypotheses serve as a basis for interpreting the results of the statistical and AI-based analyses presented later."
+      ]
+    },
+    {
+      "heading": "Data collection",
+      "paragraphs": []
+    },
+    {
+      "heading": "Data acquisition period and sampling strategy",
+      "paragraphs": [
+        "The data acquisition period spanned from 4 October 2024 to 6 March 2025. During this period, sensors were continuously deployed on the production line to capture multi-modal data: DT and PT were recorded at intervals of approximately 1–2 s. FF (via acoustic measurement) was recorded at intervals of approximately 1 s. Dimensional measurements (HOD, BOD, PH, head thickness) from the vision inspection system were collected at approximately 1 s per part. More than 8,000 parts were produced under varying parameter conditions, providing a dataset suitable for deriving correlations among MHT, WS, MFL, DT, PT, FF and dimensional outcomes.",
+        "Sensor data from each measurement point were stored on a local PC and transferred via a C#-based data pipeline to a centralized MySQL database, with data recorded in relational (MySQL), CSV/text (numeric logs), and PNG (waveform/image) formats. The pipeline performed file-based ingestion, data transformation, unit conversion, basic cleaning, RESTful API transmission, and final loading into the central database.",
+        "Material feeding and heating occur at the entry station, followed by transfer via conveyor to the forming press where FF is measured. After forming, PT is measured, oil is removed in a degreasing unit, and parts are supplied to a bowl feeder for vision inspection. The total elapsed time from material feeding to vision inspection is approximately two minutes, which is reflected in the data alignment strategy (Section  3.6 )."
+      ]
+    },
+    {
+      "heading": "Measurement of MHT, MFL, and WS",
+      "paragraphs": [
+        "MHT, MFL, and WS were controlled and recorded through the PLC. Operator-specified setpoints were stored in PLC memory, and the actual heater temperature corresponding to MHT was measured by a sensor on the heater. A PC connected to the PLC ran a C# program that periodically retrieved these values and stored them in a local database before transmission to the central server."
+      ]
+    },
+    {
+      "heading": "Die temperature measurement (DT)",
+      "paragraphs": [
+        "DT was measured using non-contact temperature sensors directed toward the die surface. Sensors were mounted to maintain constant distance and angle, and temperature was recorded at fixed time intervals, providing time-series data for analyzing thermal stability during operation and evaluating how DT deviations affect product quality."
+      ]
+    },
+    {
+      "heading": "Product temperature measurement (PT)",
+      "paragraphs": [
+        "PT was initially measured at the lower section of the transfer conveyor after forming and before the degreasing unit. This approach was sensitive to conveyor-speed variation, reducing data reliability. To improve data quality, the measurement point was shifted to the upper section of the conveyor where formed parts accumulate, yielding more stable and consistent PT measurements."
+      ]
+    },
+    {
+      "heading": "Forming force measurement via acoustic sensing (FF)",
+      "paragraphs": [
+        "FF was not measured directly using a load cell but inferred indirectly using an acoustic sensor attached near the punch region of the former. The sensor recorded sound signals at one-second intervals, capturing approximately 0.57 s of waveform per event. The raw sound signals were normalized based on a reference intensity from the first measurement set. Subsequent data were converted into normalized values and stored as: Time-ordered normalized sound values (text files). An example shown in Fig.  3 . Corresponding waveform images (PNG files). An example shown in Fig.  4 . Fig. 3 An example of the time-ordered normalized sound values for forming force measurement Fig. 4 An example of the waveform image of the time-ordered normalized sound values for forming force measurement",
+        "Because of the indirect nature of this method, the acoustic signal is not guaranteed to be strictly proportional to the true forming force and may contain environmental noise. To mitigate this, the minimum, maximum, and average values within each waveform segment were extracted. Preliminary analysis showed that the maximum amplitude was most sensitive to changes in process conditions such as DT and WS, and thus the maximum normalized amplitude was selected as the primary indicator of FF in correlation and regression analyses."
+      ]
+    },
+    {
+      "heading": "Measurement of dimensional responses using vision inspection",
+      "paragraphs": [
+        "Dimensional outputs—HOD, Left and Right Head Thickness, BOD, and PH—were obtained using an automated vision inspection system. After degreasing, cleaned nuts were aligned in a single row by a bowl feeder and sequentially fed into the vision inspection station. The vision program measured geometrical features and saved results in CSV format on a local PC. A file-watcher mechanism automatically triggered the C# data pipeline to transfer inspection results to the central server.",
+        "Based on predefined inspection criteria, each part was classified as pass or fail. The mechanical configuration and the real-time inspection interface are shown in Figs.  5  and  6  respectively. Only parts that satisfied all dimensional tolerances were labeled as “pass” and recorded as conforming products in the main dataset. Fig. 5 The equipment configuration of the vision sorting system installed on the production line is shown. Products are transferred to the inspection station via the feeding mechanism, where a high-resolution industrial camera captures images with controlled illumination to extract surface, dimensional, and geometric features Fig. 6 The real-time inspection interface is presented. The upper screens illustrate examples of acceptable (OK) products in which the measured dimensions and geometric features meet the predefined tolerances. The lower screen shows a defective (NG) case where dimensional deviations exceeding the reference tolerance are detected. The system analyzes the acquired images in real time, automatically classifying products as OK or NG. OK products are conveyed to the loading box, while NG products are discharged through a separate rejection path"
+      ]
+    },
+    {
+      "heading": "Data quality assessment and variable screening",
+      "paragraphs": []
+    },
+    {
+      "heading": "Daily production and defect rate",
+      "paragraphs": [
+        "Several trial runs were conducted to synchronize sensors and tune equipment. After each run, the production results were analyzed and operating conditions adjusted, with the goal of narrowing down optimal parameter ranges for MHT, WS, MFL. Through this iterative tuning, stable operating conditions were established, and data collected after 18 February 2025 were deemed suitable for the main analysis.",
+        "Defect rates for dimensional criteria (HOD, BOD, PH, head thickness) under different MHT, WS, MFL combinations were computed. From this analysis, MHT showed a relatively weak effect on defect rate, MFL exhibited modest but limited influence, and WS emerged as the strongest factor affecting defect rates, particularly for HOD and BOD."
+      ]
+    },
+    {
+      "heading": "Issues related to the vision inspection system",
+      "paragraphs": [
+        "The vision inspection system is critical for precision evaluation and is sensitive to sensor faults and environmental factors. Practical issues included: Residual chips on the glass surface, leading to contamination and artificially increased defect counts. Dust accumulation on the LED light source, causing illumination fluctuation and measurement drift. Due to these issues, some periods of data were deemed unusable. For example, during a specific period height measurements (PH) were unreliable, and punch-pin fracture prevented inner diameter inspection. Consequently, inner diameter was excluded from the final dataset, and only data collected after 18 February 2025 were used for quantitative analysis."
+      ]
+    },
+    {
+      "heading": "Issues related to the heater",
+      "paragraphs": [
+        "Heater setpoints corresponding to MHT are crucial to maintaining product quality, and excessive temperature gradients can lead to die fracture or quality deterioration. During production, measured MHT occasionally deviated from the specified range due to oil vapor condensate on the sensor. Experimental trials using higher MHT in the upper zone (e.g.,  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$310^{\\circ }\\text {C}$$\\end{document} ) produced frequent die breakage and were abandoned. From 17 February 2025 onward, MHT was set to approximately  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$210^{\\circ }\\text {C}$$\\end{document}  (upper),  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$180^{\\circ }\\text {C}$$\\end{document}  (middle), and  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$150^{\\circ }\\text {C}$$\\end{document}  (lower), providing a better balance between die life, quality, and machinability."
+      ]
+    },
+    {
+      "heading": "Determination of optimal operating conditions",
+      "paragraphs": [
+        "Because each sensor has a different time lag relative to the production flow, the following approach was used for synchronization: Dimensional data (HOD, BOD, PH, thickness) from the vision system were aligned with process data recorded approximately two minutes earlier. Sensor data were grouped into five-second windows, and average values within each window were computed for MHT, DT, PT, WS, MFL, FF. Among the variables, WS emerged as the most critical factor affecting product quality. When WS is excessive, the material spreads too much, leading to geometric imbalance, folds, or excessive flash. If WS is too small, the die cavity may not be fully filled, resulting in underfill and internal defects.",
+        "Under a fixed MHT of 180  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$${}^{\\circ }\\text {C}$$\\end{document} , analysis of HOD indicated that a WS of 7.1 mm was appropriate. For BOD, PH, and head thickness, the optimal WS was found to lie between 6.9 mm and 7.1 mm, with 7.0 mm providing the best overall compromise. These findings suggest that WS is the primary lever for defect reduction in the studied warm forging process. Future work will embed this analysis into AI learning models so that operators can visually explore and confirm optimal conditions through simulation."
+      ]
+    },
+    {
+      "heading": "Results and discussion",
+      "paragraphs": []
+    },
+    {
+      "heading": "Time-series visualization of process variables",
+      "paragraphs": [
+        "Time-series plots were generated for 21 February 2025, a representative day with stable operating conditions."
+      ]
+    },
+    {
+      "heading": "Material Heating Temperature (MHT)",
+      "paragraphs": [
+        "MHT showed in Fig.  7  intermittent discontinuities corresponding to break times or pauses, but overall remained close to setpoints, confirming reliability. Fig. 7 This figure presents a scatter plot illustrating the temporal variation of the Material Heating Temperature (MHT). The MHT generally remained close to its predefined setpoints, although a gradual decrease was observed as time progressed from the initial operation phase. The discontinuities in the data correspond to operator break periods or temporary pauses in machine operation. After the process resumed, the MHT briefly increased and then gradually stabilized. These results indicate that, aside from short interruptions, the MHT remained consistent and reliable throughout the monitoring period"
+      ]
+    },
+    {
+      "heading": "Die Temperature (DT)",
+      "paragraphs": [
+        "DT, as shown in Fig.  8 , gradually increased during continuous operation and cooled during stoppages, reflecting typical thermo–mechanical behavior and confirming its sensitivity to production continuity and cycle time. Fig. 8 This figure illustrates the temporal variation of the Die Temperature (DT) using a scatter-plot representation. During continuous operation, the DT exhibited a gradual increasing trend with a consistent thermal slope, whereas during intermittent process stoppages, the temperature decreased in discrete steps. Upon resumption of operation, the DT again transitioned into an increasing phase. This step-wise thermal profile—comprising repeated cycles of heating, plateau, and cooling—indicates that the die repeatedly re-establishes thermal equilibrium between external heating input and natural cooling. Furthermore, the observation that DT reaches higher temperature levels in later cycles compared to the initial phase suggests a thermal accumulation effect within the die material. This behavior confirms that DT is highly sensitive to production continuity, cycle time, and machine on/off patterns, demonstrating its utility as a key thermo–mechanical indicator reflecting the dynamic conditions of the manufacturing process"
+      ]
+    },
+    {
+      "heading": "Head Outer Diameter (HOD)",
+      "paragraphs": [
+        "The HOD time-series, as shown in Fig.  9 , exhibited increasing variance as production progressed, suggesting dimensional stability may deteriorate over long intervals due to thermal drift, die wear, or MFL variation, justifying later inclusion of DT and WS in correlation and ML analyses. Fig. 9 The scatter plot shows an observable increase in HOD variance as production progresses. The data that lies beyond the minimum and maximum boundaries (dotted lines) are defect products. This trend suggests that external factors such as thermal drift, die wear, or MFL variation may contribute to dimensional instability. These observations motivate the inclusion of additional process variables such as DT and WS in the subsequent correlation and machine-learning analyses"
+      ]
+    },
+    {
+      "heading": "Pairwise relationships among process variables",
+      "paragraphs": [
+        "Scatter plots were generated for several representative days to qualitatively assess relationships. The figures here are not in high quality because those were generated by the MES system of Moornmo. For the purpose of this discussion, however, those are sufficient as we only need to recognise the rough trend while the exact data are fed into ML models for statistical analysis."
+      ]
+    },
+    {
+      "heading": "MFL vs. HOD",
+      "paragraphs": [
+        "It is shown in Fig.  10  that an increase in MFL generally led to more HOD defects. At approximately 19.0 mm MFL, clusters of HOD values fell below tolerance, implying that excessive MFL may cause unbalanced flow into the head region. Fig. 10 This figure illustrates the correlation between Material Feed Length (MFL) (x-axis) and Head Outer Diameter (HOD) (y-axis) using a scatter-plot representation. While most HOD values remain within the specification limits, a noticeable cluster of measurements near an MFL of approximately 19.0 mm falls below the lower tolerance boundary (LSL). This pattern suggests that excessive MFL may lead to unbalanced material flow into the head region during forming, increasing the likelihood of HOD defects. The trend line indicates that variation in HOD tends to increase as MFL rises, implying a potential negative impact of high MFL values on dimensional stability"
+      ]
+    },
+    {
+      "heading": "MFL vs. PH",
+      "paragraphs": [
+        "Contrary to initial expectations, it is shown in Fig.  11  that PH exhibited a slight decreasing trend as MFL increased, possibly due to redistribution of deformation between head and body regions or compensatory adjustments in WS. Fig. 11 This figure presents the correlation between Material Feed Length (MFL) (x-axis) and final product Height (y-axis) measured under warm forging conditions. The Height values exhibit a very slight decreasing tendency as MFL increases, indicating a weak overall correlation. At lower MFL levels, the Height measurements are tightly clustered, whereas higher MFL values show increased dispersion. This behavior suggests that in warm forging, temperature gradients, material softening, changes in friction conditions, and deformation redistribution exert stronger influence on Height formation than MFL alone"
+      ]
+    },
+    {
+      "heading": "MFL vs. FF",
+      "paragraphs": [
+        "FF (maximum acoustic amplitude) showed a weak but consistent decreasing trend with increasing MFL in Fig.  12 , suggesting that excessive material may act as a buffer altering energy transfer. Fig. 12 This figure illustrates the correlation between Material Feed Length (MFL) (x-axis) and Forming Force (FF) (y-axis), measured as the maximum normalized acoustic amplitude. The FF values exhibit a very slight decreasing tendency as MFL increases, indicating a weak overall correlation. At lower MFL levels, the FF measurements are tightly clustered, whereas higher MFL values show a more dispersed distribution. This behavior suggests that under warm forging conditions, FF is influenced less by MFL alone and more by thermo–mechanical effects, including material softening, temperature gradients, frictional variations, and deformation redistribution during forming"
+      ]
+    },
+    {
+      "heading": "DT vs. PT",
+      "paragraphs": [
+        "The Fig.  13  shows that a strong positive relationship was observed between DT and PT, confirming reliable measurement and expected heat transfer behavior. Fig. 13 This figure illustrates the correlation between Die Temperature (DT) (x-axis) and Product Temperature (PT) (y-axis) using a scatter plot with a fitted trend line. A clear positive linear relationship is observed, with PT consistently increasing as DT rises. In addition, the plot reveals a temperature-dependent variance pattern: PT values are more widely scattered at lower DT levels, while higher DT values show increasingly tighter clustering of PT. This behavior reflects the thermo–mechanical characteristics of warm forging, where higher die temperatures facilitate more stable heat transfer, thereby reducing temperature variability in the product. The distribution pattern further confirms both the reliability of the measurements and the dominant thermal influence of DT on PT"
+      ]
+    },
+    {
+      "heading": "DT vs. FF",
+      "paragraphs": [
+        "The Fig.  14  shows that FF exhibited a slight upward trend with increasing DT, possibly reflecting complex changes in friction, material softening, and contact dynamics. Using maximum amplitude as the representation of FF was crucial to capturing this trend. Fig. 14 This figure presents the scatter plot describing the relationship between Die Temperature (DT) (x-axis) and Forming Force (FF) (y-axis), measured as the maximum normalized acoustic amplitude. The FF values exhibit a slight upward trend with increasing DT, indicating that higher die temperatures are associated with modest increases in forming force. Several low-FF outliers appear, likely corresponding to intermittent underforming events or temporary losses in impact energy. Furthermore, at higher DT levels, the FF values become more tightly clustered, suggesting reduced variability under warm forging conditions. This pattern reflects thermo–mechanical effects such as material softening, frictional changes, and stabilized die–material contact, which can alter the energy transfer during forming. These observations also confirm that representing FF via maximum acoustic amplitude effectively captures the DT–FF relationship"
+      ]
+    },
+    {
+      "heading": "WS vs. HOD",
+      "paragraphs": [
+        "It is shown in Fig.  15  that WS demonstrated a meaningful positive relationship with HOD: larger WS values produced larger HOD, consistent with forging mechanics where deeper penetration promotes lateral flow. Fig. 15 This figure illustrates the correlation between Wedge Stroke (WS) and Head Outer Diameter (HOD) using a scatter plot with a fitted trend line. Although the range of WS variation is narrow, the HOD values exhibit a slight positive trend, increasing as WS becomes larger. This behavior aligns with established forging mechanics, in which a larger wire diameter promotes deeper die penetration and consequently enhances lateral material flow, resulting in larger HOD dimensions. The measurements remain within the specification limits, indicating a stable and consistent influence of WS on HOD"
+      ]
+    },
+    {
+      "heading": "Correlation analysis results",
+      "paragraphs": [
+        "Spearman correlation coefficients were computed to quantify relationships among MHT, DT, MFL, WS, FF and dimensional outcomes and defect rates."
+      ]
+    },
+    {
+      "heading": "Relationships with defect rates",
+      "paragraphs": [
+        "The Table  1  shows the coefficient of correlation between (the measurements of MFL, maximum WS, DT, MHT, WS and PT) and (the defect rates of HOD, BOD and PH). Two key findings were: MFL showed the strongest positive correlations with defect rates related to HOD, right head thickness, and BOD. WS exhibited the strongest negative correlation with overall defect rates, indicating that sufficiently large WS reduces defects by ensuring full cavity filling. Table 1 A table showing the coefficient of correlation between (the measurements of MFL, maximum WS, DT, MHT, WS and PT) and (the defect rates of HOD, BOD and PH) Correlation MFL WS (max) DT (avg) MHT WS PT HOD defect rate 0.21 0.10 0 −0.05 −0.26 −0.05 BOD defect rate 0.42 0.25 0.34 −0.08 −0.13 0.21 PH defect rate 0.01 0.01 −0.03 −0.01 −0.06 −0.11"
+      ]
+    },
+    {
+      "heading": "Relationships with dimensional values",
+      "paragraphs": [
+        "Dimensional measurements showed clear patterns in Table  2 : MFL was positively correlated with most dimensions, except HOD (negative correlation of –0.50). WS showed a strong positive correlation with HOD (0.69) and strong negative correlations with head thickness and PH. DT showed moderate positive correlations with BOD and right head thickness. These results indicate that dimensional variability is influenced by multiple interacting variables, supporting the use of machine-learning models to capture combined effects. Table 2 A table showing the coefficient of correlation between (the measurements of MFL, maximum WS, DT, MHT, WS and PT) and (the measurements of HOD, BOD and PH) Correlation MFL FF (max) DT (avg) MHT WS PT HOD \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\mathbf {-0.50}$$\\end{document} 0.03 −0.09 −0.24 0.69 −0.16 BOD 0.51 0.19 0.44 0.05 −0.11 0.20 PH 0.57 0.02 0.25 −0.03 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$ \\mathbf {-0.58}$$\\end{document} 0.37"
+      ]
+    },
+    {
+      "heading": "Machine-learning regression results",
+      "paragraphs": []
+    },
+    {
+      "heading": "Model evaluation strategy",
+      "paragraphs": [
+        "To ensure rigorous assessment of model generalization and guard against overfitting, the following evaluation protocol was adopted. The dataset ( \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$N = 8{,}247$$\\end{document}  parts after cleaning) was split into training (80%) and test (20%) sets using temporal ordering: the first 80% of chronologically ordered records were used for training and the remaining 20% for testing. This temporal split prevents data leakage that could arise from random splitting of time-correlated observations.",
+        "In addition to the held-out test evaluation, 5-fold cross-validation was performed on the training set to assess model stability. For defect-rate prediction using Random Forest, the cross-validated  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$R^2$$\\end{document}  values were: HOD defect rate:  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$0.978 \\pm 0.011$$\\end{document} ; BOD defect rate:  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$0.975 \\pm 0.009$$\\end{document} ; PH defect rate:  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$0.948 \\pm 0.015$$\\end{document} . These results confirm that the high test-set  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$R^2$$\\end{document}  values (0.965–0.992) are not artifacts of overfitting but reflect genuinely strong predictive relationships between process variables and defect rates.",
+        "For dimensional predictions, cross-validated  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$R^2$$\\end{document}  values showed greater variance: HOD:  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$0.285 \\pm 0.062$$\\end{document} ; BOD:  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$0.641 \\pm 0.048$$\\end{document} ; PH:  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$0.389 \\pm 0.055$$\\end{document} . The higher variance and lower mean  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$R^2$$\\end{document}  for HOD and PH are consistent with the presence of unmeasured time-varying confounders, as analyzed systematically in Section  4.6 ."
+      ]
+    },
+    {
+      "heading": "Rationale for model selection",
+      "paragraphs": [
+        "The choice of Linear Regression, Ridge Regression, and Random Forest was guided by three considerations: interpretability, nonlinear capacity, and deployability within the MES environment.",
+        "Linear Regression serves as the interpretable baseline, directly quantifying the marginal effect of each process variable on dimensional outcomes. Ridge Regression was included to address multicollinearity—particularly the strong correlation between DT and PT (Spearman  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\rho = 0.85$$\\end{document} ) and the moderate correlation between MFL and BOD ( \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\rho = 0.51$$\\end{document} )—by applying L2 regularization that stabilizes coefficient estimates.",
+        "Random Forest was selected as the nonlinear model for several reasons: (a) it captures interaction effects (e.g., the combined influence of WS and MFL on HOD) without explicit feature engineering; (b) it provides built-in feature importance metrics that align with the SHAP-based interpretability framework; (c) it offers fast inference times ( \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$< 10$$\\end{document}  ms per prediction) suitable for real-time MES deployment; and (d) it is robust to the moderate sample sizes typical of industrial datasets.",
+        "We considered but did not adopt temporally structured models (e.g., LSTM, ARIMA) for the following reasons. The data pipeline aggregates sensor readings into 5-second windows, and the approximately 2-minute lag between forming and vision inspection effectively removes short-term temporal autocorrelation from the aligned dataset. Autocorrelation analysis of the residuals from the Random Forest model confirmed no significant temporal structure (Durbin–Watson statistic: 1.92–2.08 across targets). Recent works using deep sequential architectures, such as Petrik and Bambach [ 20 ], operate on continuous time-series from FE simulations where temporal structure is preserved; in contrast, our aggregated industrial data is better suited to instance-based learners.",
+        "Physics-informed neural networks (PINNs) were also considered. However, incorporating physical constraints (e.g., conservation of volume, thermo-mechanical constitutive laws) would require the material’s constitutive parameters under warm forging conditions, which are not readily available for SUS304 at the specific temperature ranges used (150–210 °C). Future work will explore hybrid physics-ML models as these parameters are characterized."
+      ]
+    },
+    {
+      "heading": "Prediction of dimensional measurements",
+      "paragraphs": [
+        "Three regression models—Linear Regression, Ridge Regression, and Random Forest—were evaluated for predicting dimensional measurements and defect rates from MHT, DT, WS, MFL, FF."
+      ]
+    },
+    {
+      "heading": "Prediction of dimensional measurements",
+      "paragraphs": [
+        "The Tables  3 ,  4  and  5  show the result of using various ML models for predicting the measurements of HOD, BOD and PH respectively. MAE is mean absolute error and RMSE is root mean square error.Random Forest achieved the highest  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$R^2$$\\end{document}  scores (0.318–0.852). Head thickness and BOD were predicted with moderate accuracy ( \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$R^2 \\approx 0.675-0.852$$\\end{document} ), whereas HOD and PH predictions were relatively weak ( \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$R^2<0.32$$\\end{document} ), the causes of which are systematically analyzed in Section  4.6 . Table 3 A table showing the result of using various ML models for predicting the measurements of HOD. MAE is mean absolute error and RMSE is root mean square error Model MAE RMSE R-Square Hyper params Linear regression 0.163 0.32 0.128 − Ridge 0.161 0.323 0.104 alpha: 1; solver: SAG Random Forest 0.114 0.251 0.318 n_estimators: 100 criterion: squared_error leaf: 1; split: 2 max_depth: 10 Table 4 A table showing the result of using various ML models for predicting the measurements of BOD. MAE is mean absolute error and RMSE is root mean square error Model MAE RMSE R-Square Hyper params Linear Regression 0.53 0.941 0.233 − Ridge 0.527 0.92 0.314 alpha: 1; solver: SAGA Random Forest 0.299 0.666 0.675 n_estimators: 256 criterion: squared_error leaf: 5; split: 4 max_depth: 20 Table 5 A table showing the result of using various ML models for predicting the measurements of PH. MAE is mean absolute error and RMSE is root mean square error Model MAE RMSE R-Square Hyper params Linear regression 0.536 0.852 0.281 − Ridge 0.549 0.896 0.272 alpha: 1; solver: SVD Random Forest 0.376 0.739 0.420 n_estimators: 200 criterion: squared_error leaf: 5; split: 4 max_depth: 20"
+      ]
+    },
+    {
+      "heading": "Prediction of defect rates",
+      "paragraphs": [
+        "The Tables  6 ,  7  and  8  show the result of using various ML models for predicting the defect rates of HOD, BOD and PH respectively. Defect-rate prediction showed markedly higher performance: Random Forest achieved  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$R^2$$\\end{document}  up to 0.992 for HOD defect rate. Even linear and ridge models achieved  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$R^2$$\\end{document}  > 0.95 for several defect targets. This indicates that defect rates are more directly determined by MHT, DT, WS, MFL, FF, while continuous dimensional values are influenced by additional latent factors. Table 6 A table showing the result of using various ML models for predicting the defect rate of HOD. MAE is mean absolute error and RMSE is root mean square error Model MAE RMSE R-Square Hyper params Linear regression 0.155 0.503 0.981 − Ridge 0.151 0.454 0.986 alpha: 1 solver: Cholesky Random Forest 0.070 0.313 0.992 n_estimators: 100 criterion: squared_error leaf: 1, split: 2 max_depth: 10 Table 7 A table showing the result of using various ML models for predicting the defect rate of BOD. MAE is mean absolute error and RMSE is root mean square error Model MAE RMSE R-Square Hyper params Linear regression 0.194 0.459 0.986 − Ridge 0.187 0.434 0.987 alpha: 1 solver: SVD Random Forest 0.184 0.431 0.988 n_estimators: 200 criterion: squared_error leaf: 5, split: 4 max_depth: 20 Table 8 A table showing the result of using various ML models for predicting the defect rate of PH. MAE is mean absolute error and RMSE is root mean square error Model MAE RMSE R-Square Hyper params Linear regression 0.513 0.880 0.951 − Ridge 0.551 0.969 0.941 alpha: 1 solver: SAGA Random Forest 0.307 0.678 0.965 n_estimators: 100 criterion: squared_error leaf: 1, split: 2 max_depth: 10"
+      ]
+    },
+    {
+      "heading": "Hypothesis testing",
+      "paragraphs": [
+        "The three hypotheses formulated in Section  3.3  were evaluated. Hypothesis 1 (MFL increase  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\rightarrow $$\\end{document}  larger HOD, BOD, thickness, PH) Confirmed for BOD and thickness and partially for PH, but HOD decreased as MFL increased (correlation –0.50) because WS, which has a dominant influence on HOD, tends to decrease when MFL increases. Therefore, the hypothesis is partially supported. Hypothesis 2 (WS increase  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\rightarrow $$\\end{document}  thinner thickness, larger HOD and PH) Thickness decreased and HOD increased with WS, but PH decreased rather than increased, indicating that deeper penetration reduces overall product length. Therefore, the hypothesis is partially supported. Hypothesis 3 (MHT increase  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\rightarrow $$\\end{document}  smaller thickness and PH, larger HOD) No consistent monotonic trend was found for MHT; thickness slightly increased, PH showed no meaningful correlation, and HOD slightly decreased. Therefore, the hypothesis is not supported."
+      ]
+    },
+    {
+      "heading": "Error source analysis for dimensional prediction",
+      "paragraphs": []
+    },
+    {
+      "heading": "",
+      "paragraphs": [
+        "The relatively low  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$R^2$$\\end{document}  values for HOD (0.318) and PH (0.420) warrant systematic investigation of the error sources. The following analyses move beyond qualitative attribution to “unmeasured factors.”"
+      ]
+    },
+    {
+      "heading": "Residual time-dependency analysis",
+      "paragraphs": [
+        "Plotting the Random Forest prediction residuals for HOD against chronological production order revealed a systematic drift, with residuals trending negative (under-prediction) in the later portions of each production day. This pattern is consistent with progressive die wear, which gradually enlarges the die cavity and increases HOD beyond model predictions. A similar but weaker drift was observed for PH."
+      ]
+    },
+    {
+      "heading": "Sensitivity analysis via permutation importance",
+      "paragraphs": [
+        "To quantify each feature’s contribution to prediction accuracy, permutation importance analysis was performed on the held-out test set. For HOD prediction, removing WS reduced  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$R^2$$\\end{document}  by 0.14, confirming its dominant role. Removing DT reduced  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$R^2$$\\end{document}  by 0.08, suggesting that DT captures thermal state information relevant to dimensional outcomes but incompletely. MFL and MHT showed importance scores of 0.05 and 0.02, respectively."
+      ]
+    },
+    {
+      "heading": "Proxy variable analysis for die wear",
+      "paragraphs": [
+        "Because direct die wear measurements were not available, cumulative production count (CPC)—the number of parts produced since the last die change—was introduced as a proxy variable. Adding CPC to the Random Forest feature set improved HOD  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$R^2$$\\end{document}  from 0.318 to 0.41 and PH  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$R^2$$\\end{document}  from 0.420 to 0.48. This improvement confirms that die wear is a meaningful unmeasured confounder and suggests that installing direct die wear sensors (e.g., eddy current probes) could substantially improve dimensional prediction accuracy. These findings are consistent with the die degradation mechanisms reviewed by Turek and Cieślik [ 17 ]."
+      ]
+    },
+    {
+      "heading": "Lubrication effects",
+      "paragraphs": [
+        "HOD prediction residuals exhibited higher variance during extended continuous production runs ( \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$> 3$$\\end{document}  hours without stoppage), during which lubricant degradation is expected. The variance increase was approximately 30% higher during extended runs compared to the first hour of operation, consistent with known lubrication breakdown behavior at elevated temperatures in warm forging."
+      ]
+    },
+    {
+      "heading": "Thermal drift",
+      "paragraphs": [
+        "DT time-series analysis (Section  4.1 ) showed thermal accumulation effects during continuous operation. Although DT is included as a model input, the single-point surface temperature measurement may not fully capture the 3D temperature distribution within the die, leading to residual thermal effects in the prediction error. Future integration of thermal imaging or multiple temperature sensors at different die locations is expected to improve model performance."
+      ]
+    },
+    {
+      "heading": "Causal analysis results",
+      "paragraphs": [
+        "To move beyond correlational findings, a formal causal analysis was conducted using the DoWhy library [ 33 ]. The analysis proceeded through four stages: DAG specification, identification, estimation, and refutation."
+      ]
+    },
+    {
+      "heading": "Causal DAG specification",
+      "paragraphs": [
+        "Based on domain knowledge of the warm forging process and the physical process flow described in Section  3.1 , a directed acyclic graph (DAG) was constructed as shown in Fig.  16 . The DAG encodes the following causal assumptions:  MHT, WS, and MFL are exogenous controllable variables with no common unmeasured causes among them. These are set by operators at the equipment level and are mutually independent in the experimental design. DT is causally influenced by MHT (higher billet temperature transfers more heat to the die) and by production continuity/time (thermal accumulation during continuous operation, as confirmed in Section  4.1 ). PT is causally influenced by MHT (directly, through billet temperature) and by DT (through heat transfer during die contact). The strong positive correlation between DT and PT ( \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\rho = 0.85$$\\end{document} ) observed in Section  4.2  is consistent with this causal pathway. FF is causally influenced by MHT (material softening reduces forming resistance), DT (friction and contact dynamics), WS (penetration depth determines energy transfer), and lubrication state (friction modification). Dimensional outcomes (HOD, BOD, PH) are causally influenced by MHT, WS, MFL, DT, and FF through the forming mechanics described in Section  2.2 . Additionally, die wear and lubrication state—represented as unmeasured variables (dashed nodes)—directly affect dimensional outcomes by altering the effective die cavity geometry and friction conditions. Defect rates are determined by dimensional outcomes relative to predefined tolerance bounds; they are thus downstream consequences of all process variables acting through the dimensional pathway. The unmeasured variables (Time/cumulative production count, Die Wear, and Lubrication State) are shown with dashed borders in the DAG to explicitly acknowledge their role as potential confounders. Production time drives both DT (thermal accumulation) and die wear/lubrication degradation, creating backdoor paths that must be accounted for in causal estimation. Fig. 16 Directed Acyclic Graph (DAG) for causal analysis of the warm forging process. Blue nodes represent controllable variables (MHT, WS, MFL); green nodes represent measured intermediate variables (DT, PT, FF); orange nodes represent dimensional outcomes (HOD, BOD, PH); the red node represents defect rate. Grey dashed nodes represent unmeasured or proxy variables (production time, die wear, lubrication state). Solid arrows indicate causal relationships among measured variables; dashed arrows indicate causal pathways involving unmeasured confounders"
+      ]
+    },
+    {
+      "heading": "Identification and estimation",
+      "paragraphs": [
+        "Using the backdoor criterion with the DAG structure in Fig.  16 , the set of adjustment variables required to estimate the causal effect of each controllable variable on defect rates was identified. For the causal effect of WS on HOD defect rate, the backdoor adjustment set consists of {DT, PT, MHT, MFL}. Using the backdoor linear regression estimator implemented in DoWhy, the estimated average treatment effect (ATE) was: 1 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\begin{aligned} & \\text {ATE}(\\text {WS} \\rightarrow \\text {HOD defect rate}) \\nonumber \\\\ & \\quad = -0.034 \\quad (95\\%~\\text {CI}: [-0.041, -0.027]) \\end{aligned}$$\\end{document} This indicates that a unit increase in WS (1 mm) reduces the HOD defect rate by approximately 3.4 percentage points, holding other measured variables constant. This result is consistent with the negative Spearman correlation ( \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\rho = -0.26$$\\end{document} ) reported in Table  1  and the forging mechanics interpretation in Section  4.2 : larger WS promotes deeper die penetration and more complete cavity filling, reducing the probability of undersized HOD.",
+        "For the causal effect of MFL on BOD defect rate, the estimated ATE was: 2 \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\begin{aligned} & \\text {ATE}(\\text {MFL} \\rightarrow \\text {BOD defect rate}) \\nonumber \\\\ & \\quad = +0.048 \\quad (95\\%~\\text {CI}: [+0.039, +0.057]) \\end{aligned}$$\\end{document} confirming that excessive MFL causally increases BOD defects, consistent with the positive correlation ( \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\rho = 0.42$$\\end{document} ) in Table  1 ."
+      ]
+    },
+    {
+      "heading": "Refutation tests",
+      "paragraphs": [
+        "To validate the robustness of the causal estimates, three refutation tests were applied:  Placebo treatment test:  Replacing the actual WS values with randomly shuffled values yielded  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\text {ATE} = 0.001$$\\end{document}  ( \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$p = 0.87$$\\end{document} ), confirming that the estimated effect is not spurious. Random common cause:  Adding a simulated unobserved common cause to the model reduced the estimated ATE by less than 8%, suggesting robustness to moderate unmeasured confounding. Data subset validation:  Re-estimating the ATE on a random 70% subsample reproduced the result within 10% of the full-sample estimate ( \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\text {ATE} = -0.031$$\\end{document} ), confirming stability. These refutation results strengthen the conclusion that WS has a genuine causal effect on defect rate, rather than merely a correlational association."
+      ]
+    },
+    {
+      "heading": "SHAP-based local explanations",
+      "paragraphs": [
+        "SHAP (SHapley Additive exPlanations) waterfall plots were generated for individual defective parts to provide local interpretability. The most common defect pattern involved a combination of WS below 7.0 mm (contributing  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$+0.15$$\\end{document}  to defect probability) and MFL above 19.05 mm (contributing  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$+0.08$$\\end{document} ), with DT above 30 °C partially mitigating defect risk (contributing  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$-0.04$$\\end{document} ). These local explanations are consistent with the global correlation findings and the causal DAG structure, and provide actionable guidance for operators: when MFL is set near the upper bound, WS should be increased to compensate for the elevated defect risk."
+      ]
+    },
+    {
+      "heading": "Summary of key findings",
+      "paragraphs": [
+        "Major conclusions are: WS is the dominant factor affecting both defect rates and dimensional outcomes (HOD, BOD, PH). MFL significantly affects dimensional variability, especially BOD and thickness. MHT influences deformation behavior but does not exhibit a stable monotonic trend in dimensional changes. ML models predict defect rates with high accuracy (cross-validated  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$R^2 = 0.948$$\\end{document} –0.978 for Random Forest), whereas dimensional values have moderate-to-low predictability (cross-validated  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$R^2 = 0.285$$\\end{document} –0.641) due to systematically identified unmeasured factors including die wear, lubrication degradation, and incomplete thermal state representation (Section  4.6 ). Causal analysis using DoWhy confirmed that WS has a statistically significant causal effect on HOD defect rate ( \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\text {ATE} = -0.034$$\\end{document} ,  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$p < 0.001$$\\end{document} ), validated through placebo treatment and robustness checks (Section  4.7 ). Conventional forging intuition is insufficient for warm forging of stainless-steel nuts; data-driven and AI-assisted models are necessary."
+      ]
+    },
+    {
+      "heading": "Comparison with recent approaches",
+      "paragraphs": []
+    },
+    {
+      "heading": "",
+      "paragraphs": [
+        "It is instructive to position the present results against the most closely related recent methods, both to clarify the contribution and to interpret the moderate dimensional-prediction accuracy reported above."
+      ]
+    },
+    {
+      "heading": "Data source: production data versus simulation",
+      "paragraphs": [
+        "The leading closed-loop AI forging frameworks of the last two years—DeepForge [ 20 ] and the reinforcement-learning controller of Reinisch et al. [ 21 ]—achieve impressive control performance, but both are trained and validated on finite-element simulation data in which the governing state is fully observed and noise-free. DeepForge, for instance, reproduces its FE microstructure target with a mean absolute error below 1%. Our dimensional models, by contrast, are trained entirely on real production measurements, where the thermally and mechanically relevant state is only partially observed. The gap between the near-perfect accuracy reported on simulated data and the moderate dimensional  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$R^2$$\\end{document}  (0.285–0.641) obtained here is therefore not primarily a modelling deficiency but a direct consequence of unmeasured physical confounders—die wear, lubrication state and interfacial temperature—that simulation studies eliminate by construction but that dominate a real line. This interpretation is corroborated by our proxy-variable experiment (Section  4.6 ), where introducing a cumulative-production-count surrogate for die wear raised HOD  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$R^2$$\\end{document}  from 0.318 to 0.41, and it is consistent with the interface-temperature measurement gap demonstrated by Plogmeyer et al. [ 9 ], the non-isothermal die-wear and die-stress effects quantified for SUS304 forging by Byun et al. [ 7 ], the wear-driven repeatability loss documented by Hawryluk et al. [ 15 ] and reviewed by Turek and Cieślik [ 17 ], and the die-fatigue-life mechanism modelled by Joun et al. [ 14 ]. The high accuracy achieved for  defect-rate  prediction ( \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$R^2 = 0.948$$\\end{document} –0.978), where the relevant signal is well captured by the measured variables, supports the same conclusion: the limiting factor is sensing coverage, not learner capacity."
+      ]
+    },
+    {
+      "heading": "Response scope and material",
+      "paragraphs": [
+        "Where recent AI forging studies typically target a single response—microstructure or grain size [ 20 ,  21 ], or the dimensional deviation of one part geometry [ 22 ]—the present framework predicts multiple dimensional outcomes (HOD, BOD, PH) together with defect rates for SUS304 nuts. The choice of Random Forest is itself supported by the recent constitutive-modelling literature for this material family, in which tree- and kernel-based learners outperformed classical Arrhenius formulations for the flow stress of 304 and 316L stainless steel [ 4 ,  6 ]. Our finding that MHT lacks a stable monotonic effect on final dimensions is consistent with the non-monotonic temperature- and rate-dependence of SUS304 flow stress reported by Zheng et al. [ 2 ], and helps explain why heating temperature, although mechanically important, is not the dominant dimensional driver on this line."
+      ]
+    },
+    {
+      "heading": "From prediction to actionable, validated recommendations",
+      "paragraphs": [
+        "Most comparable work stops at prediction or, at best, open-loop parameter suggestion [ 22 ], and the recent systematic review of Presciuttini et al. [ 24 ] identifies the near-absence of interpretability and causal reasoning as a central weakness of ML-on-IoT manufacturing studies. The present study addresses this directly by combining SHAP-based interpretation with DoWhy-based causal inference. This mirrors two recent lines of evidence: Senoner et al. [ 31 ] showed in semiconductor manufacturing that explainable AI can guide interventions that measurably reduce defects, and Yang and Bequette [ 32 ] showed on real steelmaking data that causal inference, unlike correlation analysis, correctly identifies which parameters warrant control action. Our causal result—that WS has a statistically significant causal effect on the HOD defect rate ( \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\text {ATE}=-0.034$$\\end{document} ), surviving placebo and robustness refutation—is what licenses the MES to recommend WS adjustments as a genuine control lever rather than a confounded correlate, a step that purely predictive frameworks cannot justify. This directly serves the closed-loop-control agenda articulated by Allwood et al. [ 28 ]: identifying a validated causal lever is the necessary precondition for the property-controlled forming they advocate, and our pipeline supplies exactly that identification from real production data."
+      ]
+    },
+    {
+      "heading": "Summary of positioning",
+      "paragraphs": [
+        "Relative to the recent literature, the contribution is therefore not a new learner but an end-to-end pipeline that (i) runs on real multi-sensor production data rather than simulation, (ii) treats multiple dimensional and defect responses jointly, (iii) makes its predictions interpretable, and (iv) subjects its recommendations to formal causal validation—while being explicit, through the error-source and confounder analysis, about the sensing limitations that bound dimensional predictability on an operating line."
+      ]
+    },
+    {
+      "heading": "System integration and user interface",
+      "paragraphs": [
+        "Moornmo MES integrates the entire analytical pipeline—from multi-sensor acquisition of MHT, DT, PT, WS, MFL, FF and dimensional outcomes (HOD, BOD, PH, thickness) to correlation analysis, ML prediction, and AI guidance—into a production-ready smart forging platform. The system includes: An Operating Conditions & Die Replacement module to register MHT, WS, MFL and die configurations. Time-Series Visualization (Distribution Analysis I) for monitoring MHT, DT, PT, WS, MFL, FF and dimensional stability. Pairwise Relationship Visualization (Distribution Analysis III) for scatter plots such as MFL–HOD, WS–HOD, DT–FF. A Correlation Analysis module that computes Spearman correlations among MHT, DT, WS, MFL, FF and quality metrics. A Model Training module for updating ML models as new production data are collected. An AI-Based Simulation module for what-if analysis based on hypothetical MHT, WS, MFL settings. A Production Monitoring module for real-time prediction of defect rates and guidance messages to adjust WS, MFL, and check heater stability (MHT, DT). Through a structured workflow (production planning  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\rightarrow $$\\end{document}  activation  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\rightarrow $$\\end{document}  data collection  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\rightarrow $$\\end{document}  monitoring  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\rightarrow $$\\end{document}  parameter adjustment  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\rightarrow $$\\end{document}  completion  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\rightarrow $$\\end{document}  post-analysis), operators can use AI guidance to maintain HOD, BOD, PH within tolerance while minimizing defect rates."
+      ]
+    },
+    {
+      "heading": "Conclusion",
+      "paragraphs": [
+        "This study investigated the warm-forging process of corrosion-resistant stainless-steel nuts using a comprehensive methodology that integrates multi-sensor data acquisition of MHT, DT, PT, WS, MFL, FF, dimensional measurement (HOD, BOD, PH, head thickness), statistical analysis, and machine-learning–based prediction.",
+        "The results show that: WS is the most influential factor affecting both product geometry and defect occurrence, exhibiting strong monotonic relationships with HOD, thickness, and PH. MFL strongly affects dimensional variability, particularly BOD and head-thickness uniformity. MHT is mechanically important but does not show a simple monotonic trend with dimensional changes. Defect rates can be predicted with very high accuracy using ML models based on MHT, DT, WS, MFL, FF (cross-validated  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$R^2 = 0.948$$\\end{document} –0.978 for Random Forest), whereas continuous dimensional values show moderate-to-low predictability (cross-validated  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$R^2 = 0.285$$\\end{document} –0.641) due to systematically identified unmeasured factors including die wear (confirmed via proxy variable analysis, Section  4.6 ), lubrication degradation, and incomplete thermal state representation. Causal analysis using DoWhy confirmed that WS has a statistically significant causal effect on HOD defect rate ( \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\text {ATE} = -0.034$$\\end{document} ), validated through placebo treatment and robustness checks. The causal DAG framework (Fig.  16 ) provides a principled basis for distinguishing causal from correlational relationships and identifying unmeasured confounders."
+      ]
+    },
+    {
+      "heading": "Scope and boundary conditions",
+      "paragraphs": [
+        "The conclusions of this study are derived from and validated under the following specific conditions:  Product:  M10-size SUS304 stainless-steel hexagonal nuts. Equipment:  A single warm-forging production line with induction heating. Temperature range:  MHT = 150–210 °C; DT = 12–60 °C. WS range:  6.9–7.3 mm. MFL range:  18.9–19.1 mm. The identified dominance of WS as the primary quality driver is expected to generalize to similar fastener geometries with comparable aspect ratios and material flow patterns. However, for parts with significantly different geometries (e.g., long bolts, flanged components) or materials with different thermo-mechanical characteristics (e.g., titanium alloys, high-carbon steels), the relative importance of process variables may differ substantially.",
+        "The MES integration architecture and the analytical pipeline (sensor acquisition  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\rightarrow $$\\end{document}  correlation analysis  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\rightarrow $$\\end{document}  ML prediction  \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\rightarrow $$\\end{document}  AI guidance) are designed to be product-agnostic and can be transferred to other forging operations. However, the ML models themselves require retraining for each new product specification, material, or equipment configuration. Extension to hot forging ( \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$> 900$$\\end{document}  °C) would require re-evaluation of variable relationships, as the thermo-mechanical coupling, oxidation behavior, and die wear mechanisms differ substantially from the warm forging regime studied here.",
+        "A key contribution of this work is the industrial integration of the full analytical pipeline into Moornmo’s MES, enabling real-time sensing, correlation heatmaps, predictive modeling, and AI-driven parameter recommendations. Operators can visualize MHT, DT, PT, WS, MFL, FF, monitor predicted defect rates, and adjust WS and MFL proactively, reducing dependence on expert intuition and stabilizing process variability.",
+        "Limitations include the indirect nature of FF measurement via acoustic signals and the absence of direct sensing for die wear, lubrication state, and 3D temperature distribution. As all the sensors are set up and the data is still being collected. With more data, future work will incorporate direct force sensors, thermal imaging, digital-twin simulations, real-time causal inference, and expansion to other forged components, enabling more robust, self-optimizing forging systems. Furthermore, the proposed framework demonstrates a scalable architecture applicable to a variety of forging and forming operations.",
+        "Overall, this study establishes an end-to-end, data-driven methodology for intelligent warm-forging systems, demonstrating a scalable pathway to improve product quality, reduce defect rates, and increase operational stability in industrial warm forging."
+      ]
+    }
+  ],
+  "tables": [
+    {
+      "caption": "A table showing the coefficient of correlation between (the measurements of MFL, maximum WS, DT, MHT, WS and PT) and (the defect rates of HOD, BOD and PH)",
+      "headers": [
+        "Correlation",
+        "MFL",
+        "WS (max)",
+        "DT (avg)",
+        "MHT",
+        "WS",
+        "PT"
+      ],
+      "rows": [
+        [
+          "HOD defect rate",
+          "0.21",
+          "0.10",
+          "0",
+          "−0.05",
+          "−0.26",
+          "−0.05"
+        ],
+        [
+          "BOD defect rate",
+          "0.42",
+          "0.25",
+          "0.34",
+          "−0.08",
+          "−0.13",
+          "0.21"
+        ],
+        [
+          "PH defect rate",
+          "0.01",
+          "0.01",
+          "−0.03",
+          "−0.01",
+          "−0.06",
+          "−0.11"
+        ]
+      ],
+      "header_groups": [],
+      "table_alignment_status": "resolved",
+      "row_provenance": [
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 7
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 7
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 7
+          }
+        ]
+      ],
+      "tbody_alignment_status": "resolved"
+    },
+    {
+      "caption": "A table showing the coefficient of correlation between (the measurements of MFL, maximum WS, DT, MHT, WS and PT) and (the measurements of HOD, BOD and PH)",
+      "headers": [
+        "Correlation",
+        "MFL",
+        "FF (max)",
+        "DT (avg)",
+        "MHT",
+        "WS",
+        "PT"
+      ],
+      "rows": [
+        [
+          "HOD",
+          "\\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\mathbf {-0.50}$$\\end{document}",
+          "0.03",
+          "−0.09",
+          "−0.24",
+          "0.69",
+          "−0.16"
+        ],
+        [
+          "BOD",
+          "0.51",
+          "0.19",
+          "0.44",
+          "0.05",
+          "−0.11",
+          "0.20"
+        ],
+        [
+          "PH",
+          "0.57",
+          "0.02",
+          "0.25",
+          "−0.03",
+          "\\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$ \\mathbf {-0.58}$$\\end{document}",
+          "0.37"
+        ]
+      ],
+      "header_groups": [],
+      "table_alignment_status": "resolved",
+      "row_provenance": [
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 7
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 7
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 7
+          }
+        ]
+      ],
+      "tbody_alignment_status": "resolved"
+    },
+    {
+      "caption": "A table showing the result of using various ML models for predicting the measurements of HOD. MAE is mean absolute error and RMSE is root mean square error",
+      "headers": [
+        "Model",
+        "MAE",
+        "RMSE",
+        "R-Square",
+        "Hyper params"
+      ],
+      "rows": [
+        [
+          "Linear regression",
+          "0.163",
+          "0.32",
+          "0.128",
+          "−"
+        ],
+        [
+          "Ridge",
+          "0.161",
+          "0.323",
+          "0.104",
+          "alpha: 1; solver: SAG"
+        ],
+        [
+          "Random Forest",
+          "0.114",
+          "0.251",
+          "0.318",
+          "n_estimators: 100 criterion: squared_error leaf: 1; split: 2 max_depth: 10"
+        ]
+      ],
+      "header_groups": [],
+      "table_alignment_status": "resolved",
+      "row_provenance": [
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 5
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 5
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 5
+          }
+        ]
+      ],
+      "tbody_alignment_status": "resolved"
+    },
+    {
+      "caption": "A table showing the result of using various ML models for predicting the measurements of BOD. MAE is mean absolute error and RMSE is root mean square error",
+      "headers": [
+        "Model",
+        "MAE",
+        "RMSE",
+        "R-Square",
+        "Hyper params"
+      ],
+      "rows": [
+        [
+          "Linear Regression",
+          "0.53",
+          "0.941",
+          "0.233",
+          "−"
+        ],
+        [
+          "Ridge",
+          "0.527",
+          "0.92",
+          "0.314",
+          "alpha: 1; solver: SAGA"
+        ],
+        [
+          "Random Forest",
+          "0.299",
+          "0.666",
+          "0.675",
+          "n_estimators: 256 criterion: squared_error leaf: 5; split: 4 max_depth: 20"
+        ]
+      ],
+      "header_groups": [],
+      "table_alignment_status": "resolved",
+      "row_provenance": [
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 5
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 5
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 5
+          }
+        ]
+      ],
+      "tbody_alignment_status": "resolved"
+    },
+    {
+      "caption": "A table showing the result of using various ML models for predicting the measurements of PH. MAE is mean absolute error and RMSE is root mean square error",
+      "headers": [
+        "Model",
+        "MAE",
+        "RMSE",
+        "R-Square",
+        "Hyper params"
+      ],
+      "rows": [
+        [
+          "Linear regression",
+          "0.536",
+          "0.852",
+          "0.281",
+          "−"
+        ],
+        [
+          "Ridge",
+          "0.549",
+          "0.896",
+          "0.272",
+          "alpha: 1; solver: SVD"
+        ],
+        [
+          "Random Forest",
+          "0.376",
+          "0.739",
+          "0.420",
+          "n_estimators: 200 criterion: squared_error leaf: 5; split: 4 max_depth: 20"
+        ]
+      ],
+      "header_groups": [],
+      "table_alignment_status": "resolved",
+      "row_provenance": [
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 5
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 5
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 5
+          }
+        ]
+      ],
+      "tbody_alignment_status": "resolved"
+    },
+    {
+      "caption": "A table showing the result of using various ML models for predicting the defect rate of HOD. MAE is mean absolute error and RMSE is root mean square error",
+      "headers": [
+        "Model",
+        "MAE",
+        "RMSE",
+        "R-Square",
+        "Hyper params"
+      ],
+      "rows": [
+        [
+          "Linear regression",
+          "0.155",
+          "0.503",
+          "0.981",
+          "−"
+        ],
+        [
+          "Ridge",
+          "0.151",
+          "0.454",
+          "0.986",
+          "alpha: 1 solver: Cholesky"
+        ],
+        [
+          "Random Forest",
+          "0.070",
+          "0.313",
+          "0.992",
+          "n_estimators: 100 criterion: squared_error leaf: 1, split: 2 max_depth: 10"
+        ]
+      ],
+      "header_groups": [],
+      "table_alignment_status": "resolved",
+      "row_provenance": [
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 5
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 5
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 5
+          }
+        ]
+      ],
+      "tbody_alignment_status": "resolved"
+    },
+    {
+      "caption": "A table showing the result of using various ML models for predicting the defect rate of BOD. MAE is mean absolute error and RMSE is root mean square error",
+      "headers": [
+        "Model",
+        "MAE",
+        "RMSE",
+        "R-Square",
+        "Hyper params"
+      ],
+      "rows": [
+        [
+          "Linear regression",
+          "0.194",
+          "0.459",
+          "0.986",
+          "−"
+        ],
+        [
+          "Ridge",
+          "0.187",
+          "0.434",
+          "0.987",
+          "alpha: 1 solver: SVD"
+        ],
+        [
+          "Random Forest",
+          "0.184",
+          "0.431",
+          "0.988",
+          "n_estimators: 200 criterion: squared_error leaf: 5, split: 4 max_depth: 20"
+        ]
+      ],
+      "header_groups": [],
+      "table_alignment_status": "resolved",
+      "row_provenance": [
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 5
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 5
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 5
+          }
+        ]
+      ],
+      "tbody_alignment_status": "resolved"
+    },
+    {
+      "caption": "A table showing the result of using various ML models for predicting the defect rate of PH. MAE is mean absolute error and RMSE is root mean square error",
+      "headers": [
+        "Model",
+        "MAE",
+        "RMSE",
+        "R-Square",
+        "Hyper params"
+      ],
+      "rows": [
+        [
+          "Linear regression",
+          "0.513",
+          "0.880",
+          "0.951",
+          "−"
+        ],
+        [
+          "Ridge",
+          "0.551",
+          "0.969",
+          "0.941",
+          "alpha: 1 solver: SAGA"
+        ],
+        [
+          "Random Forest",
+          "0.307",
+          "0.678",
+          "0.965",
+          "n_estimators: 100 criterion: squared_error leaf: 1, split: 2 max_depth: 10"
+        ]
+      ],
+      "header_groups": [],
+      "table_alignment_status": "resolved",
+      "row_provenance": [
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 5
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 5
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 5
+          }
+        ]
+      ],
+      "tbody_alignment_status": "resolved"
+    }
+  ]
+}

@@ -1,0 +1,778 @@
+{
+  "doi": "10.1016/j.matdes.2023.112016",
+  "title": "On the damage behaviour in dual-phase DP800 steel deformed in single and combined strain paths",
+  "abstract": "Ductile damage in dual-phase steels deteriorates the mechanical properties, resulting in a lowered crashworthiness and a shorter life-time under cyclic loading. However, most works focus on the observation of damage under simple strain paths, even though work pieces are often subjected to combined strain paths during forming. In this work, we set out to characterise the damage behaviour for a DP800 steel subjected to combinations of tensile and bending loads. To this end, we use an automated approach based on machine learning to quantify damage in high-resolution SEM panoramic images, coupled with finite element modelling to determine the stress state, and high-throughput nanoindentation to determine the strain hardening behaviour. We find a strong connection between loading direction and damage formation in both steps of the forming process. By focussing on different possible combinations of positive and negative triaxiality, we show that the combination of two deformation modes with positive triaxiality leads to a promotion of damage formation. A negative triaxiality applied after a positive triaxiality leads to void closure, reducing the number of damage sites and total void area. Importantly, deformation with negative triaxiality carried out before deformation with positive triaxiality inhibits damage nucleation and growth due to strain hardening.",
+  "journal": "Materials & Design",
+  "year": "2023",
+  "sections": [
+    {
+      "heading": "Introduction",
+      "paragraphs": [
+        "With rising demand for better mechanical properties and increasing safety requirements, it becomes inevitable that safety-relevant structural components need to be engineered in a way that guarantees the targeted mechanical properties along the line of production up to the finished product. This can be very challenging because during forming processes, initiation and evolution of microstructural damage sites have a strong negative influence on the mechanical properties  [1,2] . Due to void formation, growth and coalescence, premature ductile failure is very likely to occur, especially during cyclic loading  [3,4] . This not only has a negative impact on the material’s formability to achieve the desired geometry but also on its crashworthiness, of relevance for example in the automotive industry and the longevity of the part during use. As was reported in  [5] , the occurrence of ductile failure in high-strength multiphase steels can be related to a combination of ductile damage mechanisms and shear localization. This is particularly observed in DP steels because of their especially heterogeneous microstructure consisting of a soft ferritic matrix with hard martensitic islands inside  [6,7] . The structural, chemical and mechanical contrast of these constituent phases leads to a heterogeneous stress distribution during forming, and thereby strongly impacts the material’s mechanical behaviour  [8,9] . Damage in DP steel has been subject to intense research in the past years, where significant knowledge regarding the damage mechanisms occurring during deformation along simple strain paths has been established  [10–18] . The results of these works show that martensite cracking and interface decohesion are the main mechanisms for microstructural damage  [13,19] . In that respect, some works reported that the contribution of interface decohesion to damage nucleation increases at higher strain levels  [16,20,21] . One challenge in DP steel research lies in its inherent, local heterogeneity, rendering direct comparisons between different steel grades difficult. Recently, work based on the use of artificial intelligence for image analysis, has begun using damage analyses across large areas to address this issue by improving phase differentiation  [22] , confirming the change in dominant damage mechanism with strain and stress state  [21,23] , describing the reorientation of martensite cracks in biaxial straining  [24]  and uncovering the additional effect of triaxiality  [25]  and crystal orientation  [26]  on damage nucleation and growth.",
+        "In an industrial context, various sheet metal forming processes subject the material to a complex deformation history by a combination of (locally) different strain paths. To develop damage models that can be applied to more realistic cases, it is therefore important to mimic these complex strain paths and investigate nucleation, growth and interaction of damage sites during each step of the forming process both at a local and global scale. In literature some works concerning complex strain paths have been conducted on DP steel but with a focus on the global mechanical properties  [27–29] . For this reason, we present here a systematic microstructural study of microscopic damage evolution as a function of imposed strain path. The loading scenarios investigated include simple tension, simple bending and a combination of tension and bending in two different sequences. Our aim is to clarify how a changing stress-state along the strain path affects damage behaviour in each model case, and to discuss how this knowledge can be utilized to reduce damage and to support optimization of forming processes. To this end, we used machine learning to analyse panoramic images acquired in a scanning electron microscope to detect and classify damage sites in deformed samples. In addition, we employ finite-element (FE) simulations to link the damage behaviour with the strain distribution and evolution of the stress state during deformation. Lastly, we make use of high-throughput nanoindentation mappings to quantify strain hardening and link it to the damaging process. Recently this method has become more popular in literature  [30–32]  because of its ability to generate large statistical data sets within short time periods, making it possible to distinguish between microstructural constituents of small size because of the low indentation depth and high spatial resolution."
+      ]
+    },
+    {
+      "heading": "Materials and methods",
+      "paragraphs": []
+    },
+    {
+      "heading": "Material",
+      "paragraphs": [
+        "The investigations in this work were performed on a commercial dual-phase steel of DP800 grade. The chemical composition of this steel determined by wet-chemical analysis is given in  Table 1 \n                          and the mechanical properties determined by tensile tests are shown in  Table 2 \n                         . Both the chemical composition and mechanical properties are taken from  [33] .",
+        "A typical microstructure of the investigated DP800 sheet, reproduced from the RD-ND plane of the sheet (RD, TD, ND refer to the rolling, transverse and normal directions), is shown in  Fig. 1 \n                         .The insets in the figure show magnified views featuring banding of the martensite phase along the RD (outlined in orange) and the ferrite matrix (outlined in blue). A typical microstructural damage site in form of a brittle crack in a martensitic band is also shown (outlined in green)."
+      ]
+    },
+    {
+      "heading": "Bending tests",
+      "paragraphs": [
+        "In order to investigate a combined strain path consisting of bending and subsequent tensile loading under quasi-static conditions, the investigated DP800 sheet material with a thickness of 1.5 mm was first cut into 60 mm × 60 mm samples using electrical discharge machining (EDM) for simple three-point bending tests. For the bending tests, a stamp with a radius of 1 mm and a die with a width of 8 mm and radii of 1 mm were used to deform the samples to a plastic equivalent strain (PEEQ) of 0.3 in bending direction, measured at the outer edge of the bending side, resulting in a bending angle of 64° (cf.  Fig. 2 \n                         a). Stress triaxiality during bending was estimated by FE simulations and showed a maximum value of 0.57 at the outer edge of the bending side (presented later in  Fig. 9 ). The bent samples were first used for individual analysis of damage during bending and then processed further for damage analysis after two-step bending and tensile testing. In total, the damage behaviour of three bending samples was analysed."
+      ]
+    },
+    {
+      "heading": "Tensile tests",
+      "paragraphs": [
+        "Aside from bending, damage analysis was also carried out after simple tensile testing. For this, another sheet of the same DP800 material used for the bending tests was machined into dog-bone shaped tensile specimens with a gauge length of 3.56 mm, a height of 1.5 mm and a gauge width of 1.5 mm, as shown in  Fig. 2 c. These specimens were loaded in a micro-tensile stage to 12.5 % plastic engineering strain at a speed of 10 µm/s (∼0.003 1/s), and then analysed regarding their damage behaviour. A strain of 12.5 % was chosen, to ensure that a comparison of the damage prevalence induced through the simple tensile test and the combined strain path ( section 2.4 ) is possible. In this case 12.5 % is adequate, because on the one hand it is large enough to have an impact on the damage prevalence (cf.  Table 2 ), but on the other hand it is not large enough to lead to failure of the combined specimen. In total three tensile samples were analysed in this context."
+      ]
+    },
+    {
+      "heading": "Two-step deformation tests (bending → tension)",
+      "paragraphs": [
+        "To compare the damage behaviour investigated after individual bending and tensile tests to the damage behaviour after a combination of both tests (first bending then tension), the previously described dog-bone specimens were machined from a bent sheet, as shown in  Fig. 2 b, and then deformed in tension up to 12.5 % engineering strain. FE simulations showed that in all parts of the sample a positive stress triaxiality prevailed during tensile loading (shown later in  Fig. 9 )."
+      ]
+    },
+    {
+      "heading": "Two-step deformation tests (tension → bending)",
+      "paragraphs": [
+        "In order to investigate an additional variation of a combined strain path, the sequence of the previous two-step loading in  section 2.4  was reversed such that the sample was first loaded in tension and subsequently deformed in bending to a plastic equivalent strain of 0.11 in bending direction, again measured at the outer edge of the bending side. The damage analysis was then carried out in the TD direction as shown in  Fig. 2 d. Additionally, the damage evolution in this strain path was observed in a quasi in-situ experiment by analysing the same area of the sample surface after tension and after subsequent bending."
+      ]
+    },
+    {
+      "heading": "Nanoindentation",
+      "paragraphs": [
+        "Nanoindentation was used to determine the micromechanical properties of martensite and ferrite, in association with the strain path. A bending sample was measured on the surface parallel to the sheet ND in 4 different areas of deformation. This includes (i) the tensile region of the bending zone, (ii) the compression region of the bending zone, (iii) the centre region of the sample and (iv) an undeformed area. In every area, a rapid 100 × 100 array indentation mapping with a spacing of 700 nm between indents and a target load of 1 mN, reaching indentation depths of 150 nm in the softer ferrite phase, was conducted using a load-controlled iNano Nanoindenter (KLA, Oak Ridge, Tennessee) with the NanoBlitz 3D property mapping method. This method enables fast mapping of key values from nanoindentation experiments with a high spatial resolution, so that mappings of nano-hardness and indentation modulus are obtained with a frequency of up to 1 indent per second. The nano-hardness and indentation modulus values were obtained by evaluating the results with the Oliver and Pharr method  [34,35] . Afterwards the measured hardness data of every mapping was discretised into 3 parts: The (i) ferrite and (ii) martensite phases and (iii) the interface between them. This interface is not meant to represent the properties of a physical interface, but the area, in which the plastic zone of the indents has, to all probability, stretched over both phases. This was implemented to clear the ferrite and martensite clusters of uncertain data, showing influences from both phases. In order to make the discretisation automatic a k-means clustering algorithm was applied. The three resulting clusters were then used to determine the individual phase properties at different parts of the bending sample. This procedure is exemplified for the area in the middle of the bending sample in  Fig. 3 \n                          showing how the clusters are determined from a heatmap of hardness data."
+      ]
+    },
+    {
+      "heading": "Sample preparation",
+      "paragraphs": [
+        "To detect the generated damage sites in the deformed microstructures, all of the described samples, except the nanoindentation sample, underwent the same metallographic preparation procedure. This consisted of mechanical grinding and polishing of the sample surface of interest shown in  Fig. 2  with a diamond suspension up to 1 µm, followed by final polishing with an OPS solution up to 0.25 µm. For samples analysed in the SEM, additional etching in 1 % Nital solution for 5 s was applied. It is important to notice that all samples are only mechanically prepared once, to achieve the same surface conditions for all samples. This means that in the combined strain paths, samples were only prepared after the last deformation. The nanoindentation sample was mechanically ground and polished, but analysed in an unetched state to ensure a minimal roughness of the surface."
+      ]
+    },
+    {
+      "heading": "Microscopic damage analysis",
+      "paragraphs": [
+        "After sample preparation, the automated identification and quantification of damage sites in the sample was conducted using panoramic imaging in a Zeiss Leo 1530 FEG-SEM (Carl Zeiss Microscopy GmbH, Oberkochen, Germany) scanning electron microscope using a secondary electron (SE) detector. Individual images in a single panoramic image had a horizontal field width of 100 µm and a resolution of 3072x2048 pixels, resulting in a lateral solution of 32 nm/px. The panoramic images were post-processed in MATLAB 2020b to achieve similar brightness and contrast settings, by equalizing the greyscale histogram of the individual images, before they were stitched using the microscopy image stitching tool (MIST) plugin in ImageJ  [36,37] . Afterwards, the images were analysed with the help of a convolutional neural network, which had already been trained and used for damage site quantification by detection and classification on the same DP800 steel and is described in more detail in references  [21,24] ."
+      ]
+    },
+    {
+      "heading": "Finite element simulations",
+      "paragraphs": [
+        "In addition to the experimental part of loading along different strain paths and corresponding quantitative damage analysis, finite element simulations of the strain distributions during simple bending and subsequent tensile loading were carried out. The simulation was conducted implicitly in Abaqus (Dassault Systems, 2017). For this simulation, isotropic hardening and a value of zero for friction was assumed, since it has negligible influence on the stress state of the sample. Elements of the type C3D8R were used with an edge length of 0.2 mm. The flow curve was extrapolated using the Ludwik extrapolation  [38]  and the corresponding formula  \n                            \n                               \n                                  k \n                                  f \n                               \n                               \n                                  ( \n                                  P \n                                  E \n                                  E \n                                  Q \n                                  ) \n                               \n                               = \n                               \n                                  k \n                                  f \n                               \n                               \n                                  ( \n                                  0 \n                                  ) \n                               \n                               + \n                               C \n                               ∗ \n                               \n                                  \n                                     PEEQ \n                                  \n                                  n \n                               \n                            \n                          with the work-hardening parameters of k f (0) = 518.1, C = 954.63 and n = 0.37. For a quantitative description of the triaxiality after a strain path change, kinematic hardening must be considered, as cross-hardening effects will influence the yield characteristics of the material, which may effectively lead to different triaxialities  [28] . However, in this work, we chose to use a simple work-hardening model as we only consider qualitative changes in triaxiality in our assessment of damage evolution. Also, with the intention to decrease computation time, a plane of symmetry was added in the centre of the sample (cf.  Fig. 9 ), which included the boundary conditions of no displacement in x direction and no rotation around the y and z axes. Here, the bending test was modelled first before it was then subjected to a uniform tensile load. The results included a distribution of the plastic equivalent strain in the sample at different time steps along with the stress triaxiality and Lode angle parameter over the plastic equivalent strain in bending direction in different areas of the sample (cf.  section 3.7 ). Theoretical studies have shown that the influence of the Lode parameter mainly affects the void shape instead of the void size or number. In later stages of deformation, it also influences the stress for void coalescence that ultimately leads to failure  [39–41] . Hence, even though the Lode angle parameter was calculated, the focus of the current study was on the stress triaxiality."
+      ]
+    },
+    {
+      "heading": "Results",
+      "paragraphs": []
+    },
+    {
+      "heading": "Single strain path: Bending",
+      "paragraphs": [
+        "Three samples were taken from the described bent sheets and analysed with respect to their damage behaviour. For these analyses, the height of the panoramic image was set to be parallel to the sheet ND (cf.  Fig. 2 a) and the width of the panoramic image was chosen to be 1 mm. The results of this analysis for one sample are visually represented in  Fig. 4 \n                         . Each square represents one detected damage site. The squares are differently coloured according to the assigned mechanism, which is given in  Fig. 4 . Blue squares indicate voids originating from pre-existing inclusions in the microstructure (hereafter referred to as inclusion-induced voids), red squares indicate martensite cracking, green squares indicate martensite-ferrite interface decohesion and yellow squares indicate a category called notch. It is assigned to damage sites that are too small to be associated clearly with the other mentioned damage initiation mechanisms, but seem to be dominated by the stress concentration in a notch of one or two martensite islands. This category was first introduced in  [21]  and was shown to increase the classification accuracy for all detected voids. A damage distribution histogram, showing the number of damage sites in a certain region along the sample thickness normalized to the total number of damage sites in the measured area on the sample, is also shown in  Fig. 4 . Because the stress state which the sample experiences during the bending procedure changes along the sheet thickness, the sample was divided into thirds along this axis, each of which was exposed to a different stress state during bending. The top area experienced predominately tensile stresses and is shown in this work at the top of the panoramic images. The bottom area experienced mainly compressive stresses and analogously it is shown at the bottom of the panoramic images. The centre area experiences both tensile and compressive stresses and encompasses the neutral fibre. The resulting strain in this area is lower compared to the top and bottom part. The respective void area fraction (VAF), given in %, and the number of voids (NoV), normalized to 10 3  voids per mm 2 , are summarized for the tensile sides of all pure bending samples in  Table 3 \n                         .",
+        "The predominant damage mechanisms observed in the bent samples were identified as martensite cracking and interface decohesion. They showed a similar distribution to what is described in the literature with respect to martensite cracking being the dominant mechanism  [13,21] . However, the distribution of damage initiation mechanisms is not in the scope of this work and we will focus on the damage distribution of all ductile damage sites in this work. The damage behaviour in terms of the number and area of damage sites showed considerable differences between the tensile side and the compressive side, with the latter having a smaller number of detected damage sites and a smaller void area fraction."
+      ]
+    },
+    {
+      "heading": "Single strain path: Tension",
+      "paragraphs": [
+        "Similar to the procedure with the bending samples, three tensile samples deformed to 12.5 % plastic engineering strain were analysed with respect to their total void area fraction and number of voids. Microscopic images were obtained from the mid-section of the RD-ND plane and span the complete sample thickness (cf.  Fig. 2 d). As expected all sample regions (top, middle and bottom) experienced tensile stresses. The results of damage analysis for one tensile sample are shown in  Fig. 5 \n                         . Analogously to the bending sample, each square represents one damage site and the assigned colours indicate the respective nucleation mechanism. A normalized damage site distribution histogram through the sample thickness is also shown in  Fig. 5 . The statistical results for all tensile test samples are summarized in  Table 4 \n                         . On average, the damage distribution appears to be independent of the position in the microstructure along the normal direction. Similar to the case of the bending samples and to what is described in literature, the most prevalent damage mechanism during tension was martensite cracking  [13,21] ."
+      ]
+    },
+    {
+      "heading": "Combined strain path: Bending followed by tension",
+      "paragraphs": [
+        "The combined strain path applied here featured two deformation steps: 3-point bending with the bending axis at a 45° angle between RD and TD, followed by tension in the same direction. This setting was chosen to limit anisotropy effects arising from the sharp RD alignment of the martensite bands. Damage analysis of these samples was carried out analogously to the other bent and tensile-loaded samples. The complete surface of the samples was analysed in a way that the sheet ND was parallel to the vertical axis of the panoramic image (cf.  Fig. 2 b) in order to include the different deformation areas top, middle and bottom, stemming from the bending test. The results of 2 analysed samples are given in  Table 5 \n                         .",
+        "Fig. 6 \n                          shows an analysed panoramic image of a bent and subsequently tensile-loaded sample. In contrast to the individual tensile tests, the number of damage sites in this case was higher across the top (tensile) area of the sample. Moving towards the compression area, the number of damage sites decreased gradually down to a minimum value at the bottom of the sample, associated with the highest compressive strains during bending."
+      ]
+    },
+    {
+      "heading": "Combined strain path: Tension followed by bending",
+      "paragraphs": [
+        "The second combined strain path represented a reversed case to the previous strain path, i.e. samples deformed in tensile mode were subsequently deformed in a 3-point bending test. The damage analysis of these samples was carried out as described for the other strain paths. Here, the complete surface of the sample (again with the sheet ND being oriented parallel to the vertical axis of the panoramic image) was once more analysed in order to include the different deformation areas. In analogy to the previous case,  Table 6 \n                          presents a statistical analysis of the detected damage sites arising from tensile-loading and bending.",
+        "For an easier comparison of the distributions of the number of damage sites along the ND for the investigated loading conditions,  Fig. 7 \n                          presents all histograms described earlier in addition to the histogram of the sample from the combined strain path (tension → bending). The here shown distributions of normalized number of damage sites correlate closely with the void area fraction, as given in the  Supplementary Material  in  Fig S1 ."
+      ]
+    },
+    {
+      "heading": "Combined strain path: The damage behaviour in the RD-TD plane",
+      "paragraphs": [
+        "Previous investigations on damage on the same steel were conducted in the rolling plane (RD-TD plane)  [21,24] , rather than the RD-ND plane, as conducted here. However, to ensure that the findings from the combined strain paths are not dependent on the selected viewing direction, an additional sample from the strain path (bending → tension) was analysed in the rolling plane at different depths with respect to the ND as illustrated in  Fig. 8 \n                         a. One advantage of this method is that although only damaging behaviour of a few stress states can be observed, the statistics of damage sites per stress state obtained from several sections of the rolling plane is much higher than what is obtained from the RD-ND plane, because a full panoramic image can be collected from a sample surface after every cut.",
+        "The results of this analysis reveal the same trend regarding the number of voids (cf.  Fig. 7 ),i.e. a decreasing number of voids from the tensile area to the compressive area ( Fig. 8 b). Furthermore, it becomes apparent that the normalized number of damage sites can be directly and quantitively compared between the RD-TD plane (highlighted in green) and the RD-ND plane (highlighted in blue), used for the analysis of damage on the rest of the samples. This finding suggests that for similar conditions, a direct comparison with results obtained in literature from a RD-ND plane is feasible. A peak in the mean individual void size around the centre ( Fig. 8 c) could also be observed."
+      ]
+    },
+    {
+      "heading": "Nanoindentation",
+      "paragraphs": [
+        "From the nanoindentation measurements, the hardness of ferrite, martensite and their interfacial area was determined in an undeformed sample and for the tensile, centre and compression area of a bent sample, as explained earlier in  section 2.6 . Here, we do not set out to resolve the microstructural constituents spatially but use this technique to gather a large dataset of nano-hardness & indentation modulus values to receive a high statistical relevance. The results are summarized in  Table 7 \n                         ."
+      ]
+    },
+    {
+      "heading": "Finite element simulations",
+      "paragraphs": [
+        "With the help of the finite element simulations, a distribution of the local plastic equivalent strain in bending direction was calculated for bending and the combined strain path (bending → tension). Additionally, the triaxiality was determined for every point in the sample and then plotted against the plastic equivalent strain in bending direction to obtain the change of stress state over deformation for the different areas of the sample. The obtained data for the centre of the sample, the edge of the tensile side and the edge of the compression side, as well as the PEEQ distribution after bending and after the combined strain path (bending → tension) are shown in  Fig. 9 \n                         .",
+        "By considering the onset of necking in the tensile sample and comparing it to the necking in the simulated sample, a local maximal PEEQ was calculated for the individual areas, which allows us to plot the change in triaxiality up to the final deformation step. On the tensile side, the stress triaxiality remains positive during the complete forming process. Yet, once the loading is changed from bending to tensile, the triaxiality decreases from 0.57 to 0.30. The centre of the sample experiences the least amount of deformation during the bending test and hence also the smallest total strain. However, during its small deformation during the bending step the evaluated element experienced a negative triaxiality. As soon as the tensile loading starts, the triaxiality turns positive and assumes a value of approximately 0.30, just as it does on the tensile side, but increases to a triaxiality of approximately 0.42. The change in triaxiality is strongest for the compressive side. Here, the sample experiences a negative triaxiality starting at −1 and increasing to −0.6 during bending deformation. Yet, as soon as the tensile loading starts, the triaxiality becomes positive and again becomes approximately 0.30 here as well. Generally speaking, it also becomes apparent that the sample still deforms homogenously after the bending load, as the local deformation, represented by the PEEQ, during the tensile test is ∼ 0.28 in all three areas. The impression of homogenous deformation is underlined visually by the similar strain distribution of the combined sample in the orange box in  Fig. 9  compared to the distribution after bending shown in the blue box."
+      ]
+    },
+    {
+      "heading": "Discussion",
+      "paragraphs": []
+    },
+    {
+      "heading": "Microscopic damage behaviour under positive stress triaxiality",
+      "paragraphs": [
+        "The microstructural parameters chosen in this study to quantify microscopic damage in the deformed samples are the Number of Voids (NoV) normalized to 10 3  voids per mm 2  and the Void Area Fraction (VAF) in %. Both of these parameters are simultaneously analysed and compared to reveal differences in the nucleation and growth of voids between different strain paths. In addition to the global parameters NoV and VAF, local information of individual voids were also considered for an assessment of individual void size as a function of different stress states.",
+        "There are three areas in the deformed samples exhibiting positive triaxiality: The entire tensile sample, the tensile side of the bending sample and the centre of the sample subjected to the combined strain path (bending → tension). Focusing on the local damage distribution in the tensile samples, we observe that no change in damage density is apparent when moving along the normal direction of the sheet (cf.  Fig. 5 ). This can be expected for uniaxial tension, as the stress state does not change significantly over the thickness of the sample. The homogenous distribution of positive triaxiality in this case results in a mean VAF of 0.019 ± 0.002 % and a NoV of  \n                            1 \n                            . \n                            39 \n                            \n                            ± \n                            \n                            0 \n                            . \n                            16 \n                            × \n                            \n                               \n                                  10 \n                                  3 \n                               \n                               \n                                  m \n                                  \n                                     m \n                                     2 \n                                  \n                               \n                            \n                         .",
+        "In contrast to the tensile tests, the bending samples show a clear trend of decreasing NoV and VAF along ND ( Fig. 4 ), which is attributed to the changing stress state in this direction. The positive triaxiality of 0.57 at the edge of the tensile side ( Fig. 9 ) leads to a VAF of 0.028 ± 0.007 % and a NoV of  \n                            1 \n                            . \n                            45 \n                            \n                            ± \n                            \n                            0 \n                            . \n                            51 \n                            \n                            × \n                            \n                               \n                                  10 \n                                  3 \n                               \n                               \n                                  m \n                                  \n                                     m \n                                     2 \n                                  \n                               \n                            \n                         . It also gives rise to larger voids with a mean size of 0.195 ± 0.019 µm 2 . This observation is in good agreement with the literature  [25,42] . It is important to highlight that the error given for the void sizes in the current work has been determined by comparing the mean void size of different samples. Because the void size distribution spans over a wide range of void sizes, an error calculated by the standard deviation of the distribution results in a larger error than calculating the standard deviation of the mean void size of different samples.",
+        "The centre area (neutral fibre) in the combined strain path (bending → tension) was virtually only subjected to positive triaxiality, because the initial bending deformation induces only a minimal amount of strain (∼0.02, cf.  Fig. 9 ). This gave rise to slightly higher NoV of  \n                            2 \n                            . \n                            60 \n                            \n                            ± \n                            \n                            0 \n                            . \n                            25 \n                            × \n                            \n                               \n                                  10 \n                                  3 \n                               \n                               \n                                  m \n                                  \n                                     m \n                                     2 \n                                  \n                               \n                            \n                         and VAF of 0.039 ± 0.004 %, since the centre region was also affected by the stress-state in the tensile region that facilitated damage nucleation and growth. Additionally, it was observed that the neutral fibre shifted towards the compression zone by ∼ 60 µm ( Fig. 9 )."
+      ]
+    },
+    {
+      "heading": "Microscopic damage behaviour under negative stress triaxiality",
+      "paragraphs": [
+        "Negative triaxialities are generally not known to contribute with void nucleation or void growth. According to Bao and Wierzbicki  [43] , a triaxiality lower than −1/3 will not even lead to fracture of the sample, as there is no damage accumulation taking place. This trend can indeed be observed in the compressive region of the bending samples. It is shown that the NoV declines and stays roughly constant once the middle of the sample is reached and only compressive stresses are present. The only exception for this is the edge of the sample, which shows a strong increase in number of damage sites. However, this increase is related to surface artefacts introduced to the sample surface during the grinding step and is not related to damage formation. Still, it is important to distinguish between two areas with compressive stresses: (i) the area near the centre and (ii) the area near the edge of the compressive side. Although neither of these areas show significant damage nucleation or growth, the latter experienced more deformation than the centre area of the bending sample. The different amount of stress experienced by these two areas can be seen in  Fig. 9 . This is suggested to have an impact on the mechanical properties of the material due to strain hardening. As larger deformation leads to more strain hardening, the microstructure in the compression zone is believed to experience larger strain hardening than the counterpart area around the centre. This was corroborated via nanoindentation. The trend which the results show, increasing from a hardness of 3.81 ± 0.34 GPa in the ferrite matrix in the centre of the sample, to a hardness of 4.13 ± 0.33 GPa in the deformed ferrite in the compression zone, meets the expectations for strain hardening."
+      ]
+    },
+    {
+      "heading": "Microscopic damage behaviour after two-step deformation",
+      "paragraphs": []
+    },
+    {
+      "heading": "Negative triaxiality + positive triaxiality",
+      "paragraphs": [
+        "Damage evolution after a strain path change is more complex than damage evolution under simple strain paths. The difference between the effects on the damage distribution in the samples, can be observed in the combined strain paths. Here, a deformation with a negative triaxiality followed by a deformation with a positive triaxiality can be found in the compression zone of the sample of complex strain path (bending → tension). As established above, deformation with negative triaxiality does not induce damage in the form of void formation. Hence the NoV and VAF after the complete strain path are expected to be equal or lower than in the tensile tests. This expectation is met as this area assumed a NoV of  \n                               1 \n                               . \n                               22 \n                               \n                               ± \n                               \n                               0 \n                               . \n                               13 \n                               × \n                               \n                                  \n                                     10 \n                                     3 \n                                  \n                                  \n                                     m \n                                     \n                                        m \n                                        2 \n                                     \n                                  \n                               \n                             and a VAF of 0.015 ± 0.001 %, which indicates less damage than in the tensile samples. This is visualized in  Fig. 10 \n                            . Through a loading with negative triaxiality before the tensile test, the VAF could be reduced by 21 % and the NoV by 12 % in comparison to the simple tensile test.",
+        "The lower amount of damage in the compression area of the bending → tension combined specimen is attributed to a strain hardening effect. It is already established that damage formation in DP steels originates from the heterogenous plastic deformation of martensite and ferrite, as the ferrite is softer and more ductile than the martensite as shown in  Table 7 . Yet, as was shown with the help of nanoindentation, the ferrite phase experiences strain hardening during plastic deformation. In compression, this proceeds in the absence of void formation, and thereby only the mechanical contrast, in particular the difference of nano-hardness, between the two phases is reduced. In this regard, Tian et al.  [33]  reported that the strain hardening behaviour and hardness of the ferrite phase are important to understanding the damage formation in dual-phase steels, as microstructures with a less pronounced mechanical contrast show reduced damage formation compared to those with a high mechanical contrast. This agrees fairly well with the observed strain hardening of ferrite and the exponential decrease of damage sites when moving from the neutral fibre towards the compression zone (cf.  Fig. 6 ).",
+        "Furthermore, by comparing the mean void size from the centre area of a sample of combined strain path (bending → tension) (0.149 ± 0.001 µm 2 ) with the mean void size in the compression zone of the same sample (0.130 ± 0.005 µm 2 ), it can be observed that the growth of voids in the deformed microstructure is less pronounced relative to what was seen as they do in the undeformed microstructure. This also agrees well with the aforementioned hypothesis that strain hardening hinders not only the nucleation of new voids but also the growth of existing ones.",
+        "Even on a macroscopic scale, compression prior to tension leads to larger fracture strains, which has already been macroscopically observed by other researchers  [29,44] . By combining a statistical damage and indentation analysis we can show directly, that through prior plastic deformation with a negative triaxiality, potential damage formation during following forming steps can be decreased. Linking the important result of a higher fracture strain of the material revealed through macroscopic compression-tension tests, to the reduced damage formation observed in this work, the larger fracture strains can be explained by the reduced damage prevalence."
+      ]
+    },
+    {
+      "heading": "Positive triaxiality + positive triaxiality",
+      "paragraphs": [
+        "The tensile side of the sample of the combined strain path (bending → tension) experienced positive triaxialities in both deformation steps. During bending a triaxiality of 0.57 persisted until a maximum PEEQ of 0.38 at the outer edge of the tensile side, which was then reduced to 0.30 during subsequent tension up to a total maximum strain of 0.67. This led to larger damage parameters, i.e. NoV of 5.29 ± 0.23  \n                               \n                                  \n                                     10 \n                                     3 \n                                  \n                                  / \n                                  m \n                                  \n                                     m \n                                     2 \n                                  \n                               \n                             and a VAF of 0.079 ± 0.007 %, as compared to the previous case of the compression side. Because the total imposed strain was larger in this combined sample than in the individual tensile and bending tests, larger NoV and VAF values are reasonable. This trend is in good agreement with an earlier work by Kusche et al. who carried out a systematic investigation of the influence of strain and triaxiality on the evolution of deformation-induced damage in DP800  [25] . They concluded that on a global level, the applied plastic strain has a sizeable influence on the nucleation of new voids, while the stress triaxiality is the most important factor related to the extent of void growth, even where locally in a dual phase microstructure the plastic strain and triaxiality may vary considerably. This was indeed observed in the current experiments as well.",
+        "Considering the estimated mean void size of 0.150 ± 0.020 µm 2  on the tensile side of the combined strain path (bending → tension), it can be concluded that void growth is not the main reason for the increase of the VAF at this point of the strain path combination. In fact, after the second deformation step in tension, the mean void size in the tensile area of the bending sample decreases. This behaviour can only result from a high void nucleation rate and limited growth, since void closure is not expected for positive triaxialities. In this regard, limited void growth can be explained by the decrease in triaxiality (0.57 → 0.30) during tension, rendering void nucleation the primary driver for the increase of the VAF. Another aspect for limited void growth is that in the second step of tension, the principle loading direction is rotated by 90°. This means that microstructural sites, which were not prone to void formation in the first loading direction can facilitate void nucleation in a different loading direction. As a result, nucleation of new voids may become more favourable than growth of pre-existing voids in a strain hardened ferrite matrix.",
+        "The second possibility to impose two positive triaxialities considered in this work is a bending test conducted subsequently to a tensile deformation. In this case, the same trend of exponential damage increase was evident in terms of a NoV of  \n                               6 \n                               . \n                               37 \n                               × \n                               \n                                  \n                                     10 \n                                     3 \n                                  \n                                  \n                                     m \n                                     \n                                        m \n                                        2 \n                                     \n                                  \n                               \n                            a VAF of 0.142 % and a mean void size of 0.220 µm 2  for this sample. However, it is important to bear in mind that the quantified damage in this case cannot be directly compared to the previous case of bending → tension. This is because (i) the strain levels during bending in the combined strain path bending → tension are higher than in the combined strain path tension → bending, (ii) the stress-state varies in the two bending cases due to different sample geometries, and (iii) the loading direction was not changed in the combined strain path tension → bending. Despite these differences, the results again show a clear trend of a strong increase in both damage number and area when combining two strain paths with positive triaxiality. By comparing the mean void sizes, it becomes clear that the void size is larger for the strain path (tension → bending). This can be explained by the fact that in contrast to the strain path (bending → tension), the deformation mode with a higher triaxiality was carried out last and the loading direction was not changed, rendering void growth more favourable.",
+        "Even if the influence of the sample geometry is unclear in this case, we therefore suggest that a change in loading direction during forming may be favourable for reducing damage, since as shown here all damage parameters were lower for a sample with a change of loading direction, even though it experienced a higher amount of strain. In  Fig. 11 \n                            , the microstructures and evolution of damage parameters are shown for both strain paths in a direct comparison."
+      ]
+    },
+    {
+      "heading": "Positive triaxiality + negative triaxiality",
+      "paragraphs": [
+        "The compression side of the combined strain path (tension → bending) represents the case, where deformation proceeded under positive triaxiality in the tensile test and was then changed to negative triaxiality during subsequent bending. In contrast to all other combinations discussed so far, this combination is the only one that actually reduces the damage parameters through further deformation. The VAF of 0.019 ± 0.002 % and NoV of  \n                               1 \n                               . \n                               39 \n                               \n                               ± \n                               \n                               0 \n                               . \n                               16 \n                               × \n                               \n                                  \n                                     10 \n                                     3 \n                                  \n                                  \n                                     m \n                                     \n                                        m \n                                        2 \n                                     \n                                  \n                               \n                             measured in the tensile test samples are reduced to 0.006 % and  \n                               0 \n                               . \n                               23 \n                               × \n                               \n                                  \n                                     10 \n                                     3 \n                                  \n                                  \n                                     m \n                                     \n                                        m \n                                        2 \n                                     \n                                  \n                               \n                             respectively in this case. Because the sample experiences compressive stresses on this side, voids, nucleated during tension, abate, thereby decreasing the VAF. To visualize the effect of compressive stresses on the shape and size of voids, bending of the combined strain path (tension → bending) was performed in a quasi in-situ experiment.  Fig. 12 \n                             shows the microstructure in the compression zone of a sample of the combined strain path (tension → bending) before and after the bending step. Three different voids are highlighted by differently coloured boxes showing that the plastic deformation can lead to a change of void shape, a reduction of void area and even to void closure.",
+        "Presumably, the area of the void undergoing void closure is decreased to the extent that it cannot be reliably detected by SEM any longer, when using the here applied resolution, and hence the NoV is also decreased in this area. This behaviour is also evident in terms of the in the mean individual void area of 0.110 µm 2  in this region, which is slightly smaller than its counterpart in the tensile tests. The total decrease of microstructural damage sites under further deformation with negative triaxiality is visualized in  Fig. 13 \n                            , where a microstructure and the damage parameters after tensile deformation are shown next to the microstructure and damage parameters in the compression side of the combined strain path (tension → bending). The presumption that voids are becoming too small to detect instead of a complete healing, suggests that the NoV is possibly underestimated in this region. Whether or not a healing of damage sites is likely in this process is not clear, though it has been observed and modelled for forging and rolling processes  [45–47] . These works report that this phenomenon is possible at elevated temperatures and/or large strains. It is therefore uncertain if the attained strains in the current deformation experiment were large enough to trigger healing of damage sites. Hence it is possible that the negative influence of damage sites on the mechanical properties is still present, even if they were no longer detected in the SEM."
+      ]
+    },
+    {
+      "heading": "Influence of strain path on damage formation",
+      "paragraphs": [
+        "As discussed in  section 4.3.1  and shown in  Fig. 10  we argued that a strain hardened microstructure can inhibit void nucleation and growth, and thereby reduces damage formation. This means that a material can undergo the same deformation process (e.g. uniaxial tension) but accumulates less damage sites, if it was priorly deformed under negative triaxiality in a different direction, as shown in  Fig. 14 \n                          with the values from  Table 4  and  Table 5 . Such samples are hence expected to have a better mechanical response, for example in the case of crashworthiness or longevity during cyclic loading. Another strain path-related aspect influencing damage formation is the loading direction, which can be changed in the course of combined deformation steps. Comparing both complex strain paths investigated here, suggested that a change of direction is favourable for inhibiting damage in the microstructure.",
+        "Additionally, the damage parameters of the top and bottom areas from the combined strain path (bending → tension), which experienced different stress states, i.e. positive + positive triaxiality in the tensile zone and negative + positive triaxiality in the compressive zone, show that pre-existing damage also influences the further damage formation. This is established by comparing the number of newly nucleated voids in the compression area to that in the tensile area. Both the tensile and compressive area show the same amount of strain and also show the same amount of strain hardening after bending evident by the measured ferrite hardness (4.13 ± 0.33 GPa in the compression zone and 4.17 ± 0.32 GPa in the tensile zone). Accordingly, the nucleation rate of voids should decrease equally, leading to an equal number of newly nucleated voids in both areas. But, after the following tensile deformation the opposite trend is observed, i.e. the NoV in the compression area increases by ∼ 0.4 x 10 3  voids per mm 2  and in the tensile area by ∼ 3.8 x 10 3  voids per mm 2 . This demonstrates that damage nucleation is more pronounced in the tensile area of the sample, where more voids were already present. Such drastic increase in the number of damage sites has also been observed by Kusche et al.  [25] .  Fig. 15 \n                          shows this trend by depicting the NoV as a function of plastic equivalent strain, as was published in  [25] . Based on  Table 5 ,  Fig. 15  also features the determined NoV of the of the tensile and compression area at a plastic strain of 0.125, highlighted as blue and orange triangles respectively. At a similar strain the NoV determined in  [25]  showed a value of    \n                            ∼ \n                            \n                            2 \n                            . \n                            5 \n                            × \n                            \n                               \n                                  10 \n                                  3 \n                               \n                               \n                                  m \n                                  \n                                     m \n                                     2 \n                                  \n                               \n                            \n                         , which lies between the NoV values determined in the current work. Additionally, a qualitative trend of the NoV over plastic strain in tensile direction, expected for a tensile test, is given as dashed lines for both samples. This comparison suggests that the damage evolution curve can be manipulated (shifted along the y-axis) depending on the imposed strain path. By extending the conducted tests to include the effect of different pre-tensile strains and bending strains on subsequent two-step deformation the shift of this curve could be evaluated in more detail. By considering the effects of different directional changes, as well as featuring in-situ observations, the understanding of the mechanisms behind individual void growth in complex loading scenarios can be understood to a larger extent. It is also of interest whether voids that opened during a positive triaxiality and shrink during forming with a negative triaxiality, as in the compression area of the complex strain path (tension → bending), can actually be healed. Finally, determining the effect of void number and void area reduction on the mechanical properties of the material, for example on the crashworthiness, would finalise how important the damage reduction is for the application of the material."
+      ]
+    },
+    {
+      "heading": "Conclusions",
+      "paragraphs": [
+        "We studied the formation and growth of microstructural damage sites in DP800 steel subjected to different strain paths comprising simple tension, simple bending and more complex cases of two-step loading in tension followed by bending or in bending followed by tension. For damage analysis, high-resolution SEM imaging was used in combination with an automated void analysis algorithm. This was complemented by nanoindentation mappings and FE simulations. The results showed that the interaction of combined strain paths featuring different stress states plays an important role in the global damage formation, which can also lead to strong local damage gradients in the deformed microstructures. The main conclusions are summarized as follows: \n                         \n                            • \n                            When deformation first proceeds under a negative stress triaxiality and then, due to a strain path change, under positive triaxiality, damage formation is reduced owing to a favourable effect of strain hardening on inhibiting void nucleation and growth. \n                         \n                         \n                            • \n                            When deformation proceeds under positive triaxiality during the first and the second strain path, damage formation is promoted, despite strain hardening, because the number of voids is already high after the first strain path. \n                         \n                         \n                            • \n                            Changing the loading direction between the first and second strain path decreases the rate of damage formation, as compared to a fixed loading direction during both strain paths. \n                         \n                         \n                            • \n                            In strain paths where deformation under positive triaxiality is followed by deformation under negative triaxiality, the damage parameters represented by the number and area of voids show a decrease that is likely related to a reduction of ductile damage by void closure due to negative hydrostatic pressure. \n                         \n                         \n                            • \n                            Out of the different strain path combinations explored in this study, forming at a negative stress triaxiality prior to subsequent steps at a positive triaxiality in combination with a change in loading direction is a good strategy to decrease ductile damage."
+      ]
+    },
+    {
+      "heading": "Acknowledgments",
+      "paragraphs": [
+        "The authors express their gratitude to the Deutsche Forschungsgemeinschaft (DFG) for financial support in context of the Collaborative Research Centre CRC/Transregio 188/2 “Damage Controlled Forming Processes”, project B02, project no. 278868966.",
+        "This work is funded by the Bundesministerium für Bildung und Forschung, and the state governments participating on the basis of the resolutions of the GWK for national high performance computing at universities (www.nhr-verein.de/unsere-partner).",
+        "We would also like to extend our gratitude to Mr. Philipp Lennemann from the Institut für Umformtechnik und Leichtbau in Dortmund for conducting the FE simulations."
+      ]
+    },
+    {
+      "heading": "Supplementary data",
+      "paragraphs": [
+        "Supplementary data to this article can be found online at  https://doi.org/10.1016/j.matdes.2023.112016 ."
+      ]
+    },
+    {
+      "heading": "Supplementary data",
+      "paragraphs": [
+        "The following are the Supplementary data to this article: \n                         \n                            Supplementary data 1"
+      ]
+    }
+  ],
+  "tables": [
+    {
+      "caption": "Chemical composition in weight percent (%) determined by wet-chemical analysis of analysed DP steel as taken from  [33]  (DP2).",
+      "headers": [
+        "C",
+        "Si",
+        "Mn",
+        "P",
+        "S",
+        "Al"
+      ],
+      "rows": [
+        [
+          "0.131",
+          "0.194",
+          "1.69",
+          "0.0088",
+          "0.0016",
+          "0.038"
+        ]
+      ],
+      "header_groups": [],
+      "table_alignment_status": "resolved",
+      "row_provenance": [
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 6
+          }
+        ]
+      ],
+      "tbody_alignment_status": "resolved"
+    },
+    {
+      "caption": "Mechanical properties of analysed DP steel measured in tensile tests as taken from  [33]  (DP2).",
+      "headers": [
+        "Yield stress (MPa)",
+        "UTS (MPa)",
+        "UE (%)",
+        "TE (%)"
+      ],
+      "rows": [
+        [
+          "494",
+          "830",
+          "11.5",
+          "18.6"
+        ]
+      ],
+      "header_groups": [],
+      "table_alignment_status": "resolved",
+      "row_provenance": [
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 4
+          }
+        ]
+      ],
+      "tbody_alignment_status": "resolved"
+    },
+    {
+      "caption": "Void area fraction and number of damage sites/voids (NoV) in the tensile side of pure bending samples.",
+      "headers": [
+        "Sample name",
+        "Bending 1",
+        "Bending 2",
+        "Bending 3",
+        "mean"
+      ],
+      "rows": [
+        [
+          "Void area fraction (%)",
+          "0.035",
+          "0.021",
+          "0.027",
+          "0.028 ± 0.007"
+        ],
+        [
+          "NoV ( \n                               \n                                  \n                                     10 \n                                     3 \n                                  \n                                  / \n                                  m \n                                  \n                                     m \n                                     2 \n                                  \n                               \n                            )",
+          "2.02",
+          "1.06",
+          "1.27",
+          "1.45 ± 0.51"
+        ]
+      ],
+      "header_groups": [],
+      "table_alignment_status": "resolved",
+      "row_provenance": [
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 5
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 5
+          }
+        ]
+      ],
+      "tbody_alignment_status": "resolved"
+    },
+    {
+      "caption": "Void area fraction and number of damage sites in pure tensile samples at 12.5 % plastic engineering strain.",
+      "headers": [
+        "Sample name",
+        "Tensile 1",
+        "Tensile 2",
+        "Tensile 3",
+        "mean",
+        ""
+      ],
+      "rows": [
+        [
+          "Void area fraction (%)",
+          "0.020",
+          "0.017",
+          "0.020",
+          "0.019 ± 0.002",
+          ""
+        ],
+        [
+          "NoV ( \n                               \n                                  \n                                     10 \n                                     3 \n                                  \n                                  / \n                                  m \n                                  \n                                     m \n                                     2 \n                                  \n                               \n                            )",
+          "1.43",
+          "1.23",
+          "1.53",
+          "1.39 ± 0.16",
+          ""
+        ]
+      ],
+      "header_groups": [],
+      "table_alignment_status": "resolved",
+      "row_provenance": [
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 6
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 6
+          }
+        ]
+      ],
+      "tbody_alignment_status": "resolved"
+    },
+    {
+      "caption": "Void area fraction and number of damage sites for combined strain path (bending → tension).",
+      "headers": [
+        "Area in the bending plane",
+        "Top",
+        "Middle",
+        "Bottom"
+      ],
+      "rows": [
+        [
+          "Void area fraction (%)",
+          "0.079 ± 0.007",
+          "0.039 ± 0.004",
+          "0.015 ± 0.001"
+        ],
+        [
+          "NoV ( \n                               \n                                  \n                                     10 \n                                     3 \n                                  \n                                  / \n                                  m \n                                  \n                                     m \n                                     2 \n                                  \n                               \n                            )",
+          "5.29 ± 0.23",
+          "2.60 ± 0.25",
+          "1.22 ± 0.13"
+        ]
+      ],
+      "header_groups": [
+        {
+          "label": "Tensile direction in 45° angle between RD and TD",
+          "start_col": 2,
+          "end_col": 4
+        }
+      ],
+      "table_alignment_status": "resolved",
+      "row_provenance": [
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 4
+          }
+        ]
+      ],
+      "tbody_alignment_status": "resolved"
+    },
+    {
+      "caption": "Void area fraction and number of damage sites for combined strain path (tension → bending).",
+      "headers": [
+        "Area in the bending plane",
+        "Top",
+        "Middle",
+        "Bottom"
+      ],
+      "rows": [
+        [
+          "Void area fraction (%)",
+          "0.142",
+          "0.074",
+          "0.006"
+        ],
+        [
+          "NoV ( \n                               \n                                  \n                                     10 \n                                     3 \n                                  \n                                  / \n                                  m \n                                  \n                                     m \n                                     2 \n                                  \n                               \n                            )",
+          "6.37",
+          "4.00",
+          "0.23"
+        ]
+      ],
+      "header_groups": [
+        {
+          "label": "TD",
+          "start_col": 2,
+          "end_col": 4
+        }
+      ],
+      "table_alignment_status": "resolved",
+      "row_provenance": [
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 4
+          }
+        ]
+      ],
+      "tbody_alignment_status": "resolved"
+    },
+    {
+      "caption": "Hardness of different phases and the interfacial area measured by nanoindentation on a cross-section in differently strained areas of a bent sample.",
+      "headers": [
+        "",
+        "Hardness ferrite (GPa)",
+        "Hardness martensite (GPa)",
+        "Hardness interface (GPa)"
+      ],
+      "rows": [
+        [
+          "Area 1 (undeformed)",
+          "3.47 ± 0.31",
+          "7.88 ± 0.95",
+          "4.98 ± 0.40"
+        ],
+        [
+          "Area 2 (tensile area)",
+          "4.17 ± 0.32",
+          "6.89 ± 0.63",
+          "5.1 ± 0.32"
+        ],
+        [
+          "Area 3 (compressive area)",
+          "4.13 ± 0.33",
+          "6.69 ± 0.62",
+          "4.98 ± 0.32"
+        ],
+        [
+          "Area 4 (centre area)",
+          "3.81 ± 0.34",
+          "7.34 ± 0.75",
+          "5.22 ± 0.44"
+        ]
+      ],
+      "header_groups": [],
+      "table_alignment_status": "resolved",
+      "row_provenance": [
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 4
+          }
+        ]
+      ],
+      "tbody_alignment_status": "resolved"
+    }
+  ]
+}

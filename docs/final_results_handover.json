@@ -1,0 +1,2481 @@
+{
+  "section_1_reproducibility": {
+    "commit_hash": "31f92bf3e9a4c34440dfb071b063342ce3849c09",
+    "working_tree_clean": false,
+    "n_working_tree_changes": 25,
+    "untracked_files_relevant_to_this_handover": [
+      "?? docs/final_figure_captions.md",
+      "?? docs/final_results_handover.json",
+      "?? docs/final_results_handover.md",
+      "?? docs/handover_tables/",
+      "?? docs/pipeline_handoff_20260913.md",
+      "?? docs/thesis_research_log_20260913.md",
+      "?? figures/",
+      "?? literature_pipeline/modelling/figure_style.py",
+      "?? notebooks/modelling/06_dissertation_figures.ipynb"
+    ],
+    "test_suite": {
+      "n_suites": 9,
+      "n_suites_passed": 9,
+      "total_individual_checks_passed": 782,
+      "suites": [
+        "literature_pipeline/modelling/test_dataset_contract.py (31 checks)",
+        "literature_pipeline/modelling/test_modelling_lib.py (155 checks)",
+        "literature_pipeline/parsing/test_springer_to_json.py (49 checks)",
+        "literature_pipeline/parsing/test_xml_to_json.py (52 checks)",
+        "literature_pipeline/v2/dataset/test_build_observation_dataset.py (78 checks)",
+        "literature_pipeline/v2/evidence/test_evidence_prep_v2.py (258 checks)",
+        "literature_pipeline/v2/extraction/test_stage3_gate.py (117 checks)",
+        "literature_pipeline/v2/screening/test_cpp_prescreen.py (23 checks)",
+        "literature_pipeline/v2/test_run_one_paper.py (19 checks)"
+      ]
+    },
+    "notebook_execution_status": {
+      "01_dataset_qc.ipynb": "clean re-execution, 0 errors",
+      "02_feature_preparation.ipynb": "clean re-execution, 0 errors",
+      "03_model_comparison.ipynb": "clean re-execution, 0 errors, pooled OOF metrics byte-identical across all re-runs this session",
+      "04_quality_propagation.ipynb": "clean re-execution, 0 errors",
+      "05_uncertainty_bootstrap.ipynb": "clean re-execution, 0 errors",
+      "06_dissertation_figures.ipynb": "clean re-execution, 0 errors, all in-notebook assert checks against frozen 256/44 manifest passed"
+    },
+    "principal_output_files": {
+      "final_dataset_csv": {
+        "path": "data/datasets_v2/production_run/cpp_dataset_v2.csv",
+        "exists": true,
+        "sha256": "d463bf1cd8b3e37de54390047fc80555a262e8d83d874059bcbda9d1ba2a66e0",
+        "size_bytes": 94705,
+        "n_rows_excl_header": 297
+      },
+      "scope_audit_csv": {
+        "path": "docs/scope_audit_v1.csv",
+        "exists": true,
+        "sha256": "b4f3f4c6d5233cc2f35f3577f6fdd4fe374b47e8fad816105f803f0718063a4e",
+        "size_bytes": 14650,
+        "n_rows_excl_header": 51
+      },
+      "oof_predictions_csv": {
+        "path": "data/modelling_results/notebook03_oof_predictions.csv",
+        "exists": true,
+        "sha256": "ee037ea86a45f16cec838e9e5649e512aecc45bf282ec80614c15bd92df561cd",
+        "size_bytes": 110298,
+        "n_rows_excl_header": 1205
+      },
+      "production_summary_json": {
+        "path": "data/cloud_runs/production_summary.json",
+        "exists": true,
+        "sha256": "0630a8c223829f85e0edfea341d445774cd761a8f291f28ddcce94baadd80603",
+        "size_bytes": 1080
+      },
+      "excluded_summary_csv": {
+        "path": "data/datasets_v2/production_run/cpp_dataset_v2_excluded_summary.csv",
+        "exists": true,
+        "sha256": "bb8906a56ce7aac8ccfe6176920bb2d1ef89514c659550bed0b2f1d0327bf86e",
+        "size_bytes": 176546,
+        "n_rows_excl_header": 2087
+      },
+      "duplicate_report_json": {
+        "path": "data/datasets_v2/production_run/cpp_dataset_v2_duplicate_report.json",
+        "exists": true,
+        "sha256": "d1e0e411d17175a10542d608ca58b6d900428bffd18f3370a91e98c3206ecd18",
+        "size_bytes": 31198
+      },
+      "qc_report_json": {
+        "path": "data/datasets_v2/production_run/cpp_dataset_v2_qc_report.json",
+        "exists": true,
+        "sha256": "2d6a96d619406ae7076b5c51ec0cfbcf87e0705374207b472817cf2b0a5b68ed",
+        "size_bytes": 2188
+      }
+    },
+    "clean_clone_import_status": "Verified earlier this session: a fresh `git clone` into a separate directory, with no PYTHONPATH set and no untracked local files copied over, successfully imported literature_pipeline.modelling.modelling_lib and dataset_contract, ran dataset_contract.validate_minimum_structure, and passed both test_dataset_contract.py and test_modelling_lib.py (synthetic-data-only suites). NOTE: figures/dissertation/ and docs/final_figure_captions.md are NOT YET committed as of this handover being written -- see working_tree_clean above."
+  },
+  "section_2_corpus_and_production_outcomes": {
+    "source": "data/cloud_runs/production_summary.json (authoritative aggregate) + data/cloud_runs/production_manifest.jsonl (append-only per-attempt log) + data/processed/*.json (871 structured paper files)",
+    "publications_discovered": "NOT RELIABLY AVAILABLE (no saved artifact retains the pre-acquisition discovery-stage count in this repository)",
+    "publications_acquired": "NOT RELIABLY AVAILABLE (no saved artifact distinguishes 'acquired' from 'converted to structured JSON' as a separate stage count)",
+    "publications_converted_to_structured_json": {
+      "value": 871,
+      "unit": "publication",
+      "source": "count of files in data/processed/*.json"
+    },
+    "publications_processed_in_full_production_run": {
+      "value": 871,
+      "unit": "publication",
+      "corpus_size": 871,
+      "remaining": 0,
+      "source": "data/cloud_runs/production_summary.json:processed"
+    },
+    "production_manifest_raw_line_count": {
+      "value": 879,
+      "note": "append-only log; exceeds corpus_size (871) because infrastructure_failure/timeout outcomes are retried and re-appended. production_summary.json's outcome_counts (below) is the de-duplicated, authoritative per-paper final outcome, not this raw line count."
+    },
+    "outcome_counts_final_per_paper": {
+      "completed_with_dataset_rows": 51,
+      "completed_no_usable_target": 198,
+      "excluded_stage1": 615,
+      "stage2_failure": 0,
+      "stage3_failure": 0,
+      "dataset_failure": 0,
+      "timeout": 0,
+      "infrastructure_failure": 7,
+      "unit": "publication (one final outcome per paper, de-duplicated across retries)",
+      "denominator": 871,
+      "sum_check": 871
+    },
+    "stage1_screening_outcomes_aggregate": {
+      "excluded_stage1": 615,
+      "unit": "publication",
+      "denominator": 871,
+      "finer_relevance_extractability_breakdown": "NOT RELIABLY AVAILABLE (per-paper Stage 1 classification JSON was not retained locally across all 871 papers; only the coarse excluded_stage1 aggregate survives in production_summary.json)"
+    },
+    "stage2_evidence_candidate_outcomes": "NOT RELIABLY AVAILABLE at the full-871-corpus level (Stage 2 candidate/evidence counts are only preserved for the subset of papers that reached the final flat dataset construction step -- see Section 3's evidence-candidate accounting, which is scoped to the 297-observation dataset's own construction, not the full corpus)",
+    "stage3_reconstruction_validation_outcomes": {
+      "stage2_failure": 0,
+      "stage3_failure": 0,
+      "dataset_failure": 0,
+      "unit": "publication",
+      "note": "all three are 0 in the final run; papers that passed Stage1-3 but yielded no usable CPP row are counted separately below, not as a Stage2/3 'failure'."
+    },
+    "publications_producing_no_usable_target": {
+      "value": 198,
+      "unit": "publication",
+      "source": "production_summary.json:outcome_counts.completed_no_usable_target"
+    },
+    "publications_producing_final_observations": {
+      "value": 51,
+      "unit": "publication",
+      "source": "production_summary.json:outcome_counts.completed_with_dataset_rows",
+      "cross_check_against_scope_audit_row_producing_doi": 51
+    },
+    "infrastructure_failures": {
+      "value": 7,
+      "unit": "publication",
+      "note": "isolated, non-systemic (systemic_stop=false in production_summary.json)"
+    }
+  },
+  "section_3_initial_dataset_and_exclusion_accounting": {
+    "source": "data/datasets_v2/production_run/cpp_dataset_v2.csv (flat, pre-scope-audit) + cpp_dataset_v2_excluded_summary.csv (finer-grained rejection/exclusion event log)",
+    "flat_dataset_before_steel_scope_exclusion": {
+      "n_observations": 297,
+      "n_row_producing_doi": 51,
+      "n_scoped_materials_unit_doi_material_id": 76,
+      "n_scoped_processing_conditions_unit_doi_material_condition_id": 114,
+      "raw_target_availability_nonnull_count_on_this_297_row_dataset": {
+        "UTS_MPa": 197,
+        "YS_MPa": 193,
+        "elongation_pct": 139
+      },
+      "note_on_raw_n_terminology": "This 197/193/139 figure is target-value non-null count on the ORIGINAL 297-row pre-scope-audit dataset. It is DIFFERENT from the 158/157/108 'raw_n' column printed in Notebook 01/02's eligibility_table, which is computed AFTER apply_known_data_corrections() (i.e. on the 256-row scope-corrected dataset). Both are correct for their own denominator; they must never be conflated. Verified directly against both dataframes this session.",
+      "processing_identity_status_distribution": {
+        "confirmed_explicit": 200,
+        "confirmed_baseline": 97
+      },
+      "test_conditions_status_distribution": {
+        "unresolved": 204,
+        "confirmed_explicit": 64,
+        "default_implicit": 29
+      },
+      "material_identity_status_distribution": {
+        "confirmed": 297
+      },
+      "stage3_observation_status_distribution": {
+        "valid_observation": 297
+      },
+      "composition_coverage_any_of_14_core_elements": {
+        "n_observations_with_any_element": 170,
+        "n_doi_with_any_element": 28
+      },
+      "unit_verification_coverage": {
+        "UTS_MPa": {
+          "true": 197,
+          "false": 100
+        },
+        "YS_MPa": {
+          "true": 195,
+          "false": 102
+        },
+        "elongation_pct": {
+          "false": 174,
+          "true": 123
+        }
+      },
+      "observations_per_doi": {
+        "min": 1,
+        "median": 4.0,
+        "max": 24,
+        "mean": 5.824
+      }
+    },
+    "exclusion_rejection_accounting_from_cpp_dataset_v2_excluded_summary_csv": {
+      "total_rows_in_file": 2087,
+      "total_unique_doi_in_file": 190,
+      "WARNING": "This file's 2087 rows are NOT one comparable unit of analysis -- do not use 2087 as a percentage denominator for anything. It mixes four distinct event types, broken out explicitly below by exclusion_source.",
+      "by_exclusion_source_unit_of_analysis": {
+        "rejected_candidate": {
+          "n": 1408,
+          "unit": "evidence candidate (Stage 2 candidate rejected before becoming a property value)"
+        },
+        "orphan_property_evidence": {
+          "n": 372,
+          "unit": "evidence candidate (property evidence with no linked observation)"
+        },
+        "valid_observation_no_usable_target": {
+          "n": 244,
+          "unit": "otherwise-valid observation with no usable target value"
+        },
+        "failure": {
+          "n": 63,
+          "unit": "processing failure event (paper/record-level)"
+        }
+      },
+      "reason_breakdown_within_each_exclusion_source": [
+        {
+          "exclusion_source": "failure",
+          "reason": "insufficient_local_evidence",
+          "n": 60
+        },
+        {
+          "exclusion_source": "failure",
+          "reason": "malformed_json",
+          "n": 1
+        },
+        {
+          "exclusion_source": "failure",
+          "reason": "timeout",
+          "n": 2
+        },
+        {
+          "exclusion_source": "orphan_property_evidence",
+          "reason": "material_identity=assumed_single_material",
+          "n": 4
+        },
+        {
+          "exclusion_source": "orphan_property_evidence",
+          "reason": "material_identity=assumed_single_material; processing_identity=unresolved",
+          "n": 1
+        },
+        {
+          "exclusion_source": "orphan_property_evidence",
+          "reason": "material_identity=unresolved",
+          "n": 64
+        },
+        {
+          "exclusion_source": "orphan_property_evidence",
+          "reason": "material_identity=unresolved; processing_identity=unresolved",
+          "n": 48
+        },
+        {
+          "exclusion_source": "orphan_property_evidence",
+          "reason": "processing_identity=unresolved",
+          "n": 255
+        },
+        {
+          "exclusion_source": "rejected_candidate",
+          "reason": "invalid_stage2_location",
+          "n": 47
+        },
+        {
+          "exclusion_source": "rejected_candidate",
+          "reason": "local_discovery_candidate_not_a_property_value",
+          "n": 172
+        },
+        {
+          "exclusion_source": "rejected_candidate",
+          "reason": "unsupported_numerical_token",
+          "n": 952
+        },
+        {
+          "exclusion_source": "rejected_candidate",
+          "reason": "unverified_source_span",
+          "n": 237
+        },
+        {
+          "exclusion_source": "valid_observation_no_usable_target",
+          "reason": "incompatible_property_scope",
+          "n": 1
+        },
+        {
+          "exclusion_source": "valid_observation_no_usable_target",
+          "reason": "no_usable_target",
+          "n": 167
+        },
+        {
+          "exclusion_source": "valid_observation_no_usable_target",
+          "reason": "replicate_target_unresolved",
+          "n": 76
+        }
+      ],
+      "final_flat_dataset_observations": {
+        "n": 297,
+        "unit": "observation",
+        "note": "the complement of all rejection/exclusion events above -- this is the only count in this section directly comparable to Section 6's 256."
+      }
+    }
+  },
+  "section_4_confirmed_data_quality_findings": {
+    "source": "literature_pipeline/modelling/modelling_lib.py 'KNOWN DATA CORRECTIONS / EXCLUSIONS' section (frozen this session) + docs/scope_audit_v1.csv",
+    "columns": [
+      "issue",
+      "affected_doi",
+      "affected_observations",
+      "observed_value",
+      "evidence_source_location",
+      "detection_mechanism",
+      "root_cause_status",
+      "correction_exclusion_rule",
+      "raw_value_preserved",
+      "final_cohort_treatment"
+    ],
+    "rows": [
+      {
+        "issue": "'Area Uniform EL (MPa-%)' column alias mistaken for elongation",
+        "affected_doi": "10.1016/j.msea.2026.150164",
+        "affected_observations": [
+          "M1-P1-O1",
+          "M1-P1-O2",
+          "M1-P1-O3",
+          "M1-P1-O4",
+          "M2-P1-O1",
+          "M2-P1-O2",
+          "M2-P1-O3",
+          "M2-P1-O4"
+        ],
+        "observed_value": "elongation_pct populated from a stress-strain-curve area column, not a true elongation measurement",
+        "evidence_source_location": "source_column literally 'Area Uniform EL (MPa-%)'",
+        "detection_mechanism": "Notebook 01 audit-trail investigation of source_column for every ambiguous elongation value",
+        "root_cause_status": "CONFIRMED (wrong property, not wrong unit)",
+        "correction_exclusion_rule": "modelling_lib.CONFIRMED_WRONG_ELONGATION_KEYS -- excluded from every cohort (primary AND sensitivity)",
+        "raw_value_preserved": true,
+        "final_cohort_treatment": "excluded from primary, sensitivity, and diagnostic_suspect_inclusive elongation cohorts"
+      },
+      {
+        "issue": "'Average thickness' (mm) column mistaken for elongation",
+        "affected_doi": "10.1016/j.heliyon.2024.e32101",
+        "affected_observations": [
+          "M1-P1-O2"
+        ],
+        "observed_value": "elongation_pct populated from a thickness measurement",
+        "evidence_source_location": "source_column 'Average thickness'",
+        "detection_mechanism": "Notebook 01 source_column audit",
+        "root_cause_status": "CONFIRMED",
+        "correction_exclusion_rule": "modelling_lib.CONFIRMED_WRONG_ELONGATION_KEYS",
+        "raw_value_preserved": true,
+        "final_cohort_treatment": "excluded from every elongation cohort"
+      },
+      {
+        "issue": "'AGS' (grain-size, composition-table) column mistaken for elongation",
+        "affected_doi": "10.1007/s11661-025-08095-7",
+        "affected_observations": [
+          "M1-P1-O1",
+          "M2-P1-O1"
+        ],
+        "observed_value": "elongation_pct populated from an average-grain-size composition-table field",
+        "evidence_source_location": "source_column 'AGS' in a composition table",
+        "detection_mechanism": "Notebook 01 source_column audit",
+        "root_cause_status": "CONFIRMED",
+        "correction_exclusion_rule": "modelling_lib.CONFIRMED_WRONG_ELONGATION_KEYS",
+        "raw_value_preserved": true,
+        "final_cohort_treatment": "excluded from every elongation cohort"
+      },
+      {
+        "issue": "elongation_total reported in GPa -- unit fundamentally incompatible with elongation (%)",
+        "affected_doi": "10.1016/j.matdes.2025.114234",
+        "affected_observations": [
+          "M1-P1-O7"
+        ],
+        "observed_value": "a GPa-scale value stored as elongation_pct",
+        "evidence_source_location": "reported unit GPa on an elongation_total property",
+        "detection_mechanism": "Notebook 01 audit of physically-implausible elongation magnitudes",
+        "root_cause_status": "CONFIRMED",
+        "correction_exclusion_rule": "modelling_lib.CONFIRMED_WRONG_ELONGATION_KEYS",
+        "raw_value_preserved": true,
+        "final_cohort_treatment": "excluded from every elongation cohort"
+      },
+      {
+        "issue": "Verified GPa->MPa unit correction (1.2 GPa reported, stored as raw 1.2 under UTS_MPa)",
+        "affected_doi": "10.1016/j.jmrt.2021.07.045",
+        "affected_observations": [
+          "M1-P1-O1"
+        ],
+        "observed_value": "raw UTS_MPa=1.2 (physically impossible for MPa; source text confirms '1.2 GPa')",
+        "evidence_source_location": "local source text explicitly stating '1.2 GPa'",
+        "detection_mechanism": "Notebook 01 audit of implausibly low UTS values",
+        "root_cause_status": "CONFIRMED, deterministic correction (x1000) applied, not a discard",
+        "correction_exclusion_rule": "modelling_lib.UTS_GPA_TO_MPA_CORRECTIONS -> UTS_MPa_corrected=1200.0, manual_unit_correction_applied=True",
+        "raw_value_preserved": true,
+        "final_cohort_treatment": "included in primary UTS cohort using UTS_MPa_corrected; EXCLUDED from the composition-model/OOF cohort for an unrelated reason -- see Section 8's explanation (no composition data for this row)"
+      },
+      {
+        "issue": "UTS < YS for the same observation -- confirmed physical impossibility",
+        "affected_doi": "10.1016/j.ijmecsci.2025.110565",
+        "affected_observations": [
+          "M1-P1-O7",
+          "M1-P1-O12"
+        ],
+        "observed_value": "UTS_MPa numerically less than YS_MPa on the same row",
+        "evidence_source_location": "both pass unit_verified=True with source_column 'Ultimate Tensile Strength Rm [MPa]' / 'Yield Strength Rp0.2 [MPa]'",
+        "detection_mechanism": "Notebook 01 UTS>=YS physical-consistency check",
+        "root_cause_status": "the INCONSISTENCY is CONFIRMED; the root cause (most likely a table row-alignment error) is only PROBABLE, not verified against the source table",
+        "correction_exclusion_rule": "modelling_lib.CONFIRMED_INCONSISTENT_PROBABLE_CAUSE_KEYS -- excluded from BOTH primary and sensitivity for BOTH UTS_MPa and YS_MPa",
+        "raw_value_preserved": true,
+        "final_cohort_treatment": "excluded from primary and sensitivity; appears only in the separate diagnostic_suspect_inclusive cohort (never reported as the robustness result)"
+      },
+      {
+        "issue": "Decimal-comma misparse inflating a composition value (\"99,9\" read as 999)",
+        "affected_doi": "10.1007/s40194-026-02341-1",
+        "affected_observations": [
+          "material M3 (Cu-foil)"
+        ],
+        "observed_value": "Cu=999 (wt.%, physically impossible for any single element)",
+        "evidence_source_location": "Notebook 01 composition sanity audit (per-element max check)",
+        "detection_mechanism": "composition_sum/per-element max plausibility check",
+        "root_cause_status": "CONFIRMED decimal-comma misparse; the underlying material was independently later confirmed to be a Cu-foil (mixed_material), not steel at all, making the corrected ~99.9% value plausible for that material -- but the material itself is out of scope regardless",
+        "correction_exclusion_rule": "modelling_lib.NON_STEEL_SCOPE_EXCLUSIONS (doi, 'M3') -- full-row exclusion via exclude_non_steel_scope(), not a value correction",
+        "raw_value_preserved": true,
+        "final_cohort_treatment": "material M3's 2 observations fully excluded from the final 256-row steel dataset"
+      },
+      {
+        "issue": "6 confirmed non-steel materials extracted as if steel (systematic scope audit)",
+        "affected_doi": "10.1007/s40962-026-02006-1; 10.1007/s10973-026-15761-4; 10.1007/s11665-026-14678-1; 10.1007/s40830-026-00604-w; 10.1007/s40962-025-01715-3; 10.1007/s42114-025-01547-z",
+        "affected_observations": "39 observations total across 6 DOI (see Section 5 for the per-DOI breakdown)",
+        "observed_value": "aluminium alloys (A356 casting, AA7075 wrought, new Al-Mg), a nickel superalloy (Inconel 718), a NiTi shape-memory alloy, and a CuCrZr/Cu composite -- all extracted with full composition/property records as if they were the paper's steel material",
+        "evidence_source_location": "each paper's own title and/or reported_grade_label -- see docs/scope_audit_v1.csv evidence_rationale column",
+        "detection_mechanism": "title/evidence-based systematic scope audit of all 51 row-producing DOI (first case surfaced via Random Forest/Ridge worst-residual investigation in Notebook 03)",
+        "root_cause_status": "CONFIRMED per-DOI from primary source text, never inferred from composition magnitude alone",
+        "correction_exclusion_rule": "modelling_lib.NON_STEEL_SCOPE_EXCLUSIONS -- full-row exclusion via exclude_non_steel_scope()",
+        "raw_value_preserved": true,
+        "final_cohort_treatment": "fully excluded from the final 256-row steel dataset"
+      },
+      {
+        "issue": "Mixed-material Cu-foil observations within an otherwise steel-relevant paper",
+        "affected_doi": "10.1007/s40194-026-02341-1",
+        "affected_observations": [
+          "material M3, 2 observations"
+        ],
+        "observed_value": "the only material from this paper that reached the extracted cohort is explicitly grade-labelled 'Cu-foil' (a tramp-element weld interlayer), not the paper's own steel base metal",
+        "evidence_source_location": "paper title: 'tramp elements in resistance spot welding' (genuinely about steel welding) vs. reported_grade_label 'Cu-foil' on the only extracted material",
+        "detection_mechanism": "systematic scope audit, material-identity/grade-label check",
+        "root_cause_status": "CONFIRMED -- this is a wrong-material-identity issue, not a wrong-value issue: the paper's real steel base-metal material(s), if extracted at all, never reached the final cohort in this run",
+        "correction_exclusion_rule": "modelling_lib.NON_STEEL_SCOPE_EXCLUSIONS (doi, 'M3'); scope_status='mixed_material' in docs/scope_audit_v1.csv (distinct from the 6 'non_steel' DOI)",
+        "raw_value_preserved": true,
+        "final_cohort_treatment": "excluded from the final 256-row steel dataset; this DOI contributes 0 observations to the final 44 retained DOI"
+      },
+      {
+        "issue": "Values with no captured unit and no source_column at all (cannot confirm even the property, let alone the unit)",
+        "affected_doi": "10.1016/j.corcom.2026.04.005; 10.1016/j.jalmes.2025.100214; 10.1016/j.matdes.2025.114234; 10.1016/j.jmrt.2022.11.070; 10.1007/j.jmrt.2023.10.233 [sic, real DOI 10.1016/j.jmrt.2023.10.233]",
+        "affected_observations": "4 elongation_pct + 1 UTS_MPa + 2 YS_MPa = 7 (doi, observation_id) keys total",
+        "observed_value": "unit_verification_status in {'not_available','reported_by_model_unverified'}",
+        "evidence_source_location": "absence of grounding -- no source_column/reported_unit recoverable, not a contradicting value",
+        "detection_mechanism": "Notebook 01 unit-verification-status audit",
+        "root_cause_status": "CONFIRMED absence of evidence (not a confirmed wrong value; kept as an honestly-separate category)",
+        "correction_exclusion_rule": "modelling_lib.CANNOT_DECIDE_KEYS -- excluded from every cohort per target",
+        "raw_value_preserved": true,
+        "final_cohort_treatment": "excluded from primary and sensitivity for the affected target only"
+      }
+    ]
+  },
+  "section_5_systematic_steel_scope_audit": {
+    "source": "docs/scope_audit_v1.csv (version-controlled, 51 rows, one per row-producing DOI) + modelling_lib.NON_STEEL_SCOPE_EXCLUSIONS/exclude_non_steel_scope()",
+    "scope_status_counts_unit_doi": {
+      "steel": 44,
+      "non_steel": 6,
+      "mixed_material": 1
+    },
+    "per_doi_removed_observations": [
+      {
+        "doi": "10.1007/s40962-026-02006-1",
+        "scope_status": "non_steel",
+        "n_final_observations": 24,
+        "evidence_rationale": "Title: \"...AlSi7Mg0.3 (A356) Casting Alloy\" -- aluminium casting alloy (materials M1/M3 = full paper)"
+      },
+      {
+        "doi": "10.1007/s10973-026-15761-4",
+        "scope_status": "non_steel",
+        "n_final_observations": 6,
+        "evidence_rationale": "Title: \"...7075-alloy...\"; grade_label AA7075 -- wrought aluminium alloy (Aluminum Association designation)"
+      },
+      {
+        "doi": "10.1007/s11665-026-14678-1",
+        "scope_status": "non_steel",
+        "n_final_observations": 4,
+        "evidence_rationale": "Title: \"...Cold-Sprayed Inconel 718 Coatings\"; grade_label IN718 -- nickel-based superalloy"
+      },
+      {
+        "doi": "10.1007/s40194-026-02341-1",
+        "scope_status": "mixed_material",
+        "n_final_observations": 2,
+        "evidence_rationale": "Title: \"...tramp elements in resistance spot welding\" (paper is about steel welding); but the ONLY material reaching the final cohort (M3) is explicitly grade_label \"Cu-foil\" -- the copper interlayer insert, not the steel base metal. Cu=999 is the decimal-comma misparse of 99.9 wt.% -- plausible as a real Cu-foil composition, not corrupted steel data."
+      },
+      {
+        "doi": "10.1007/s40830-026-00604-w",
+        "scope_status": "non_steel",
+        "n_final_observations": 2,
+        "evidence_rationale": "Title: \"...Wrought NiTi Shape Memory Alloys\" -- nickel-titanium, not iron-based"
+      },
+      {
+        "doi": "10.1007/s40962-025-01715-3",
+        "scope_status": "non_steel",
+        "n_final_observations": 2,
+        "evidence_rationale": "Title: \"Development of New Aluminium Alloys...\"; grade_label Al-Mg"
+      },
+      {
+        "doi": "10.1007/s42114-025-01547-z",
+        "scope_status": "non_steel",
+        "n_final_observations": 1,
+        "evidence_rationale": "Title: \"...CuCrZr/Cu laminated metallic composites...\" -- copper-based composite"
+      }
+    ],
+    "total_observations_removed": 41,
+    "mixed_material_explanation": "10.1007/s40194-026-02341-1's own subject is steel welding/tramp-element investigation -- the publication itself concerns steel processing. But the only material that reached the candidate final cohort from this paper (material M3) is explicitly grade-labelled 'Cu-foil', a copper tramp-element weld interlayer, not the paper's steel base metal. Those 2 material-specific observations were excluded because the MATERIAL is non-steel, not because the paper is off-topic; the paper's real steel base-metal material(s), if extracted at all by the pipeline, never reached the final cohort in this production run.",
+    "transition": {
+      "before": {
+        "n_observations": 297,
+        "n_row_producing_doi": 51
+      },
+      "after": {
+        "n_observations": 256,
+        "n_retained_steel_doi": 44
+      },
+      "n_observations_removed": 41,
+      "n_doi_removed": 7,
+      "pct_observations_removed": 13.8,
+      "pct_denominator_note": "denominator = 297 initial flat-dataset observations (the only comparable unit); NOT 2087, NOT 871."
+    }
+  },
+  "section_6_1_final_steel_dataset": {
+    "source": "cpp_dataset_v2.csv + modelling_lib.apply_known_data_corrections",
+    "n_observations": 256,
+    "n_retained_steel_doi": 44,
+    "n_scoped_materials": 68,
+    "n_scoped_processing_conditions": 101,
+    "observations_per_doi": {
+      "min": 1,
+      "median": 4.0,
+      "max": 17,
+      "mean": 5.818
+    },
+    "target_availability_nonnull": {
+      "UTS_MPa": 158,
+      "YS_MPa": 157,
+      "elongation_pct": 108
+    },
+    "missingness_pct_by_target": {
+      "UTS_MPa": 38.28,
+      "YS_MPa": 38.67,
+      "elongation_pct": 57.81
+    },
+    "composition_coverage_any_of_14_core_elements": {
+      "n_observations": 136,
+      "n_doi": 24
+    },
+    "processing_identity_status_distribution": {
+      "confirmed_explicit": 191,
+      "confirmed_baseline": 65
+    },
+    "test_conditions_status_distribution": {
+      "unresolved": 192,
+      "confirmed_explicit": 40,
+      "default_implicit": 24
+    }
+  },
+  "section_6_2_primary_target_cohorts": {
+    "source": "modelling_lib.target_cohort_masks(df, target)['primary'], computed on the scope-corrected 256-row dataset",
+    "verification": "All three cohort sizes verified programmatically against the expected values 155/36, 153/32, 92/22 -- PASSED, no stop condition triggered.",
+    "descriptive_statistics_per_target": {
+      "UTS_MPa": {
+        "n_observations": 155,
+        "n_doi": 36,
+        "value_column_used": "UTS_MPa_corrected",
+        "min": 279.0,
+        "q1": 791.95,
+        "median": 1006.0,
+        "q3": 1265.4,
+        "max": 2000.0,
+        "mean": 1049.6132903225807,
+        "std": 367.011057578049
+      },
+      "YS_MPa": {
+        "n_observations": 153,
+        "n_doi": 32,
+        "value_column_used": "YS_MPa",
+        "min": 24.0,
+        "q1": 466.0,
+        "median": 686.0,
+        "q3": 941.0,
+        "max": 1955.0,
+        "mean": 728.2849673202614,
+        "std": 352.7536177163964
+      },
+      "elongation_pct": {
+        "n_observations": 92,
+        "n_doi": 22,
+        "value_column_used": "elongation_pct",
+        "min": 1.1,
+        "q1": 11.575,
+        "median": 18.0,
+        "q3": 24.1,
+        "max": 47.0,
+        "mean": 18.8675,
+        "std": 11.003341113468247
+      }
+    }
+  },
+  "section_6_3_composition_model_cohorts": {
+    "source": "primary mask AND df[CORE_COMPOSITION_ELEMENTS].notna().any(axis=1), same logic in Notebooks 02/03/05/06",
+    "verification": "All three cohort sizes verified programmatically against 94/19, 95/20, 52/12 -- PASSED.",
+    "cohort_sizes": {
+      "UTS_MPa": {
+        "n_observations": 94,
+        "n_doi": 19
+      },
+      "YS_MPa": {
+        "n_observations": 95,
+        "n_doi": 20
+      },
+      "elongation_pct": {
+        "n_observations": 52,
+        "n_doi": 12
+      }
+    },
+    "n_primary_observations_excluded_for_zero_composition_data": {
+      "UTS_MPa": 61,
+      "YS_MPa": 58,
+      "elongation_pct": 40
+    },
+    "why_excluded": "A primary (unit-verified) observation with NO composition element extracted at all cannot be used as a training/OOF row for a composition-only model -- there is nothing for the model to condition on. These rows remain in the primary cohort (Section 6.2, used for Figure B / target-distribution characterisation) but are excluded from every modelling cohort (Figures C/F/G/H, Notebook 03/05 OOF)."
+  },
+  "section_7_composition_feature_preparation": {
+    "source": "modelling_lib.build_target_configs (selection rule) + composition_coverage_table, computed on the composition-model cohort per target",
+    "per_target": {
+      "UTS_MPa": {
+        "selected_elements": [
+          "Si",
+          "C",
+          "Mn",
+          "Cr",
+          "P",
+          "S",
+          "Al",
+          "Ni",
+          "N",
+          "Mo"
+        ],
+        "n_selected_elements": 10,
+        "selection_rule": "n_observations >= 20 AND n_unique_DOI >= 5 (within this target's own primary cohort)",
+        "coverage_per_element": [
+          {
+            "element": "Si",
+            "n_observations": 94,
+            "observation_coverage": 1.0,
+            "n_unique_DOI": 19,
+            "DOI_coverage": 1.0
+          },
+          {
+            "element": "C",
+            "n_observations": 87,
+            "observation_coverage": 0.926,
+            "n_unique_DOI": 18,
+            "DOI_coverage": 0.947
+          },
+          {
+            "element": "Mn",
+            "n_observations": 84,
+            "observation_coverage": 0.894,
+            "n_unique_DOI": 18,
+            "DOI_coverage": 0.947
+          },
+          {
+            "element": "Cr",
+            "n_observations": 67,
+            "observation_coverage": 0.713,
+            "n_unique_DOI": 14,
+            "DOI_coverage": 0.737
+          },
+          {
+            "element": "P",
+            "n_observations": 58,
+            "observation_coverage": 0.617,
+            "n_unique_DOI": 12,
+            "DOI_coverage": 0.632
+          },
+          {
+            "element": "S",
+            "n_observations": 58,
+            "observation_coverage": 0.617,
+            "n_unique_DOI": 12,
+            "DOI_coverage": 0.632
+          },
+          {
+            "element": "Al",
+            "n_observations": 52,
+            "observation_coverage": 0.553,
+            "n_unique_DOI": 12,
+            "DOI_coverage": 0.632
+          },
+          {
+            "element": "Ni",
+            "n_observations": 41,
+            "observation_coverage": 0.436,
+            "n_unique_DOI": 8,
+            "DOI_coverage": 0.421
+          },
+          {
+            "element": "N",
+            "n_observations": 33,
+            "observation_coverage": 0.351,
+            "n_unique_DOI": 5,
+            "DOI_coverage": 0.263
+          },
+          {
+            "element": "Mo",
+            "n_observations": 20,
+            "observation_coverage": 0.213,
+            "n_unique_DOI": 6,
+            "DOI_coverage": 0.316
+          }
+        ]
+      },
+      "YS_MPa": {
+        "selected_elements": [
+          "C",
+          "Si",
+          "Mn",
+          "Cr",
+          "Al",
+          "P",
+          "S",
+          "Ni",
+          "N",
+          "Mo"
+        ],
+        "n_selected_elements": 10,
+        "selection_rule": "n_observations >= 20 AND n_unique_DOI >= 5 (within this target's own primary cohort)",
+        "coverage_per_element": [
+          {
+            "element": "C",
+            "n_observations": 94,
+            "observation_coverage": 0.989,
+            "n_unique_DOI": 19,
+            "DOI_coverage": 0.95
+          },
+          {
+            "element": "Si",
+            "n_observations": 94,
+            "observation_coverage": 0.989,
+            "n_unique_DOI": 19,
+            "DOI_coverage": 0.95
+          },
+          {
+            "element": "Mn",
+            "n_observations": 87,
+            "observation_coverage": 0.916,
+            "n_unique_DOI": 19,
+            "DOI_coverage": 0.95
+          },
+          {
+            "element": "Cr",
+            "n_observations": 65,
+            "observation_coverage": 0.684,
+            "n_unique_DOI": 14,
+            "DOI_coverage": 0.7
+          },
+          {
+            "element": "Al",
+            "n_observations": 59,
+            "observation_coverage": 0.621,
+            "n_unique_DOI": 14,
+            "DOI_coverage": 0.7
+          },
+          {
+            "element": "P",
+            "n_observations": 53,
+            "observation_coverage": 0.558,
+            "n_unique_DOI": 11,
+            "DOI_coverage": 0.55
+          },
+          {
+            "element": "S",
+            "n_observations": 53,
+            "observation_coverage": 0.558,
+            "n_unique_DOI": 11,
+            "DOI_coverage": 0.55
+          },
+          {
+            "element": "Ni",
+            "n_observations": 41,
+            "observation_coverage": 0.432,
+            "n_unique_DOI": 9,
+            "DOI_coverage": 0.45
+          },
+          {
+            "element": "N",
+            "n_observations": 36,
+            "observation_coverage": 0.379,
+            "n_unique_DOI": 6,
+            "DOI_coverage": 0.3
+          },
+          {
+            "element": "Mo",
+            "n_observations": 22,
+            "observation_coverage": 0.232,
+            "n_unique_DOI": 7,
+            "DOI_coverage": 0.35
+          }
+        ]
+      },
+      "elongation_pct": {
+        "selected_elements": [
+          "Si",
+          "C",
+          "Mn",
+          "P",
+          "S",
+          "Cr",
+          "Ni"
+        ],
+        "n_selected_elements": 7,
+        "selection_rule": "n_observations >= 20 AND n_unique_DOI >= 5 (within this target's own primary cohort)",
+        "coverage_per_element": [
+          {
+            "element": "Si",
+            "n_observations": 52,
+            "observation_coverage": 1.0,
+            "n_unique_DOI": 12,
+            "DOI_coverage": 1.0
+          },
+          {
+            "element": "C",
+            "n_observations": 45,
+            "observation_coverage": 0.865,
+            "n_unique_DOI": 11,
+            "DOI_coverage": 0.917
+          },
+          {
+            "element": "Mn",
+            "n_observations": 42,
+            "observation_coverage": 0.808,
+            "n_unique_DOI": 11,
+            "DOI_coverage": 0.917
+          },
+          {
+            "element": "P",
+            "n_observations": 36,
+            "observation_coverage": 0.692,
+            "n_unique_DOI": 7,
+            "DOI_coverage": 0.583
+          },
+          {
+            "element": "S",
+            "n_observations": 36,
+            "observation_coverage": 0.692,
+            "n_unique_DOI": 7,
+            "DOI_coverage": 0.583
+          },
+          {
+            "element": "Cr",
+            "n_observations": 30,
+            "observation_coverage": 0.577,
+            "n_unique_DOI": 10,
+            "DOI_coverage": 0.833
+          },
+          {
+            "element": "Ni",
+            "n_observations": 27,
+            "observation_coverage": 0.519,
+            "n_unique_DOI": 7,
+            "DOI_coverage": 0.583
+          }
+        ]
+      }
+    },
+    "qualifier_distribution_and_treatment": "resolve_composition_column's DEFAULT resolver preserves the genuine numeric value regardless of qualifier (trace/balance/range/exact/None) -- qualifiers are NOT used to null a numeric value by default; a caller could opt into qualifier-based nulling via a custom qualifier_strategy, but no such custom strategy is used anywhere in this project's frozen pipeline. Verified in Notebook 02: the library default was found already correct for this dataset -- no custom qualifier strategy was needed.",
+    "missing_value_treatment": "SimpleImputer(strategy='median', add_indicator=True, keep_empty_features=True), fit per-fold inside the CV pipeline (never on the full dataset before splitting)",
+    "missing_indicator_treatment": "add_indicator=True on the numeric imputer -- a binary 'was this feature missing' column is added per numeric feature, so missingness itself is available as signal without imputation silently hiding it",
+    "scaling_policy": "StandardScaler applied only for scale-sensitive models (ridge, svr) via modelling_lib.MODELS_REQUIRING_SCALING; tree ensembles (random_forest, gradient_boosting) and the dummy baseline are never scaled",
+    "processing_key_exclusion_reason": "processing_key was investigated in Notebook 02 and found to be a near-unique per-paper identifier for the large majority of its values (22/26 distinct values traced to a single DOI each) -- using it as a feature would let a model learn 'which paper this row came from' (a DOI-fingerprinting leak) rather than a genuine physical processing feature, so it was excluded as a predictor before any model was run.",
+    "processing_test_status_not_used_as_predictors_reason": "processing_identity_status and test_conditions_status are used ONLY to group/stratify already-fixed OOF prediction errors for the RQ4 diagnostic (Section 11) -- they are never passed as columns into build_preprocessor/build_model_pipeline anywhere in modelling_lib.py or any of the six notebooks. This was a design decision made in the Notebook 02 planning discussion, before any model was run, not a post-hoc restriction.",
+    "feature_and_cohort_decisions_predate_model_results": "Notebook 02 (feature selection: coverage thresholds, qualifier check, processing_key investigation) was completed and its TARGET_CONFIGS frozen in modelling_lib.py BEFORE Notebook 03 (the first model run) was written. The selection_rule thresholds (>=20 observations AND >=5 DOI) were fixed as library constants (DEFAULT_MIN_OBSERVATIONS_FOR_FEATURE, DEFAULT_MIN_DOI_FOR_FEATURE) before any model saw the data."
+  },
+  "section_8_final_modelling_design": {
+    "source": "literature_pipeline/modelling/modelling_lib.py MODEL_FACTORIES / build_model_pipeline / make_group_kfold / cross_validate_model",
+    "model_target_columns": {
+      "UTS_MPa": "UTS_MPa_corrected",
+      "YS_MPa": "YS_MPa",
+      "elongation_pct": "elongation_pct"
+    },
+    "corrected_uts_handling": "UTS_MPa_corrected = raw UTS_MPa, with the single confirmed GPa->MPa row multiplied by 1000; a manual_unit_correction_applied boolean flag records which row was corrected. The raw UTS_MPa column is never mutated. apply_known_data_corrections() raises ValueError if the expected raw value at the correction key no longer matches, guarding against silently mis-applying a stale correction.",
+    "model_configurations": {
+      "ridge": "sklearn.linear_model.Ridge(alpha=1.0), random_state threaded through for API uniformity (Ridge is deterministic for the solver used)",
+      "random_forest": "sklearn.ensemble.RandomForestRegressor(n_estimators=100, random_state=42)",
+      "gradient_boosting": "sklearn.ensemble.GradientBoostingRegressor(n_estimators=100, random_state=42)",
+      "svr": "sklearn.svm.SVR() with library defaults (no random_state parameter exists on SVR)",
+      "dummy_mean": "sklearn.dummy.DummyRegressor(strategy='mean') -- reference baseline, deliberately kept OUT of MODEL_FACTORIES (the 4-model research set) via a separate BASELINE_MODEL_FACTORIES registry"
+    },
+    "random_seeds": "DEFAULT_RANDOM_STATE = 42, used for every stochastic model (RF, GB) and threaded through Ridge/dummy for API uniformity; GroupKFold itself has no shuffling/random_state parameter",
+    "cross_validation": "GroupKFold, min_splits=max_splits=5 (fixed at 5-fold for all three targets -- an earlier 8-fold run for UTS/YS was a procedural error, corrected before any result was reported)",
+    "imputation": "SimpleImputer(strategy='median', add_indicator=True, keep_empty_features=True), fit fold-by-fold inside each training split only -- median is computed from that fold's training data, never leaking test-fold information",
+    "scaling": "StandardScaler for ridge/svr only (MODELS_REQUIRING_SCALING); none for random_forest/gradient_boosting/dummy_mean",
+    "identical_doi_fold_assignment_across_models": "ONE GroupKFold cv object is built per target and reused across all 5 models (run_target_experiment) -- GroupKFold has no shuffling, so identical groups always produce identical splits, and building the cv object once (not once per model) GUARANTEES this rather than merely making it likely. Explicitly verified in Notebook 03 via an exact (fold, sorted DOI-set) comparison across all 5 models for all 3 targets -- printed result: True for every target.",
+    "held_out_doi_never_in_training_fold": "GroupKFold partitions by the group column (doi): every observation belonging to a DOI assigned to a fold's test split is guaranteed absent from that fold's training split, by construction of sklearn's GroupKFold -- no two folds share any DOI.",
+    "oof_prediction_construction": "cross_validate_model runs the CV loop manually (not cross_val_score) so each fold's held-out predict() call populates one row of oof_predictions per test observation; concatenated across all folds, this covers every observation in the cohort exactly once.",
+    "gpa_correction_row_absent_from_oof_explanation": {
+      "row": "10.1016/j.jmrt.2021.07.045 / M1-P1-O1",
+      "UTS_MPa_corrected_value": 1200.0,
+      "has_any_core_composition_element": false,
+      "explanation": "This row IS in the primary UTS cohort (unit-verified via the manual correction) but has NO composition element extracted at all (verified: has_any_core_composition_element =False). The composition-model cohort requires primary AND >=1 selected composition feature present -- this row fails that second condition, so it was never part of cohorts['UTS_MPa'] in Notebook 03 and therefore never appears in the OOF artifact. This is a correct, expected exclusion (the same composition-present rule applied to every row), not a join failure -- confirmed directly against the raw data, not assumed."
+    }
+  },
+  "section_9_complete_model_performance": {
+    "source": "data/modelling_results/notebook03_oof_predictions.csv (persisted Notebook 03 OOF artifact, 1205 rows verified)",
+    "n_oof_artifact_rows": 1205,
+    "table": [
+      {
+        "target": "UTS_MPa",
+        "model": "ridge",
+        "n_observations": 94,
+        "n_doi": 19,
+        "MAE": 258.89774215301486,
+        "RMSE": 341.9896898124936,
+        "R2": 0.11107066572462965
+      },
+      {
+        "target": "UTS_MPa",
+        "model": "random_forest",
+        "n_observations": 94,
+        "n_doi": 19,
+        "MAE": 200.56036576542886,
+        "RMSE": 269.66754024838764,
+        "R2": 0.44728842604582864
+      },
+      {
+        "target": "UTS_MPa",
+        "model": "gradient_boosting",
+        "n_observations": 94,
+        "n_doi": 19,
+        "MAE": 202.97830283399335,
+        "RMSE": 283.5385648189704,
+        "R2": 0.38896584750333985
+      },
+      {
+        "target": "UTS_MPa",
+        "model": "svr",
+        "n_observations": 94,
+        "n_doi": 19,
+        "MAE": 310.2383860069546,
+        "RMSE": 396.9721086261379,
+        "R2": -0.19773626620265916
+      },
+      {
+        "target": "UTS_MPa",
+        "model": "dummy_mean",
+        "n_observations": 94,
+        "n_doi": 19,
+        "MAE": 310.6993182530795,
+        "RMSE": 381.478136250707,
+        "R2": -0.10606465842072987
+      },
+      {
+        "target": "YS_MPa",
+        "model": "ridge",
+        "n_observations": 95,
+        "n_doi": 20,
+        "MAE": 376.01998128150274,
+        "RMSE": 519.705047777203,
+        "R2": -0.8777887802094742
+      },
+      {
+        "target": "YS_MPa",
+        "model": "random_forest",
+        "n_observations": 95,
+        "n_doi": 20,
+        "MAE": 266.0533941305736,
+        "RMSE": 381.03486679949026,
+        "R2": -0.009397687430327206
+      },
+      {
+        "target": "YS_MPa",
+        "model": "gradient_boosting",
+        "n_observations": 95,
+        "n_doi": 20,
+        "MAE": 260.9163918868195,
+        "RMSE": 386.742800809739,
+        "R2": -0.03986592188921323
+      },
+      {
+        "target": "YS_MPa",
+        "model": "svr",
+        "n_observations": 95,
+        "n_doi": 20,
+        "MAE": 321.7474184464735,
+        "RMSE": 406.10982836704113,
+        "R2": -0.14662094304117268
+      },
+      {
+        "target": "YS_MPa",
+        "model": "dummy_mean",
+        "n_observations": 95,
+        "n_doi": 20,
+        "MAE": 311.0049584487534,
+        "RMSE": 391.7465656281372,
+        "R2": -0.06694802852564385
+      },
+      {
+        "target": "elongation_pct",
+        "model": "ridge",
+        "n_observations": 52,
+        "n_doi": 12,
+        "MAE": 14.418637575103851,
+        "RMSE": 18.592595025677277,
+        "R2": -1.9326712714000558
+      },
+      {
+        "target": "elongation_pct",
+        "model": "random_forest",
+        "n_observations": 52,
+        "n_doi": 12,
+        "MAE": 8.344495722760145,
+        "RMSE": 10.765102969543053,
+        "R2": 0.01685009471973009
+      },
+      {
+        "target": "elongation_pct",
+        "model": "gradient_boosting",
+        "n_observations": 52,
+        "n_doi": 12,
+        "MAE": 8.038568841273927,
+        "RMSE": 10.693663110519962,
+        "R2": 0.02985564401783858
+      },
+      {
+        "target": "elongation_pct",
+        "model": "svr",
+        "n_observations": 52,
+        "n_doi": 12,
+        "MAE": 9.365547324123096,
+        "RMSE": 11.881118489351648,
+        "R2": -0.19756203436011166
+      },
+      {
+        "target": "elongation_pct",
+        "model": "dummy_mean",
+        "n_observations": 52,
+        "n_doi": 12,
+        "MAE": 9.275304448327704,
+        "RMSE": 11.814530649147617,
+        "R2": -0.18417615506619311
+      }
+    ],
+    "model_minus_dummy_deltas": [
+      {
+        "target": "UTS_MPa",
+        "model": "ridge",
+        "delta_MAE_vs_dummy": -51.801576100064665,
+        "delta_RMSE_vs_dummy": -39.48844643821337
+      },
+      {
+        "target": "UTS_MPa",
+        "model": "random_forest",
+        "delta_MAE_vs_dummy": -110.13895248765067,
+        "delta_RMSE_vs_dummy": -111.81059600231936
+      },
+      {
+        "target": "UTS_MPa",
+        "model": "gradient_boosting",
+        "delta_MAE_vs_dummy": -107.72101541908617,
+        "delta_RMSE_vs_dummy": -97.93957143173657
+      },
+      {
+        "target": "UTS_MPa",
+        "model": "svr",
+        "delta_MAE_vs_dummy": -0.4609322461249121,
+        "delta_RMSE_vs_dummy": 15.493972375430928
+      },
+      {
+        "target": "YS_MPa",
+        "model": "ridge",
+        "delta_MAE_vs_dummy": 65.01502283274931,
+        "delta_RMSE_vs_dummy": 127.95848214906584
+      },
+      {
+        "target": "YS_MPa",
+        "model": "random_forest",
+        "delta_MAE_vs_dummy": -44.951564318179805,
+        "delta_RMSE_vs_dummy": -10.711698828646945
+      },
+      {
+        "target": "YS_MPa",
+        "model": "gradient_boosting",
+        "delta_MAE_vs_dummy": -50.08856656193393,
+        "delta_RMSE_vs_dummy": -5.003764818398224
+      },
+      {
+        "target": "YS_MPa",
+        "model": "svr",
+        "delta_MAE_vs_dummy": 10.742459997720061,
+        "delta_RMSE_vs_dummy": 14.363262738903927
+      },
+      {
+        "target": "elongation_pct",
+        "model": "ridge",
+        "delta_MAE_vs_dummy": 5.143333126776147,
+        "delta_RMSE_vs_dummy": 6.7780643765296595
+      },
+      {
+        "target": "elongation_pct",
+        "model": "random_forest",
+        "delta_MAE_vs_dummy": -0.9308087255675588,
+        "delta_RMSE_vs_dummy": -1.0494276796045643
+      },
+      {
+        "target": "elongation_pct",
+        "model": "gradient_boosting",
+        "delta_MAE_vs_dummy": -1.2367356070537774,
+        "delta_RMSE_vs_dummy": -1.120867538627655
+      },
+      {
+        "target": "elongation_pct",
+        "model": "svr",
+        "delta_MAE_vs_dummy": 0.0902428757953917,
+        "delta_RMSE_vs_dummy": 0.06658784020403097
+      }
+    ],
+    "best_model_by_metric_excluding_dummy": {
+      "UTS_MPa": {
+        "best_MAE_model": "random_forest",
+        "best_RMSE_model": "random_forest",
+        "best_R2_model": "random_forest"
+      },
+      "YS_MPa": {
+        "best_MAE_model": "gradient_boosting",
+        "best_RMSE_model": "random_forest",
+        "best_R2_model": "random_forest"
+      },
+      "elongation_pct": {
+        "best_MAE_model": "gradient_boosting",
+        "best_RMSE_model": "gradient_boosting",
+        "best_R2_model": "gradient_boosting"
+      }
+    },
+    "robustness_caveat": "A small raw MAE/RMSE improvement over dummy here is a POINT ESTIMATE only. Whether it is supported under publication-level resampling is answered exclusively in Section 12 (DOI-bootstrap). Only UTS's improvement is supported there; YS's and elongation's point-estimate improvements are NOT supported (their delta-MAE 95% intervals include zero).",
+    "fold_level_mean_sd": "available and already computed in Notebook 03 (aggregate_fold_metrics per model/target/split); not duplicated here in full -- see notebooks/modelling/03_model_comparison.ipynb cell output for the complete fold-wise table if needed."
+  },
+  "section_10_oof_diagnostics_random_forest": {
+    "source": "data/modelling_results/notebook03_oof_predictions.csv, model=random_forest only",
+    "per_target": {
+      "UTS_MPa": {
+        "n_observations": 94,
+        "n_doi": 19,
+        "MAE": 200.56036576542886,
+        "RMSE": 269.66754024838764,
+        "pooled_OOF_R2": 0.44728842604582864,
+        "prediction_range": {
+          "min": 685.1390353535353,
+          "max": 1722.287190476191
+        },
+        "actual_target_range": {
+          "min": 279.0,
+          "max": 1981.0
+        },
+        "residual_mean": 12.407096735466867,
+        "residual_median": -3.3584262376512584,
+        "prediction_std": 278.8167261860623,
+        "actual_std": 362.7265910151634
+      },
+      "YS_MPa": {
+        "n_observations": 95,
+        "n_doi": 20,
+        "MAE": 266.0533941305736,
+        "RMSE": 381.03486679949026,
+        "pooled_OOF_R2": -0.009397687430327206,
+        "prediction_range": {
+          "min": 450.7307539682539,
+          "max": 1036.641546300921
+        },
+        "actual_target_range": {
+          "min": 24.0,
+          "max": 1955.0
+        },
+        "residual_mean": 66.84698740507693,
+        "residual_median": 16.117044037906453,
+        "prediction_std": 149.42521887967294,
+        "actual_std": 379.25696486756055
+      },
+      "elongation_pct": {
+        "n_observations": 52,
+        "n_doi": 12,
+        "MAE": 8.344495722760145,
+        "RMSE": 10.765102969543053,
+        "pooled_OOF_R2": 0.01685009471973009,
+        "prediction_range": {
+          "min": 14.376745274170274,
+          "max": 32.4909630952381
+        },
+        "actual_target_range": {
+          "min": 1.1,
+          "max": 47.0
+        },
+        "residual_mean": -2.6903050343886887,
+        "residual_median": -3.1422210317460255,
+        "prediction_std": 5.061314692804142,
+        "actual_std": 10.85696199075225
+      }
+    },
+    "observed_plotting_pattern_note": "OBSERVED (not causally explained): the RF prediction range is narrower than the actual target range for all three targets (prediction_std < actual_std in every case), visible in Figure F as horizontal banding/compression around the mean -- typical Random Forest behaviour on small training folds, not evidence of any particular cause. This is stated as an observed pattern only, separate from any causal claim."
+  },
+  "section_11_rq4_contextual_completeness": {
+    "source": "data/modelling_results/notebook03_oof_predictions.csv joined to cpp_dataset_v2.csv via full identity key; modelling_lib.error_subgroup_table/tie_safe_quantile_groups",
+    "final_rq4_wording": "Does prediction error differ according to the completeness of composition, processing and testing information?",
+    "random_forest_principal_subgroup_table": [
+      {
+        "target": "UTS_MPa",
+        "dimension": "processing_identity",
+        "group": "confirmed_baseline",
+        "model": "random_forest",
+        "n_observations": 32,
+        "n_doi": 7,
+        "MAE": 115.37990054513489,
+        "median_abs_error": 81.77221261297183,
+        "dummy_MAE": 238.20212779605265,
+        "model_minus_dummy_MAE": -122.82222725091776,
+        "support": "exploratory (5-9 DOI)"
+      },
+      {
+        "target": "UTS_MPa",
+        "dimension": "processing_identity",
+        "group": "confirmed_explicit",
+        "model": "random_forest",
+        "n_observations": 62,
+        "n_doi": 13,
+        "MAE": 244.52447684687093,
+        "median_abs_error": 214.50326825396803,
+        "dummy_MAE": 348.1172230050935,
+        "model_minus_dummy_MAE": -103.59274615822255,
+        "support": "supported (>=10 DOI)"
+      },
+      {
+        "target": "UTS_MPa",
+        "dimension": "test_information",
+        "group": "resolved_or_defined",
+        "model": "random_forest",
+        "n_observations": 28,
+        "n_doi": 8,
+        "MAE": 171.3441785295218,
+        "median_abs_error": 90.67964845987336,
+        "dummy_MAE": 415.69030000000004,
+        "model_minus_dummy_MAE": -244.34612147047824,
+        "support": "exploratory (5-9 DOI)"
+      },
+      {
+        "target": "UTS_MPa",
+        "dimension": "test_information",
+        "group": "unresolved",
+        "model": "random_forest",
+        "n_observations": 66,
+        "n_doi": 14,
+        "MAE": 212.95511186551064,
+        "median_abs_error": 175.98479091181002,
+        "dummy_MAE": 266.1576896331739,
+        "model_minus_dummy_MAE": -53.20257776766326,
+        "support": "supported (>=10 DOI)"
+      },
+      {
+        "target": "UTS_MPa",
+        "dimension": "composition_completeness",
+        "group": "low",
+        "model": "random_forest",
+        "n_observations": 48,
+        "n_doi": 9,
+        "MAE": 191.99108255087094,
+        "median_abs_error": 153.70627301587297,
+        "dummy_MAE": 311.8369611842105,
+        "model_minus_dummy_MAE": -119.84587863333957,
+        "support": "exploratory (5-9 DOI)"
+      },
+      {
+        "target": "UTS_MPa",
+        "dimension": "composition_completeness",
+        "group": "medium",
+        "model": "random_forest",
+        "n_observations": 18,
+        "n_doi": 4,
+        "MAE": 299.0434637578741,
+        "median_abs_error": 265.4437752422414,
+        "dummy_MAE": 272.4410222222223,
+        "model_minus_dummy_MAE": 26.60244153565185,
+        "support": "very limited (<5 DOI)"
+      },
+      {
+        "target": "UTS_MPa",
+        "dimension": "composition_completeness",
+        "group": "high",
+        "model": "random_forest",
+        "n_observations": 28,
+        "n_doi": 6,
+        "MAE": 151.94000256667053,
+        "median_abs_error": 88.9548224358972,
+        "dummy_MAE": 333.34369210526313,
+        "model_minus_dummy_MAE": -181.4036895385926,
+        "support": "exploratory (5-9 DOI)"
+      },
+      {
+        "target": "YS_MPa",
+        "dimension": "processing_identity",
+        "group": "confirmed_baseline",
+        "model": "random_forest",
+        "n_observations": 34,
+        "n_doi": 8,
+        "MAE": 110.10004983045116,
+        "median_abs_error": 65.41155909915244,
+        "dummy_MAE": 250.5715944272446,
+        "model_minus_dummy_MAE": -140.47154459679345,
+        "support": "exploratory (5-9 DOI)"
+      },
+      {
+        "target": "YS_MPa",
+        "dimension": "processing_identity",
+        "group": "confirmed_explicit",
+        "model": "random_forest",
+        "n_observations": 61,
+        "n_doi": 14,
+        "MAE": 352.9782089863797,
+        "median_abs_error": 271.1546961208725,
+        "dummy_MAE": 344.68912855910264,
+        "model_minus_dummy_MAE": 8.289080427277042,
+        "support": "supported (>=10 DOI)"
+      },
+      {
+        "target": "YS_MPa",
+        "dimension": "test_information",
+        "group": "resolved_or_defined",
+        "model": "random_forest",
+        "n_observations": 27,
+        "n_doi": 7,
+        "MAE": 178.2837856171576,
+        "median_abs_error": 24.46924603174608,
+        "dummy_MAE": 332.0546783625731,
+        "model_minus_dummy_MAE": -153.7708927454155,
+        "support": "exploratory (5-9 DOI)"
+      },
+      {
+        "target": "YS_MPa",
+        "dimension": "test_information",
+        "group": "unresolved",
+        "model": "random_forest",
+        "n_observations": 68,
+        "n_doi": 15,
+        "MAE": 300.9030916285476,
+        "median_abs_error": 205.11778985320245,
+        "dummy_MAE": 302.6469814241486,
+        "model_minus_dummy_MAE": -1.7438897956009782,
+        "support": "supported (>=10 DOI)"
+      },
+      {
+        "target": "YS_MPa",
+        "dimension": "composition_completeness",
+        "group": "low",
+        "model": "random_forest",
+        "n_observations": 32,
+        "n_doi": 5,
+        "MAE": 355.55638411085954,
+        "median_abs_error": 247.6929527417028,
+        "dummy_MAE": 379.0102796052631,
+        "model_minus_dummy_MAE": -23.453895494403582,
+        "support": "exploratory (5-9 DOI)"
+      },
+      {
+        "target": "YS_MPa",
+        "dimension": "composition_completeness",
+        "group": "medium",
+        "model": "random_forest",
+        "n_observations": 32,
+        "n_doi": 8,
+        "MAE": 194.79015086684154,
+        "median_abs_error": 157.84806431623946,
+        "dummy_MAE": 220.98384046052632,
+        "model_minus_dummy_MAE": -26.19368959368478,
+        "support": "exploratory (5-9 DOI)"
+      },
+      {
+        "target": "YS_MPa",
+        "dimension": "composition_completeness",
+        "group": "high",
+        "model": "random_forest",
+        "n_observations": 31,
+        "n_doi": 7,
+        "MAE": 247.2252684876793,
+        "median_abs_error": 72.30880214230206,
+        "dummy_MAE": 333.7309422750423,
+        "model_minus_dummy_MAE": -86.50567378736301,
+        "support": "exploratory (5-9 DOI)"
+      },
+      {
+        "target": "elongation_pct",
+        "dimension": "processing_identity",
+        "group": "confirmed_baseline",
+        "model": "random_forest",
+        "n_observations": 17,
+        "n_doi": 3,
+        "MAE": 5.311243201569671,
+        "median_abs_error": 6.0368630591630605,
+        "dummy_MAE": 4.084714016341925,
+        "model_minus_dummy_MAE": 1.2265291852277462,
+        "support": "very limited (<5 DOI)"
+      },
+      {
+        "target": "elongation_pct",
+        "dimension": "processing_identity",
+        "group": "confirmed_explicit",
+        "model": "random_forest",
+        "n_observations": 35,
+        "n_doi": 11,
+        "MAE": 9.817789804481233,
+        "median_abs_error": 7.600288095238096,
+        "dummy_MAE": 11.796448372435082,
+        "model_minus_dummy_MAE": -1.9786585679538486,
+        "support": "supported (>=10 DOI)"
+      },
+      {
+        "target": "elongation_pct",
+        "dimension": "test_information",
+        "group": "resolved_or_defined",
+        "model": "random_forest",
+        "n_observations": 5,
+        "n_doi": 4,
+        "MAE": 8.487193766233768,
+        "median_abs_error": 4.372595238095236,
+        "dummy_MAE": 9.014232558139534,
+        "model_minus_dummy_MAE": -0.5270387919057669,
+        "support": "very limited (<5 DOI)"
+      },
+      {
+        "target": "elongation_pct",
+        "dimension": "test_information",
+        "group": "unresolved",
+        "model": "random_forest",
+        "n_observations": 47,
+        "n_doi": 8,
+        "MAE": 8.329315079837421,
+        "median_abs_error": 7.013966666666654,
+        "dummy_MAE": 9.303078053666871,
+        "model_minus_dummy_MAE": -0.9737629738294498,
+        "support": "exploratory (5-9 DOI)"
+      },
+      {
+        "target": "elongation_pct",
+        "dimension": "composition_completeness",
+        "group": "low",
+        "model": "random_forest",
+        "n_observations": 31,
+        "n_doi": 6,
+        "MAE": 10.08164994253059,
+        "median_abs_error": 8.003761211011227,
+        "dummy_MAE": 11.361973196001703,
+        "model_minus_dummy_MAE": -1.2803232534711135,
+        "support": "exploratory (5-9 DOI)"
+      },
+      {
+        "target": "elongation_pct",
+        "dimension": "composition_completeness",
+        "group": "medium",
+        "model": "random_forest",
+        "n_observations": 12,
+        "n_doi": 3,
+        "MAE": 7.9290726851851865,
+        "median_abs_error": 6.670475396825397,
+        "dummy_MAE": 8.52920634920635,
+        "model_minus_dummy_MAE": -0.600133664021163,
+        "support": "very limited (<5 DOI)"
+      },
+      {
+        "target": "elongation_pct",
+        "dimension": "composition_completeness",
+        "group": "high",
+        "model": "random_forest",
+        "n_observations": 9,
+        "n_doi": 3,
+        "MAE": 2.914861904761898,
+        "median_abs_error": 2.0725952380952357,
+        "dummy_MAE": 3.082687338501294,
+        "model_minus_dummy_MAE": -0.16782543373939607,
+        "support": "very limited (<5 DOI)"
+      }
+    ],
+    "gradient_boosting_sensitivity_table": [
+      {
+        "target": "UTS_MPa",
+        "dimension": "processing_identity",
+        "group": "confirmed_baseline",
+        "model": "gradient_boosting",
+        "n_observations": 32,
+        "n_doi": 7,
+        "MAE": 106.159787649876,
+        "median_abs_error": 63.5,
+        "dummy_MAE": 238.20212779605265,
+        "model_minus_dummy_MAE": -132.04234014617666,
+        "support": "exploratory (5-9 DOI)"
+      },
+      {
+        "target": "UTS_MPa",
+        "dimension": "processing_identity",
+        "group": "confirmed_explicit",
+        "model": "gradient_boosting",
+        "n_observations": 62,
+        "n_doi": 13,
+        "MAE": 252.94914938063448,
+        "median_abs_error": 202.27002009825094,
+        "dummy_MAE": 348.1172230050935,
+        "model_minus_dummy_MAE": -95.168073624459,
+        "support": "supported (>=10 DOI)"
+      },
+      {
+        "target": "UTS_MPa",
+        "dimension": "test_information",
+        "group": "resolved_or_defined",
+        "model": "gradient_boosting",
+        "n_observations": 28,
+        "n_doi": 8,
+        "MAE": 151.66175139890396,
+        "median_abs_error": 81.92301318294881,
+        "dummy_MAE": 415.69030000000004,
+        "model_minus_dummy_MAE": -264.0285486010961,
+        "support": "exploratory (5-9 DOI)"
+      },
+      {
+        "target": "UTS_MPa",
+        "dimension": "test_information",
+        "group": "unresolved",
+        "model": "gradient_boosting",
+        "n_observations": 66,
+        "n_doi": 14,
+        "MAE": 224.74896101857667,
+        "median_abs_error": 166.82518175692576,
+        "dummy_MAE": 266.1576896331739,
+        "model_minus_dummy_MAE": -41.40872861459724,
+        "support": "supported (>=10 DOI)"
+      },
+      {
+        "target": "UTS_MPa",
+        "dimension": "composition_completeness",
+        "group": "low",
+        "model": "gradient_boosting",
+        "n_observations": 48,
+        "n_doi": 9,
+        "MAE": 177.60380113540077,
+        "median_abs_error": 164.23070055440184,
+        "dummy_MAE": 311.8369611842105,
+        "model_minus_dummy_MAE": -134.23316004880974,
+        "support": "exploratory (5-9 DOI)"
+      },
+      {
+        "target": "UTS_MPa",
+        "dimension": "composition_completeness",
+        "group": "medium",
+        "model": "gradient_boosting",
+        "n_observations": 18,
+        "n_doi": 4,
+        "MAE": 350.8614457252389,
+        "median_abs_error": 233.66257409163285,
+        "dummy_MAE": 272.4410222222223,
+        "model_minus_dummy_MAE": 78.42042350301665,
+        "support": "very limited (<5 DOI)"
+      },
+      {
+        "target": "UTS_MPa",
+        "dimension": "composition_completeness",
+        "group": "high",
+        "model": "gradient_boosting",
+        "n_observations": 28,
+        "n_doi": 6,
+        "MAE": 151.40971388720837,
+        "median_abs_error": 81.92301318294881,
+        "dummy_MAE": 333.34369210526313,
+        "model_minus_dummy_MAE": -181.93397821805476,
+        "support": "exploratory (5-9 DOI)"
+      },
+      {
+        "target": "YS_MPa",
+        "dimension": "processing_identity",
+        "group": "confirmed_baseline",
+        "model": "gradient_boosting",
+        "n_observations": 34,
+        "n_doi": 8,
+        "MAE": 108.65703828421283,
+        "median_abs_error": 24.432640106843024,
+        "dummy_MAE": 250.5715944272446,
+        "model_minus_dummy_MAE": -141.91455614303177,
+        "support": "exploratory (5-9 DOI)"
+      },
+      {
+        "target": "YS_MPa",
+        "dimension": "processing_identity",
+        "group": "confirmed_explicit",
+        "model": "gradient_boosting",
+        "n_observations": 61,
+        "n_doi": 14,
+        "MAE": 345.7822611079445,
+        "median_abs_error": 224.23802788932585,
+        "dummy_MAE": 344.68912855910264,
+        "model_minus_dummy_MAE": 1.0931325488418793,
+        "support": "supported (>=10 DOI)"
+      },
+      {
+        "target": "YS_MPa",
+        "dimension": "test_information",
+        "group": "resolved_or_defined",
+        "model": "gradient_boosting",
+        "n_observations": 27,
+        "n_doi": 7,
+        "MAE": 200.19529544920854,
+        "median_abs_error": 23.78264010684302,
+        "dummy_MAE": 332.0546783625731,
+        "model_minus_dummy_MAE": -131.85938291336456,
+        "support": "exploratory (5-9 DOI)"
+      },
+      {
+        "target": "YS_MPa",
+        "dimension": "test_information",
+        "group": "unresolved",
+        "model": "gradient_boosting",
+        "n_observations": 68,
+        "n_doi": 15,
+        "MAE": 285.02623900175325,
+        "median_abs_error": 172.71428227823026,
+        "dummy_MAE": 302.6469814241486,
+        "model_minus_dummy_MAE": -17.620742422395324,
+        "support": "supported (>=10 DOI)"
+      },
+      {
+        "target": "YS_MPa",
+        "dimension": "composition_completeness",
+        "group": "low",
+        "model": "gradient_boosting",
+        "n_observations": 32,
+        "n_doi": 5,
+        "MAE": 344.68595349779207,
+        "median_abs_error": 261.2264366901697,
+        "dummy_MAE": 379.0102796052631,
+        "model_minus_dummy_MAE": -34.32432610747105,
+        "support": "exploratory (5-9 DOI)"
+      },
+      {
+        "target": "YS_MPa",
+        "dimension": "composition_completeness",
+        "group": "medium",
+        "model": "gradient_boosting",
+        "n_observations": 32,
+        "n_doi": 8,
+        "MAE": 165.79222640767318,
+        "median_abs_error": 123.05947414032204,
+        "dummy_MAE": 220.98384046052632,
+        "model_minus_dummy_MAE": -55.19161405285314,
+        "support": "exploratory (5-9 DOI)"
+      },
+      {
+        "target": "YS_MPa",
+        "dimension": "composition_completeness",
+        "group": "high",
+        "model": "gradient_boosting",
+        "n_observations": 31,
+        "n_doi": 7,
+        "MAE": 272.63727329912797,
+        "median_abs_error": 73.04436618128705,
+        "dummy_MAE": 333.7309422750423,
+        "model_minus_dummy_MAE": -61.09366897591434,
+        "support": "exploratory (5-9 DOI)"
+      },
+      {
+        "target": "elongation_pct",
+        "dimension": "processing_identity",
+        "group": "confirmed_baseline",
+        "model": "gradient_boosting",
+        "n_observations": 17,
+        "n_doi": 3,
+        "MAE": 5.336512258771158,
+        "median_abs_error": 4.054298138858805,
+        "dummy_MAE": 4.084714016341925,
+        "model_minus_dummy_MAE": 1.251798242429233,
+        "support": "very limited (<5 DOI)"
+      },
+      {
+        "target": "elongation_pct",
+        "dimension": "processing_identity",
+        "group": "confirmed_explicit",
+        "model": "gradient_boosting",
+        "n_observations": 35,
+        "n_doi": 11,
+        "MAE": 9.350996324203845,
+        "median_abs_error": 7.080042444895067,
+        "dummy_MAE": 11.796448372435082,
+        "model_minus_dummy_MAE": -2.445452048231237,
+        "support": "supported (>=10 DOI)"
+      },
+      {
+        "target": "elongation_pct",
+        "dimension": "test_information",
+        "group": "resolved_or_defined",
+        "model": "gradient_boosting",
+        "n_observations": 5,
+        "n_doi": 4,
+        "MAE": 8.838691664016865,
+        "median_abs_error": 4.498636031451895,
+        "dummy_MAE": 9.014232558139534,
+        "model_minus_dummy_MAE": -0.17554089412266904,
+        "support": "very limited (<5 DOI)"
+      },
+      {
+        "target": "elongation_pct",
+        "dimension": "test_information",
+        "group": "unresolved",
+        "model": "gradient_boosting",
+        "n_observations": 47,
+        "n_doi": 8,
+        "MAE": 7.953449392045956,
+        "median_abs_error": 5.2800424448950665,
+        "dummy_MAE": 9.303078053666871,
+        "model_minus_dummy_MAE": -1.3496286616209154,
+        "support": "exploratory (5-9 DOI)"
+      },
+      {
+        "target": "elongation_pct",
+        "dimension": "composition_completeness",
+        "group": "low",
+        "model": "gradient_boosting",
+        "n_observations": 31,
+        "n_doi": 6,
+        "MAE": 10.02535241022652,
+        "median_abs_error": 8.819942431985808,
+        "dummy_MAE": 11.361973196001703,
+        "model_minus_dummy_MAE": -1.3366207857751835,
+        "support": "exploratory (5-9 DOI)"
+      },
+      {
+        "target": "elongation_pct",
+        "dimension": "composition_completeness",
+        "group": "medium",
+        "model": "gradient_boosting",
+        "n_observations": 12,
+        "n_doi": 3,
+        "MAE": 6.952405507254696,
+        "median_abs_error": 4.980042444895067,
+        "dummy_MAE": 8.52920634920635,
+        "model_minus_dummy_MAE": -1.5768008419516537,
+        "support": "very limited (<5 DOI)"
+      },
+      {
+        "target": "elongation_pct",
+        "dimension": "composition_completeness",
+        "group": "high",
+        "model": "gradient_boosting",
+        "n_observations": 9,
+        "n_doi": 3,
+        "MAE": 2.643420993573975,
+        "median_abs_error": 3.2983708286795483,
+        "dummy_MAE": 3.082687338501294,
+        "model_minus_dummy_MAE": -0.4392663449273191,
+        "support": "very limited (<5 DOI)"
+      }
+    ],
+    "rf_gb_direction_agreement": {
+      "n_dimension_target_pairs": 9,
+      "n_agree": 9,
+      "pct_agree": 100.0,
+      "detail": [
+        {
+          "target": "UTS_MPa",
+          "dimension": "processing_identity",
+          "rf_lowest_error_group": "confirmed_baseline",
+          "gb_lowest_error_group": "confirmed_baseline",
+          "agree": true
+        },
+        {
+          "target": "UTS_MPa",
+          "dimension": "test_information",
+          "rf_lowest_error_group": "resolved_or_defined",
+          "gb_lowest_error_group": "resolved_or_defined",
+          "agree": true
+        },
+        {
+          "target": "UTS_MPa",
+          "dimension": "composition_completeness",
+          "rf_lowest_error_group": "high",
+          "gb_lowest_error_group": "high",
+          "agree": true
+        },
+        {
+          "target": "YS_MPa",
+          "dimension": "processing_identity",
+          "rf_lowest_error_group": "confirmed_baseline",
+          "gb_lowest_error_group": "confirmed_baseline",
+          "agree": true
+        },
+        {
+          "target": "YS_MPa",
+          "dimension": "test_information",
+          "rf_lowest_error_group": "resolved_or_defined",
+          "gb_lowest_error_group": "resolved_or_defined",
+          "agree": true
+        },
+        {
+          "target": "YS_MPa",
+          "dimension": "composition_completeness",
+          "rf_lowest_error_group": "medium",
+          "gb_lowest_error_group": "medium",
+          "agree": true
+        },
+        {
+          "target": "elongation_pct",
+          "dimension": "processing_identity",
+          "rf_lowest_error_group": "confirmed_baseline",
+          "gb_lowest_error_group": "confirmed_baseline",
+          "agree": true
+        },
+        {
+          "target": "elongation_pct",
+          "dimension": "test_information",
+          "rf_lowest_error_group": "unresolved",
+          "gb_lowest_error_group": "unresolved",
+          "agree": true
+        },
+        {
+          "target": "elongation_pct",
+          "dimension": "composition_completeness",
+          "rf_lowest_error_group": "high",
+          "gb_lowest_error_group": "high",
+          "agree": true
+        }
+      ]
+    },
+    "does_dummy_show_same_lower_error_tendency_in_confirmed_baseline": [
+      {
+        "target": "UTS_MPa",
+        "dummy_MAE_confirmed_baseline": 238.20212779605265,
+        "dummy_MAE_confirmed_explicit": 348.1172230050935,
+        "dummy_also_lower_in_baseline": true
+      },
+      {
+        "target": "YS_MPa",
+        "dummy_MAE_confirmed_baseline": 250.5715944272446,
+        "dummy_MAE_confirmed_explicit": 344.68912855910264,
+        "dummy_also_lower_in_baseline": true
+      },
+      {
+        "target": "elongation_pct",
+        "dummy_MAE_confirmed_baseline": 4.084714016341925,
+        "dummy_MAE_confirmed_explicit": 11.796448372435082,
+        "dummy_also_lower_in_baseline": true
+      }
+    ],
+    "composition_completeness_monotonic_with_error": {
+      "per_target_low_medium_high_RF_MAE": {
+        "UTS_MPa": {
+          "low": 191.9911,
+          "medium": 299.0435,
+          "high": 151.94
+        },
+        "YS_MPa": {
+          "low": 355.5564,
+          "medium": 194.7902,
+          "high": 247.2253
+        },
+        "elongation_pct": {
+          "low": 10.0816,
+          "medium": 7.9291,
+          "high": 2.9149
+        }
+      },
+      "monotonic_decreasing_low_to_high": {
+        "UTS_MPa": false,
+        "YS_MPa": false,
+        "elongation_pct": true
+      },
+      "answer": "See monotonic_decreasing_low_to_high per target -- computed directly, not assumed. Even where True, check the corresponding support labels before treating it as a finding."
+    },
+    "test_information_resolution_consistent_with_error": "NO -- direction is inconsistent in magnitude and DOI support varies widely per target; see random_forest_principal_subgroup_table rows where dimension='test_information'.",
+    "principal_conclusion": "No consistent relationship was identified between contextual-information completeness and prediction error.",
+    "processing_status_inverse_pattern_caveat": "The less-explicit-processing subgroup (confirmed_baseline) shows lower Random Forest error than confirmed_explicit for UTS and YS. But the dummy-mean reference is ALSO lower in confirmed_baseline for both targets (see does_dummy_show_same_lower_error_tendency_in_confirmed_baseline above) -- consistent with confirmed_baseline simply being an easier/narrower prediction problem (fewer DOI, possibly narrower target range or more homogeneous publication composition), not a completeness effect. Treated as EXPLORATORY and potentially confounded by target distribution or publication composition -- no causal claim is made.",
+    "support_thresholds": {
+      "very_limited": "<5 DOI",
+      "exploratory": "5-9 DOI",
+      "supported_descriptive": ">=10 DOI"
+    }
+  },
+  "section_12_doi_bootstrap_publication_sampling_variability": {
+    "source": "Recomputed via modelling_lib.bootstrap_metric_ci / bootstrap_metric_contrast with the frozen B=2000, seed=42 -- deterministic, reproducing the values already displayed in Notebook 05 and Notebook 06's Figure G to full numerical precision (notebook text output only showed 2-3 decimal places).",
+    "original_metrics_and_ci_table": [
+      {
+        "target": "UTS_MPa",
+        "model": "ridge",
+        "n_observations": 94,
+        "n_doi": 19,
+        "original_MAE": 258.89774215301486,
+        "MAE_ci_lower": 175.90452990629956,
+        "MAE_ci_upper": 340.29030277498833,
+        "original_RMSE": 341.9896898124936,
+        "RMSE_ci_lower": 241.5119353591579,
+        "RMSE_ci_upper": 427.4293252012146,
+        "original_R2": 0.11107066572462965,
+        "R2_ci_lower": -0.9948212366158524,
+        "R2_ci_upper": 0.6188996474413968,
+        "B": 2000,
+        "seed": 42
+      },
+      {
+        "target": "UTS_MPa",
+        "model": "random_forest",
+        "n_observations": 94,
+        "n_doi": 19,
+        "original_MAE": 200.56036576542886,
+        "MAE_ci_lower": 136.75433216561066,
+        "MAE_ci_upper": 256.0609162601095,
+        "original_RMSE": 269.66754024838764,
+        "RMSE_ci_lower": 188.89746155101895,
+        "RMSE_ci_upper": 330.9044909436305,
+        "original_R2": 0.44728842604582864,
+        "R2_ci_lower": -0.10408774779338581,
+        "R2_ci_upper": 0.7523916841534644,
+        "B": 2000,
+        "seed": 42
+      },
+      {
+        "target": "UTS_MPa",
+        "model": "gradient_boosting",
+        "n_observations": 94,
+        "n_doi": 19,
+        "original_MAE": 202.97830283399335,
+        "MAE_ci_lower": 133.52328745848158,
+        "MAE_ci_upper": 273.68558797541203,
+        "original_RMSE": 283.5385648189704,
+        "RMSE_ci_lower": 188.33712409315572,
+        "RMSE_ci_upper": 367.8393412172655,
+        "original_R2": 0.38896584750333985,
+        "R2_ci_lower": -0.29851209255137556,
+        "R2_ci_upper": 0.7613328675408569,
+        "B": 2000,
+        "seed": 42
+      },
+      {
+        "target": "UTS_MPa",
+        "model": "svr",
+        "n_observations": 94,
+        "n_doi": 19,
+        "original_MAE": 310.2383860069546,
+        "MAE_ci_lower": 235.67453951484254,
+        "MAE_ci_upper": 422.18918777188236,
+        "original_RMSE": 396.9721086261379,
+        "RMSE_ci_lower": 286.93314640020094,
+        "RMSE_ci_upper": 524.1662432873238,
+        "original_R2": -0.19773626620265916,
+        "R2_ci_lower": -0.5029127365706099,
+        "R2_ci_upper": -0.08204047074239708,
+        "B": 2000,
+        "seed": 42
+      },
+      {
+        "target": "UTS_MPa",
+        "model": "dummy_mean",
+        "n_observations": 94,
+        "n_doi": 19,
+        "original_MAE": 310.6993182530795,
+        "MAE_ci_lower": 241.96339207472116,
+        "MAE_ci_upper": 413.07866396072575,
+        "original_RMSE": 381.478136250707,
+        "RMSE_ci_lower": 287.3460903641452,
+        "RMSE_ci_upper": 491.79353450699136,
+        "original_R2": -0.10606465842072987,
+        "R2_ci_lower": -0.3888408565483014,
+        "R2_ci_upper": -0.03941411735406479,
+        "B": 2000,
+        "seed": 42
+      },
+      {
+        "target": "YS_MPa",
+        "model": "ridge",
+        "n_observations": 95,
+        "n_doi": 20,
+        "original_MAE": 376.01998128150274,
+        "MAE_ci_lower": 247.5703430474389,
+        "MAE_ci_upper": 529.2502397368154,
+        "original_RMSE": 519.705047777203,
+        "RMSE_ci_lower": 354.2065093097342,
+        "RMSE_ci_upper": 709.4279482818937,
+        "original_R2": -0.8777887802094742,
+        "R2_ci_lower": -2.2609682711301513,
+        "R2_ci_upper": -0.15485611959673581,
+        "B": 2000,
+        "seed": 42
+      },
+      {
+        "target": "YS_MPa",
+        "model": "random_forest",
+        "n_observations": 95,
+        "n_doi": 20,
+        "original_MAE": 266.0533941305736,
+        "MAE_ci_lower": 158.63692857534636,
+        "MAE_ci_upper": 371.6265496755049,
+        "original_RMSE": 381.03486679949026,
+        "RMSE_ci_lower": 249.09749799233342,
+        "RMSE_ci_upper": 479.45803966771535,
+        "original_R2": -0.009397687430327206,
+        "R2_ci_lower": -0.2734133893812107,
+        "R2_ci_upper": 0.2646643778231728,
+        "B": 2000,
+        "seed": 42
+      },
+      {
+        "target": "YS_MPa",
+        "model": "gradient_boosting",
+        "n_observations": 95,
+        "n_doi": 20,
+        "original_MAE": 260.9163918868195,
+        "MAE_ci_lower": 148.73358113734966,
+        "MAE_ci_upper": 375.67028017338777,
+        "original_RMSE": 386.742800809739,
+        "RMSE_ci_lower": 240.96811945316537,
+        "RMSE_ci_upper": 500.72516571076414,
+        "original_R2": -0.03986592188921323,
+        "R2_ci_lower": -0.4008900834468571,
+        "R2_ci_upper": 0.2738828826756099,
+        "B": 2000,
+        "seed": 42
+      },
+      {
+        "target": "YS_MPa",
+        "model": "svr",
+        "n_observations": 95,
+        "n_doi": 20,
+        "original_MAE": 321.7474184464735,
+        "MAE_ci_lower": 243.3521054731131,
+        "MAE_ci_upper": 406.65501702272394,
+        "original_RMSE": 406.10982836704113,
+        "RMSE_ci_lower": 314.05422737855645,
+        "RMSE_ci_upper": 484.2741303379714,
+        "original_R2": -0.14662094304117268,
+        "R2_ci_lower": -0.5637096130764769,
+        "R2_ci_upper": -0.05705586976310273,
+        "B": 2000,
+        "seed": 42
+      },
+      {
+        "target": "YS_MPa",
+        "model": "dummy_mean",
+        "n_observations": 95,
+        "n_doi": 20,
+        "original_MAE": 311.0049584487534,
+        "MAE_ci_lower": 231.65188897866014,
+        "MAE_ci_upper": 395.28307230111056,
+        "original_RMSE": 391.7465656281372,
+        "RMSE_ci_lower": 299.3966202975267,
+        "RMSE_ci_upper": 471.4367752249249,
+        "original_R2": -0.06694802852564385,
+        "R2_ci_lower": -0.33438161007694533,
+        "R2_ci_upper": -0.031248019078093395,
+        "B": 2000,
+        "seed": 42
+      },
+      {
+        "target": "elongation_pct",
+        "model": "ridge",
+        "n_observations": 52,
+        "n_doi": 12,
+        "original_MAE": 14.418637575103851,
+        "MAE_ci_lower": 9.087165008522755,
+        "MAE_ci_upper": 22.345877068718373,
+        "original_RMSE": 18.592595025677277,
+        "RMSE_ci_lower": 12.325240637722096,
+        "RMSE_ci_upper": 26.905893270271953,
+        "original_R2": -1.9326712714000558,
+        "R2_ci_lower": -5.024144745400464,
+        "R2_ci_upper": -0.4471207863582254,
+        "B": 2000,
+        "seed": 42
+      },
+      {
+        "target": "elongation_pct",
+        "model": "random_forest",
+        "n_observations": 52,
+        "n_doi": 12,
+        "original_MAE": 8.344495722760145,
+        "MAE_ci_lower": 6.270319622019188,
+        "MAE_ci_upper": 10.571482223066063,
+        "original_RMSE": 10.765102969543053,
+        "RMSE_ci_lower": 8.670494873412487,
+        "RMSE_ci_upper": 13.151688362612932,
+        "original_R2": 0.01685009471973009,
+        "R2_ci_lower": -0.5095948570316011,
+        "R2_ci_upper": 0.13737936120087274,
+        "B": 2000,
+        "seed": 42
+      },
+      {
+        "target": "elongation_pct",
+        "model": "gradient_boosting",
+        "n_observations": 52,
+        "n_doi": 12,
+        "original_MAE": 8.038568841273927,
+        "MAE_ci_lower": 5.935260731723509,
+        "MAE_ci_upper": 10.651115987109913,
+        "original_RMSE": 10.693663110519962,
+        "RMSE_ci_lower": 7.943084314920175,
+        "RMSE_ci_upper": 14.045269443726857,
+        "original_R2": 0.02985564401783858,
+        "R2_ci_lower": -0.5309982874287237,
+        "R2_ci_upper": 0.19880948953763067,
+        "B": 2000,
+        "seed": 42
+      },
+      {
+        "target": "elongation_pct",
+        "model": "svr",
+        "n_observations": 52,
+        "n_doi": 12,
+        "original_MAE": 9.365547324123096,
+        "MAE_ci_lower": 6.404523852944319,
+        "MAE_ci_upper": 12.55065113271393,
+        "original_RMSE": 11.881118489351648,
+        "RMSE_ci_lower": 9.096959358959259,
+        "RMSE_ci_upper": 14.996618628613277,
+        "original_R2": -0.19756203436011166,
+        "R2_ci_lower": -0.7352438742572803,
+        "R2_ci_upper": -0.14063785396089967,
+        "B": 2000,
+        "seed": 42
+      },
+      {
+        "target": "elongation_pct",
+        "model": "dummy_mean",
+        "n_observations": 52,
+        "n_doi": 12,
+        "original_MAE": 9.275304448327704,
+        "MAE_ci_lower": 6.434323297885284,
+        "MAE_ci_upper": 12.503699051085965,
+        "original_RMSE": 11.814530649147617,
+        "RMSE_ci_lower": 8.971156394372379,
+        "RMSE_ci_upper": 15.088950473200665,
+        "original_R2": -0.18417615506619311,
+        "R2_ci_lower": -0.7248606986117042,
+        "R2_ci_upper": -0.14787058743758463,
+        "B": 2000,
+        "seed": 42
+      }
+    ],
+    "paired_contrast_table": [
+      {
+        "target": "UTS_MPa",
+        "model": "random_forest",
+        "n_observations": 94,
+        "n_doi": 19,
+        "delta_MAE": -110.13895248765067,
+        "delta_MAE_ci_lower": -226.92949401158205,
+        "delta_MAE_ci_upper": -30.802010723084617,
+        "delta_MAE_interval_includes_zero": false,
+        "delta_RMSE": -111.81059600231936,
+        "delta_RMSE_ci_lower": -249.62523648023293,
+        "delta_RMSE_ci_upper": -10.744415952147442,
+        "delta_RMSE_interval_includes_zero": false,
+        "B": 2000,
+        "seed": 42
+      },
+      {
+        "target": "UTS_MPa",
+        "model": "gradient_boosting",
+        "n_observations": 94,
+        "n_doi": 19,
+        "delta_MAE": -107.72101541908617,
+        "delta_MAE_ci_lower": -229.3346576666427,
+        "delta_MAE_ci_upper": -17.459393918147192,
+        "delta_MAE_interval_includes_zero": false,
+        "delta_RMSE": -97.93957143173657,
+        "delta_RMSE_ci_lower": -250.35748882473692,
+        "delta_RMSE_ci_upper": 21.25795259097583,
+        "delta_RMSE_interval_includes_zero": true,
+        "B": 2000,
+        "seed": 42
+      },
+      {
+        "target": "YS_MPa",
+        "model": "random_forest",
+        "n_observations": 95,
+        "n_doi": 20,
+        "delta_MAE": -44.951564318179805,
+        "delta_MAE_ci_lower": -118.68962801969181,
+        "delta_MAE_ci_upper": 15.644510271562512,
+        "delta_MAE_interval_includes_zero": true,
+        "delta_RMSE": -10.711698828646945,
+        "delta_RMSE_ci_lower": -71.14915529294946,
+        "delta_RMSE_ci_upper": 25.990348492031238,
+        "delta_RMSE_interval_includes_zero": true,
+        "B": 2000,
+        "seed": 42
+      },
+      {
+        "target": "YS_MPa",
+        "model": "gradient_boosting",
+        "n_observations": 95,
+        "n_doi": 20,
+        "delta_MAE": -50.08856656193393,
+        "delta_MAE_ci_lower": -125.12839224773373,
+        "delta_MAE_ci_upper": 14.87658980235382,
+        "delta_MAE_interval_includes_zero": true,
+        "delta_RMSE": -5.003764818398224,
+        "delta_RMSE_ci_lower": -76.06567552762333,
+        "delta_RMSE_ci_upper": 45.330449780738576,
+        "delta_RMSE_interval_includes_zero": true,
+        "B": 2000,
+        "seed": 42
+      },
+      {
+        "target": "elongation_pct",
+        "model": "random_forest",
+        "n_observations": 52,
+        "n_doi": 12,
+        "delta_MAE": -0.9308087255675588,
+        "delta_MAE_ci_lower": -3.5598216451082854,
+        "delta_MAE_ci_upper": 1.0278378192180349,
+        "delta_MAE_interval_includes_zero": true,
+        "delta_RMSE": -1.0494276796045643,
+        "delta_RMSE_ci_lower": -2.442425954362029,
+        "delta_RMSE_ci_upper": 0.2956285148319567,
+        "delta_RMSE_interval_includes_zero": true,
+        "B": 2000,
+        "seed": 42
+      },
+      {
+        "target": "elongation_pct",
+        "model": "gradient_boosting",
+        "n_observations": 52,
+        "n_doi": 12,
+        "delta_MAE": -1.2367356070537774,
+        "delta_MAE_ci_lower": -2.5762108043579333,
+        "delta_MAE_ci_upper": 0.2372132135421379,
+        "delta_MAE_interval_includes_zero": true,
+        "delta_RMSE": -1.120867538627655,
+        "delta_RMSE_ci_lower": -2.472632676900614,
+        "delta_RMSE_ci_upper": 0.3183048255837683,
+        "delta_RMSE_interval_includes_zero": true,
+        "B": 2000,
+        "seed": 42
+      }
+    ],
+    "bounded_interpretations": {
+      "UTS_MPa": "moderate predictive signal supported under DOI-level publication resampling",
+      "YS_MPa": "limited and unstable generalisation",
+      "elongation_pct": "marginal performance with substantial small-publication uncertainty"
+    },
+    "explicit_statements": [
+      "OOF predictions were fixed before bootstrapping.",
+      "Models were not retrained during bootstrapping.",
+      "DOI clusters were resampled with replacement; all of a DOI's observations move together.",
+      "Intervals describe publication-level sampling variability under resampling of which DOI were included.",
+      "These are NOT individual prediction intervals.",
+      "These do NOT separate epistemic and aleatoric uncertainty."
+    ]
+  },
+  "section_13_extraction_evaluation_status": {
+    "independent_manually_annotated_gold_standard_exists": false,
+    "required_statement": "Precision, recall and F1 were not computed against an independent manually annotated gold standard.",
+    "do_not_infer_from": [
+      "rejection counts (Section 3)",
+      "validation-pass rates",
+      "scope-audit outcomes (Section 5)",
+      "candidate accounting (Section 3)"
+    ],
+    "note": "No precision/recall/F1 figure or number appears anywhere in this handover or in figures/dissertation/ for exactly this reason."
+  },
+  "section_14_final_figures_and_tables": {
+    "note": "Only PNG is exported (PDF/SVG export was removed per explicit later instruction this session; figure_style.save_figure now writes PNG only).",
+    "figures": [
+      {
+        "figure": "A",
+        "png_path": "figures/dissertation/figA_dataset_construction_scope_audit.png",
+        "png_sha256": "664172a18992dc75908c4cb00596513adb0abe54552012f75d7e41e6f01332e5",
+        "source_notebook": "notebooks/modelling/06_dissertation_figures.ipynb (Figure A cells)",
+        "dataset_cohort": "df_raw (297/51) vs df_corrected (256/44); docs/scope_audit_v1.csv",
+        "placement": "Main text",
+        "caption_location": "docs/final_figure_captions.md",
+        "caption_present": true
+      },
+      {
+        "figure": "B",
+        "png_path": "figures/dissertation/figB_target_distributions_publication_support.png",
+        "png_sha256": "5024d8e5aec815f78c8e42d9362692600981f72e10f0b51cb0ba6661093733a4",
+        "source_notebook": "notebooks/modelling/06_dissertation_figures.ipynb (Figure B cells)",
+        "dataset_cohort": "primary target cohort per target (155/36, 153/32, 92/22); full 256/44 final steel dataset for the per-DOI panel",
+        "placement": "Main text",
+        "caption_location": "docs/final_figure_captions.md",
+        "caption_present": true
+      },
+      {
+        "figure": "C",
+        "png_path": "figures/dissertation/figC_composition_feature_coverage.png",
+        "png_sha256": "0fc48e123ce156ddcc25f1d84ae6d77181f135dad904c722a13e9b274a3ec6ef",
+        "source_notebook": "notebooks/modelling/06_dissertation_figures.ipynb (Figure C cells)",
+        "dataset_cohort": "composition-model cohort per target (94/19, 95/20, 52/12)",
+        "placement": "Main text",
+        "caption_location": "docs/final_figure_captions.md",
+        "caption_present": true
+      },
+      {
+        "figure": "D",
+        "png_path": "figures/dissertation/figD_property_relationships.png",
+        "png_sha256": "1c3a0ab3147b5ef906a89abb17fc2269f1d4d132da00f4f999a48ae87f53725f",
+        "source_notebook": "notebooks/modelling/06_dissertation_figures.ipynb (Figure D cells)",
+        "dataset_cohort": "intersection of two targets' primary cohorts (UTS-YS 104/20, UTS-elong 58/11, YS-elong 46/8)",
+        "placement": "Appendix",
+        "caption_location": "docs/final_figure_captions.md",
+        "caption_present": true
+      },
+      {
+        "figure": "E",
+        "png_path": "figures/dissertation/figE_model_comparison_vs_dummy.png",
+        "png_sha256": "eee39b2e794a7a4e40082c53f262063eed778e8222bedf0bbd36e38e0d8e07b9",
+        "source_notebook": "notebooks/modelling/06_dissertation_figures.ipynb (Figure E cells)",
+        "dataset_cohort": "composition-model cohort per target, all 5 models",
+        "placement": "Appendix (raw metrics table stays in main Results)",
+        "caption_location": "docs/final_figure_captions.md",
+        "caption_present": true
+      },
+      {
+        "figure": "F",
+        "png_path": "figures/dissertation/figF_oof_performance_principal_model.png",
+        "png_sha256": "6b2a12bb334fa0ce8db97b087116b54532679b981ab2d9b94353e5237c629cfd",
+        "source_notebook": "notebooks/modelling/06_dissertation_figures.ipynb (Figure F cells)",
+        "dataset_cohort": "composition-model cohort per target, random_forest only",
+        "placement": "Main text",
+        "caption_location": "docs/final_figure_captions.md",
+        "caption_present": true
+      },
+      {
+        "figure": "G",
+        "png_path": "figures/dissertation/figG_publication_sampling_variability.png",
+        "png_sha256": "5742b850a3a78b3fcc5b4684ce0cf0b3848497d02772074d1ff828423edc10d1",
+        "source_notebook": "notebooks/modelling/06_dissertation_figures.ipynb (Figure G cells)",
+        "dataset_cohort": "composition-model cohort per target, random_forest + gradient_boosting vs dummy, B=2000 seed=42",
+        "placement": "Main text",
+        "caption_location": "docs/final_figure_captions.md",
+        "caption_present": true
+      },
+      {
+        "figure": "H",
+        "png_path": "figures/dissertation/figH_contextual_completeness_appendix.png",
+        "png_sha256": "f8ef62e679aa87acf479e7251ee29d463f5b0ed3ad261ec2d9979f6d9c9bd056",
+        "source_notebook": "notebooks/modelling/06_dissertation_figures.ipynb (Figure H cells)",
+        "dataset_cohort": "composition-model cohort per target, random_forest + dummy_mean",
+        "placement": "Appendix",
+        "caption_location": "docs/final_figure_captions.md",
+        "caption_present": true
+      }
+    ],
+    "raw_model_performance_table_placement": "main Results chapter text (not appendix), per explicit instruction, even though Figure E itself is appendix",
+    "remaining_corrections_needed": "None outstanding as of this handover -- see Section 17 for dissertation-prose-side corrections still required in the external LaTeX document (not in this repo)."
+  },
+  "section_15_results_ready_tables": {
+    "output_directory": "docs/handover_tables",
+    "table_paths": {
+      "1_corpus_and_pipeline_outcomes": "docs/handover_tables/1_corpus_and_pipeline_outcomes.csv",
+      "2_validation_exclusion_accounting": "docs/handover_tables/2_validation_exclusion_accounting.csv",
+      "3_confirmed_failure_cases": "docs/handover_tables/3_confirmed_failure_cases.csv",
+      "4_scope_audit_outcomes": "docs/handover_tables/4_scope_audit_outcomes.csv",
+      "5_final_dataset_and_cohort_sizes": "docs/handover_tables/5_final_dataset_and_cohort_sizes.csv",
+      "6_target_descriptive_statistics": "docs/handover_tables/6_target_descriptive_statistics.csv",
+      "7_selected_feature_coverage": "docs/handover_tables/7_selected_feature_coverage.csv",
+      "8_five_model_oof_performance": "docs/handover_tables/8_five_model_oof_performance.csv",
+      "9_rq4_subgroup_summary": "docs/handover_tables/9_rq4_subgroup_summary.csv",
+      "10_doi_bootstrap_contrasts": "docs/handover_tables/10_doi_bootstrap_contrasts.csv"
+    }
+  },
+  "section_16_research_question_answers": {
+    "RQ1": "NOT RELIABLY AVAILABLE -- RQ1's exact wording was not found in any tracked repository document (docs/*.md, README.md, notebooks) searched this session. Do not fabricate a research question; supply the exact wording and this section can be completed.",
+    "RQ2": "NOT RELIABLY AVAILABLE -- same reason as RQ1.",
+    "RQ3": "NOT RELIABLY AVAILABLE -- same reason as RQ1. Note: when supplied, Section 9's per-target table already distinguishes UTS from YS/elongation as required.",
+    "RQ4": {
+      "wording": "Does prediction error differ according to the completeness of composition, processing and testing information?",
+      "observed_result": "Across all three targets and all three contextual dimensions (processing identity, test-information resolution, composition completeness), Random Forest OOF MAE does not show a consistent, well-supported pattern relative to the dummy-mean reference. Composition completeness is monotonically decreasing with error only for elongation (low=10.1, medium=7.9, high=2.9), not for UTS or YS. Gradient Boosting agrees with Random Forest on the lower-error group in all 9 dimension-target comparisons (100%).",
+      "bounded_interpretation": "No consistent relationship was identified between contextual-information completeness and prediction error.",
+      "limitation": "Most subgroup comparisons rest on exploratory (5-9 DOI) or very_limited (<5 DOI) support; only 3 of 9 dimension-target comparisons reach supported_descriptive (>=10 DOI). The counter-intuitive processing-status pattern (confirmed_baseline showing lower error than confirmed_explicit for UTS/YS) is confounded with the dummy reference showing the identical tendency -- i.e. confirmed_baseline is likely an easier subgroup, not evidence of a completeness effect. This is an observational error comparison, not a causal test, and not a processing/test-feature ablation (neither field was ever used as a model predictor)."
+    }
+  },
+  "section_17_dissertation_correction_checklist": [
+    {
+      "item": "297 observations / 51 DOI described as the final dataset",
+      "old_statement_pattern": "\"the final dataset contains 297 observations from 51 publications\" (or similar)",
+      "required_replacement": "The FINAL dataset (post-scope-audit) is 256 observations from 44 retained steel DOI. 297/51 is the PRE-scope-audit flat dataset, before 41 non-steel/mixed-material observations were removed.",
+      "status_in_this_repo": "Corrected everywhere in notebooks/figures/docs generated this session; verify the external LaTeX document separately."
+    },
+    {
+      "item": "Primary target DOI counts confused with composition-model DOI counts",
+      "old_statement_pattern": "e.g. \"UTS: 94 observations from 19 publications\" used where the primary cohort (155/36) was actually meant, or vice versa",
+      "required_replacement": "Primary target cohort: UTS 155/36 DOI, YS 153/32 DOI, elongation 92/22 DOI. Composition-model cohort (used for all modelling/OOF/bootstrap): UTS 94/19 DOI, YS 95/20 DOI, elongation 52/12 DOI. State which cohort every number belongs to.",
+      "status_in_this_repo": "Verified correct in every tracked notebook and this handover's Section 6; no mislabelled instance found in the repository."
+    },
+    {
+      "item": "Notebook 03's 'Interpretation' markdown cell still narrates only 2 confirmed data errors",
+      "old_statement_pattern": "\"Two CONFIRMED data errors were the primary cause of Ridge's original catastrophic R2...\" (notebooks/modelling/03_model_comparison.ipynb)",
+      "required_replacement": "Should be updated to reflect the full 7-exclusion systematic scope audit (6 non-steel DOI + 1 mixed-material DOI, 41 observations), not just the original 2 cases (Cu=999 and the AlSi7Mg0.3 aluminium alloy) that were found first.",
+      "status_in_this_repo": "STILL OUTSTANDING -- confirmed present in the notebook as of this handover. Not fixed because it was flagged as a minor documentation lag, not blocking, in an earlier review round."
+    },
+    {
+      "item": "Old feature lists (pre-scope-audit)",
+      "old_statement_pattern": "any reference to 12 UTS features or 9 elongation features (the pre-scope-audit selected-feature counts)",
+      "required_replacement": "Current, scope-corrected selected features: UTS 10 elements, YS 10 elements, elongation 7 elements (exact lists in Section 7).",
+      "status_in_this_repo": "Corrected in modelling_lib.py/notebooks this session."
+    },
+    {
+      "item": "Old target/cohort counts from before the scope audit (e.g. n=297/51 papers reported as the modelling cohort)",
+      "required_replacement": "See Section 6 for the three correct, distinct cohort levels.",
+      "status_in_this_repo": "Corrected this session."
+    },
+    {
+      "item": "Old 8-fold cross-validation references",
+      "old_statement_pattern": "\"8-fold GroupKFold\" or \"8-fold cross-validation\" for UTS/YS",
+      "required_replacement": "5-fold GroupKFold by DOI, fixed for ALL THREE targets. The 8-fold usage was a procedural error in an early run, corrected before any result was reported.",
+      "status_in_this_repo": "Corrected; MODEL_CV_N_SPLITS = 5 is the only value used in any tracked notebook."
+    },
+    {
+      "item": "Old uncertainty/UQ terminology",
+      "old_statement_pattern": "\"uncertainty quantification\", \"predictive uncertainty\", \"UQ\" applied to the DOI-bootstrap results",
+      "required_replacement": "\"Publication-level sampling variability\" -- never predictive uncertainty or general UQ; the bootstrap resamples which DOI are included, holding predictions fixed.",
+      "status_in_this_repo": "Corrected; enforced in every figure caption and Section 12 of this handover."
+    },
+    {
+      "item": "Processing/test variables described as model predictors",
+      "old_statement_pattern": "any statement implying processing_identity_status/test_conditions_status were fed into the regression models",
+      "required_replacement": "These fields are used ONLY to group/stratify already-fixed OOF errors for the RQ4 diagnostic; they are never columns in build_preprocessor/build_model_pipeline.",
+      "status_in_this_repo": "Never true in the actual code; verify no dissertation prose implies otherwise."
+    },
+    {
+      "item": "Feature-ablation promises that were not performed",
+      "old_statement_pattern": "any mention of a composition-vs-processing-vs-testing ablation study",
+      "required_replacement": "State plainly that this ablation was NOT performed (processing_key was excluded as a DOI-fingerprinting risk before any model was run; standardised processing/test features were never constructed) -- RQ4 is answered instead via the OOF-error-stratification diagnostic in Section 11.",
+      "status_in_this_repo": "N/A -- never implemented; ensure dissertation text does not promise it."
+    },
+    {
+      "item": "Claims of high predictive accuracy",
+      "old_statement_pattern": "\"the model accurately predicts...\" or similar for YS/elongation",
+      "required_replacement": "UTS: moderate signal (R2=0.45, delta-MAE interval excludes zero). YS: near-zero pooled R2 (-0.01), delta-MAE interval includes zero -- not reliable. Elongation: marginal (R2=0.02), delta-MAE interval includes zero -- not reliable. Never describe YS or elongation as strong or accurate.",
+      "status_in_this_repo": "Enforced in every figure caption this session."
+    },
+    {
+      "item": "Future-tense or 'not yet run' methodology statements",
+      "old_statement_pattern": "\"will be evaluated\", \"has not yet been run\", \"planned analysis\" for anything in Sections 1-15 of this handover",
+      "required_replacement": "All analyses described in this handover are complete and frozen as of commit 31f92bf3e9.",
+      "status_in_this_repo": "Check the external LaTeX Methods/Results chapters for any remaining future-tense phrasing describing now-completed work."
+    },
+    {
+      "item": "Old RQ4 wording",
+      "old_statement_pattern": "any earlier RQ4 phrasing implying a causal test or an incremental-predictive-value test (e.g. 'does adding processing/test information improve prediction')",
+      "required_replacement": "\"Does prediction error differ according to the completeness of composition, processing and testing information?\" -- an association question, answered observationally, never causally.",
+      "status_in_this_repo": "Finalised this session; see Section 11."
+    },
+    {
+      "item": "Planned precision/recall/F1 claims unsupported by a gold standard",
+      "old_statement_pattern": "any reported precision/recall/F1/extraction-accuracy number",
+      "required_replacement": "\"Precision, recall and F1 were not computed against an independent manually annotated gold standard.\" (Section 13)",
+      "status_in_this_repo": "No such figure/table exists anywhere in figures/dissertation/ or this handover."
+    },
+    {
+      "item": "Placeholders such as TODO / REFERENCE NEEDED",
+      "old_statement_pattern": "any literal 'TODO' or 'REFERENCE NEEDED' string",
+      "required_replacement": "N/A -- search the external LaTeX source directly; this repository's tracked artifacts contain none as of this handover.",
+      "status_in_this_repo": "grep for 'TODO\\|REFERENCE NEEDED' across docs/*.md and notebooks/modelling/*.ipynb in this repo returned no matches."
+    }
+  ]
+}

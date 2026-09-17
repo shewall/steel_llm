@@ -1,0 +1,1908 @@
+{
+  "doi": "10.1007/s00170-026-18763-6",
+  "title": "A review of tool wear monitoring in milling: perception, edge processing and cloud decision",
+  "abstract": "Abstract This review introduces a three‑layer architecture (perception, edge processing, and cloud‑based decision) to re‑evaluate digital tool wear monitoring in milling. The analysis covers the main wear mechanisms (flank, crater, edge wear), the role of cemented carbide substrates and PVD/CVD coatings, and the evolution from traditional offline measurement to integrated digital systems. Direct measurement methods (optical microscopy, SEM, profilometry) are compared with indirect sensor‑based approaches that use cutting forces, vibration, acoustic emission, temperature, and computer vision. Emphasis is placed on digital monitoring architectures, examining data acquisition (perception), local processing (edge computing), and cloud‑based decision making. The review assesses the growing application of artificial intelligence (AI) and machine learning algorithms – including convolutional neural networks (CNNs), long short‑term memory networks (LSTMs), and digital twins – for real‑time wear prediction and classification. Based on an analysis of the state-of-the-art, the findings indicate that while accuracy has improved, real‑time robustness, generalization, and uncertainty quantification remain key research frontiers. A central challenge identified here is the velocity at which wear must be identified and quantified, driven by the accelerating pace of digitalization, Industry 4.0 and 5.0, and the growing demand for rapid industrial decision‑making. This imperative is redefining the core objective of wear monitoring toward near‑real‑time responsiveness. Accordingly, the review outlines forward‑looking pathways that prioritize physics‑informed hybrid modeling, open benchmark datasets and validation protocols, edge‑cloud architectures, and explainable AI, thereby paving the way from laboratory validation toward reliable, high‑speed industrial deployment aligned with the requirements of modern smart manufacturing ecosystems.",
+  "journal": "The International Journal of Advanced Manufacturing Technology",
+  "year": "2026",
+  "sections": [
+    {
+      "heading": "Introduction",
+      "paragraphs": [
+        "Manufacturing plays a central role in industrial competitiveness and in the development of sustainable and efficient production systems. Among manufacturing processes, milling is notable for producing complex geometries and for its broad use in machining high-performance alloys such as Inconel 718, titanium alloys, and hardened steels [ 1 ]. However, progressive tool wear remains a persistent limitation because intermittent cutting, variable chip thickness, and severe thermal‑mechanical loading directly affect surface quality, dimensional accuracy, tool life, and energy consumption [ 2 ]. In practice, tools are often replaced based on empirical indicators such as increased noise, higher temperatures, or stronger vibrations. Although necessary, such unscheduled stops reduce productivity and increase maintenance costs.",
+        "The literature on tool wear in milling is extensive yet fragmented. Some studies emphasize wear mechanisms and tool materials, others focus on sensing and prediction, and still others address digital integration or industrial deployment. The result is a field with many useful findings but limited synthesis across applications, from laboratory validation to factory implementation. Current research shows that common wear modes, such as flank wear, crater wear, fracture, and edge chipping, depend on tool geometry, cutting parameters, workpiece material, and the thermal and tribological conditions at the tool‑chip interface [ 3 ,  4 – 5 ].",
+        "The progressive rounding of the cutting edge is a key feature of flank wear. Figure  1 a-c schematically illustrates how the cutting-edge radius increases from r 1  (new tool) to r 2  (worn tool), with r 2  > r 1 . This enlargement intensifies ploughing action, increases cutting forces, and accelerates further wear, as conceptually described by Razak et al. [ 6 ]. In practice, the microscopy images in Fig.  1 d-f show that wear initiates at the cutting edge and develops into different failure modes during tool life. Cemented carbide tools remain widely used because they combine hardness, toughness, and wear resistance; recent advances in microstructure and surface engineering have further improved their thermal stability and service life [ 7 ].",
+        "Fig. 1 Evolution of the cutting edge as a function of tool wear. ( a ) rotation direction of the milling tool; ( b ) cutting edge radius of a new tool; ( c ) increased cutting edge radius after wear progression; ( d ) cutting edge of a new carbide ball‑end mill with two flutes; ( e ) magnified view of the cutting edge, exhibiting an edge radius of 1.5 μm; ( f ) magnified view of a worn cutting edge after milling, in which the edge width increases to 6.5 μm. Adapted from the concept in Razak et al. [ 6 ]",
+        "The purpose of this review is therefore to integrate the main research directions into one analytical structure: cemented carbide tool materials, coatings and their influence on wear, wear‑mode classification, measurement and monitoring techniques, cutting force and thermal analysis, and the role of digital and AI‑based monitoring systems. The central question is not the absence of individual studies, but the absence of a unified review that connects these components in a way that is directly useful for industrial deployment.",
+        "To ensure methodological transparency and reproducibility, a structured literature search was conducted using the Web of Science Core Collection and Scopus. The search was limited to peer‑reviewed journal articles and review papers written in English and published between 2010 and 2026. Studies were eligible if they focused on tool wear measurement, monitoring, or prediction in milling operations, or on wear mechanisms, sensor‑based approaches, or data‑driven methods. Conference proceedings, book chapters, patents, theses, and papers without direct relevance to milling were excluded. Seminal works published before 2010 were included selectively when they provided essential historical or conceptual context and were highly cited in the Web of Science, ensuring their foundational relevance to the field. Additionally, two ISO standards (8688‑1 and 8688‑2) and 6 review/conceptual works published after 2010 were incorporated to provide broader context, specifically on signal processing, even though they were not captured by the systematic search. The exact Boolean strings, deduplication procedure, and exclusion reasons are presented in Table  1 . After full‑text assessment, 98 studies were retained from the structured search based on their direct relevance to tool wear monitoring in milling, as confirmed by reading the full text; an additional 22 seminal works, 2 ISO standards, and 6 review/conceptual works were added, resulting in a final corpus of 128 references.",
+        "Table 1 Literature search strategy and selection results Database Search query Articles Web of Science (TS=(tool wear AND milling)) AND (TS=(monitoring OR condition monitoring)) AND (ALL=(surface integrity OR friction OR carbide insert OR cutting temperature)) AND PY=(2010–2026) 132 Scopus TITLE-ABS-KEY(tool wear AND milling) AND TITLE-ABS-KEY(monitoring OR condition monitoring) AND ALL(surface integrity OR friction OR carbide insert OR cutting temperature) AND PUBYEAR > 2009 AND PUBYEAR < 2026 90 Selection Total identified 222 After duplicate removal 181 Full-text articles assessed 124 Studies selected from systematic search (milling‑specific, 2010‑2026) 98 Additional seminal works included (before 2010) 22 ISO standards (8688‑1 and 8688‑2) 2 Additional review/conceptual works (post‑2010, not captured by the systematic search) 6 Total references in review 128",
+        "To examine the field’s structure, a bibliometric mapping was then performed with VOSviewer software to identify keyword co‑occurrence and the thematic structure of the field. The co‑occurrence network in Fig.  2 a shows strong connections between tool wear and milling, with keywords such as cutting force, cutting temperature, surface integrity, vibration, acoustic emission, surface roughness and neural networks. When focusing on tool condition monitoring (Fig.  2 b), terms such as cutting force, cutting temperature, sensor, system, model, prediction and neural networks become central, demonstrating the growing research interest in indirect, signal‑based, and data‑driven monitoring methods [ 8 ,  9 – 10 ].",
+        "Fig. 2 Bibliometric analysis of studies on tool wear. ( a ) Co-occurrence map of general terms related to tool wear in milling processes. ( b ) Co-occurrence map focusing on tool condition monitoring",
+        "Most studies examine tool wear under controlled laboratory conditions, limiting their direct application to real industrial environments. Integrated approaches that connect tool condition monitoring to part surface quality, or that use adaptive models based on real‑time data, still face significant challenges [ 11 ,  12 – 13 ]. More comprehensive strategies are therefore needed, combining smart sensors, multi‑variable data analysis, and digital methods to deliver accurate diagnostics and automatic process adjustments. Accordingly, this review assesses key advances in tool wear for milling operations, with emphasis on digital monitoring and measurement techniques. It also identifies emerging trends, methodological limitations, and opportunities for integrated strategies suitable for smart manufacturing systems. Before examining these monitoring methods, however, the next section first establishes the foundation of the system being monitored: the tool materials."
+      ]
+    },
+    {
+      "heading": "Cemented carbide",
+      "paragraphs": [
+        "Cemented carbide tools remain the dominant choice for milling high‑strength alloys because they offer a practical balance of hardness, toughness, and wear resistance under severe mechanical and thermal loading [ 3 ,  14 ]. Their composition is based on tungsten carbide (WC) grains bonded by a cobalt (Co) matrix. Key parameters such as the WC‑Co ratio, grain size, and alloying additions (Ti, Ta, Nb) control the balancing between fracture resistance and wear resistance [ 15 ,  16 ]. This balance is critical since excessively hard materials may fracture catastrophically, while softer materials wear quickly under severe cutting conditions [ 7 ]. Recent advances include ultrafine microstructures (from submicron to nanometric grades) and advanced sintering techniques such as high‑pressure high‑temperature (HPHT) sintering, which improve microstructural homogeneity and overall performance [ 17 ].",
+        "Beyond the use of submicron WC grains, studies indicate that a more homogeneous Co binder distribution, complex carbides (TiC, TaC, NbC) forming gamma phase, and reduced porosity improve thermal stability, abrasive wear resistance, and reduce microfracture when machining difficult materials like Inconel 718 and Hastelloy alloys [ 18 ,  19 – 20 ].",
+        "Geometric design also plays a crucial role. As shown in Fig.  3 , essential features include rake angle ( \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\:\\gamma\\:$$\\end{document} ), clearance angle ( \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\:\\alpha\\:$$\\end{document} ), inclination angles ( \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\:\\lambda\\:$$\\end{document} ), nose radius ( \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\:{R}_{\\epsilon\\:}$$\\end{document} ), and cutting‑edge radius ( \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\:{r}_{e}$$\\end{document} ). These parameters affect machinability: rounded cutting edges (hone radius) reduce chipping; negative rake angles and small nose radii lower stresses; specific chamfers ( \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\:\\theta\\:$$\\end{document} ) increase compressive load capacity; and chip breakers ( \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\:{\\gamma\\:}_{2}$$\\end{document} ) improve chip segmentation while reducing adhesion and built‑up edge (BUE). Lower entering angle and circular inserts also extend tool life under high thermal loads and work‑hardening conditions [ 21 ].",
+        "Fig. 3 Geometric features of cemented carbide inserts, illustrating the technologies embedded in typical tool angles and edge preparations",
+        "Cemented carbides (WC-Co) remain the most common cutting tool materials in milling due to their favorable balance of cost, impact resistance, hot hardness, and performance at high temperatures. However, their metallurgical, microstructural, surface, and geometric design has evolved significantly over the past two decades, mainly driven by needs for cutting difficult materials like nickel-based superalloys [ 22 ].",
+        "Advances in microstructure, surface condition, and chemical composition have improved performance under severe milling conditions. Surface treatments like micro-blasting enhance PVD coating adhesion to carbide substrates, delaying crack propagation, reducing edge chipping, and extending tool life in milling nickel- and titanium-based superalloys [ 7 ,  15 ,  16 ]. Beyond microstructural refinement, oxidation resistance and cobalt diffusion at high temperatures are critical for material selection. Adding alloying elements such as chromium (Cr) and nickel (Ni) to the cobalt binder can increase corrosion resistance and thermal stability, which is important for high‑speed machining. These developments have pushed machining boundaries, enabling production of components with rigorous quality and productivity requirements [ 15 ,  16 ].",
+        "Surface technologies also play a key role in extending tool life. Coated tool performance in machining nickel‑based superalloys has been widely studied due to these materials’ cutting challenges: strong work hardening, low thermal conductivity, and high chemical affinity with carbide tools. Coating type significantly affects cutting forces, temperature, roughness, and wear mechanisms. Comparisons between uncoated, CVD‑coated, and PVD‑coated tools consistently show that multilayer TiAlN/TiN PVD coatings offer the best balance of wear resistance, friction reduction, and thermal stability. These coatings have superior toughness, less built‑up edge formation, and maintain better surface finish at high cutting speeds and feed rates. While CVD coatings may have higher thermal resistance in some cases, they often have limitations like higher surface roughness, increased cutting temperatures, and faster wear in severe conditions, mainly due to rougher surface morphology and larger cutting‑edge radius. Therefore, multilayer PVD coatings are generally more effective, optimizing both tool life and process stability [ 23 ]."
+      ]
+    },
+    {
+      "heading": "Influence of coatings",
+      "paragraphs": [
+        "As introduced in the previous section, coatings significantly affect cutting forces, temperature, and wear mechanisms. This section provides a detailed analysis of how different coating materials and deposition methods (PVD, CVD) influence tool wear resistance, friction, and thermal stability under various milling conditions. Common coatings include titanium nitride (TiN), aluminium–titanium nitride (AlTiN), titanium carbonitride (TiCN), titanium carbide (TiC), aluminium oxide (Al₂O₃), and diamond-like carbon (DLC). These coatings act as barriers against diffusion, abrasion, and oxidation while reducing friction at the tool‑chip interface [ 24 ,  25 ,  26 – 27 ]. Recent advances in multilayer designs and deposition methods like Physical Vapor Deposition (PVD) and Chemical Vapor Deposition (CVD) allow coatings with better hardness, thermal resistance, and adhesion to cemented carbide (WC–Co) tools. This is important for machining difficult materials like superalloys [ 6 ,  14 ,  28 ,  29 ].",
+        "Coating selection depends on workpiece material and cutting conditions, including speed, feed rate, and milling strategy [ 26 ,  28 ,  30 ]. AlTiN coatings, for example, are preferred for high-speed machining owing to their oxidation resistance at elevated temperatures [ 24 ,  26 ], whereas DLC films are suitable for non-ferrous materials due to their low friction and thermal stability [ 29 ]. However, challenges persist regarding coating resistance to impact loading and thermal delamination under extreme conditions [ 24 ,  26 ,  28 ].",
+        "Hybrid methods, such as post‑deposition micro‑blasting, improve coating adhesion and mechanical properties on cutting inserts [ 15 ,  16 ,  28 ]. This technique is particularly effective on PVD films, increasing coating strength and tool life when machining difficult‑to‑cut materials such as Inconel 718 [ 15 ,  16 ].",
+        "These coatings directly reduce wear by slowing abrasive, adhesive, and diffusive wear mechanisms [ 24 ,  26 ,  28 ]. Experimental studies have reported lower friction and reduced heat generation [ 30 ,  31 ], decreased crater wear in high‑speed operations owing to better thermal stability [ 24 ,  25 ], and improved surface finish with lower roughness and smaller heat‑affected layers [ 25 ,  32 ]. Table  2  compares the key properties of these coatings, summarizing their main advantages and limitations for milling.",
+        "Table 2 Types of coatings applied to cutting tools and their effects on tool wear Type of coating Source Advantages Limitations TiN, TiAlN, AlTiN [ 24 ,  25 – 26 ] High hardness and good thermal resistance May fail under repeated impact loading Multilayer coatings [ 26 ,  28 ] Combination of favorable mechanical properties Higher manufacturing cost Micro-blasted PVD films [ 15 ,  16 ] Improved coating adhesion and mechanical resistance Additional processing step during manufacturing Ceramic coatings [ 27 ,  29 ] High abrasion resistance Brittleness and increased risk of fracture",
+        "Coated tools may fail prematurely under severe impact conditions such as down‑milling with large chip thicknesses, where cyclic impact loading initiates cracks or early delamination, thereby reducing the protective effect [ 28 ,  30 ]. Coating performance is highly dependent on cutting parameters. Excessively high cutting speeds exceed the thermal limits of coatings, accelerating degradation [ 24 ,  28 ,  30 ]. Conversely, coatings such as AlTiN exhibit superior thermal resistance, making them suitable for high‑speed machining [ 24 ,  26 ].",
+        "Parameters such as cutting speed, feed per tooth, depth of cut, and milling strategy (up‑milling and down‑milling) directly affect coating integrity [ 26 ,  30 ]. Down‑milling often imposes higher impact loads on the cutting edge, increasing the risk of coating failure [ 28 ]. Cutting speed and feed per tooth have the greatest influence on tool life, whereas depth of cut has a smaller effect [ 33 ]. In general, higher cutting speeds increase thermal wear, while higher feed rates and depths of cut promote mechanical wear; both mechanisms reduce tool life [ 34 ,  35 ].",
+        "Coated tools are mainly used for difficult‑to‑machine alloys such as Inconel 718, Hastelloy C276, nickel‑based superalloys, and titanium alloys [ 6 ,  14 ,  24 ,  29 ]. In such cases, coatings become more critical because these materials generate high temperatures and stresses in the cutting zone, thereby increasing wear risk. Multilayer coatings and post‑deposition treatments such as micro‑blasting help maintain tool integrity under severe conditions, including Inconel 718 milling [ 15 ,  16 ]. Nevertheless, limitations persist, particularly in coating resistance to repeated impact and thermal delamination.",
+        "Although the literature exhibits considerable variation in coating types, the key synthesis is that multilayer PVD coatings, especially TiAlN/TiN systems, tend to offer the best overall balance of wear resistance, friction reduction, thermal stability, and toughness for severe milling conditions. CVD coatings can provide thermal resistance, but their rougher morphology and larger cutting‑edge radius become liabilities under severe impact loading [ 11 ,  26 ,  28 ]."
+      ]
+    },
+    {
+      "heading": "Tool wear in milling",
+      "paragraphs": [
+        "Regardless of the coating system employed, cutting tools inevitably undergo progressive material loss during milling. Tool wear develops from intense mechanical and thermal interactions in the cutting zone, owing to the intermittent dynamics intrinsic to the process, where the cutting edge repeatedly enters and exits the cut. Common wear modes include flank wear, crater wear, notch wear, and chipping. Flank wear refers to material loss on the clearance face, affecting part dimensions and surface quality. Crater wear forms on the rake face through diffusion and abrasion, reducing cutting edge strength. Notch wear appears as a local groove along the cutting edge, often resulting from workpiece irregularities or intermittent cutting, whereas chipping involves partial edge fractures caused by mechanical or thermal shocks. Understanding these wear modes helps identify failure causes and plan longer tool life, which is essential for digital monitoring [ 4 ,  8 ,  36 ]."
+      ]
+    },
+    {
+      "heading": "Types",
+      "paragraphs": [
+        "Flank wear occurs on the tool clearance face as progressive material loss, forming a wear land along the cutting edge. This wear mode affects dimensional accuracy and surface roughness, and it is often used to define the end of tool life, as in ISO 8688 [ 3 ,  4 ,  37 ]. Flank wear grows nearly linearly under stable conditions but accelerates as the tool approaches the end of its useful life. It is usually measured by the average flank wear width (VB) [ 8 ,  38 ,  39 ].",
+        "Crater wear forms on the tool rake face, usually above the cutting edge, through abrasion and diffusion caused by chip‑tool friction [ 37 ,  38 ,  40 ,  41 ]. This wear mode weakens the cutting edge structure, reducing mechanical strength and, in severe cases, leading to fracture [ 36 ,  42 ]. Although less visible than flank wear, crater wear affects chip geometry, chip stability, and residual stresses on the machined surface, which may damage workpiece performance [ 3 ,  30 ].",
+        "Notch wear appears as a local groove along the cutting edge, often near cut entry or exit at the tool-workpiece interface. This arises from intermittent milling conditions and repeated impact loading, and may worsen with hard particles or hardness changes in the workpiece [ 30 ,  41 ,  43 ,  44 ]. Besides these primary modes, other failures such as chipping and edge fracture can occur under severe cutting, showing the need for accurate identification of wear mechanisms to improve monitoring and machining parameter selection.",
+        "Chipping and tool fracture are more severe failure modes, often resulting from excessive mechanical loads or thermal shocks [ 36 ,  37 ]. These are critical when machining low‑machinability materials such as nickel‑based or titanium superalloys, where the tool is subjected to high stresses. Additionally, coated tools may exhibit coating fracture or delamination before significant cutting edge wear occurs [ 41 ,  43 ]. Table  3  summarizes common wear modes, their typical appearance, detection methods, and key studies.",
+        "Table 3 Monitoring methods and representative studies associated with the primary types of tool wear in milling Type of wear Source Monitoring techniques used Main characteristics Flank wear [ 3 ,  4 ,  8 ] Microscopy, machine vision, AI-based methods Progressive material loss on the flank face; affects dimensional accuracy and surface roughness Crater wear [ 30 ,  36 ,  40 ] SEM, chip analysis Cavity formation on the rake face; compromises cutting edge strength Notch wear [ 30 ,  41 ,  43 ] Vibration analysis Localized concavity near the cutting edge; associated with repeated impact loading Chipping [ 36 ,  37 ,  45 ] Acoustic emission, vibration signals Partial edge fractures; may lead to catastrophic failure Diffuse wear [ 3 ,  36 ,  40 ] SEM, thermal signal analysis Uniform material loss and formation of thermal microcracks",
+        "Besides classical wear modes, diffuse wear (uniform gradual material loss) and thermal microcracks along the cutting edge are also common [ 3 ,  36 ,  40 ]. These microcracks can grow under cyclic mechanical and thermal loading, propagating and potentially causing tool fracture. This greatly reduces tool life, especially in high‑speed milling [ 8 ,  37 ].",
+        "A special feature of milling dynamics (rotating tool, stationary workpiece) is that intermittent cutting gradually increases the cutting‑edge radius as machining continues. Wang et al. [ 46 ] studied failure in coated cemented carbide tools and showed that wear progression is linked to cutting‑edge radius evolution. Under dry cutting, failure starts with local delamination of PVD TiAlN coating near the cutting edge. Once the WC‑Co substrate is exposed, high temperatures and strong tool‑chip interaction cause cobalt diffusion, creating binder‑deficient zones and microvoids in the microstructure. This degradation facilitates progressive WC grain pull‑out from friction and chip flow, establishing continuous wear where edge material is gradually removed and the cutting‑edge radius increases systematically. As machined length grows, increasing edge rounding intensifies micrometric cutting and ploughing near the cutting edge, raising local tensile stresses. These conditions promote microcrack nucleation and growth from diffusion‑induced voids. At low cutting speeds, tool life is mainly limited by coating delamination and flank wear. At higher cutting speeds, faster cobalt diffusion and stronger edge rounding promote brittle fracture, chipping, and coating delamination, leading to failure dominated by cutting‑edge fracture rather than gradual flank wear.",
+        "Therefore, tool wear directly influences machined part surface integrity, increasing surface roughness, residual stresses, and sometimes surface microcracking [ 3 ,  42 ,  47 ]. It also affects machining forces, which tend to rise as wear progresses [ 4 ,  38 ,  48 ], in addition to energy consumption and cutting zone temperature, which may accelerate diffusion wear [ 49 ,  50 ]. Chip formation is likewise altered, changing chip thickness, shape, and flow [ 40 ,  42 ,  51 ]. These adverse effects can be mitigated through proper monitoring and control methods.",
+        "Many techniques have been used to identify and monitor different wear modes. Optical microscopy and scanning electron microscopy (SEM) are common for detailed flank and crater wear studies [ 52 ,  53 ]. Vibration analysis is effective for detecting notch wear and tool fracture [ 13 ,  54 ,  55 ], whereas acoustic emission signals are sensitive to the onset of severe failure [ 56 ,  57 ]. Computer vision methods show good accuracy for worn area estimation [ 61 ,  66 ], and AI models such as neural networks are increasingly used for wear type classification [ 12 ,  39 ,  58 ].",
+        "These studies show considerable diversity in machined materials (Inconel, titanium alloys, stainless steels, aluminum), tool types (solid carbide, coated carbide, ceramic), and wear evaluation methods [ 3 ,  4 ,  36 ]. This variety demonstrates the complexity of tool wear control and monitoring in milling, especially since not all studies clearly define criteria for classifying different wear modes [ 8 ,  43 ]. Nevertheless, most agree that flank wear and crater wear are the main tool life indicators and are most commonly used for tool replacement limits [ 3 ,  36 ,  38 ]. Despite this agreement, few studies systematically examine transitions between wear modes, such as from diffuse wear to fracture [ 36 ,  37 ]. Furthermore, no standard experimental method links specific wear modes to given cutting conditions [ 41 ,  43 ]. Practical limitations also persist in using AI systems to automatically distinguish wear types, mainly owing to high signal variability in real machining [ 58 ,  59 ].",
+        "Therefore, understanding different tool wear modes in milling is important to improve machining performance, reduce unplanned downtime costs, and implement monitoring methods more accurately. While flank wear and crater wear remain the most monitored modes, there is growing interest in methods for early detection of thermal microcracks, diffuse wear, cutting‑edge rounding, and catastrophic failures. Future work will likely combine traditional analysis with smart digital systems that use machine learning and process signals such as cutting forces to recognize complex wear patterns and support real‑time decisions in manufacturing [ 12 ,  58 ,  59 ]."
+      ]
+    },
+    {
+      "heading": "Measurement",
+      "paragraphs": [
+        "The surface of machined parts is a critical quality indicator in milling, especially for high‑performance materials such as Inconel 718, hardened AISI H13 steel, and titanium and aluminum alloys [ 3 ,  25 ,  32 ]. Surface integrity includes geometric parameters (e.g., average surface roughness Ra, root mean square roughness Rq, maximum profile height Rz, and directional texture) and metallurgical features such as residual stresses, microcracks, and microstructural changes. Studies show that tool wear, particularly flank wear and built‑up edge formation, increases surface roughness, causes chip formation instabilities, and creates heat‑affected zones, thereby reducing fatigue resistance and final part performance [ 3 ,  9 ,  25 ].",
+        "The machined surface shape directly affects tribological interaction at the tool‑workpiece interface, altering adhesion and abrasion mechanisms that subsequently influence tool wear modes. The literature shows that progressive tool wear can be indirectly inferred from surface texture degradation, supporting surface integrity as a relevant variable in tool condition monitoring [ 9 ,  32 ].",
+        "However, most studies still rely on off‑line surface analysis using instruments such as roughness testers, optical microscopy, and microhardness measurement [ 3 ,  25 ,  32 ]. Although technically robust, these methods do not enable real‑time surface integrity tracking. Newer alternatives explore acoustic emission [ 60 ], correlations with flank wear [ 9 ], and digital reconstruction of surface topography along the cutting path [ 11 ], pointing towards smart continuous monitoring systems for advanced industrial manufacturing.",
+        "A relevant limitation in surface integrity research is the absence of standardization in tested variables and machining conditions, making direct comparison of results difficult. Cillikova et al. [ 61 ], for example, reported significant surface integrity variations within the same machined part due to microstructural heterogeneities, demonstrating the need for adaptive predictive models that account for uncertainties in industrial settings. The absence of systematic real‑time analyses combining tool condition and surface integrity further underscores the scarcity of comparable and generalizable studies.",
+        "Using surface integrity as an indirect tool wear indicator has shown promise for developing predictive and adaptive monitoring systems. Advanced optical technologies such as white‑light interferometry and confocal microscopy are being explored for high‑resolution surface analysis, though their application remains predominantly off‑line. Combining these techniques with force, temperature, or acoustic emission sensors may enable improved diagnostics and automated decision‑making in industrial environments.",
+        "Despite the well‑established link between tool wear and surface integrity, fully integrated digital solutions for continuous, comparable, and effective monitoring of this relationship remain challenging. Establishing evaluation standards and advancing digital technologies that connect tool condition with surface quality in real time could represent an important step toward higher productivity, process reliability, and seamless communication across production sectors dealing with different tool wear mechanisms.",
+        "In this context, reliable monitoring of tool wear becomes essential. Figure  4  illustrates a typical tool wear evolution process, in which wear tends to be more pronounced in the flank (side) and crater (rake face) regions due to the relatively fixed position of the cutting tool with respect to the machining kinematics during the cutting process.",
+        "Fig. 4 Typical representation of tool wear, illustrating flank wear and crater wear on a cutting insert, together with a schematic definition of flank wear measurement (VB). Adapted from [ 62 ,  63 ]",
+        "As is well established, the typical evolution of tool wear occurs in a gradual manner (Fig.  5 ) and is commonly described in terms of three distinct stages based on the progression of flank wear (VB). The first stage corresponds to the initial or adaptation period, characterized by a relatively rapid increase in wear due to the adjustment of the cutting edge to the machining conditions. This phase is followed by a second stage, often referred to as steady‑state wear, in which wear progresses at a nearly linear and stable rate, representing the most desirable operating region in terms of process stability and surface quality. The third stage is marked by an accelerated wear rate, associated with severe edge degradation, thermal damage, or microfracture, leading to rapid loss of tool functionality and an increased risk of catastrophic failure. From a monitoring perspective, accurately identifying the transition between these stages is critical, as it enables timely tool replacement and prevents excessive degradation of both the tool and the machined surface.",
+        "Fig. 5 Schematic representation of tool wear progression, illustrating the evolution of flank wear up to a maximum value of 0.243 mm. Adapted from [ 64 ]"
+      ]
+    },
+    {
+      "heading": "Monitoring",
+      "paragraphs": [
+        "Cutting tool wear measurement is a fundamental challenge for quality control and process optimization in milling operations. Traditional wear measurement methods mainly use optical techniques such as reflected‑light microscopy and scanning electron microscopy (SEM), which provide high‑resolution images of worn tools. However, these methods require machining process interruption, limiting their use in real‑time industrial settings. Indirect techniques – including acoustic emission analysis, cutting force monitoring, and cutting zone temperature measurement – are increasingly used because they allow in‑situ monitoring. Although promising, these approaches require accurate calibration and robust signal interpretation for reliable tool condition assessment [ 58 ,  65 ,  66 ].",
+        "Tool wear measurement is essential for machining quality and operational reliability. Wear measurement techniques can be classified as direct or indirect. Direct methods involve visual inspection or geometric measurement of the tool after stopping machining. Optical microscopy and SEM are widely used to study wear morphology with high accuracy. More recently, non‑contact three‑dimensional measurement techniques such as white‑light interferometry and X‑ray computed tomography have been employed for detailed wear evolution analysis [ 52 ,  65 ,  67 ]. Indirect methods allow continuous tool monitoring during cutting without stopping the machine. Techniques such as acoustic emission analysis, cutting force monitoring, tool tip temperature measurement, and vibration signal analysis offer considerable potential. These approaches enable early fault detection and support predictive maintenance. However, signal interpretation requires advanced signal processing and, often, artificial intelligence methods for automatic tool condition classification [ 12 ,  58 ,  66 ]."
+      ]
+    },
+    {
+      "heading": "Direct methods",
+      "paragraphs": [
+        "The growing need for high‑precision manufacturing, with goals of higher productivity and lower cost, has driven the development of more advanced tool wear monitoring methods. In milling, progressive tool wear is both a technical challenge and important economic factor, since it directly affects surface quality, tool life, and total production cost [ 68 ,  69 ].",
+        "Historically, traditional wear measurements have used visual inspections as the basis for tool condition studies. Among these, optical microscopy for measuring flank wear width (VB), as defined in standards ISO 3685:1993 and ISO 8688‑1:1989, remains widely used [ 4 ,  65 ,  69 ]. These techniques offer accuracy and are common validation methods in academic and industrial studies. However, they have important limits, including the need to stop production, strong dependence on operator judgment, and limited ability for automatic integration into factory environments [ 70 ,  71 ].",
+        "Besides optical microscopy, some studies report using contact measurements with profilometers or mechanical devices to obtain wear profiles [ 64 ,  72 ]. Although reliable, such methods have practical limitations in industrial settings, mainly due to the risk of damaging already worn tools and the time required for measurements [ 73 ].",
+        "In summary, although direct methods retain their value as reference techniques, increasing industrial needs have shown their basic limit: they cannot provide real‑time information for immediate process action. A clear trend toward digital and smart techniques has appeared, aiming to overcome these limits by offering better early wear detection, integration with digital production systems, and the possibility of automated intervention [ 24 ,  58 ,  66 ]."
+      ]
+    },
+    {
+      "heading": "Indirect methods",
+      "paragraphs": [
+        "Acoustic emission techniques, for example, have been reported in many studies as effective for early wear detection, especially in processes where cracks and microcracks form at the tool‑workpiece interface [ 12 ,  74 ,  75 ]. Acoustic emission signals exhibit a strong link with progressive fracture events, severe abrasion, or built‑up edge formation, enabling prediction of catastrophic failures [ 76 ]. However, this technique can be compromised by external noise in industrial environments, and specific calibration is required for each operation [ 57 ,  77 ].",
+        "Cutting force‑based monitoring is a well‑established approach noted in several reviewed studies [ 4 ,  78 ,  79 ]. The literature confirms that gradual cutting force increases can serve as indirect indicators of progressive tool wear [ 66 ,  80 ]. Nonetheless, whether maximum or mean cutting force values are used, they are influenced by variables such as workpiece material, tool geometry, and cutting parameters. Since these variables generate different total force levels, specific interpretation models are required for each application [ 66 ,  67 ].",
+        "Similarly, vibration-based techniques have been widely reported [ 81 ,  82 ,  83 ,  84 – 85 ]. Vibration signals exhibit good sensitivity for detecting periodic patterns typical of milling operations; however, they require complex signal processing and careful calibration across different production contexts [ 86 ].",
+        "There has been a significant increase in the use of computer vision techniques, especially convolutional neural networks (CNNs), for automatic analysis of tool or chip images [ 67 ,  87 ]. These approaches are promising because they are non‑contact and allow full automation of monitoring tasks [ 58 ]. However, sensitivity to lighting changes in industrial settings and the high cost of hardware for factory conditions are challenges that need to be overcome [ 52 ,  88 ].",
+        "The adoption of artificial intelligence (AI) has become a trend in tool wear monitoring [ 24 ]. However, the performance of different AI algorithms varies considerably depending on the nature of the input data and the monitoring objective. Convolutional neural networks (CNNs) excel in image‑based applications, achieving classification accuracy by automatically extracting hierarchical spatial features from tool or chip images [ 58 ]; their main limitation is the requirement for large, labeled image datasets and significant computational resources for training [ 66 ,  89 ]. Long short‑term memory (LSTM) networks are particularly effective for time‑series signals (force, vibration, AE) due to their ability to capture long‑term temporal dependencies [ 86 ]; however, they are computationally intensive and may overfit when training data are limited [ 57 ,  88 ]. Support vector machines (SVMs) and random forests are more interpretable and require less data, making them suitable for edge deployment with real‑time inference; nevertheless, their accuracy tends to be lower than deep learning models when dealing with complex, multi-sensor inputs exhibiting non-linear behaviors [ 39 ,  66 ]. Hybrid physics‑informed models, which embed mechanistic knowledge into data‑driven architectures, have recently emerged as a promising direction to improve generalization and reduce data dependency; however, they require domain expertise for model formulation and careful calibration of physical parameters [ 90 ,  91 – 92 ]. The choice of AI algorithm therefore involves a trade‑off between accuracy, interpretability, computational cost, and data availability – a decision that must be aligned with the specific industrial requirements and operational constraints of each application."
+      ]
+    },
+    {
+      "heading": "Challenges of indirect methods",
+      "paragraphs": [
+        "Despite their widespread use and evident advantages, indirect monitoring methods have several inherent challenges that limit their robustness and industrial applicability. Among indirect techniques, cutting force-based monitoring offers superior physical interpretability and correlation with wear mechanisms; however, it requires expensive dynamometers, presents mounting challenges, and is susceptible to variations in the workpiece material. Vibration-based methods are more practical for industrial implementation due to the low cost and straightforward installation of accelerometers; nevertheless, they are sensitive to machine structural dynamics and environmental noise, which complicates the isolation of wear-related features. Acoustic emission (AE) provides high sensitivity to wear and fracture events; however, its signals are easily attenuated and demand precise sensor positioning and frequent recalibration. Computer vision techniques enable non-contact tool condition monitoring, but their performance is significantly affected by variable lighting, the presence of cutting fluid, and chip obstruction ˗ factors that are inherent to shop floor environments. Therefore, the selection of an indirect method must be guided by application-specific constraints, such as cost, accessibility, environmental conditions, and the required response time. Sensor fusion strategies, which combine complementary methods (e.g., force and vibration, or acoustic emission and temperature), have demonstrated greater reliability than any single technique alone, although they introduce additional complexity in data synchronization, feature fusion, and model interpretation [ 48 ,  66 ,  75 ,  80 ].",
+        "A growing trend is the integration of monitoring systems into digital industry platforms, including industrial networks, the Internet of Things (IoT), and Manufacturing Execution Systems (MES) [ 24 ,  68 ,  93 ]. Such integration enables fast information sharing across departments, the implementation of predictive maintenance, and dynamic optimization of machining parameters [ 88 ,  93 ]. Although these advantages exist, few studies report large‑scale industrial adoption, indicating that issues related to cost, cybersecurity, and system robustness in production environments remain significant [ 88 ,  94 ].",
+        "The reviewed studies exhibit considerable methodological variation, which complicates direct comparison of results. Main sources of variability include workpiece materials such as steels, titanium alloys, Inconel, CFRP (carbon‑fibre reinforced polymer) composites, and wood [ 4 ,  64 ,  75 ,  95 ]; including cutting conditions such as dry machining, minimum quantity lubrication (MQL), and conventional lubrication [ 88 ,  96 ,  97 ]. Furthermore, different criteria are used to define critical wear limits, typically ranging from VB = 0.2 mm to VB = 0.3 mm [ 4 ,  65 ]. Despite this diversity, there is general agreement in the literature on the potential of digital techniques for enhancing productivity and process reliability [ 24 ,  58 ,  66 ].",
+        "Digital monitoring of tool wear can overcome the limitations of traditional methods and represents a strategic capability for modern manufacturing. However, the transition from laboratory to factory application still requires further effort, particularly in terms of practical validation and demonstration of economic return [ 88 ]. Table  4  compares wear measurement techniques, summarizing the main advantages and limitations of different monitoring methods.",
+        "Table 4 Comparison of tool wear measurement techniques in milling Technique Source Advantages Limitations Optical Microscopy [ 4 ,  65 ,  69 ] High measurement accuracy Offline inspection; operator subjectivity Acoustic Emission (AE) [ 12 ,  56 ,  74 ] High sensitivity to microcracks Highly sensitive to industrial noise Cutting Force [ 71 ,  78 ,  79 ] Strong correlation with tool wear Influenced by cutting parameters Vibration Analysis [ 81 ,  82 ,  85 ] Non-invasive; moderate cost Requires specific calibration Computer Vision [ 52 ,  58 ,  87 ] Contactless; high automation potential Sensitive to lighting variations; hardware cost Machine Learning/AI [ 24 ,  58 ,  89 ] High accuracy; predictive capability Requires large datasets; limited interpretability"
+      ]
+    },
+    {
+      "heading": "Effects of tool wear",
+      "paragraphs": [
+        "The physical variables that carry information about tool wear – cutting force, vibration, and temperature – are measured by dedicated sensors. These sensors generate signals that contain both useful features (related to wear progression) and unwanted noise. In the context of digital monitoring, these signals are first acquired and then processed locally, at the edge processing, before being transmitted to the cloud. Signal processing plays a fundamental role in this edge layer, as it transforms raw sensor outputs into meaningful indicators of tool condition [ 98 ]. Common processing techniques include:",
+        "Time‑domain analysis : extraction of statistical features such as mean, variance, and standard deviation; Frequency‑domain analysis : identification of frequencies present in the signal, using the Fast Fourier Transform (FFT). Time‑frequency analysis : characterization of how each frequency evolves over time, for instance via the wavelet transform.",
+        "Figure  6  provides an example of these three signal analysis approaches. Figure  6 ‑a shows the cutting force signal (Fc) from a milling process carried out with a two‑insert coated carbide tool. The tool performs a partial up‑milling operation on a common carbon steel, with a radial width of cut smaller than the tool diameter. From the time‑domain cutting force signal, information such as the mean force, peak force, and force variability can be extracted, among other statistical features. Figure  6 ‑b presents the frequency‑domain analysis of the same signal, obtained via the Fast Fourier Transform (FFT). The frequencies present in the system are clearly identified: the peak near 50 Hz corresponds to the spindle rotation frequency; the peak around 100 Hz is twice the rotation frequency, resulting from the two teeth of the cutter engaging the workpiece once per spindle revolution. Subsequently, harmonics appear, reflecting the system’s response to this periodic excitation. Finally, Fig.  6 ‑c shows the result of the Wavelet Transform (WT), a time‑frequency analysis that reveals how the dominant frequencies evolve over time. It can be observed that the region of highest intensity remains approximately in the 80–100 Hz band, corresponding to the tooth passing frequency. In this example, the frequency does not change significantly over time because the acquisition window is short (only 3 s). However, continuous monitoring throughout the entire process would allow the detection of changes in spectral distribution and its temporal evolution, providing crucial information for identifying the tool wear state.",
+        "Fig. 6 Signal processing of the cutting force (Fc) for tool condition monitoring. ( a ) Time‑domain signal (Fc) – a two‑flute coated carbide tool performing partial up‑milling on carbon steel. ( b ) Frequency‑domain analysis (FFT) – peaks close to 50 Hz (spindle rotation) and 100 Hz (tooth passing frequency) are clearly visible. ( c ) Time‑frequency analysis (WT) – the dominant energy remains in the 80–100 Hz band, demonstrating that the main excitation frequency is stable over the 3 s window; longer monitoring would reveal wear‑induced changes",
+        "These methods enable the extraction of features that are sensitive to wear, such as changes in amplitude, frequency shifts, and energy distribution across frequency bands. The following subsections analyze how tool wear affects each of these physical signals: vibration, cutting forces, and temperature."
+      ]
+    },
+    {
+      "heading": "Vibration",
+      "paragraphs": [
+        "Vibration is one of the most sensitive process variables to tool wear in milling operations. Since milling is an interrupted cutting process, each tooth of the cutter periodically enters and exits the workpiece, generating cyclic mechanical excitation in the machine–tool–workpiece system. Under stable cutting conditions, this excitation tends to follow a cyclic pattern. However, as the cutting edge wears, changes in tool geometry, contact conditions, friction, chip formation, and cutting force distribution modify the dynamic response of the system, leading to identifiable variations in vibration amplitude, frequency behavior, and signal stability [ 55 ,  65 ,  81 ].",
+        "The influence of tool wear on vibration begins with the gradual degradation of the cutting edge. Flank wear increases the contact area between the tool flank face and the machined surface, intensifying friction at the tool–workpiece interface. Crater wear, in turn, modifies the rake face geometry and affects chip flow along this surface. These alterations increase the mechanical resistance of the material during cutting and may change the magnitude of cutting forces. Consequently, the dynamic excitation transmitted to the spindle, tool holder, workpiece, and machine structure becomes more intense and less uniform, resulting in higher vibration levels and more irregular signal patterns [ 55 ,  64 ,  65 ].",
+        "In practice, tool wear affects vibration mainly through three mechanisms. First, a worn cutting edge increases frictional contact, which raises the amplitude of forced vibrations. Second, the loss of sharpness alters chip formation, making the cutting process less stable and increasing fluctuations in forces and acceleration signals. Third, localized damage such as chipping, micro‑fractures, or coating delamination can impair machining during tooth engagement, generating high‑frequency components and vibration spikes. Therefore, vibration signals are not only indicators of overall tool degradation but can also reveal specific changes in cutting edge condition [ 70 ,  81 ,  84 ].",
+        "As wear progresses, the vibration signal typically evolves from a more regular and periodic waveform to a more unstable and complex response. In the initial wear stage, vibration changes may be small and concentrated mainly at the tooth‑passing frequency and its harmonics. With moderate wear, signal amplitude tends to increase due to higher cutting forces and greater frictional excitation. Under severe wear conditions, the signal may exhibit abrupt peaks, broadband components, and increased irregularity, especially when chipping or tip fracture occurs. Figure  7  demonstrates the relationship between tool wear progression and the evolution of the vibration signal. The occurrence of chipping (tipping) on one of the cutting edges causes a noticeable change in the vibration signal, with an increase in signal amplitude after the defect and a higher frequency of small waveform variations. Such changes in dynamic response can be used as indirect evidence of the tool condition.",
+        "Fig. 7 Relationship between tool wear and vibration signal. Chipping of a cutting edge causes an increase in signal amplitude and small waveform variations, which can be used as an indirect indicator of tool condition. Adapted from [ 84 ]",
+        "Milner and Roth [ 70 ,  81 ] showed that acceleration data collected during milling can be used to monitor the condition of carbide tools, demonstrating that changes in vibration response are associated with tool degradation. Rahman et al. [ 55 ] analyzed vibration signal frequencies during milling of martensitic stainless steel and reported a strong correlation between specific frequency bands and wear progression. Similarly, Brito et al. [ 83 ] demonstrated that vibration features can be effectively used for indirect monitoring in end micro‑milling, where direct wear measurement is particularly difficult due to the small tool dimensions.",
+        "The effect of tool wear on vibration is also strongly linked to variations in cutting forces. As will be discussed later in force‑based monitoring, worn tools generally require higher cutting forces due to increased friction and altered cutting geometry, thereby increasing vibration intensity. Ma et al. [ 64 ] reinforced this relationship by proposing a dynamic milling force model that considers vibration and flank wear width for tool state monitoring in Ti‑6Al‑4 V machining. This indicates that vibration can be interpreted as a mechanical consequence of the evolving interaction between tool wear, cutting forces, and process stability.",
+        "Vibration features are commonly extracted using statistical and frequency‑domain indicators. Time‑domain features such as root mean square (RMS), peak value, crest factor, skewness, and kurtosis are often used because they capture changes in signal behavior. As tool wear increases, RMS and peak values typically grow due to higher vibration amplitude, while kurtosis and crest factor may become more sensitive to localized defects such as chipping or sudden edge failure. In the frequency domain, wear progression can modify the intensity of components associated with spindle rotation, tooth passing frequency, harmonics, and high‑frequency bands related to impacts and friction phenomena [ 44 ,  55 ,  66 ].",
+        "Because vibration signals in milling are non‑stationary, especially under varying tool conditions, advanced signal processing techniques have become important for separating wear‑related information from the overall machine dynamics. Wavelet transforms, empirical mode decomposition, Hilbert–Huang transform, and variational mode decomposition allow vibration signals to be analyzed in both time and frequency, enabling the identification of transient events caused by tool wear or cutting edge damage. These techniques are particularly useful in milling because the intermittent engagement of cutter teeth creates periodic impacts that can mask subtle wear‑related changes in conventional spectral analyses [ 44 ,  66 ].",
+        "The position and type of vibration sensor also influence the quality of wear‑related information. Accelerometers are commonly mounted on the spindle housing, tool holder, machine structure, or workpiece fixture, depending on the desired sensitivity and practical constraints. Sensors placed closer to the cutting zone generally capture stronger wear‑related signals but may be more difficult to install in industrial environments. Postel et al. [ 99 ] showed that spindle‑mounted vibration sensors can be effectively used to monitor both vibrations and cutting forces, reinforcing the value of integrated sensing approaches. More recently, wireless monitoring systems have gained attention for reducing installation complexity and enabling real‑time data transmission without interfering with machining operations. Vianello et al. [ 95 ] demonstrated the feasibility of using a low‑cost wireless vibration sensor for tool life monitoring in end milling, indicating the industrial potential of vibration‑based tool condition monitoring.",
+        "Recent studies have also employed machine learning and deep learning methods to classify tool wear states from vibration signals. Lan et al. [ 54 ] proposed a deep transfer learning approach based on spindle vibration signals, achieving accurate tool wear recognition under varying machining conditions. Xue et al. [ 82 ] developed a tool condition monitoring system capable of acquiring spindle vibration data for intelligent wear classification. These approaches show that vibration signals contain sufficient information to support automated tool state assessment, especially when combined with robust feature extraction and adaptive learning algorithms.",
+        "However, the interpretation of vibration signals remains challenging because vibration is influenced by many factors beyond tool wear. Machine structural dynamics, spindle imbalance, tool eccentricity, fixture rigidity, chatter, cutting parameters, and environmental disturbances can all affect the measured signal [ 65 ,  84 ]. Therefore, an increase in vibration amplitude cannot always be attributed solely to tool wear. For reliable monitoring, wear‑related vibration features must be distinguished from other dynamic effects. This is one reason why sensor fusion strategies that combine vibration with cutting force, acoustic emission, power consumption, and temperature measurements have shown greater robustness than single‑sensor approaches [ 80 ,  99 ].",
+        "Future developments should focus on intelligent wireless sensors, digital twins, physics‑informed machine learning models, and adaptive signal processing methods capable of learning from changing machining environments. These approaches can improve the separation between wear‑related vibration behaviors and other process disturbances, increasing the reliability of tool condition monitoring systems. In the context of smart manufacturing and Industry 5.0, vibration analysis is thus expected to remain a fundamental source of information for real‑time tool wear assessment, process optimization, and autonomous decision‑making in milling operations [ 90 ,  91 – 92 ]."
+      ]
+    },
+    {
+      "heading": "Cutting forces",
+      "paragraphs": [
+        "Cutting forces are among the most studied variables in machining and are widely used to assess tool condition, cutting efficiency, and wear progression. Unlike indirect methods using only acoustic emission or vibration signals, force-based monitoring gives more direct physical insight into tool-workpiece interaction mechanisms. Cutting force changes can show cutting-edge degradation start, friction condition changes, and chip formation variations.",
+        "From a practical perspective, the cutting force signal is directly linked to chip shape. As shown in Fig.  8 , during a full cutting cycle, force magnitude increases from initial chip formation (where uncut chip thickness is smallest), reaches maximum near the middle of the chip, and decreases again as chip thickness reduces toward disengagement. Therefore, useful information comes not only from peak force values (Fig.  8 -c), but also from time evolution and waveform of the force signal, which reflects material removal conditions and the state of the cutting (Fig.  8 -d).",
+        "Fig. 8 Cutting forces in partial milling of carbon steel with TiAlN-coated carbide tools (20 mm diameter, 2 inserts). Parameters: Feed per tooth (fz) 0.12 mm/tooth, Cutting speed (Vc) 300 m/min, Radial Width of cut (ae) 15 mm, Axial Depth of cut (ap) 1 mm. The Fy force is in the feed direction and Fx is perpendicular to the feed, both acting in the radial direction of the spindle; and Fz is the force exerted in the axial direction of the spindle",
+        "Early mechanical and empirical models for predicting cutting forces were derived from standard machining tests. Key work by Altintas [ 100 ] and Kim and Kim [ 101 ] proposed indirect methods linking spindle and feed motor currents with effective cutting forces, allowing prediction of mechanical load changes and energy use. These models were later improved with mechanistic approaches by Jeong and Cho [ 102 ] and Yamada and Kakinuma [ 103 ], which added CNC system dynamics, feedback noise, and axis delay effects for better prediction accuracy under real machining conditions.",
+        "Direct cutting force measurement, usually performed with piezoelectric dynamometers, provides high‑quality signals but requires laboratory equipment and has practical challenges for factory use. Therefore, several indirect approaches have been tested, including force estimation from motor current signals [ 104 ], smart sensors in machine tool systems [ 105 ], and hybrid correlations with acoustic emission and vibration signals [ 99 ,  106 ,  107 ]. These strategies try to balance signal quality with industrial practicality.",
+        "As is known, tool wear progression is directly related to gradual increases in cutting force components. Hou et al. [ 108 ] developed a force-based model for flank wear detection by including worn-tool parameters like wear width and effective cutting geometry changes. Similarly, Lu et al. [ 109 ] proposed an indirect method using current and torque sensors, achieving strong correlation with wear measurements.",
+        "Another increasingly tested approach uses energy consumption as a tool wear indicator. Qiu [ 110 ] proposed a power-based model for cylindrical turning, showing good correspondence with estimated cutting force coefficients. This concept was later extended by Wang et al. [ 105 ] and Shi et al. [ 111 ] to milling and five-axis machining, where combined models using energy consumption and residual stress estimation allowed continuous in-process monitoring. Notably, they showed that machine power signals can estimate tool wear besides machined surface residual stress, connecting tool condition monitoring with surface integrity control.",
+        "With ongoing manufacturing digitalization, recent research increasingly combines cutting force data with machine learning and physics-informed models. Qiang et al. [ 91 ] applied hybrid physics–data-driven learning frameworks across multiple operating conditions, achieving strong wear prediction despite material and tool geometry changes. Additionally, Qiang et al. [ 92 ] showed that combining recurrent Gaussian process regression with physics-informed constraints gives more reliable predictive models, effectively reducing overfitting and data shortage problems."
+      ]
+    },
+    {
+      "heading": "Temperature",
+      "paragraphs": [
+        "The thermal effects originating from frictional dissipation and plastic deformation are central to tool wear mechanisms in milling. Cutting zone temperature plays an important role in tool wear mechanisms during milling and is one of the most important factors affecting tool life, process stability, and final dimensional quality [ 4 ,  112 ,  113 ]. The heat generated during machining comes mainly from strong friction at the tool-workpiece interface, especially in the chip formation region from tool-chip contact, and from plastic deformation of the workpiece material, concentrated in the primary shear zone and along the cutting edge [ 112 ,  114 ].",
+        "Friction plays a fundamental role in heat generation during machining, directly influencing tool wear mechanisms and surface quality. However, in conventional models, friction is often treated as a static parameter, ignoring its time‑varying nature and dependence on cutting conditions. Recent studies have shown that friction‑related phenomena can be indirectly monitored through vibration signals and force data, offering potential for real‑time correlation between tribological behavior and tool performance [ 10 ,  13 ,  31 ]. Such approaches are particularly promising within digital monitoring frameworks, as they allow friction estimation under real operating conditions.",
+        "Regardless of the sensing strategy, if the generated heat is not properly dissipated, it accelerates diffusion and oxidation processes and causes thermal softening of the tool material, increasing crater wear, built‑up edge formation, and thermal microcrack initiation. These effects are important for cemented carbide tools, which despite high hardness have limited fracture toughness [ 4 ,  115 ,  116 ]. For difficult‑to‑machine materials such as nickel‑ and titanium‑based superalloys, the problem is exacerbated by their low thermal conductivity and high mechanical strength, leading to higher cutting zone temperatures depending on operating parameters [ 113 ,  115 ,  117 ]. Therefore, proper selection of cutting conditions, effective cooling strategies (e.g., minimum quantity lubrication - MQL, or cryogenic cooling), and the development of tool materials with better thermal stability are essential to reduce thermal effects and extend tool life [ 112 ,  118 ].",
+        "The relationship between cutting temperature and tool wear was recognized early in machining research, but the measurement of cutting temperatures in milling remains a challenging task. Contact methods, such as embedded thermocouples, provide direct and relatively low‑cost measurements; however, they suffer from slow response times, thermal inertia, and are subject to disturbance of the local thermal field, making them of limited applicability for transient operations or for scenarios involving high rates of thermal change, as is the case in milling (intermittent cutting). Non‑contact methods, including infrared pyrometers and thermal cameras [ 119 ], enable fast, real‑time measurements without mechanical interference; nevertheless, their accuracy depends strongly on surface emissivity, chip obstruction, and the presence of cutting fluid – factors that are particularly problematic in milling with flood cooling [ 118 ,  120 ]. More recently, wireless telemetry systems integrated into smart tool holders have enabled continuous temperature monitoring during tool rotation, offering a promising path toward industrial implementation; however, these systems remain expensive and are not yet widely commercially available [ 117 ,  121 ]. No single method offers a complete, reliable, and economically viable solution for all industrial scenarios; consequently, comparative studies that evaluate these techniques under identical cutting conditions could contribute significantly to the advancement of the field. Furthermore, hybrid measurement strategies, which combine contact and non‑contact approaches with advanced signal processing, should focus on overcoming the limitations of individual methods.",
+        "As Cook [ 122 ] noted, temperature is one of the most important parameters affecting tool wear, and understanding wear mechanisms requires knowledge of the temperatures involved in the cutting process. Of the various predictive models developed over time, Cook’s equation (Fig.  9 ) is a practical means of estimating the mean temperature rise at the tool-chip interface, where ΔT is the mean temperature rise (°C, u is the specific cutting energy (the energy required to remove a unit volume of material - J/mm³), ρC is the volumetric specific heat of the workpiece material – J/(mm³.°C) – defined as the product of its density and specific heat capacity. Vc is the cutting speed (m/s), h is the undeformed chip thickness (mm), and k is the thermal diffusivity (m²/s). This equation captures the combined influence of cutting parameters and workpiece material properties on the temperature rise at the interface. The square-root dependence on the term (Vc·h)/k reflects the balance between heat generation and dissipation. Higher cutting speeds and chip thicknesses increase heat input; however, higher thermal diffusivity promotes faster heat conduction away from the cutting zone, thereby reducing the temperature rise.",
+        "Figure  9  shows the thermal mechanisms in machining by relating specific cutting energy to heat generation in the shear zone and at the tool-chip interface. The figure shows how cutting parameters and material properties such as density, specific heat capacity, and thermal conductivity control the change of mechanical energy into heat and its distribution in the cutting system.",
+        "Fig. 9 Thermal effects in machining, illustrating the relationship between specific cutting energy, heat generation at the tool–chip interface, and the thermophysical properties of the workpiece material",
+        "In the context of digital monitoring systems, this type of semi-empirical model is a foundational element of physics-informed approaches. Such models can provide continuous estimates of interface temperature by integrating real-time sensor data (e.g., cutting forces to estimate specific energy or spindle power to infer cutting speed) with material property databases. These temperature estimates can then be used to update tool wear predictions within hybrid frameworks combining mechanistic knowledge and data-driven learning [ 38 ,  71 ,  90 ]. This integration aligns with the layered architecture discussed earlier, in which physics-based models operating at the edge or in the cloud contribute to more robust, generalizable monitoring solutions.",
+        "In cemented carbide tools, high temperatures can dissolve WC grains and degrade the cobalt binder phase, greatly reducing tool mechanical strength. Also, high thermal loads contribute to the formation of oxides such as tungsten and cobalt oxides, which further accelerate wear mechanisms [ 112 ,  114 ]. To address these problems, several studies demonstrate the importance of advanced thermal modelling techniques combined with experimental temperature measurements, including embedded thermocouples and infrared imaging. These approaches have reinforced understanding of temperature gradients during machining and supported development of coated carbides, advanced ceramics, and hybrid tool systems with better thermal resistance [ 71 ,  123 ].",
+        "Three main approaches are commonly used for temperature measurement in milling operations. Contact‑based methods, such as thermocouples embedded in the tool or workpiece, remain widely used because they are simple and relatively low cost [ 4 ,  120 ]. However, these systems have notable limits, including relatively slow response times, difficulties operating under severe cutting conditions, and possible disturbance of local thermal fields from the sensor physical presence [ 38 ,  115 ].",
+        "Non‑contact methods, including infrared pyrometers and thermal cameras, have gained increasing attention because they allow fast, real-time temperature measurements without mechanical interference with the cutting process. These techniques are especially useful in high-speed machining or in areas with limited access [ 73 ,  119 ,  120 ]. However, their accuracy may be affected by factors such as material emissivity, chip blockage, and cutting fluid presence, which can block or distort the line of sight [ 118 ,  119 ]. A comparative review by Leonidas et al. [ 120 ] notes differences in accuracy, dynamic response, and practical limits among these methods, concluding that no single technique fully meets all industrial needs. Table  5  compares the main approaches used to study thermal effects in milling, showing their advantages, limitations, and key studies.",
+        "Table 5 Overview of techniques used for temperature measurement and thermal analysis in machining processes Technique Source Advantages Limitations Thermocouples [ 4 ,  38 ,  120 ] Simple, low cost, can be embedded in the tool Slow response time; possible disturbance of the thermal field Infrared pyrometers/thermal cameras [ 73 ,  119 ,  120 ] Fast measurement; contactless; real-time capability Sensitive to emissivity variations; chip obstruction Smart sensor holders [ 71 ,  117 ,  121 ] CNC integration; real-time data acquisition; wireless operation Higher cost; installation complexity Thermal modelling (analytical/numerical) [ 71 ,  114 ,  123 ] Accurate prediction of thermal gradients High computational demand; requires accurate input data",
+        "Temperature measurement in rotating tools (milling operations) has extra challenges compared to stationary machining processes (turning operations). These challenges have pushed development of wireless systems and smart tool holders with embedded sensors that can send real-time data during tool rotation [ 117 ,  121 ]. Such systems allow continuous thermal monitoring and help integration with digital manufacturing platforms and predictive algorithms for Industry 5.0, allowing automated corrective actions to reduce thermally induced failures and improve process reliability [ 71 ,  123 ,  124 ].",
+        "Furthermore, significant differences between cutting strategies (up‑milling and down‑milling) affect thermal distribution and wear evolution. Down-milling generally associated with lower thermal peaks and therefore lower risk of catastrophic tool failure [ 113 ]. There is also growing evidence that advanced lubrication strategies, including nano lubricants, can significantly change thermal behavior in the cutting zone, achieving temperature reductions up to 15–20%, depending on machined material and cutting conditions [ 118 ].",
+        "Despite important advances, method variation continues in the literature, including temperature measurement techniques, cutting parameters, and workpiece materials, making direct result comparison and setting critical temperature thresholds difficult [ 115 ,  118 ,  119 ]. Only a few studies combine real-time thermal measurements with advanced machine learning algorithms for tool wear prediction, and few investigations systematically correlate temperature evolution with chip formation, residual stresses, or specific wear modes [ 38 ,  112 ,  116 ,  123 ]. Therefore, future research trends point toward developing hybrid solutions that combine smart sensors, contactless measurement techniques, and predictive algorithms, following industrial technology concepts, to improve process monitoring accuracy and extend milling tool service life [ 4 ,  112 ,  123 ]."
+      ]
+    },
+    {
+      "heading": "Digital monitoring and data-driven methods",
+      "paragraphs": [
+        "There is strong potential to combine cemented carbide tools with digital tool wear monitoring methods, especially using artificial intelligence algorithms. Artificial neural networks have been widely tested to link variables such as cutting forces, vibration, and acoustic signals with specific wear levels in cemented carbide inserts [ 5 ,  125 ]. These models can predict wear even under changing conditions, pointing to digital wear monitoring becoming essential for higher productivity and lower manufacturing costs [ 5 ,  81 ]. Table  6  compares different monitoring approaches and their key features for digital tool wear monitoring applications.",
+        "Table 6 Summary of the main research focus, digital application, machined materials, and key findings of the analyzed studies Main focus Source Digital application Machined material Key highlights Wear–surface integrity relationship in Inconel 718 [ 3 ] No Inconel 718 Direct impact of cemented carbide wear on surface integrity AI-based monitoring of PVD-coated inserts [ 24 ] Yes Hastelloy C276 Integration of PVD coatings with predictive analysis Micro-blasting applied to PVD coatings [ 15 ] No Various Improved coating adhesion and resistance to surface cracking Wear prediction using neural networks [ 125 ] Yes General turning Predictive algorithms for wear in carbide inserts Wear monitoring via acceleration signals [ 81 ] Yes Various Sensor integration for early wear detection Neural networks for tool wear prediction [ 5 ] Yes Face milling AI applied to wear prediction of carbide inserts Effect of feed rate on tool wear [ 14 ] No 718Plus Evaluation of cutting forces and progressive wear Wear evolution versus cutting force [ 6 ] Partial 718Plus Dynamic analysis of wear in heavy milling Micro-blasting for cemented carbide tools [ 16 ] No Various Extended tool life of coated inserts Chipping propagation mechanisms [ 7 ] No Prototyping Focus on chipping resistance in cemented carbide tools",
+        "Shi et al. [ 126 ] tested an indirect method for monitoring cutting forces using machine tool power signals. They combined a wear-dependent force model with a simulated annealing optimization algorithm for parameter finding. The model includes shear contributions and cutting forces affected by flank wear (VB), linking them to total power use. Experimental tests during milling with simultaneous power, cutting force, and tool wear measurements showed good accuracy for predicting both cutting forces and VB, with errors under 20 N and 11 μm respectively, and worked well under different conditions. These results show the method as a low-cost option for real-time monitoring, with good potential for factory use in predictive maintenance and adaptive process optimization.",
+        "Reliable tool wear prediction, especially early in tool life, is important for reducing unplanned downtime and manufacturing costs according to Han et al. [ 90 ]. Digital twin approaches using dynamic simulation for wear prediction in milling, combining physical cutting and wear models with real-time sensor data, have become key for tool condition monitoring. Their model estimates cutting forces based on dynamic chip thickness, including run-out effects, elastic recovery, and elastoplastic contact in the flank wear area. An iterative filtering strategy finds force coefficients and wear parameters from force and vibration signals. The method was tested in milling with simultaneous cutting force measurement (dynamometer), acceleration signals (accelerometers on spindle or table), and flank wear measurements (optical vision). Results show the digital twin approach with dynamic simulation has lower prediction errors than conventional methods while keeping performance suitable for real-time use. These findings indicate that combining dynamic simulation and sensor data allows more robust wear prediction during early and middle tool life stages. The study also notes future challenges including adding more complex wear mechanisms and better multisensory fusion strategies for full tool life coverage.",
+        "In a similar machining study, Zhang et al. [ 127 ] proposed a semi-analytical modelling method for simultaneous cutting force and flank wear prediction in ultrasonic-assisted ball-end milling, an area with limited study. The method uses a modified Z-map with triangular meshes and ray-triangle intersection to describe, with high detail, complex tool-workpiece contact and uncut chip thickness under intermittent contact from ultrasonic vibration. On this geometric base, the authors made a cutting force model with experimentally calibrated shear and ploughing coefficients, combined with a flank wear model mainly from abrasion, where wear rate depends on normal force, sliding speed, and tool hardness. The test setup on a five-axis machining center with axial ultrasonic actuation, triaxial dynamometer, and optical VB measurement allowed model calibration and testing during milling. Results show good match between predicted and measured cutting forces, with moderate average errors (especially in Fx and Fy) and high correlation between predicted and experimental flank wear, clearly showing the three typical wear stages. Although force prediction error is higher, partly from ploughing and quasi-indentation effects at the tool tip not fully modelled, this work is the first analytical approach specifically for ultrasonic-assisted ball-end milling and gives a good base for process optimization and future extensions with more wear mechanisms and computational improvements.",
+        "In contrast, Kinnunen and Viitala [ 128 ] presented important work on direct tool condition monitoring methods. They analyzed eddy current sensors (ECS) for direct tool wear measurement in milling operations. This approach came from recognizing that indirect methods (based on cutting forces, vibration, acoustic emission, temperature, and sensor fusion) show good results but need models linking signals to wear mechanisms. In their direct method, the cutting edge is scanned with a custom ECS probe with an L-shaped air-core coil about 0.4 mm from the cemented carbide insert. Changes in the normalized impedance response of the coil allow detection of different wear states, from mild crater wear and moderate wear with chipping and notch wear to severe edge fracture, also showing potential for tool breakage detection. Results show good repeatability, ability to detect wear under 100 μm, and relatively stable sensitivity across different excitation frequencies. However, the method is very sensitive to sensor-tool distance and temperature changes, needing precise positioning and some temperature control. Although the method needs cutting process interruption and has limited measurement range, its simple and low-cost design, insensitivity to non-conductive contaminants, and straightforward data processing make it a good proof of concept for automated manufacturing cells, opening a new research direction based on direct electromagnetic tool wear measurement.",
+        "Besides these techniques, as noted earlier, artificial neural networks have also been used for tool breakage detection in milling and multisensory systems for tool condition assessment. These networks work on a connection-based model, where input nodes ( \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\:{w}_{i}$$\\end{document} ) apply weighted values ( \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\:{z}_{ij}$$\\end{document} ) to hidden-layer nodes ( \\documentclass[12pt]{minimal}\n\t\t\t\t\\usepackage{amsmath}\n\t\t\t\t\\usepackage{wasysym}\n\t\t\t\t\\usepackage{amsfonts}\n\t\t\t\t\\usepackage{amssymb}\n\t\t\t\t\\usepackage{amsbsy}\n\t\t\t\t\\usepackage{mathrsfs}\n\t\t\t\t\\usepackage{upgreek}\n\t\t\t\t\\setlength{\\oddsidemargin}{-69pt}\n\t\t\t\t\\begin{document}$$\\:{\\theta\\:}_{j}$$\\end{document} ), combined with threshold values, and output values (y) come from activation functions (Fig.  10 ). The iterative adjustment of weights and thresholds continues until error between predicted and actual values reaches an acceptable level. The main advantage of neural networks is their ability to quickly assess tool condition, even with highly scattered data. Besides providing nonlinear mappings between inputs and outputs, artificial neural networks allow different learning rates for individual synaptic connections, similar to biological neural links, which helps reduce overfitting and improve prediction accuracy. This flexibility makes neural networks particularly suitable for milling applications where process signals have high dynamic complexity and variability [ 5 ,  81 ,  125 ].",
+        "Fig. 10 Schematic representation of artificial neural network architecture, illustrating input, hidden, and output layers",
+        "However, despite the wide use of cemented carbide tools and extensive research on their wear monitoring, few studies provide complete comparative analyses across different carbide grades, such as ultrafine, submicrometric, and multimodal structures, and their performance in milling specific alloys under the same conditions [ 3 ,  6 ]. Also, the quantitative effect of micro-blasting on chipping propagation under changing thermal and mechanical conditions is not well explored [ 15 ,  16 ]. From a digital perspective, a notable limit is the lack of standardized datasets to feed artificial intelligence algorithms with information from multiple industrial sources, which compromises prediction robustness and generalization in real factory conditions [ 5 ,  125 ]. Another area with limited attention is combining digital monitoring systems with real-time cutting parameter optimization strategies to adapt the process to dynamic tool wear evolution [ 6 ,  81 ].",
+        "Modern digital monitoring systems transcend the traditional approach of isolated sensor analysis. As demonstrated in Fig.  11 , the architecture involves three interconnected layers that enable real-time diagnostics, predictive maintenance, and autonomous decision-making. The Data Acquisition Layer (Perception) incorporates the physical sensors installed on the machine tool, spindle, or cutting tool itself. Examples include piezoelectric dynamometers for cutting force [ 4 ,  64 ], accelerometers for vibration [ 44 ,  83 ], acoustic emission sensors [ 56 ,  75 ], thermocouples or infrared cameras for temperature [ 73 ,  120 ], and machine vision systems for direct tool inspection [ 52 ,  87 ]. Emerging solutions integrate wireless smart tool holders and embedded sensors that transmit data without interrupting the cutting process [ 117 ,  121 ].",
+        "The Edge Computing Layer (Edge Processing), positioned close to the data source, performs preliminary processing to reduce data volume and latency. Operations include signal filtering, feature extraction (e.g., frequency-domain transformations, statistical parameters) [ 66 ], and local inference using lightweight artificial intelligence models [ 39 ,  43 ]. Edge computing enables rapid anomaly detection and real-time alerts without relying on continuous cloud connectivity, which is critical for industrial environments where network reliability may vary.",
+        "The Cloud Computing Layer (Cloud Decision) aggregates data from multiple machines, enabling large-scale model training, historical trend analysis, and cross-machine knowledge transfer. Advanced machine learning algorithms, such as deep neural networks [ 36 ,  58 ], long short-term memory (LSTM) networks [ 86 ], and digital twins [ 90 ,  123 ], are trained in this layer using historical datasets. The resulting models can be deployed to edge devices or used to generate predictive outputs integrated with Manufacturing Execution Systems (MES) and predictive maintenance platforms [ 68 ,  93 ].",
+        "Fig. 11 Layered architecture of a digital monitoring system for tool wear in milling operations, illustrating the three interconnected layers: data acquisition (sensors), edge computing (local processing and feature extraction), and cloud computing (model training, digital twins, and integration with MES)",
+        "The interaction between these layers defines the intelligence of the monitoring system. For instance, raw force and vibration signals are acquired at the sensor level, processed at the edge to extract wear-sensitive features, and transmitted to the cloud, where a digital twin continuously updates the tool wear state and predicts remaining useful life [ 91 ]. This feedback loop enables adaptive control strategies, such as dynamic feed rate adjustment or automated tool change scheduling, aligning with the principles of smart manufacturing [ 24 ].",
+        "Selecting an appropriate AI algorithm for tool wear monitoring depends on several factors, such as dataset size, signal type, computational resources, and application requirements. Table  7  provides a concise comparative analysis of the most employed algorithms in the literature, summarizing their typical accuracy, data requirements, computational cost, processing time, and non‑linear behavior. In this context,  Processing Time  refers to the speed of inference for real‑time analysis, while  Non‑linear Behavior  indicates the algorithm’s capacity to model the complex, non‑linear patterns that characterize tool wear evolution. Convolutional neural networks (CNNs) and hybrid architectures generally achieve the highest accuracy, but they require labeled, structured datasets and computational power, making them ideal for offline training and cloud deployment. Conversely, artificial neural networks (ANNs) and support vector machines (SVMs) have lower computational requirements and faster inference times, making them ideal for edge computing applications that require real-time performance. Long short-term memory (LSTM) networks are excellent at capturing temporal dependencies from sequential sensor data. Ensemble methods, such as random forests, provide interpretability through feature importance analysis. An emerging trend in the literature is the development of hybrid physical information models that integrate mechanistic knowledge with data-driven learning to improve generalization under various cutting conditions [ 90 ,  91 – 92 ].",
+        "Table 7 Comparative analysis of AI algorithms for tool wear monitoring in milling operations Algorithm Source Typical accuracy Data requirements Computational cost Processing time (inference) Non-linear behavior ANN [ 5 ,  39 ,  43 ,  88 ] 85–95% Moderate Low Short Good CNN [ 58 ,  87 ,  89 ] 90–98% High Moderate–High Medium Good LSTM [ 86 ,  91 ] 88–96% High Moderate–High Medium Good SVM [ 57 ,  66 ] 80–92% Low–Moderate Low Short Medium HMM [ 48 ,  59 ] 82–90% Moderate Low Short Medium RF [ 66 ,  94 ] 85–93% Moderate Low Short Medium Hybrid Models [ 86 ,  91 ] 92–98% High High Long Good",
+        "In production environments, monitoring systems must provide wear estimates within a timeframe compatible with the machining process. Delays in detection can lead to catastrophic tool failure or the production of defective parts. This requirement favors lightweight models (e.g., ANNs and SVMs) or architectures implemented at the network edge that perform local inferences without relying on cloud connectivity. Latency, measured as the time between signal acquisition and wear prediction, should typically be less than the machining cycle time, which is often on the order of milliseconds to seconds [ 90 ,  93 ].",
+        "Industrial factory floors present adverse conditions, including electrical noise, cutting fluid contamination, and ambient temperature variations. Monitoring systems must maintain reliable performance despite these disturbances. Techniques such as signal filtering, feature selection, and model regularization increase robustness. Transfer learning and domain adaptation have emerged as promising approaches to maintaining prediction accuracy when operating conditions deviate from training scenarios [ 54 ,  91 ].",
+        "Many data-driven models have a critical limitation: they cannot generalize to different machine tools, workpiece materials, or cutting parameters. Models trained on one configuration often perform poorly when transferred to another. However, models based on physical principles and hybrid approaches that incorporate mechanistic knowledge into data-driven structures have demonstrated enhanced generalization capabilities, reducing the need for extensive retraining [ 90 ,  92 ].",
+        "In addition, industrial systems benefit from knowing the confidence associated with a wear estimate. Probabilistic models, Bayesian approaches, and ensemble methods can quantify forecast uncertainty, enabling informed decision-making (e.g., adjusting scheduling tools when uncertainty exceeds acceptable limits) [ 48 ,  92 ]. Table  8  summarizes these industrial performance metrics and indicates their current coverage in the literature.",
+        "Table 8 Industrial performance metrics for tool wear monitoring systems Metric Source Description Current Research Status Real-time Capability [ 90 ,  93 ] Latency between signal acquisition and wear prediction Well-studied; edge computing solutions emerging Robustness [ 54 ,  91 ] Performance under noisy, variable industrial conditions Partially addressed; transfer learning promising Generalizability [ 90 ,  92 ] Model performance across different setups Limited; physics-informed models show potential Interpretability [ 91 ,  94 ] Ability to explain model predictions Emerging; XAI methods under development Uncertainty Quantification [ 48 ,  92 ] Confidence bounds on wear predictions Limited; probabilistic models gaining attention",
+        "The choice between edge and cloud processing involves a critical balance that has significant implications for monitoring system design. Edge computing offers low latency, reduced bandwidth usage, and enhanced data privacy by processing signals locally near the sensor; however, it is constrained by limited computational resources, restricting the complexity of AI models that can be deployed. Cloud computing enables training of large‑scale models (e.g., deep neural networks, digital twins) using massive datasets and facilitates cross‑machine knowledge transfer; nevertheless, it introduces latency, reliance on network connectivity, and potential security vulnerabilities. Hybrid architectures, which perform intrinsic feature extraction and anomaly detection at the edge while offloading model training and complex inference to the cloud, may represent a more practical implementation for shop‑floor environments that balances real‑time responsiveness with predictive capability [ 90 ,  91 ,  93 ]. The optimal architecture depends on the application context: time‑critical tasks such as tool breakage detection require edge processing, whereas long‑term wear trend analysis and optimization benefit from cloud‑based learning. Standardized benchmarks and industry‑specific guidelines are still lacking, hindering the systematic comparison and industrial adoption of these architectures [ 94 ]."
+      ]
+    },
+    {
+      "heading": "Concluding remarks",
+      "paragraphs": [
+        "This review has traced the evolution of tool wear monitoring in milling, documenting the transition from offline inspection toward an integrated digital framework structured across three layers: perception (sensors and data acquisition), edge processing (local signal analysis and feature extraction), and cloud decision (AI models, digital twins, and MES).",
+        "The analysis indicates that monitoring cemented carbide tools, with multilayer PVD/CVD coatings, via cutting forces, vibration, acoustic emission, temperature, and vision-based methods - particularly when integrated with AI models - has significantly broadened the accuracy and scope of condition monitoring.",
+        "A central challenge identified here is the velocity at which wear is identified and quantified. Driven by the broader imperatives of digitalization, Industry 4.0 and 5.0, industrial digital communication protocols, and the accelerating pace of industrial decision-making, wear monitoring must shift from offline analysis toward near-real-time responsiveness. Consequently, future research must align its developments with the operational demands of modern smart factories, which require rapid and reliable predictions, thereby ensuring that monitoring speed remains proportionate to the pace of production and AI-enabled decision-making systems.",
+        "Future research should therefore focus on four priority areas: (i) physics‑informed hybrid models that combine mechanistic knowledge with data‑driven learning to improve generalization and reduce data dependency; (ii) creation of open benchmark datasets and standardized validation protocols that test accuracy, robustness, and operational value under realistic shop‑floor conditions; (iii) edge‑cloud architectures that balance real‑time latency with large‑scale model training and cross‑machine knowledge transfer; and (iv) explainable AI to build operator trust and facilitate industrial adoption.",
+        "Addressing these challenges will allow digital tool wear monitoring to become a reliable, autonomous, and economically viable solution, enabling more efficient, sustainable, and intelligent milling processes aligned with Industry 5.0."
+      ]
+    }
+  ],
+  "tables": [
+    {
+      "caption": "Literature search strategy and selection results",
+      "headers": [
+        "Database",
+        "Search query",
+        "Articles"
+      ],
+      "rows": [
+        [
+          "Web of Science",
+          "(TS=(tool wear AND milling)) AND (TS=(monitoring OR condition monitoring)) AND (ALL=(surface integrity OR friction OR carbide insert OR cutting temperature)) AND PY=(2010–2026)",
+          "132"
+        ],
+        [
+          "Scopus",
+          "TITLE-ABS-KEY(tool wear AND milling) AND TITLE-ABS-KEY(monitoring OR condition monitoring) AND ALL(surface integrity OR friction OR carbide insert OR cutting temperature) AND PUBYEAR > 2009 AND PUBYEAR < 2026",
+          "90"
+        ],
+        [
+          "Selection",
+          "Total identified",
+          "222"
+        ],
+        [
+          "Selection",
+          "After duplicate removal",
+          "181"
+        ],
+        [
+          "Selection",
+          "Full-text articles assessed",
+          "124"
+        ],
+        [
+          "Selection",
+          "Studies selected from systematic search (milling‑specific, 2010‑2026)",
+          "98"
+        ],
+        [
+          "Selection",
+          "Additional seminal works included (before 2010)",
+          "22"
+        ],
+        [
+          "Selection",
+          "ISO standards (8688‑1 and 8688‑2)",
+          "2"
+        ],
+        [
+          "Selection",
+          "Additional review/conceptual works (post‑2010, not captured by the systematic search)",
+          "6"
+        ],
+        [
+          "Selection",
+          "Total references in review",
+          "128"
+        ]
+      ],
+      "header_groups": [],
+      "table_alignment_status": "resolved",
+      "row_provenance": [
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 3
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 3
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 3
+          }
+        ],
+        [
+          {
+            "source": "carried",
+            "source_row_index": 2,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 3
+          }
+        ],
+        [
+          {
+            "source": "carried",
+            "source_row_index": 2,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 3
+          }
+        ],
+        [
+          {
+            "source": "carried",
+            "source_row_index": 2,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 3
+          }
+        ],
+        [
+          {
+            "source": "carried",
+            "source_row_index": 2,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 3
+          }
+        ],
+        [
+          {
+            "source": "carried",
+            "source_row_index": 2,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 3
+          }
+        ],
+        [
+          {
+            "source": "carried",
+            "source_row_index": 2,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 8,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 8,
+            "source_col": 3
+          }
+        ],
+        [
+          {
+            "source": "carried",
+            "source_row_index": 2,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 9,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 9,
+            "source_col": 3
+          }
+        ]
+      ],
+      "tbody_alignment_status": "resolved"
+    },
+    {
+      "caption": "Types of coatings applied to cutting tools and their effects on tool wear",
+      "headers": [
+        "Type of coating",
+        "Source",
+        "Advantages",
+        "Limitations"
+      ],
+      "rows": [
+        [
+          "TiN, TiAlN, AlTiN",
+          "[ 24 ,  25 – 26 ]",
+          "High hardness and good thermal resistance",
+          "May fail under repeated impact loading"
+        ],
+        [
+          "Multilayer coatings",
+          "[ 26 ,  28 ]",
+          "Combination of favorable mechanical properties",
+          "Higher manufacturing cost"
+        ],
+        [
+          "Micro-blasted PVD films",
+          "[ 15 ,  16 ]",
+          "Improved coating adhesion and mechanical resistance",
+          "Additional processing step during manufacturing"
+        ],
+        [
+          "Ceramic coatings",
+          "[ 27 ,  29 ]",
+          "High abrasion resistance",
+          "Brittleness and increased risk of fracture"
+        ]
+      ],
+      "header_groups": [],
+      "table_alignment_status": "resolved",
+      "row_provenance": [
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 4
+          }
+        ]
+      ],
+      "tbody_alignment_status": "resolved"
+    },
+    {
+      "caption": "Monitoring methods and representative studies associated with the primary types of tool wear in milling",
+      "headers": [
+        "Type of wear",
+        "Source",
+        "Monitoring techniques used",
+        "Main characteristics"
+      ],
+      "rows": [
+        [
+          "Flank wear",
+          "[ 3 ,  4 ,  8 ]",
+          "Microscopy, machine vision, AI-based methods",
+          "Progressive material loss on the flank face; affects dimensional accuracy and surface roughness"
+        ],
+        [
+          "Crater wear",
+          "[ 30 ,  36 ,  40 ]",
+          "SEM, chip analysis",
+          "Cavity formation on the rake face; compromises cutting edge strength"
+        ],
+        [
+          "Notch wear",
+          "[ 30 ,  41 ,  43 ]",
+          "Vibration analysis",
+          "Localized concavity near the cutting edge; associated with repeated impact loading"
+        ],
+        [
+          "Chipping",
+          "[ 36 ,  37 ,  45 ]",
+          "Acoustic emission, vibration signals",
+          "Partial edge fractures; may lead to catastrophic failure"
+        ],
+        [
+          "Diffuse wear",
+          "[ 3 ,  36 ,  40 ]",
+          "SEM, thermal signal analysis",
+          "Uniform material loss and formation of thermal microcracks"
+        ]
+      ],
+      "header_groups": [],
+      "table_alignment_status": "resolved",
+      "row_provenance": [
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 4
+          }
+        ]
+      ],
+      "tbody_alignment_status": "resolved"
+    },
+    {
+      "caption": "Comparison of tool wear measurement techniques in milling",
+      "headers": [
+        "Technique",
+        "Source",
+        "Advantages",
+        "Limitations"
+      ],
+      "rows": [
+        [
+          "Optical Microscopy",
+          "[ 4 ,  65 ,  69 ]",
+          "High measurement accuracy",
+          "Offline inspection; operator subjectivity"
+        ],
+        [
+          "Acoustic Emission (AE)",
+          "[ 12 ,  56 ,  74 ]",
+          "High sensitivity to microcracks",
+          "Highly sensitive to industrial noise"
+        ],
+        [
+          "Cutting Force",
+          "[ 71 ,  78 ,  79 ]",
+          "Strong correlation with tool wear",
+          "Influenced by cutting parameters"
+        ],
+        [
+          "Vibration Analysis",
+          "[ 81 ,  82 ,  85 ]",
+          "Non-invasive; moderate cost",
+          "Requires specific calibration"
+        ],
+        [
+          "Computer Vision",
+          "[ 52 ,  58 ,  87 ]",
+          "Contactless; high automation potential",
+          "Sensitive to lighting variations; hardware cost"
+        ],
+        [
+          "Machine Learning/AI",
+          "[ 24 ,  58 ,  89 ]",
+          "High accuracy; predictive capability",
+          "Requires large datasets; limited interpretability"
+        ]
+      ],
+      "header_groups": [],
+      "table_alignment_status": "resolved",
+      "row_provenance": [
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 4
+          }
+        ]
+      ],
+      "tbody_alignment_status": "resolved"
+    },
+    {
+      "caption": "Overview of techniques used for temperature measurement and thermal analysis in machining processes",
+      "headers": [
+        "Technique",
+        "Source",
+        "Advantages",
+        "Limitations"
+      ],
+      "rows": [
+        [
+          "Thermocouples",
+          "[ 4 ,  38 ,  120 ]",
+          "Simple, low cost, can be embedded in the tool",
+          "Slow response time; possible disturbance of the thermal field"
+        ],
+        [
+          "Infrared pyrometers/thermal cameras",
+          "[ 73 ,  119 ,  120 ]",
+          "Fast measurement; contactless; real-time capability",
+          "Sensitive to emissivity variations; chip obstruction"
+        ],
+        [
+          "Smart sensor holders",
+          "[ 71 ,  117 ,  121 ]",
+          "CNC integration; real-time data acquisition; wireless operation",
+          "Higher cost; installation complexity"
+        ],
+        [
+          "Thermal modelling (analytical/numerical)",
+          "[ 71 ,  114 ,  123 ]",
+          "Accurate prediction of thermal gradients",
+          "High computational demand; requires accurate input data"
+        ]
+      ],
+      "header_groups": [],
+      "table_alignment_status": "resolved",
+      "row_provenance": [
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 4
+          }
+        ]
+      ],
+      "tbody_alignment_status": "resolved"
+    },
+    {
+      "caption": "Summary of the main research focus, digital application, machined materials, and key findings of the analyzed studies",
+      "headers": [
+        "Main focus",
+        "Source",
+        "Digital application",
+        "Machined material",
+        "Key highlights"
+      ],
+      "rows": [
+        [
+          "Wear–surface integrity relationship in Inconel 718",
+          "[ 3 ]",
+          "No",
+          "Inconel 718",
+          "Direct impact of cemented carbide wear on surface integrity"
+        ],
+        [
+          "AI-based monitoring of PVD-coated inserts",
+          "[ 24 ]",
+          "Yes",
+          "Hastelloy C276",
+          "Integration of PVD coatings with predictive analysis"
+        ],
+        [
+          "Micro-blasting applied to PVD coatings",
+          "[ 15 ]",
+          "No",
+          "Various",
+          "Improved coating adhesion and resistance to surface cracking"
+        ],
+        [
+          "Wear prediction using neural networks",
+          "[ 125 ]",
+          "Yes",
+          "General turning",
+          "Predictive algorithms for wear in carbide inserts"
+        ],
+        [
+          "Wear monitoring via acceleration signals",
+          "[ 81 ]",
+          "Yes",
+          "Various",
+          "Sensor integration for early wear detection"
+        ],
+        [
+          "Neural networks for tool wear prediction",
+          "[ 5 ]",
+          "Yes",
+          "Face milling",
+          "AI applied to wear prediction of carbide inserts"
+        ],
+        [
+          "Effect of feed rate on tool wear",
+          "[ 14 ]",
+          "No",
+          "718Plus",
+          "Evaluation of cutting forces and progressive wear"
+        ],
+        [
+          "Wear evolution versus cutting force",
+          "[ 6 ]",
+          "Partial",
+          "718Plus",
+          "Dynamic analysis of wear in heavy milling"
+        ],
+        [
+          "Micro-blasting for cemented carbide tools",
+          "[ 16 ]",
+          "No",
+          "Various",
+          "Extended tool life of coated inserts"
+        ],
+        [
+          "Chipping propagation mechanisms",
+          "[ 7 ]",
+          "No",
+          "Prototyping",
+          "Focus on chipping resistance in cemented carbide tools"
+        ]
+      ],
+      "header_groups": [],
+      "table_alignment_status": "resolved",
+      "row_provenance": [
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 5
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 5
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 5
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 5
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 5
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 5
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 5
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 7,
+            "source_col": 5
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 8,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 8,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 8,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 8,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 8,
+            "source_col": 5
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 9,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 9,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 9,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 9,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 9,
+            "source_col": 5
+          }
+        ]
+      ],
+      "tbody_alignment_status": "resolved"
+    },
+    {
+      "caption": "Comparative analysis of AI algorithms for tool wear monitoring in milling operations",
+      "headers": [
+        "Algorithm",
+        "Source",
+        "Typical accuracy",
+        "Data requirements",
+        "Computational cost",
+        "Processing time (inference)",
+        "Non-linear behavior"
+      ],
+      "rows": [
+        [
+          "ANN",
+          "[ 5 ,  39 ,  43 ,  88 ]",
+          "85–95%",
+          "Moderate",
+          "Low",
+          "Short",
+          "Good"
+        ],
+        [
+          "CNN",
+          "[ 58 ,  87 ,  89 ]",
+          "90–98%",
+          "High",
+          "Moderate–High",
+          "Medium",
+          "Good"
+        ],
+        [
+          "LSTM",
+          "[ 86 ,  91 ]",
+          "88–96%",
+          "High",
+          "Moderate–High",
+          "Medium",
+          "Good"
+        ],
+        [
+          "SVM",
+          "[ 57 ,  66 ]",
+          "80–92%",
+          "Low–Moderate",
+          "Low",
+          "Short",
+          "Medium"
+        ],
+        [
+          "HMM",
+          "[ 48 ,  59 ]",
+          "82–90%",
+          "Moderate",
+          "Low",
+          "Short",
+          "Medium"
+        ],
+        [
+          "RF",
+          "[ 66 ,  94 ]",
+          "85–93%",
+          "Moderate",
+          "Low",
+          "Short",
+          "Medium"
+        ],
+        [
+          "Hybrid Models",
+          "[ 86 ,  91 ]",
+          "92–98%",
+          "High",
+          "High",
+          "Long",
+          "Good"
+        ]
+      ],
+      "header_groups": [],
+      "table_alignment_status": "resolved",
+      "row_provenance": [
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 7
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 7
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 7
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 7
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 7
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 5,
+            "source_col": 7
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 4
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 5
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 6
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 6,
+            "source_col": 7
+          }
+        ]
+      ],
+      "tbody_alignment_status": "resolved"
+    },
+    {
+      "caption": "Industrial performance metrics for tool wear monitoring systems",
+      "headers": [
+        "Metric",
+        "Source",
+        "Description",
+        "Current Research Status"
+      ],
+      "rows": [
+        [
+          "Real-time Capability",
+          "[ 90 ,  93 ]",
+          "Latency between signal acquisition and wear prediction",
+          "Well-studied; edge computing solutions emerging"
+        ],
+        [
+          "Robustness",
+          "[ 54 ,  91 ]",
+          "Performance under noisy, variable industrial conditions",
+          "Partially addressed; transfer learning promising"
+        ],
+        [
+          "Generalizability",
+          "[ 90 ,  92 ]",
+          "Model performance across different setups",
+          "Limited; physics-informed models show potential"
+        ],
+        [
+          "Interpretability",
+          "[ 91 ,  94 ]",
+          "Ability to explain model predictions",
+          "Emerging; XAI methods under development"
+        ],
+        [
+          "Uncertainty Quantification",
+          "[ 48 ,  92 ]",
+          "Confidence bounds on wear predictions",
+          "Limited; probabilistic models gaining attention"
+        ]
+      ],
+      "header_groups": [],
+      "table_alignment_status": "resolved",
+      "row_provenance": [
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 0,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 1,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 2,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 3,
+            "source_col": 4
+          }
+        ],
+        [
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 1
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 2
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 3
+          },
+          {
+            "source": "explicit",
+            "source_row_index": 4,
+            "source_col": 4
+          }
+        ]
+      ],
+      "tbody_alignment_status": "resolved"
+    }
+  ]
+}
