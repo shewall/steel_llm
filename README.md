@@ -1,7 +1,5 @@
 ## Steel CPP Literature Mining Pipeline
 
-MSc dissertation project by Sevval Isikirik, supervised by Dr Ishwar Kapoor.
-
 The idea of this project is to pull composition, processing and property (CPP) data out of steel research papers, using a large language model to help read the papers, and then use that data to train regression models that predict tensile strength, yield strength and elongation from the steel composition.
 
 ## How the pipeline works
